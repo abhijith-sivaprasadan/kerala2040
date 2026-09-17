@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "project": "Kerala 2040 — Open Energy Intelligence",
+    "generated_at_utc": "2026-09-17T20:55:00+00:00",
+    "research_repo": "https://github.com/abhijith-sivaprasadan/kerala2040",
+    "web_repo": "https://github.com/kerala2040/kerala2040.github.io",
+    "model_year": 2040,
+    "principle": "Energy sovereignty means retaining sufficient controllable generation, storage, flexible demand and infrastructure to withstand climate, hydrological and market shocks while using interstate trade strategically. It does not mean autarky or zero imports.",
+    "status": {
+      "sldc_daily": {"available": false, "evidence": "measured", "note": "Historical pipeline refresh is running; bundle will publish automatically."},
+      "baseline_summary": {"available": false, "evidence": "derived"},
+      "reservoir_storage": {"available": false, "evidence": "measured"},
+      "weather": {"available": false, "evidence": "measured/reanalysis"},
+      "hourly_state_load": {"available": false, "evidence": "gap", "note": "No authenticated FY2024-25 Kerala 8760/35040 load chronology is published in this bundle."},
+      "grid_india_psp": {"available": false, "evidence": "cross-check source", "note": "Integration remains non-blocking because upstream access has been unreliable."}
+    },
+    "files": {}
+  },
+  "baseline": null,
+  "scenarios": [
+    {"id":"S0_business_as_usual","code":"S0","name":"Business As Usual","description":"Existing structural import dependence, hydro exposure and moderate local RE growth.","ecology_constraint":"baseline_legal_exclusions","demand_flexibility":"low","import_option":"enabled"},
+    {"id":"S1_maximum_local_generation","code":"S1","name":"Maximum Local Generation","description":"Stress-test aggressive local generation build-out before ecological constraints are tightened. Intended to expose land, biodiversity, water and system-cost consequences rather than to be presented as a recommendation.","ecology_constraint":"baseline_legal_exclusions","demand_flexibility":"medium","import_option":"enabled"},
+    {"id":"S2_solar_storage","code":"S2","name":"Solar Storage","description":"Rooftop, floating and suitable ground PV with BESS/pumped storage and hydro balancing.","ecology_constraint":"baseline_legal_exclusions","demand_flexibility":"medium","import_option":"enabled"},
+    {"id":"S3_integrated_sovereignty","code":"S3","name":"Integrated Sovereignty","description":"Diversified generation, strategic reservoir dispatch, distributed storage, demand response, EV smart charging/V2G, cooling flexibility and strong interconnection.","ecology_constraint":"spatial_suitability","demand_flexibility":"high","import_option":"enabled"},
+    {"id":"S4_ecological_sovereignty","code":"S4","name":"Ecological Sovereignty","description":"S3 with strict biodiversity, forest, watershed, wetland, slope, landslide, coastal and land-use constraints fed back as technology-specific capacity limits.","ecology_constraint":"strict_ecological_carrying_capacity","demand_flexibility":"high","import_option":"enabled"}
+  ],
+  "stress_tests": {
+    "dry_hydro":{"description":"Multi-season adverse inflow/hydrology case derived from climate/hydrology data."},
+    "cloudy_low_solar":{"description":"Sustained low-solar period preserving observed weather covariance."},
+    "heat_wave":{"description":"High cooling-demand and thermal-stress event."},
+    "ev_surge":{"description":"Higher-than-central electrification trajectory with unmanaged and managed charging variants."},
+    "battery_cost_high":{"description":"Storage capital-cost sensitivity."},
+    "import_restriction":{"description":"Temporary reduction in interstate transfer availability, not permanent isolation."},
+    "import_price_high":{"description":"High external procurement-price stress."},
+    "extreme_monsoon_flood":{"description":"Infrastructure and hydrology stress with ecological/resilience implications."}
+  },
+  "references": {
+    "cstep_2024": {
+      "title":"Kerala Energy Transition Roadmap 2040","publisher":"Center for Study of Science, Technology and Policy (CSTEP)","year":2024,"primary_url":"https://cstep.in/publication/kerala-energy-transition-roadmap-2040/",
+      "fy2040":{"final_demand_with_td_losses_mu":45519,"peak_demand_mw":7594,"off_peak_demand_mw":3169},
+      "caveat":"CSTEP capacity additions and demand trajectories represent one published study's scenario architecture. Kerala2040 will reproduce or challenge them using newer measured data, climate stress and explicit ecological constraints."
+    },
+    "kerala_cn50_2026": {
+      "title":"Carbon Neutral Kerala by 2050","publisher":"Directorate of Environment and Climate Change, Government of Kerala / Vasudha Foundation","year":2026,"primary_url":"https://climatechange.envt.kerala.gov.in/wp-content/uploads/2026/06/Carbon-Neutral-Kerala-by-2050-Report.pdf",
+      "net_grid_demand_twh":{"bau_2030":41.59,"bau_2040":65.98,"cn50_2030":46.91,"cn50_2040":88.56},
+      "caveat":"The 2026 CN50 and 2024 CSTEP studies use different scopes, assumptions and electrification trajectories. Their 2040 demand values must not be blended into a single target."
+    }
+  },
+  "sources": {
+    "kerala_sldc":{"system_statistics_url":"https://sldckerala.com/index.php?id=1","acquisition":"public_html_form","note":"System-statistics and storage reports expose independent historical date forms. Accounting labels are preserved."},
+    "grid_india_daily_psp":{"file_api":"https://webapi.grid-india.in/api/v1/file","acquisition":"public_json_api_plus_xls","note":"MOP_E provides official per-state daily peak-demand and energy metrics; TimeSeries is national, not Kerala hourly."},
+    "nasa_power":{"endpoint":"https://power.larc.nasa.gov/api/temporal/hourly/point","acquisition":"public_json_api","note":"Representative point weather inputs; not a claim of statewide resource potential."},
+    "data_gov_in":{"endpoint":"https://api.data.gov.in/resource","acquisition":"authenticated_json_api"},
+    "niti_iced":{"home":"https://www.iced.niti.gov.in/","acquisition":"discovery_download","note":"Discovery/cross-check source; primary official sources remain preferred."}
+  },
+  "screening_nodes": [
+    {"name":"Kochi industrial-demand hub","lat":9.9312,"lon":76.2673,"kind":"grid","note":"Demand, industry, port and flexibility screening node."},
+    {"name":"Idukki hydro-storage system","lat":9.85,"lon":76.97,"kind":"storage","note":"Hydro flexibility, reservoir and pumped-storage screening area."},
+    {"name":"Ramakkalmedu wind area","lat":9.79,"lon":77.16,"kind":"wind","note":"Wind-resource screening area; ecology and grid constraints required."},
+    {"name":"Chavara circular-industry cluster","lat":9.0,"lon":76.53,"kind":"circular","note":"Mineral-sands, TiO2 and by-product recovery research cluster."},
+    {"name":"Vizhinjam coastal-energy node","lat":8.38,"lon":76.98,"kind":"marine","note":"Port, wave-energy history, shore-power and marine-resource screening node."}
+  ]
+}
