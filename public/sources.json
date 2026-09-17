@@ -1,0 +1,29 @@
+{
+  "sources": {
+    "kerala_sldc": {
+      "system_statistics_url": "https://sldckerala.com/index.php?id=1",
+      "acquisition": "public_html_form",
+      "note": "Kerala system-statistics and storage reports; original accounting labels are preserved."
+    },
+    "grid_india_daily_psp": {
+      "file_api": "https://webapi.grid-india.in/api/v1/file",
+      "acquisition": "public_json_api_plus_xls",
+      "note": "Official per-state daily peak-demand and energy cross-check; national TimeSeries is not Kerala hourly load."
+    },
+    "nasa_power": {
+      "endpoint": "https://power.larc.nasa.gov/api/temporal/hourly/point",
+      "acquisition": "public_json_api",
+      "note": "Representative-point weather inputs; not a claim of statewide renewable-resource potential."
+    },
+    "data_gov_in": {
+      "endpoint": "https://api.data.gov.in/resource",
+      "acquisition": "authenticated_json_api",
+      "note": "Government of India open-data API used where a relevant dataset is identified."
+    },
+    "niti_iced": {
+      "home": "https://www.iced.niti.gov.in/",
+      "acquisition": "discovery_download",
+      "note": "Discovery and cross-check source; primary official sources remain preferred."
+    }
+  }
+}
