@@ -13,6 +13,12 @@ protecting ecological carrying capacity, staying within realistic fiscal
 constraints, and creating value through storage, circular industry and
 intelligent grids.
 
+## Public dashboard
+
+Dashboard source lives in `docs/` and deploys through GitHub Pages.
+
+**https://abhijith-sivaprasadan.github.io/kerala2040/**
+
 ## v1.0 connected data layer
 
 The first operational release connects:

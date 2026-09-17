@@ -1,0 +1,21 @@
+source_id: replace_me
+title: replace_me
+organisation: replace_me
+url: https://example.org/
+retrieved_at_utc: 2026-09-17T00:00:00Z
+publication_or_data_date: null
+source_class: DATA  # DATA | METHOD | POLICY | VERIFY | ASSUMP
+primary_source: true
+licence: unknown
+redistribution_allowed: unknown
+confidentiality: public
+spatial_scope: Kerala
+temporal_scope: null
+native_resolution: null
+variables: []
+units: {}
+raw_file_sha256: null
+local_raw_path: null
+processing_script: null
+known_limitations: []
+notes: null

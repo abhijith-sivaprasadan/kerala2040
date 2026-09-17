@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kerala 2040 grid asset row",
+  "type": "object",
+  "required": ["asset_id", "asset_type", "name", "source_id", "confidence"],
+  "properties": {
+    "asset_id": {"type": "string"},
+    "asset_type": {"enum": ["bus", "line", "transformer", "substation", "generator", "storage", "intertie"]},
+    "name": {"type": "string"},
+    "from_bus": {"type": ["string", "null"]},
+    "to_bus": {"type": ["string", "null"]},
+    "voltage_kv": {"type": ["number", "null"]},
+    "thermal_limit_mva": {"type": ["number", "null"]},
+    "capacity_mw": {"type": ["number", "null"]},
+    "technology": {"type": ["string", "null"]},
+    "owner": {"type": ["string", "null"]},
+    "commission_year": {"type": ["integer", "null"]},
+    "latitude": {"type": ["number", "null"], "minimum": -90, "maximum": 90},
+    "longitude": {"type": ["number", "null"], "minimum": -180, "maximum": 180},
+    "source_id": {"type": "string"},
+    "confidence": {"enum": ["high", "medium", "low", "unknown"]}
+  },
+  "additionalProperties": true
+}

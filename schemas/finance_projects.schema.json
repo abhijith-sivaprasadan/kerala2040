@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kerala 2040 project finance row",
+  "type": "object",
+  "required": ["project_id", "technology", "source_or_assumption"],
+  "properties": {
+    "project_id": {"type": "string"},
+    "technology": {"type": "string"},
+    "zone": {"type": ["string", "null"]},
+    "commission_year": {"type": ["integer", "null"]},
+    "capex_inr": {"type": ["number", "null"], "minimum": 0},
+    "fixed_opex_inr_y": {"type": ["number", "null"], "minimum": 0},
+    "variable_opex_inr_mwh": {"type": ["number", "null"], "minimum": 0},
+    "replacement_year": {"type": ["integer", "null"]},
+    "state_grant_inr": {"type": ["number", "null"], "minimum": 0},
+    "union_grant_inr": {"type": ["number", "null"], "minimum": 0},
+    "state_equity_inr": {"type": ["number", "null"], "minimum": 0},
+    "private_equity_inr": {"type": ["number", "null"], "minimum": 0},
+    "debt_inr": {"type": ["number", "null"], "minimum": 0},
+    "interest_rate": {"type": ["number", "null"], "minimum": 0},
+    "tenor_y": {"type": ["number", "null"], "minimum": 0},
+    "revenue_stream": {"type": ["string", "null"]},
+    "scheme_eligibility": {"type": ["string", "null"]},
+    "source_or_assumption": {"type": "string"}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Local environment/secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Data: raw/interim are local by default
+/data/raw/*
+!/data/raw/.gitkeep
+/data/interim/*
+!/data/interim/.gitkeep
+/data/external/*
+!/data/external/.gitkeep
+
+# Large/derived geospatial and model files
+*.nc
+*.grib
+*.grib2
+*.tif
+*.tiff
+*.gpkg
+*.geoparquet
+*.parquet
+*.h5
+*.hdf5
+*.zarr/
+
+# Generated results
+/results/*
+!/results/.gitkeep
+/figures/generated/*
+!/figures/generated/.gitkeep
+
+# Solver/log artifacts
+*.log
+*.lp
+*.mps
+*.sol
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

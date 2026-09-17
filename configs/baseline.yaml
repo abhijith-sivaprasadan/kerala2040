@@ -1,0 +1,27 @@
+project:
+  name: kerala2040
+  target_year: 2040
+  canonical_timezone: Asia/Kolkata
+
+baseline:
+  model_year: 2024
+  temporal_resolution: 1h
+  snapshots: 8760
+  geography: kerala-single-bus
+  calibration_metrics:
+    - annual_demand_mwh
+    - annual_internal_generation_mwh
+    - annual_imports_mwh
+    - peak_demand_mw
+    - load_duration_curve
+
+model:
+  solver: highs
+  allow_load_shedding: true
+  value_of_lost_load_inr_per_mwh: null
+  import_representation: dispatchable_external_supply
+
+validation:
+  annual_energy_tolerance_pct: 2.0
+  peak_demand_tolerance_pct: 3.0
+  fail_on_missing_provenance: true

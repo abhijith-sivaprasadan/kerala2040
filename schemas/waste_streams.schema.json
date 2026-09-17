@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kerala 2040 industrial waste/by-product stream row",
+  "type": "object",
+  "required": ["facility_id", "year", "stream_id", "stream_name", "mass_t", "source_id", "confidence"],
+  "properties": {
+    "facility_id": {"type": "string"},
+    "year": {"type": "integer"},
+    "stream_id": {"type": "string"},
+    "stream_name": {"type": "string"},
+    "hazard_category": {"type": ["string", "null"]},
+    "mass_t": {"type": "number", "minimum": 0},
+    "moisture_pct": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    "composition_json": {"type": ["object", "null"]},
+    "lhv_mj_kg": {"type": ["number", "null"]},
+    "current_destination": {"type": ["string", "null"]},
+    "current_cost_inr_t": {"type": ["number", "null"]},
+    "recoverable_fraction": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "candidate_route": {"type": ["string", "null"]},
+    "radiological_screen_required": {"type": ["boolean", "null"]},
+    "source_id": {"type": "string"},
+    "confidence": {"enum": ["high", "medium", "low", "unknown"]}
+  },
+  "additionalProperties": true
+}

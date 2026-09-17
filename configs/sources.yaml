@@ -1,0 +1,57 @@
+version: 1
+
+sources:
+  kerala_sldc:
+    system_statistics_url: https://sldckerala.com/index.php?id=1
+    storage_url: https://sldckerala.com/index.php?id=7
+    acquisition: public_html_form
+    minimum_delay_seconds: 0.8
+    timezone: Asia/Kolkata
+    note: >-
+      System-statistics and storage reports expose independent historical date forms.
+      Their accounting labels are preserved rather than collapsed into one import metric.
+
+  grid_india_daily_psp:
+    file_api: https://webapi.grid-india.in/api/v1/file
+    cdn_root: https://webcdn.grid-india.in/
+    acquisition: public_json_api_plus_xls
+    file_type: DAILY_PSP_REPORT
+    state: Kerala
+    note: >-
+      MOP_E provides official per-state daily peak-demand and energy metrics. TimeSeries
+      in these workbooks is national, not a Kerala hourly series. TLS verification stays
+      on by default; any fallback around a broken API certificate chain is explicit.
+
+  nasa_power:
+    endpoint: https://power.larc.nasa.gov/api/temporal/hourly/point
+    acquisition: public_json_api
+    time_standard: UTC
+    community: RE
+    parameters:
+      - T2M
+      - RH2M
+      - ALLSKY_SFC_SW_DWN
+      - WS10M
+      - PRECTOTCORR
+    representative_points:
+      thiruvananthapuram: {lat: 8.5241, lon: 76.9366}
+      kochi: {lat: 9.9312, lon: 76.2673}
+      palakkad: {lat: 10.7867, lon: 76.6548}
+      kozhikode: {lat: 11.2588, lon: 75.7804}
+      kannur: {lat: 11.8745, lon: 75.3704}
+    note: >-
+      Representative point data are weather inputs, not a claim that one point
+      represents statewide resource potential. Spatial weighting comes later.
+
+  data_gov_in:
+    endpoint: https://api.data.gov.in/resource
+    acquisition: authenticated_json_api
+    api_key_env: DATA_GOV_API_KEY
+    resource_ids: {}
+
+  niti_iced:
+    home: https://www.iced.niti.gov.in/
+    acquisition: discovery_download
+    note: >-
+      No stable documented public API is assumed in v1.0. ICED is used to
+      discover/cross-check datasets; primary official sources remain preferred.

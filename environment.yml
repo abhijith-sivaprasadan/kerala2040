@@ -1,0 +1,32 @@
+name: kerala2040
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas
+  - numpy
+  - scipy
+  - xarray
+  - geopandas
+  - rasterio
+  - shapely
+  - rioxarray
+  - pyarrow
+  - duckdb
+  - matplotlib
+  - plotly
+  - jupyterlab
+  - requests
+  - scikit-learn
+  - lightgbm
+  - xgboost
+  - pytorch
+  - optuna
+  - pytest
+  - ruff
+  - pip
+  - pip:
+      - pypsa
+      - highspy
+      - pandapower
+      - shap

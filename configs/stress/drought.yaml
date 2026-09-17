@@ -1,0 +1,10 @@
+id: drought
+kind: hydro_availability
+cases:
+  moderate:
+    hydro_energy_multiplier: 0.80
+  severe:
+    hydro_energy_multiplier: 0.60
+notes:
+  - These are provisional stress multipliers for CET only.
+  - Replace with SWAT+/observed reservoir-inflow cases before publication.

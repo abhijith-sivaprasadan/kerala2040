@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kerala 2040 power timeseries row",
+  "type": "object",
+  "required": ["timestamp_ist", "zone_id", "variable", "value", "unit", "source_id", "quality_flag"],
+  "properties": {
+    "timestamp_utc": {"type": ["string", "null"], "format": "date-time"},
+    "timestamp_ist": {"type": "string", "format": "date-time"},
+    "zone_id": {"type": "string"},
+    "asset_id": {"type": ["string", "null"]},
+    "variable": {"type": "string"},
+    "value": {"type": "number"},
+    "unit": {"type": "string"},
+    "source_id": {"type": "string"},
+    "quality_flag": {"type": "string"},
+    "imputation_method": {"type": ["string", "null"]},
+    "raw_file_sha256": {"type": ["string", "null"]},
+    "retrieved_at": {"type": ["string", "null"], "format": "date-time"}
+  },
+  "additionalProperties": true
+}

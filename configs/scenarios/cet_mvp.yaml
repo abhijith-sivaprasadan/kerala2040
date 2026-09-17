@@ -1,0 +1,38 @@
+scenarios:
+  - id: s0_bau
+    description: Current-trajectory reference; no sovereignty target imposed.
+  - id: s1_maximum_local
+    description: Stronger local generation and storage; imports penalised but not prohibited.
+  - id: s2_solar_storage
+    description: High rooftop/distributed solar with batteries and pumped storage where feasible.
+  - id: s3_grid_intelligent
+    description: Flexible demand, smart charging, storage, strategic hydro and price-responsive trade.
+  - id: s4_ecological_sovereignty
+    description: Grid-intelligent system with strict ecological carrying-capacity constraints.
+  - id: s5_fiscal_conservative
+    description: Transition constrained by annual Kerala public-capital exposure.
+
+required_kpis:
+  - annual_import_share
+  - peak_import_mw
+  - critical_hour_autonomy
+  - hydro_energy_share
+  - renewable_energy_share
+  - storage_power_mw
+  - storage_energy_mwh
+  - flexible_demand_mw
+  - unserved_energy_mwh
+  - system_cost_inr
+  - kerala_public_cash_inr
+  - private_capex_inr
+  - lifecycle_co2e
+  - ecological_area_affected_km2
+  - circular_recovery_value_inr
+
+stress_tests:
+  - drought
+  - import_derating
+  - heatwave
+  - high_demand
+  - high_bess_cost
+  - major_grid_outage

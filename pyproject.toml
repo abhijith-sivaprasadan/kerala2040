@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kerala2040"
+version = "1.0.0"
+description = "Open modelling framework for Kerala 2040 energy sovereignty, ecological resilience and fiscal feasibility."
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+authors = [{name = "Abhijith Sivaprasadan"}]
+dependencies = [
+  "pandas>=2.2,<3",
+  "numpy>=2.0,<3",
+  "scipy>=1.14,<2",
+  "pyarrow>=17,<22",
+  "duckdb>=1.1,<2",
+  "xarray>=2024.9",
+  "pyyaml>=6,<7",
+  "requests>=2.32,<3",
+  "beautifulsoup4>=4.12,<5",
+  "lxml>=5,<7",
+  "xlrd>=2.0,<3",
+  "openpyxl>=3.1,<4",
+  "pypsa>=0.31,<2",
+  "highspy>=1.8,<2",
+  "pandapower>=2.14,<4",
+  "scikit-learn>=1.5,<2",
+  "matplotlib>=3.9,<4",
+  "plotly>=5.24,<7",
+]
+
+[project.optional-dependencies]
+geo = [
+  "geopandas>=1,<2",
+  "rasterio>=1.4,<2",
+  "shapely>=2,<3",
+  "rioxarray>=0.17,<1",
+]
+ml = [
+  "lightgbm>=4.5,<5",
+  "xgboost>=2.1,<4",
+  "optuna>=4,<5",
+  "shap>=0.46,<1",
+]
+dev = [
+  "pytest>=8,<9",
+  "ruff>=0.7,<1",
+  "pre-commit>=4,<5",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

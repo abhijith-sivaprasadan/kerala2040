@@ -1,0 +1,133 @@
+sources:
+  - id: kerala_sldc
+    organisation: Kerala State Load Despatch Centre
+    url: https://sldckerala.com/
+    priority: P0
+    use: [load, generation, imports, interface_flows, hydro, forecasting]
+    acquisition: public_portal_plus_request_if_history_missing
+
+  - id: kseb
+    organisation: Kerala State Electricity Board Limited
+    url: https://kseb.in/
+    priority: P0
+    use: [generation_assets, transmission, capex, annual_reports, grid_projects]
+
+  - id: cea
+    organisation: Central Electricity Authority
+    url: https://cea.nic.in/
+    priority: P0
+    use: [capacity, generation, demand, transmission, resource_adequacy, pumped_storage]
+
+  - id: kerala_spb
+    organisation: Kerala State Planning Board
+    url: https://spb.kerala.gov.in/
+    priority: P0
+    use: [economic_review, annual_energy_baseline, sectoral_context]
+
+  - id: carbon_neutral_kerala
+    organisation: Government of Kerala climate programme
+    url: https://climatechange.envt.kerala.gov.in/
+    priority: P0
+    use: [official_pathway_benchmark, resource_potential, scenario_assumptions]
+
+  - id: niti_iced
+    organisation: NITI Aayog India Climate and Energy Dashboard
+    url: https://iced.niti.gov.in/
+    priority: P1
+    use: [discovery, cross_check, hourly_demand, power_purchase, transport, buildings]
+
+  - id: imd
+    organisation: India Meteorological Department
+    url: https://mausam.imd.gov.in/
+    priority: P0
+    use: [rainfall, temperature, humidity, wind, observations]
+
+  - id: era5
+    organisation: Copernicus Climate Data Store
+    url: https://cds.climate.copernicus.eu/
+    priority: P1
+    use: [historical_weather, solar, wind, climate_hydro_features]
+
+  - id: nasa_power
+    organisation: NASA POWER
+    url: https://power.larc.nasa.gov/
+    priority: P1
+    use: [rapid_solar_weather_api]
+
+  - id: nex_gddp_cmip6
+    organisation: NASA Earth Exchange
+    url: https://www.earthdata.nasa.gov/
+    priority: P1
+    use: [2031_2050_climate_ensemble]
+
+  - id: india_wris
+    organisation: India-WRIS
+    url: https://indiawris.gov.in/
+    priority: P0
+    use: [reservoirs, storage, inflow, catchments]
+
+  - id: niwe
+    organisation: National Institute of Wind Energy
+    url: https://niwe.res.in/
+    priority: P1
+    use: [wind_resource, measurement_stations, technical_potential]
+
+  - id: bhuvan
+    organisation: NRSC/ISRO Bhuvan
+    url: https://bhuvan.nrsc.gov.in/
+    priority: P1
+    use: [lulc, dem, water, geomorphology, spatial_constraints]
+
+  - id: ksdma
+    organisation: Kerala State Disaster Management Authority
+    url: https://sdma.kerala.gov.in/
+    priority: P1
+    use: [flood, landslide, hazard_layers]
+
+  - id: kerala_forest
+    organisation: Kerala Forest and Wildlife Department
+    url: https://forest.kerala.gov.in/
+    priority: P1
+    use: [protected_areas, forest_constraints, biodiversity]
+
+  - id: kspcb
+    organisation: Kerala State Pollution Control Board
+    url: https://kspcb.kerala.gov.in/
+    priority: P1
+    use: [hazardous_waste, recyclers, industrial_waste_inventory]
+
+  - id: ppac
+    organisation: Petroleum Planning and Analysis Cell
+    url: https://ppac.gov.in/
+    priority: P1
+    use: [petroleum_product_sales, whole_energy_balance]
+
+  - id: vahan
+    organisation: Parivahan VAHAN
+    url: https://analytics.parivahan.gov.in/
+    priority: P1
+    use: [vehicle_fleet, fuel_type, ev_trajectory]
+
+  - id: kserc
+    organisation: Kerala State Electricity Regulatory Commission
+    url: https://dev.erckerala.org/
+    priority: P0
+    use: [tariff_orders, arr_erc, power_purchase_costs, approved_capex]
+
+  - id: kmml
+    organisation: Kerala Minerals and Metals Limited
+    url: https://www.kmml.com/
+    priority: P2
+    use: [material_flows, waste_recovery, circular_industry_case]
+
+  - id: ttpl
+    organisation: Travancore Titanium Products Limited
+    url: https://travancoretitanium.com/
+    priority: P2
+    use: [ferrous_streams, recovery_projects, circular_industry_case]
+
+  - id: fact
+    organisation: Fertilisers and Chemicals Travancore Limited
+    url: https://fact.co.in/
+    priority: P2
+    use: [co2, gypsum, industrial_symbiosis]
