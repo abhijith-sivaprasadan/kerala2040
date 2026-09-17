@@ -1,0 +1,65 @@
+name: One-time migrate Kerala 2040 staging snapshot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/migrate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download staging snapshot
+        env:
+          SNAPSHOT_URL: "https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-5574-8210-8f30-81c78973bfd8/raw?se=2026-09-17T19%3A53%3A44Z&sp=r&sv=2026-02-06&sr=b&scid=99b3940e-ccbb-5274-a2a3-bec078a1081f&skoid=e5e3659d-4463-4dbf-b2ce-ee32bc0a0a8d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-17T18%3A12%3A21Z&ske=2026-09-18T18%3A12%3A21Z&sks=b&skv=2026-02-06&sig=0d9I2FqHk2%2BHJygSt4ylJl93v/Xtsv5VlZ98U3wp4Q0%3D"
+        run: |
+          curl --fail --location "$SNAPSHOT_URL" --output /tmp/kerala2040.zip
+          mkdir -p /tmp/kerala2040
+          unzip -q /tmp/kerala2040.zip -d /tmp/kerala2040
+      - name: Replace staging paths and prepare public repository
+        run: |
+          rsync -a --delete --exclude='.git/' /tmp/kerala2040/ "$GITHUB_WORKSPACE/"
+          rm -f .github/workflows/export-repo.yml .github/workflows/migrate.yml
+          python - <<'PY'
+          from pathlib import Path
+          replacements = {
+              'https://github.com/abhijith-sivaprasadan/desktop-tutorial/tree/kerala-2040-bootstrap': 'https://github.com/abhijith-sivaprasadan/kerala2040',
+              'https://github.com/abhijith-sivaprasadan/desktop-tutorial': 'https://github.com/abhijith-sivaprasadan/kerala2040',
+              'kerala-2040-bootstrap': 'main',
+              'kerala-2040-web-v1': 'main',
+          }
+          for rel in ['README.md', 'CITATION.cff', 'docs/index.html', 'src/kerala2040/sources/http.py', '.github/workflows/grid-india-probe.yml', '.github/workflows/historical-baseline.yml', '.github/workflows/source-health.yml']:
+              p = Path(rel)
+              if not p.exists():
+                  continue
+              text = p.read_text()
+              for old, new in replacements.items():
+                  text = text.replace(old, new)
+              p.write_text(text)
+          p = Path('.github/workflows/pages.yml')
+          text = p.read_text().replace('      - kerala-2040-web-v1', '      - main')
+          text = text.replace('      - name: Configure or enable Pages\n        uses: actions/configure-pages@v5\n        with:\n          enablement: true\n', '      - name: Configure Pages\n        uses: actions/configure-pages@v5\n')
+          p.write_text(text)
+          p = Path('README.md')
+          text = p.read_text()
+          marker = '## v1.0 connected data layer\n'
+          dashboard = '## Public dashboard\n\nDashboard source lives in `docs/` and deploys through GitHub Pages.\n\n**https://abhijith-sivaprasadan.github.io/kerala2040/**\n\n'
+          if '## Public dashboard' not in text:
+              text = text.replace(marker, dashboard + marker)
+          p.write_text(text)
+          PY
+      - name: Commit migrated repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Migrate Kerala 2040 research platform and dashboard" || exit 0
+          git push origin main
