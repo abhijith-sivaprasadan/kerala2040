@@ -26,8 +26,10 @@ jobs:
           unzip -q /tmp/kerala2040.zip -d /tmp/kerala2040
       - name: Replace staging paths and prepare public repository
         run: |
-          rsync -a --delete --exclude='.git/' /tmp/kerala2040/ "$GITHUB_WORKSPACE/"
-          rm -f .github/workflows/export-repo.yml .github/workflows/migrate.yml
+          # GitHub's Actions token cannot create/update workflow files. Keep the
+          # target workflow directory intact here; the workflows are migrated
+          # separately through the GitHub connector after this data/code copy.
+          rsync -a --delete --exclude='.git/' --exclude='.github/workflows/' /tmp/kerala2040/ "$GITHUB_WORKSPACE/"
           python - <<'PY'
           from pathlib import Path
           replacements = {
@@ -36,7 +38,7 @@ jobs:
               'kerala-2040-bootstrap': 'main',
               'kerala-2040-web-v1': 'main',
           }
-          for rel in ['README.md', 'CITATION.cff', 'docs/index.html', 'src/kerala2040/sources/http.py', '.github/workflows/grid-india-probe.yml', '.github/workflows/historical-baseline.yml', '.github/workflows/source-health.yml']:
+          for rel in ['README.md', 'CITATION.cff', 'docs/index.html', 'src/kerala2040/sources/http.py']:
               p = Path(rel)
               if not p.exists():
                   continue
@@ -44,10 +46,6 @@ jobs:
               for old, new in replacements.items():
                   text = text.replace(old, new)
               p.write_text(text)
-          p = Path('.github/workflows/pages.yml')
-          text = p.read_text().replace('      - kerala-2040-web-v1', '      - main')
-          text = text.replace('      - name: Configure or enable Pages\n        uses: actions/configure-pages@v5\n        with:\n          enablement: true\n', '      - name: Configure Pages\n        uses: actions/configure-pages@v5\n')
-          p.write_text(text)
           p = Path('README.md')
           text = p.read_text()
           marker = '## v1.0 connected data layer\n'
