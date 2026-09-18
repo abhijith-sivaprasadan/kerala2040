@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Build the FY2024-25 Kerala hourly load proxy used for chronological model calibration."""
 
 from __future__ import annotations
