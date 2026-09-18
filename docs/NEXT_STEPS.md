@@ -38,10 +38,14 @@ slow and should not run whenever the interface changes.
    spatial exclusions. Hazard catalogues are not GIS overlays. Then implement
    S0/S2/S3 and compare reliability, imports, cost and sensitivity under common
    assumptions. Downloaded website specifications do not run the solver.
-6. **Choose the circular case and finance evidence.** Confirm KMML or TTPL,
+6. **Develop the selected KMML case and finance evidence.** KMML is confirmed;
    obtain quantities, chemistry, disposal costs, recovery costs and credible
    offtake. Separate commissioned recovery from planned projects. Specify Kerala,
    KSEBL, Union and private financing rather than assigning all costs to the state.
+
+See the [SLDC request draft](SLDC_DATA_REQUEST_DRAFT.md),
+[KMML case plan](KMML_CASE_PLAN.md) and [Energy Project review](ENERGYPROJECT_REVIEW.md).
+The study covers all of Kerala; atlas markers are illustrative, not a complete grid.
 
 ## Working locally
 

@@ -364,15 +364,18 @@ function getNodes() {
 
 function renderAtlas() {
   const nodes = getNodes();
+  const scope = state.data?.scope;
+  qs('#statewideScope').innerHTML = `<div><strong>Whole Kerala · statewide model</strong><p>${esc(scope?.initial_model || 'The initial aggregate model represents the entire Kerala electricity system.')}</p><details><summary>Districts within the study scope</summary><p>${esc((scope?.districts||[]).join(' · '))}</p><p>${esc(scope?.coverage_rule||'')}</p></details></div>`;
   const kinds = ['all',...new Set(nodes.map(x=>x.kind))];
   qs('#mapFilters').innerHTML = kinds.map(k=>`<button class="filter-chip ${state.mapKind===k?'active':''}" data-kind="${esc(k)}">${esc(k==='all'?'All':k)}</button>`).join('');
   if (!window.L || !nodes.length) {
     qs('#map').innerHTML='<div class="model-gate">Map tiles are unavailable. The screening-node catalogue remains available below.</div>';
     qs('#mapNodeList').innerHTML=nodes.map(node=>`<button class="node-button" data-node="${esc(node.name)}"><strong>${esc(node.name)}</strong><span>${esc(node.lat)}, ${esc(node.lon)}</span></button>`).join('');
-    selectMapNode(nodes[0],false); return;
+    qs('#mapDetail').innerHTML='<h2>Whole Kerala</h2><p>Choose a research location from the catalogue. The study covers the entire state.</p>'; return;
   }
   if (!state.map) {
-    state.map = L.map('map',{zoomControl:true,scrollWheelZoom:true}).setView([10.15,76.55],7);
+    state.map = L.map('map',{zoomControl:true,scrollWheelZoom:true});
+    state.map.fitBounds([[8.15,74.85],[12.85,77.5]],{padding:[12,12]});
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap contributors'}).addTo(state.map);
   }
   updateMapMarkers();
@@ -383,14 +386,15 @@ function updateMapMarkers(selected = null) {
   const nodes = getNodes();
   state.markers.forEach(m=>m.remove()); state.markers=[];
   const shown = nodes.filter(x=>state.mapKind==='all'||x.kind===state.mapKind);
-  const palette={grid:'#2f6ea4',storage:'#0b6f5d',wind:'#71933b',circular:'#b7791f',marine:'#2a879d'};
+  const palette={demand:'#2f6ea4',storage:'#0b6f5d',wind:'#71933b',circular:'#b7791f',marine:'#2a879d'};
   shown.forEach(node=>{
     const marker=L.circleMarker([node.lat,node.lon],{radius:8,color:'#fff',weight:2,fillColor:palette[node.kind]||'#667',fillOpacity:1}).addTo(state.map);
     marker.bindTooltip(node.name,{direction:'top'}); marker.on('click',()=>selectMapNode(node)); state.markers.push(marker);
   });
   qs('#mapCount').textContent=`${shown.length} screening node${shown.length===1?'':'s'}`;
-  qs('#mapNodeList').innerHTML=shown.map((node,i)=>`<button class="node-button ${selected?.name===node.name||(!selected&&i===0)?'active':''}" data-node="${esc(node.name)}"><strong>${esc(node.name)}</strong><span>${esc(node.kind)}</span></button>`).join('');
-  if (shown.length) selectMapNode(selected || shown[0], false);
+  qs('#mapNodeList').innerHTML=shown.map(node=>`<button class="node-button ${selected?.name===node.name?'active':''}" data-node="${esc(node.name)}"><strong>${esc(node.name)}</strong><span>${esc(node.kind)}</span></button>`).join('');
+  if (selected) selectMapNode(selected,false);
+  else qs('#mapDetail').innerHTML='<h2>Whole Kerala</h2><p>No city is selected by default. Choose a marker to inspect a research location.</p><p>The map is an initial catalogue. Validated transmission lines, substations and district demand layers still need to be added.</p>';
 }
 
 function selectMapNode(node, pan=true) {
@@ -406,7 +410,7 @@ function renderIndustry() {
   qs('#industryTabs').innerHTML = Object.entries(cases).map(([id,x])=>`<button data-industry="${esc(id)}" class="${state.industryCase===id?'active':''}">${esc(id.toUpperCase())}</button>`).join('');
   const x = cases[state.industryCase];
   if (!x) { qs('#industryCase').textContent='No sourced industrial cases are available.'; return; }
-  qs('#industryCase').innerHTML = `<h2>${esc(x.organisation || state.industryCase)}</h2><p>${esc(state.data.circular_industry.principle)}</p>${evidenceDetails('Observed or commissioned',x.observed_or_commissioned,true)}${evidenceDetails('Planned or under development',x.planned_or_development)}${evidenceDetails('Primary sources',x.sources,true)}<p class="chart-note">These are source records. A validated mass balance, costs and product offtake are still needed for a viable recovery case.</p>`;
+  qs('#industryCase').innerHTML = `<h2>${esc(x.organisation || state.industryCase)}</h2>${state.industryCase===state.data.circular_industry.primary_case?'<p><strong>Selected primary CET case study.</strong></p>':''}<p>${esc(state.data.circular_industry.principle)}</p>${x.limitation?`<p>${esc(x.limitation)}</p>`:''}${evidenceDetails('Research use',x.modelling_use)}${evidenceDetails('Observed or commissioned',x.observed_or_commissioned,true)}${evidenceDetails('Planned or under development',x.planned_or_development)}${evidenceDetails('Primary sources',x.sources,true)}<p class="chart-note">These are source records. A validated mass balance, costs and product offtake are still needed for a viable recovery case.</p>`;
 }
 
 function evidenceDetails(title, value, open=false) {

@@ -18,6 +18,14 @@ def test_published_bundle_is_consistent():
     site.validate_bundle(ROOT / "public")
 
 
+def test_scope_is_statewide_and_primary_case_is_kmml():
+    data = site.validate_bundle(ROOT / "public")
+    assert data["scope"]["scope"] == "statewide"
+    assert len(set(data["scope"]["districts"])) == 14
+    assert data["circular_industry"]["primary_case"] == "kmml"
+    assert all(node["kind"] != "grid" for node in data["screening_nodes"])
+
+
 def test_rejects_mixed_snapshots(tmp_path):
     shutil.copytree(ROOT / "public", tmp_path / "public")
     manifest = tmp_path / "public/site-data.json"

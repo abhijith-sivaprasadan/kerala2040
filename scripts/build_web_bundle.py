@@ -206,6 +206,7 @@ def main() -> int:
     non_electric_cfg = _load_yaml(root / "configs/non_electric_energy_references.yaml")
     ogd_cfg = _load_yaml(root / "configs/ogd_targets.yaml")
     ecology_cfg = _load_yaml(root / "configs/ecology_constraints.yaml")
+    scope_cfg = _load_yaml(root / "configs/research_scope.yaml")
 
     summary_path = root / "results/baseline/summary.json"
     summary = _load_json(summary_path)
@@ -341,6 +342,7 @@ def main() -> int:
     _write(out / "non-electric-energy.json", non_electric_cfg)
     _write(out / "ogd-targets.json", ogd_cfg)
     _write(out / "ecology-constraints.json", ecology_cfg)
+    _write(out / "research-scope.json", scope_cfg)
     metadata["files"].update(
         {
             "scenarios": "scenarios.json",
@@ -352,6 +354,7 @@ def main() -> int:
             "non_electric_energy": "non-electric-energy.json",
             "ogd_targets": "ogd-targets.json",
             "ecology_constraints": "ecology-constraints.json",
+            "research_scope": "research-scope.json",
         }
     )
 
@@ -406,8 +409,8 @@ def main() -> int:
             "name": "Kochi industrial-demand hub",
             "lat": 9.9312,
             "lon": 76.2673,
-            "kind": "grid",
-            "note": "Demand, industry, port and flexibility screening node.",
+            "kind": "demand",
+            "note": "Illustrative demand, industry and port research location. Not a grid boundary or the extent of the Kerala model.",
         },
         {
             "name": "Idukki hydro-storage system",
@@ -424,11 +427,11 @@ def main() -> int:
             "note": "Wind-resource screening area; ecology and grid constraints required.",
         },
         {
-            "name": "Chavara circular-industry cluster",
+            "name": "KMML / Chavara case-study area",
             "lat": 9.0,
             "lon": 76.53,
             "kind": "circular",
-            "note": "Mineral-sands, TiO2 and by-product recovery research cluster.",
+            "note": "Selected first circular-industry case: KMML. Approximate area marker, not a surveyed facility location; mass-flow and recovery economics still require evidence.",
         },
         {
             "name": "Vizhinjam coastal-energy node",
@@ -446,6 +449,7 @@ def main() -> int:
 
     site_manifest = {
         "metadata": metadata,
+        "scope": scope_cfg,
         "observed": observed_cfg,
         "cea_resource_adequacy": cea_cfg,
         "circular_industry": circular_cfg,

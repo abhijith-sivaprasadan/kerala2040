@@ -1,4 +1,6 @@
 version: 1
+primary_case: kmml
+selection_status: user_confirmed_2026_09_18
 classification: sourced_industrial_circularity_reference
 principle: >-
   A by-product or recovery claim enters the Kerala 2040 model only when its process origin,

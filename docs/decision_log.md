@@ -9,5 +9,13 @@ Record choices that materially change model interpretation.
 | 2026-09-17 | Treat ecology and public finance as constraints, not poster sidebars | A technically optimal portfolio may be spatially illegal or fiscally impossible | Research charter | After stakeholder/model review |
 | 2026-09-17 | Use KMML as first circular-industry prototype | Government-linked industrial stream with documented recovery/value-addition work | Issue #5 | Expand after first mass balance |
 
+## 18 September 2026 — user-confirmed scope
+
+- Whole Kerala, including all 14 districts, remains the research geography.
+  A single electrical bus is a statewide simplification, not a city boundary.
+- KMML at Chavara is the primary circular-industry case; TTPL and FACT are comparisons.
+- Atlas markers are illustrative. Kochi must not be labelled as the only grid or
+  selected by default as if it defines the study area.
+
 ## Rule
 A decision that affects results must not exist only in chat history. Put it here or in the relevant config/source record.
