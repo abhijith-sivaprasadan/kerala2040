@@ -1,0 +1,107 @@
+{
+  "classification": "proxy_reconstruction_not_measured_telemetry",
+  "period": "FY2024-25",
+  "timezone": "Asia/Kolkata",
+  "resolution": "1h",
+  "hours": 8760,
+  "daily_observations_measured": 354,
+  "daily_observations_interpolated": 11,
+  "interpolated_dates": [
+    "2024-08-12",
+    "2024-09-06",
+    "2024-09-20",
+    "2024-10-26",
+    "2024-11-17",
+    "2024-11-30",
+    "2024-12-16",
+    "2025-02-19",
+    "2025-03-05",
+    "2025-03-10",
+    "2025-03-17"
+  ],
+  "annual_energy_mu": 31625.42065,
+  "cea_reference_annual_energy_mu": 31624.0,
+  "annual_energy_difference_pct": 0.004492315962560154,
+  "peak_mw": 5894.178318527605,
+  "cea_reference_peak_mw": 5904.0,
+  "peak_difference_pct": -0.16635639350261908,
+  "shape": {
+    "afternoon_peak_hour_local": 15,
+    "night_peak_hour_local": 23,
+    "afternoon_amplitude": 0.43,
+    "night_amplitude": 0.39,
+    "fit_objective": 0.0015157623946965642
+  },
+  "duration_bins": [
+    {
+      "min_mw": 2000,
+      "max_mw": 2500,
+      "hours": 46,
+      "approximate_share_pct": 1,
+      "proxy_hours": 21,
+      "difference_hours": -25
+    },
+    {
+      "min_mw": 2500,
+      "max_mw": 3000,
+      "hours": 835,
+      "approximate_share_pct": 10,
+      "proxy_hours": 1350,
+      "difference_hours": 515
+    },
+    {
+      "min_mw": 3000,
+      "max_mw": 3500,
+      "hours": 2257,
+      "approximate_share_pct": 26,
+      "proxy_hours": 2808,
+      "difference_hours": 551
+    },
+    {
+      "min_mw": 3500,
+      "max_mw": 4000,
+      "hours": 2711,
+      "approximate_share_pct": 31,
+      "proxy_hours": 2367,
+      "difference_hours": -344
+    },
+    {
+      "min_mw": 4000,
+      "max_mw": 4500,
+      "hours": 1968,
+      "approximate_share_pct": 22,
+      "proxy_hours": 1527,
+      "difference_hours": -441
+    },
+    {
+      "min_mw": 4500,
+      "max_mw": 5000,
+      "hours": 629,
+      "approximate_share_pct": 7,
+      "proxy_hours": 443,
+      "difference_hours": -186
+    },
+    {
+      "min_mw": 5000,
+      "max_mw": 5500,
+      "hours": 290,
+      "approximate_share_pct": 3,
+      "proxy_hours": 208,
+      "difference_hours": -82
+    },
+    {
+      "min_mw": 5500,
+      "max_mw": 6000,
+      "hours": 24,
+      "approximate_share_pct": 0.3,
+      "proxy_hours": 36,
+      "difference_hours": 12
+    }
+  ],
+  "limitations": [
+    "Hourly values are reconstructed, not measured Kerala SLDC/KSEBL telemetry.",
+    "Eleven missing daily SLDC totals are time-interpolated and explicitly flagged.",
+    "CEA frequency bins are published aggregate validation constraints, not an ordered hourly series.",
+    "The two-peak intraday shape is a parsimonious calibration assumption, not direct metering evidence."
+  ]
+}

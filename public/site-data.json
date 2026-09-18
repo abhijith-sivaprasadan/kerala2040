@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "project": "Kerala 2040 — Open Energy Intelligence",
-    "generated_at_utc": "2026-09-18T16:39:00+00:00",
+    "project": "Kerala 2040 \u2014 Open Energy Intelligence",
+    "generated_at_utc": "2026-09-18T20:16:19+00:00",
     "research_repo": "https://github.com/abhijith-sivaprasadan/kerala2040",
     "web_repo": "https://github.com/kerala2040/kerala2040.github.io",
-    "git_sha": null,
+    "git_sha": "456aa0d59f1655cf62a6016e11836cc7f43de782",
     "model_year": 2040,
     "principle": "Energy sovereignty means retaining sufficient controllable generation, storage, flexible demand and infrastructure to withstand climate, hydrological and market shocks while using interstate trade strategically. It does not mean autarky or zero imports.",
     "status": {
@@ -26,12 +26,12 @@
       "reservoir_storage": {
         "available": true,
         "evidence": "measured",
-        "note": "Kerala SLDC reservoir-storage chronology. Prior acquisition; raw series is not included in the site."
+        "note": "Kerala SLDC reservoir-storage chronology."
       },
       "weather": {
         "available": true,
         "evidence": "measured/reanalysis",
-        "note": "NASA POWER representative-point hourly weather. Prior acquisition; raw series is not included in the site."
+        "note": "NASA POWER representative-point hourly weather."
       },
       "era5_reanalysis": {
         "available": true,
@@ -55,15 +55,20 @@
         "evidence": "official GIS catalog",
         "note": "6 KSDMA hazard download links catalogued."
       },
+      "kseb_historical_export": {
+        "available": true,
+        "evidence": "official KSEB export",
+        "note": "10 normalized historical series from the user-supplied KSEB export bundle. This adds annual capacity, generation, system-balance, network, consumer and loss history; it does not contain an hourly load chronology."
+      },
+      "hourly_load_proxy": {
+        "available": true,
+        "evidence": "proxy reconstruction",
+        "note": "8760-hour reconstruction constrained by SLDC daily energy and CEA aggregate hourly references; this is not measured telemetry."
+      },
       "hourly_state_load": {
         "available": false,
         "evidence": "gap",
         "note": "No authenticated FY2024-25 Kerala 8760/35040 state-load chronology is published in this bundle."
-      },
-      "kseb_historical_export": {
-        "available": true,
-        "evidence": "official KSEB export",
-        "note": "10 normalized historical series from the user-supplied KSEB export bundle: capacity, generation, annual balance, T&D losses, network, connected load, consumers, per-capita consumption, renewable-capacity snapshot and substation counts. No hourly/15-minute load chronology."
       }
     },
     "source_audit_summary": {
@@ -83,37 +88,42 @@
       "ogd_targets": "ogd-targets.json",
       "ecology_constraints": "ecology-constraints.json",
       "research_scope": "research-scope.json",
-      "kseb_projects": "kseb-projects.json",
-      "hazard_catalog": "hazard-catalog.json",
-      "era5_daily_manifest": "era5-daily-manifest.json",
-      "screening_nodes": "screening-nodes.json",
+      "kseb_history": "kseb-history.json",
+      "baseline_summary": "baseline-summary.json",
+      "hourly_load_proxy_summary": "hourly-load-proxy-summary.json",
       "daily_balance": "daily-balance.json",
       "monthly_balance": "monthly-balance.json",
       "import_duration": "import-duration.json",
-      "baseline_summary": "baseline-summary.json",
-      "source_audit": "source-audit.json",
-      "kseb_history": "kseb-history.json"
+      "screening_nodes": "screening-nodes.json",
+      "kseb_projects": "kseb-projects.json",
+      "hazard_catalog": "hazard-catalog.json",
+      "era5_daily_manifest": "era5-daily-manifest.json",
+      "source_audit": "source-audit.json"
     },
     "layer_provenance": {
       "sldc_daily": {
-        "preserved": true,
-        "evidence_bundle_at_utc": "2026-09-18T09:03:50+00:00"
+        "preserved": false,
+        "evidence_bundle_at_utc": "2026-09-18T20:16:19+00:00"
       },
       "kseb_project_inventory": {
-        "preserved": false,
+        "preserved": true,
         "evidence_bundle_at_utc": "2026-09-18T14:50:28+00:00"
       },
       "hazard_layers": {
-        "preserved": false,
+        "preserved": true,
         "evidence_bundle_at_utc": "2026-09-18T14:50:28+00:00"
       },
       "era5_reanalysis": {
-        "preserved": false,
+        "preserved": true,
         "evidence_bundle_at_utc": "2026-09-18T14:50:28+00:00"
       },
       "grid_india_psp": {
         "preserved": false,
-        "evidence_bundle_at_utc": "2026-09-18T14:50:28+00:00"
+        "evidence_bundle_at_utc": "2026-09-18T20:16:19+00:00"
+      },
+      "hourly_load_proxy": {
+        "preserved": false,
+        "evidence_bundle_at_utc": "2026-09-18T20:16:19+00:00"
       },
       "source_audit": {
         "preserved": true,
@@ -523,7 +533,7 @@
       "source_url": "https://ppac.gov.in/download.php?file=rep_studies%2F1723691385_PPAC-Oil-and-Gas-Snapshot-14-aug-2024-v4_compressed.pdf",
       "monthly_average_consumption": {
         "pol_tmt": 562.7,
-        "petrol_tmt": 157,
+        "petrol_tmt": 157.0,
         "diesel_tmt": 197.8,
         "lpg_tmt": 90.7,
         "cng_mmscm": 5.34
@@ -743,9 +753,31 @@
       }
     }
   },
+  "kseb_history": {
+    "classification": "official_kseb_export_user_supplied",
+    "received_date": "2026-09-18",
+    "validation": {
+      "installed_capacity_2024_25_mw": 4412.09,
+      "economic_review_reference_mw": 4412.14,
+      "difference_mw": -0.05
+    },
+    "series_available": [
+      "annual_energy_balance",
+      "annual_generation",
+      "connected_load",
+      "installed_capacity",
+      "network",
+      "per_capita_consumption",
+      "renewable_capacity_snapshot",
+      "substation_counts",
+      "td_loss",
+      "total_consumers"
+    ]
+  },
   "baseline": {
     "aggregate_import_share": 0.7381082853969048,
     "aggregate_internal_share": 0.26189173742948724,
+    "aggregation_scope": "observed_days_only",
     "balance_tolerance_mu": 0.05,
     "calibration_gate_pass": true,
     "consumption_twh": 30.6662569,
@@ -756,10 +788,13 @@
     "expected_days": 365,
     "expected_end": "2025-03-31",
     "expected_start": "2024-04-01",
+    "gate_scope": "daily_coverage_and_accounting_only",
+    "hourly_model_calibrated": false,
     "hydro_generation_twh": 7.214471,
     "hydro_share_consumption": 0.23525763263269342,
     "hydro_share_internal_generation": 0.898301087853278,
     "internal_generation_twh": 8.031239300000001,
+    "invalid_rows": 0,
     "max_abs_balance_error_mu": 0.00010000000000331966,
     "minimum_coverage": 0.95,
     "missing_days": [
@@ -784,9 +819,114 @@
     "storage_pct_energy_weighted_max": 73.52428136051557,
     "storage_pct_energy_weighted_median": 64.18740251201979,
     "storage_pct_energy_weighted_min": 24.568371892159274,
-    "gate_scope": "daily_coverage_and_accounting_only",
-    "hourly_model_calibrated": false,
-    "aggregation_scope": "observed_days_only"
+    "hourly_load_proxy_available": true
+  },
+  "hourly_load_proxy": {
+    "classification": "proxy_reconstruction_not_measured_telemetry",
+    "period": "FY2024-25",
+    "timezone": "Asia/Kolkata",
+    "resolution": "1h",
+    "hours": 8760,
+    "daily_observations_measured": 354,
+    "daily_observations_interpolated": 11,
+    "interpolated_dates": [
+      "2024-08-12",
+      "2024-09-06",
+      "2024-09-20",
+      "2024-10-26",
+      "2024-11-17",
+      "2024-11-30",
+      "2024-12-16",
+      "2025-02-19",
+      "2025-03-05",
+      "2025-03-10",
+      "2025-03-17"
+    ],
+    "annual_energy_mu": 31625.42065,
+    "cea_reference_annual_energy_mu": 31624.0,
+    "annual_energy_difference_pct": 0.004492315962560154,
+    "peak_mw": 5894.178318527605,
+    "cea_reference_peak_mw": 5904.0,
+    "peak_difference_pct": -0.16635639350261908,
+    "shape": {
+      "afternoon_peak_hour_local": 15,
+      "night_peak_hour_local": 23,
+      "afternoon_amplitude": 0.43,
+      "night_amplitude": 0.39,
+      "fit_objective": 0.0015157623946965642
+    },
+    "duration_bins": [
+      {
+        "min_mw": 2000,
+        "max_mw": 2500,
+        "hours": 46,
+        "approximate_share_pct": 1,
+        "proxy_hours": 21,
+        "difference_hours": -25
+      },
+      {
+        "min_mw": 2500,
+        "max_mw": 3000,
+        "hours": 835,
+        "approximate_share_pct": 10,
+        "proxy_hours": 1350,
+        "difference_hours": 515
+      },
+      {
+        "min_mw": 3000,
+        "max_mw": 3500,
+        "hours": 2257,
+        "approximate_share_pct": 26,
+        "proxy_hours": 2808,
+        "difference_hours": 551
+      },
+      {
+        "min_mw": 3500,
+        "max_mw": 4000,
+        "hours": 2711,
+        "approximate_share_pct": 31,
+        "proxy_hours": 2367,
+        "difference_hours": -344
+      },
+      {
+        "min_mw": 4000,
+        "max_mw": 4500,
+        "hours": 1968,
+        "approximate_share_pct": 22,
+        "proxy_hours": 1527,
+        "difference_hours": -441
+      },
+      {
+        "min_mw": 4500,
+        "max_mw": 5000,
+        "hours": 629,
+        "approximate_share_pct": 7,
+        "proxy_hours": 443,
+        "difference_hours": -186
+      },
+      {
+        "min_mw": 5000,
+        "max_mw": 5500,
+        "hours": 290,
+        "approximate_share_pct": 3,
+        "proxy_hours": 208,
+        "difference_hours": -82
+      },
+      {
+        "min_mw": 5500,
+        "max_mw": 6000,
+        "hours": 24,
+        "approximate_share_pct": 0.3,
+        "proxy_hours": 36,
+        "difference_hours": 12
+      }
+    ],
+    "limitations": [
+      "Hourly values are reconstructed, not measured Kerala SLDC/KSEBL telemetry.",
+      "Eleven missing daily SLDC totals are time-interpolated and explicitly flagged.",
+      "CEA frequency bins are published aggregate validation constraints, not an ordered hourly series.",
+      "The two-peak intraday shape is a parsimonious calibration assumption, not direct metering evidence."
+    ]
   },
   "scenarios": [
     {
@@ -880,7 +1020,7 @@
         "induction_cooking_demand_mu": 415,
         "final_demand_without_td_losses_mu": 42147,
         "final_demand_with_td_losses_mu": 45519,
-        "td_loss_pct": 8,
+        "td_loss_pct": 8.0,
         "peak_demand_mw": 7594,
         "off_peak_demand_mw": 3169
       },
@@ -978,10 +1118,26 @@
       ],
       "note": "The project-management portal is reachable even when the main kseb.in site is not. Its tracker landing page carries an older data-as-of label, so project dates are treated as project records rather than a guaranteed current operational snapshot."
     },
+    "kseb_historical_export": {
+      "priority": "P0",
+      "organisation": "Kerala State Electricity Board Ltd",
+      "acquisition": "user_supplied_official_export",
+      "use": [
+        "installed_capacity_history",
+        "annual_generation_history",
+        "annual_energy_balance",
+        "peak_demand_history",
+        "td_loss_history",
+        "network_growth",
+        "consumer_growth"
+      ],
+      "note": "Official KSEB table/chart exports supplied by the project author on 2026-09-18. Values are stored as exported and used as historical evidence; the bundle does not contain Kerala's raw hourly or 15-minute state-load chronology."
+    },
     "cea": {
       "priority": "P0",
       "organisation": "Central Electricity Authority",
       "home": "https://cea.nic.in/",
+      "daily_power_supply_position": "https://cea.nic.in/pdm_genreview/daily-power-supply-position-report/?lang=en",
       "acquisition": "official_pdf_xls_csv",
       "use": [
         "capacity",
@@ -989,9 +1145,10 @@
         "demand",
         "transmission",
         "resource_adequacy",
-        "pumped_storage"
+        "pumped_storage",
+        "daily_power_supply_cross_check"
       ],
-      "note": "CEA publications are used for national/state cross-checks and planning benchmarks, not to replace more granular Kerala SLDC observations."
+      "note": "CEA publications are used for national/state cross-checks and planning benchmarks, not to replace more granular Kerala SLDC observations. The official Daily Power Supply Position route is retained as a fallback cross-check when Grid-India's file API is unavailable from automated runners."
     },
     "kserc": {
       "priority": "P0",
@@ -1228,21 +1385,6 @@
         "industrial_symbiosis"
       ],
       "note": "Candidate industrial-symbiosis source for post-baseline expansion."
-    },
-    "kseb_historical_export": {
-      "priority": "P0",
-      "organisation": "Kerala State Electricity Board Ltd",
-      "acquisition": "user_supplied_official_export",
-      "use": [
-        "installed_capacity_history",
-        "annual_generation_history",
-        "annual_energy_balance",
-        "peak_demand_history",
-        "td_loss_history",
-        "network_growth",
-        "consumer_growth"
-      ],
-      "note": "Official KSEB table/chart exports supplied by the project author on 2026-09-18. Values are stored as exported and used as historical evidence; the bundle does not contain Kerala's raw hourly or 15-minute state-load chronology."
     }
   },
   "source_audit": {
@@ -2250,7 +2392,7 @@
     },
     {
       "name": "KMML / Chavara case-study area",
-      "lat": 9,
+      "lat": 9.0,
       "lon": 76.53,
       "kind": "circular",
       "note": "Selected first circular-industry case: KMML. Approximate area marker, not a surveyed facility location; mass-flow and recovery economics still require evidence."
@@ -2262,26 +2404,5 @@
       "kind": "marine",
       "note": "Port, wave-energy history, shore-power and marine-resource screening node."
     }
-  ],
-  "kseb_history": {
-    "classification": "official_kseb_export_user_supplied",
-    "received_date": "2026-09-18",
-    "validation": {
-      "installed_capacity_2024_25_mw": 4412.09,
-      "economic_review_reference_mw": 4412.14,
-      "difference_mw": -0.05
-    },
-    "series_available": [
-      "annual_energy_balance",
-      "annual_generation",
-      "connected_load",
-      "installed_capacity",
-      "network",
-      "per_capita_consumption",
-      "renewable_capacity_snapshot",
-      "substation_counts",
-      "td_loss",
-      "total_consumers"
-    ]
-  }
+  ]
 }

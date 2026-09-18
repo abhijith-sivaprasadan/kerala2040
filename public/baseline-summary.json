@@ -1,6 +1,7 @@
 {
   "aggregate_import_share": 0.7381082853969048,
   "aggregate_internal_share": 0.26189173742948724,
+  "aggregation_scope": "observed_days_only",
   "balance_tolerance_mu": 0.05,
   "calibration_gate_pass": true,
   "consumption_twh": 30.6662569,
@@ -11,10 +12,13 @@
   "expected_days": 365,
   "expected_end": "2025-03-31",
   "expected_start": "2024-04-01",
+  "gate_scope": "daily_coverage_and_accounting_only",
+  "hourly_model_calibrated": false,
   "hydro_generation_twh": 7.214471,
   "hydro_share_consumption": 0.23525763263269342,
   "hydro_share_internal_generation": 0.898301087853278,
   "internal_generation_twh": 8.031239300000001,
+  "invalid_rows": 0,
   "max_abs_balance_error_mu": 0.00010000000000331966,
   "minimum_coverage": 0.95,
   "missing_days": [
@@ -39,7 +43,5 @@
   "storage_pct_energy_weighted_max": 73.52428136051557,
   "storage_pct_energy_weighted_median": 64.18740251201979,
   "storage_pct_energy_weighted_min": 24.568371892159274,
-  "gate_scope": "daily_coverage_and_accounting_only",
-  "hourly_model_calibrated": false,
-  "aggregation_scope": "observed_days_only"
+  "hourly_load_proxy_available": true
 }
