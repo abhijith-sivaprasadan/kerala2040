@@ -180,7 +180,9 @@ def build_energy_reconciliation(
         )
 
     return {
-        "classification": "accounting_reconciliation",
+        "classification": "derived",
+        "source_type": "accounting_reconciliation",
+        "source": "Kerala SLDC + Kerala State Planning Board/KSEBL Economic Review 2025 + CEA Resource Adequacy Plan",
         "period": observed.get("period", "FY2024-25"),
         "rows": rows,
         "checks": {
