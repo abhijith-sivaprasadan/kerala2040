@@ -1,0 +1,82 @@
+name: publish-historical-artifact
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-historical-artifact.yml"
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: publish-historical-artifact
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - name: Download validated historical baseline artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: kerala-fy2024-25-historical-baseline
+          path: artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: abhijith-sivaprasadan/kerala2040
+          run-id: 35291324593
+
+      - name: Restore validated processed evidence
+        run: |
+          mkdir -p data/processed results/baseline figures/baseline
+          cp -a artifact/data/processed/. data/processed/
+          cp -a artifact/results/baseline/. results/baseline/
+          cp -a artifact/figures/baseline/. figures/baseline/
+
+      - name: Rebuild public data bundle
+        run: python scripts/build_web_bundle.py
+
+      - name: Verify connected evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          site = json.loads(Path("public/site-data.json").read_text())
+          status = site["metadata"]["status"]
+          assert status["sldc_daily"]["available"]
+          assert status["baseline_summary"]["available"]
+          assert status["reservoir_storage"]["available"]
+          assert status["weather"]["available"]
+          assert site["baseline"]["calibration_gate_pass"] is True
+          assert len(site["sources"]) >= 15
+          print("connected layers:", sum(bool(v.get("available")) for v in status.values()))
+          print("registered sources:", len(site["sources"]))
+          print("baseline rows:", site["baseline"]["rows"])
+          PY
+
+      - name: Commit rebuilt public evidence bundle
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/
+          if git diff --cached --quiet; then
+            echo "Public bundle is unchanged."
+          else
+            git commit -m "Publish connected FY2024-25 evidence [skip ci]"
+            git pull --rebase
+            git push
+          fi
