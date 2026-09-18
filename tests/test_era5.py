@@ -1,5 +1,5 @@
-from pathlib import Path
 import runpy
+from pathlib import Path
 
 _module = runpy.run_path(str(Path(__file__).resolve().parents[1] / "scripts" / "ingest_era5_points.py"))
 PERIODS = _module["PERIODS"]
