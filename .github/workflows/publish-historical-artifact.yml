@@ -40,12 +40,27 @@ jobs:
           repository: abhijith-sivaprasadan/kerala2040
           run-id: 35291324593
 
+      - name: Download extended source evidence artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: extended-source-evidence
+          path: extended-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: abhijith-sivaprasadan/kerala2040
+          run-id: 35291399282
+
       - name: Restore validated processed evidence
         run: |
-          mkdir -p data/processed results/baseline figures/baseline
+          mkdir -p data/processed results/baseline figures/baseline results
           cp -a artifact/data/processed/. data/processed/
           cp -a artifact/results/baseline/. results/baseline/
           cp -a artifact/figures/baseline/. figures/baseline/
+          if [ -d extended-artifact/data/processed ]; then
+            cp -a extended-artifact/data/processed/. data/processed/
+          fi
+          if [ -f extended-artifact/results/source_audit.json ]; then
+            cp extended-artifact/results/source_audit.json results/source_audit.json
+          fi
 
       - name: Rebuild public data bundle
         run: python scripts/build_web_bundle.py
@@ -61,6 +76,9 @@ jobs:
           assert status["baseline_summary"]["available"]
           assert status["reservoir_storage"]["available"]
           assert status["weather"]["available"]
+          assert status["hazard_layers"]["available"]
+          assert status["kseb_project_inventory"]["available"]
+          assert site["source_audit"] is not None
           assert site["baseline"]["calibration_gate_pass"] is True
           assert len(site["sources"]) >= 15
           print("connected layers:", sum(bool(v.get("available")) for v in status.values()))
