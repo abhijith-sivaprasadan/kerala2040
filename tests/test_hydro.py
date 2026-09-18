@@ -1,6 +1,10 @@
 import pandas as pd
 
-from kerala2040.hydro import build_hydro_daily, summarise_hydro
+from kerala2040.hydro import (
+    build_hydro_daily,
+    build_reservoir_level_diagnostics,
+    summarise_hydro,
+)
 
 
 def test_hydro_diagnostics_keep_observed_days_only():
@@ -32,3 +36,28 @@ def test_hydro_diagnostics_keep_observed_days_only():
     assert summary["classification"].startswith("derived_from_observed")
     assert summary["days"] == 3
     assert summary["correlations"]["imports_vs_hydro"] < 0
+
+
+
+def test_reservoir_level_diagnostics_are_contextual():
+    hydro = pd.DataFrame(
+        {
+            "date": pd.to_datetime(["2024-06-01", "2024-06-02", "2024-06-03"]),
+            "hydel_total_mu": [20.0, 22.0, 24.0],
+        }
+    )
+    reservoirs = pd.DataFrame(
+        {
+            "date": hydro["date"],
+            "reservoir": ["R1", "R1", "R1"],
+            "level_m": [90.0, 92.0, 94.0],
+            "min_drawdown_level_m": [80.0, 80.0, 80.0],
+            "full_level_m": [100.0, 100.0, 100.0],
+            "full_storage_mu": [500.0, 500.0, 500.0],
+        }
+    )
+    levels, summary = build_reservoir_level_diagnostics(hydro, reservoirs)
+
+    assert levels["normalised_level"].tolist() == [0.5, 0.6, 0.7]
+    assert summary[0]["reservoir"] == "R1"
+    assert "not plant-specific" in summary[0]["interpretation"]
