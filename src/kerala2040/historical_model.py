@@ -118,7 +118,9 @@ def build_daily_observed_replay(
     )
 
     network.meta = {
-        "classification": "observed_daily_replay_not_hourly_dispatch",
+        "classification": "derived",
+        "source_type": "observed_daily_replay",
+        "source": "Kerala SLDC system statistics + Kerala State Planning Board/KSEBL Economic Review 2025",
         "period": observed.get("period", "FY2024-25"),
         "observed_days": int(len(work)),
         "snapshot_duration_hours": 24,
@@ -146,7 +148,9 @@ def replay_energy_summary(network) -> dict[str, Any]:
         generators[name] = float((profile * p_nom * weights).sum())
 
     return {
-        "classification": "observed_daily_replay_energy_check",
+        "classification": "derived",
+        "source_type": "model_energy_check",
+        "source": "Kerala SLDC system statistics + Kerala State Planning Board/KSEBL Economic Review 2025",
         "load_mwh": load_mwh,
         "generator_energy_mwh": generators,
         "supply_mwh": float(sum(generators.values())),
