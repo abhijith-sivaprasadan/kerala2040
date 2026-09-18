@@ -62,6 +62,21 @@ def summarise_daily_baseline(
     if target_end < target_start:
         raise ValueError("expected_end must be on or after expected_start")
 
+    if not 0 < minimum_coverage <= 1 or balance_tolerance_mu < 0:
+        raise ValueError("Coverage must be in (0, 1] and balance tolerance nonnegative")
+    outside = ~data["date"].between(target_start, target_end)
+    if outside.any():
+        raise ValueError("Daily evidence contains invalid or out-of-period dates")
+    numeric = data[["consumption_mu", "internal_generation_mu", "net_import_interface_mu"]].apply(
+        pd.to_numeric, errors="coerce"
+    )
+    invalid_rows = ~np.isfinite(numeric).all(axis=1) | (numeric["consumption_mu"] <= 0)
+    # Recompute the identity; a stale parser-provided error must not pass the gate.
+    calculated_balance = (
+        numeric["internal_generation_mu"] + numeric["net_import_interface_mu"]
+        - numeric["consumption_mu"]
+    ).abs()
+
     expected_index = pd.date_range(target_start, target_end, freq="D")
     observed_index = pd.DatetimeIndex(data["date"].dropna().unique())
     missing_days = expected_index.difference(observed_index)
@@ -71,6 +86,8 @@ def summarise_daily_baseline(
     internal_mu = pd.to_numeric(data["internal_generation_mu"], errors="coerce").sum(min_count=1)
     imports_mu = pd.to_numeric(data["net_import_interface_mu"], errors="coerce").sum(min_count=1)
     balance = pd.to_numeric(data["balance_error_mu"], errors="coerce").abs()
+    invalid_rows |= ~np.isfinite(balance)
+    balance = pd.concat([balance, calculated_balance], axis=1).max(axis=1)
     max_balance_error = float(balance.max()) if balance.notna().any() else float("nan")
 
     summary: dict[str, Any] = {
@@ -84,6 +101,10 @@ def summarise_daily_baseline(
         "missing_days_count": len(missing_days),
         "missing_days": [stamp.date().isoformat() for stamp in missing_days],
         "duplicate_days": duplicate_days,
+        "invalid_rows": int(invalid_rows.sum()),
+        "gate_scope": "daily_coverage_and_accounting_only",
+        "hourly_model_calibrated": False,
+        "aggregation_scope": "observed_days_only",
         "consumption_twh": float(consumption_mu / 1000.0),
         "internal_generation_twh": float(internal_mu / 1000.0),
         "net_import_twh": float(imports_mu / 1000.0),
@@ -106,6 +127,7 @@ def summarise_daily_baseline(
     summary["calibration_gate_pass"] = bool(
         coverage >= minimum_coverage
         and duplicate_days == 0
+        and not invalid_rows.any()
         and finite_balance
         and max_balance_error <= balance_tolerance_mu
     )

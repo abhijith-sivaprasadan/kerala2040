@@ -54,3 +54,8 @@ venv/
 Thumbs.db
 .vscode/
 .idea/
+
+# Packaged dashboard
+_site/
+
+/data/processed/

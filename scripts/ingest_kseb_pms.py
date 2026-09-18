@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Capture the public KSEB project-management generation-project inventory."""
 
 from __future__ import annotations
@@ -6,9 +5,10 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -35,13 +35,13 @@ def _lines(html: str) -> list[str]:
 def parse_tracker(html: str) -> dict[str, Any]:
     text = "\n".join(_lines(html))
     data_as_of = None
-    match = re.search(r"Data as of\s+([^\n]+)", text, re.I)
+    match = re.search(r"Data as of\s+([^\n]+)", text, re.IGNORECASE)
     if match:
         data_as_of = match.group(1).strip()
-    ongoing = re.search(r"(\d+)\s+Ongoing Projects", text, re.I)
-    completed = re.search(r"(\d+)\s+Completed Projects", text, re.I)
-    added = re.search(r"Capacity Being Added\s+([\d.]+)\s*MW", text, re.I)
-    installed = re.search(r"Installed Capacity\s+([\d.]+)\s*MW", text, re.I)
+    ongoing = re.search(r"(\d+)\s+Ongoing Projects", text, re.IGNORECASE)
+    completed = re.search(r"(\d+)\s+Completed Projects", text, re.IGNORECASE)
+    added = re.search(r"Capacity Being Added\s+([\d.]+)\s*MW", text, re.IGNORECASE)
+    installed = re.search(r"Installed Capacity\s+([\d.]+)\s*MW", text, re.IGNORECASE)
     return {
         "data_as_of_label": data_as_of,
         "ongoing_projects": int(ongoing.group(1)) if ongoing else None,
@@ -52,11 +52,23 @@ def parse_tracker(html: str) -> dict[str, Any]:
 
 
 def parse_projects(html: str) -> list[dict[str, Any]]:
-    lines = _lines(html)
+    raw_lines = _lines(html)
+    lines = []
+    i = 0
+    # The portal puts technology/status and value/unit in separate HTML spans.
+    while i < len(raw_lines):
+        value = raw_lines[i]
+        next_value = raw_lines[i + 1] if i + 1 < len(raw_lines) else ""
+        if (value in {"Hydro", "Solar", "Wind", "Thermal"} and next_value in {"Ongoing", "Completed"}) or (re.fullmatch(r"[\d.]+", value) and next_value == "MW"):
+            lines.append(f"{value} {next_value}")
+            i += 2
+        else:
+            lines.append(value)
+            i += 1
     projects: list[dict[str, Any]] = []
     seen: set[str] = set()
-    state_re = re.compile(r"^(Hydro|Solar|Wind|Thermal)\s+(Ongoing|Completed)$", re.I)
-    cap_re = re.compile(r"^([\d.]+)\s*MW$", re.I)
+    state_re = re.compile(r"^(Hydro|Solar|Wind|Thermal)\s+(Ongoing|Completed)$", re.IGNORECASE)
+    cap_re = re.compile(r"^([\d.]+)\s*MW$", re.IGNORECASE)
 
     for i, line in enumerate(lines):
         state = state_re.match(line)
@@ -65,7 +77,8 @@ def parse_projects(html: str) -> list[dict[str, Any]]:
         name = lines[i - 1]
         if name in seen or name.lower() in {"generation projects", "project explorer"}:
             continue
-        block = lines[i + 1 : i + 18]
+        next_state = next((j for j in range(i + 1, len(lines)) if state_re.match(lines[j])), len(lines) + 1)
+        block = lines[i + 1 : next_state - 1]
         capacity = None
         district = None
         milestone = None
@@ -88,7 +101,7 @@ def parse_projects(html: str) -> list[dict[str, Any]]:
 
         for j, value in enumerate(block):
             low = value.lower()
-            if low.startswith("planned commissioning") or low.startswith("commissioned on"):
+            if low.startswith(("planned commissioning", "commissioned on")):
                 milestone = "planned_commissioning" if low.startswith("planned") else "commissioned_on"
                 suffix = value.split(" ", 2)
                 if len(suffix) >= 3 and any(ch.isdigit() for ch in suffix[-1]):
@@ -119,13 +132,28 @@ def main() -> int:
 
     tracker_html = _get(TRACKER)
     explorer_html = _get(EXPLORER)
+    pages = {EXPLORER}
+    projects = parse_projects(explorer_html)
+    for anchor in BeautifulSoup(explorer_html, "html.parser").select('a[href]'):
+        url = urljoin(EXPLORER, anchor["href"])
+        parsed = urlparse(url)
+        if parsed.netloc != urlparse(EXPLORER).netloc or parsed.path != "/explore-projects" or "page=" not in parsed.query:
+            continue
+        if url in pages:
+            continue
+        pages.add(url)
+        projects.extend(parse_projects(_get(url)))
+    projects = list({(p["name"], p["technology"]): p for p in projects}.values())
+    total = re.search(r"Showing\s+\d+\s+to\s+\d+\s+of\s+(\d+)", " ".join(_lines(explorer_html)))
     payload = {
-        "retrieved_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "retrieved_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
         "classification": "official_project_portal_record",
         "tracker_url": TRACKER,
         "explorer_url": EXPLORER,
         "tracker": parse_tracker(tracker_html),
-        "projects": parse_projects(explorer_html),
+        "projects": projects,
+        "pages_retrieved": len(pages),
+        "portal_reported_total": int(total.group(1)) if total else None,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2), encoding="utf-8")

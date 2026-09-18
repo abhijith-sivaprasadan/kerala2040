@@ -17,7 +17,10 @@ intelligent grids.
 
 Dashboard source lives in `docs/` and deploys through GitHub Pages.
 
-**https://abhijith-sivaprasadan.github.io/kerala2040/**
+**https://kerala2040.github.io/**
+
+See [next steps and the release workflow](docs/NEXT_STEPS.md).
+The site deploys a validated snapshot of `docs/` + `public/` from this repository.
 
 ## v1.0 connected data layer
 

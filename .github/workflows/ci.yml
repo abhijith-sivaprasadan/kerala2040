@@ -20,3 +20,10 @@ jobs:
         run: ruff check src tests scripts
       - name: Tests
         run: pytest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Dashboard contract tests
+        run: node --test tests/web.test.cjs
+      - name: Package dashboard
+        run: python scripts/build_site.py

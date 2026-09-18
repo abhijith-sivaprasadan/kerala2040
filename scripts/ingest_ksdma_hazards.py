@@ -1,13 +1,12 @@
-#!/usr/bin/env python
 """Build a download manifest for official KSDMA hazard-map layers."""
 
 from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -35,7 +34,8 @@ def main() -> int:
         href = urljoin(response.url, anchor["href"])
         label = " ".join(anchor.get_text(" ", strip=True).split())
         haystack = f"{label} {href}".lower()
-        if not any(word in haystack for word in KEYWORDS):
+        # Navigation contains "hazard" too; only catalogue actual download files.
+        if not any(word in haystack for word in KEYWORDS) or not urlparse(href).path.lower().endswith((".zip", ".pdf", ".kml", ".kmz", ".tif", ".shp")):
             continue
         if href in seen:
             continue
@@ -43,7 +43,7 @@ def main() -> int:
         records.append({"label": label or href.rsplit("/", 1)[-1], "url": href})
 
     payload = {
-        "retrieved_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "retrieved_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
         "classification": "official_hazard_download_catalog",
         "source_url": URL,
         "records": records,

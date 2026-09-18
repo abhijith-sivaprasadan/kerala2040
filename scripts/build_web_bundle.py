@@ -189,6 +189,14 @@ def main() -> int:
 
     root = args.root.resolve()
     out = (root / args.output).resolve() if not args.output.is_absolute() else args.output
+    # Independent acquisition jobs must not erase each other's published evidence.
+    previous = _load_json(out / "site-data.json") or {}
+    previous_meta = previous.get("metadata", {})
+    previous_files = {
+        key: (name, _load_json(out / name))
+        for key, name in previous_meta.get("files", {}).items()
+        if Path(name).name == name
+    }
     scenarios_cfg = _load_yaml(root / "configs/scenarios_2040.yaml")
     references_cfg = _load_yaml(root / "configs/published_2040_references.yaml")
     sources_cfg = _load_yaml(root / "configs/sources.yaml")
@@ -225,7 +233,7 @@ def main() -> int:
             daily_frame = daily_frame.merge(storage[keep], on="date", how="left")
 
     generated_at = datetime.now(UTC).replace(microsecond=0).isoformat()
-    git_sha = os.getenv("GITHUB_SHA") or os.getenv("GIT_COMMIT")
+    git_sha = os.getenv("GITHUB_SHA") or os.getenv("GIT_COMMIT") or previous_meta.get("git_sha")
     scenarios = _scenario_payload(scenarios_cfg)
 
     hazard_count = len((hazard_catalog or {}).get("records", []))
@@ -259,9 +267,10 @@ def main() -> int:
             "note": "NASA POWER representative-point hourly weather.",
         },
         "era5_reanalysis": {
-            "available": era5_manifest is not None,
+            "available": bool((era5_manifest or {}).get("files_succeeded", 0)),
+            "partial": bool(era5_manifest and era5_manifest.get("files_succeeded", 0) < era5_manifest.get("files_expected", 0)),
             "evidence": "reanalysis",
-            "note": "Copernicus ERA5 Kerala-domain daily climate manifest.",
+            "note": f"Copernicus ERA5 hourly acquisition: {(era5_manifest or {}).get('files_succeeded', 0)} / {(era5_manifest or {}).get('files_expected', 0)} expected files; manifest only on the website.",
         },
         "grid_india_psp": {
             "available": grid_records > 0,
@@ -273,10 +282,11 @@ def main() -> int:
             ),
         },
         "kseb_project_inventory": {
-            "available": kseb_projects is not None,
+            "available": project_count > 0,
+            "partial": bool(project_count and project_count < ((kseb_projects or {}).get("portal_reported_total") or project_count)),
             "evidence": "official project portal",
             "note": (
-                f"{project_count} detailed project records parsed from KSEB PMS."
+                f"{project_count} distinct project records parsed; portal lists {(kseb_projects or {}).get('portal_reported_total', 'unknown')} entries. Portal statuses and dates are retained as reported."
                 if project_count
                 else (
                     "KSEB PMS tracker summary is connected; detailed project-card parsing "
@@ -433,7 +443,6 @@ def main() -> int:
         {"classification": "research screening; not siting approval", "records": screening_nodes},
     )
     metadata["files"]["screening_nodes"] = "screening-nodes.json"
-    _write(out / "metadata.json", metadata)
 
     site_manifest = {
         "metadata": metadata,
@@ -454,6 +463,53 @@ def main() -> int:
         "era5": era5_manifest,
         "screening_nodes": screening_nodes,
     }
+    # Keep the acquisition time and published status of preserved layers explicit.
+    groups = [
+        ("sldc_daily", "baseline", ["daily_balance", "monthly_balance", "import_duration", "baseline_summary"]),
+        ("kseb_project_inventory", "kseb_projects", ["kseb_projects"]),
+        ("hazard_layers", "hazard_catalog", ["hazard_catalog"]),
+        ("era5_reanalysis", "era5", ["era5_daily_manifest"]),
+        ("grid_india_psp", None, ["grid_india_daily"]),
+        ("source_audit", "source_audit", ["source_audit"]),
+    ]
+    metadata["layer_provenance"] = {}
+    for layer, field, keys in groups:
+        missing = (daily_frame is None if layer == "sldc_daily" else
+                   not any(key in metadata["files"] for key in keys))
+        prior_keys = [key for key in keys if key in previous_files]
+        preserved = missing and bool(prior_keys)
+        if preserved:
+            for key in prior_keys:
+                name, payload = previous_files[key]
+                if payload is not None:
+                    _write(out / name, payload)
+                    metadata["files"][key] = name
+            if field:
+                site_manifest[field] = previous.get(field)
+            for status_key in ([layer, "baseline_summary"] if layer == "sldc_daily" else [layer]):
+                if status_key in previous_meta.get("status", {}):
+                    status[status_key] = previous_meta["status"][status_key]
+        prior_time = previous_meta.get("layer_provenance", {}).get(layer, {}).get(
+            "evidence_bundle_at_utc", previous_meta.get("generated_at_utc")
+        )
+        metadata["layer_provenance"][layer] = {
+            "preserved": preserved,
+            "evidence_bundle_at_utc": prior_time if preserved else generated_at,
+        }
+    # These acquisition products are stored as run artifacts, not public raw data.
+    for layer in ("weather", "reservoir_storage"):
+        if not status[layer]["available"] and previous_meta.get("status", {}).get(layer, {}).get("available"):
+            status[layer] = dict(previous_meta["status"][layer])
+            status[layer]["note"] = status[layer]["note"].split(" Prior acquisition;")[0] + " Prior acquisition; raw series is not included in the site."
+    if site_manifest.get("kseb_projects") is not None:
+        status["kseb_project_inventory"]["available"] = bool(site_manifest["kseb_projects"].get("projects"))
+    metadata["source_audit_summary"] = _source_audit_summary(site_manifest.get("source_audit"))
+    if site_manifest.get("baseline"):
+        site_manifest["baseline"].update({"gate_scope": "daily_coverage_and_accounting_only",
+                                        "hourly_model_calibrated": False,
+                                        "aggregation_scope": "observed_days_only"})
+        _write(out / "baseline-summary.json", site_manifest["baseline"])
+    _write(out / "metadata.json", metadata)
     _write(out / "site-data.json", site_manifest)
     print(
         json.dumps(

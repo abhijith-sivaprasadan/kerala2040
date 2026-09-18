@@ -2,25 +2,13 @@ name: historical-baseline
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "src/kerala2040/analysis.py"
-      - "src/kerala2040/sources/sldc.py"
-      - "src/kerala2040/sources/sldc_storage.py"
-      - "scripts/ingest_sldc_daily.py"
-      - "scripts/ingest_sldc_storage.py"
-      - "scripts/analyse_sldc_daily.py"
-      - "scripts/ingest_weather_grid.py"
-      - "scripts/build_web_bundle.py"
-      - "configs/scenarios_2040.yaml"
-      - "configs/published_2040_references.yaml"
-      - "configs/sources.yaml"
-      - ".github/workflows/historical-baseline.yml"
 
 permissions:
   contents: write
+
+concurrency:
+  group: public-evidence-publisher
+  cancel-in-progress: false
 
 jobs:
   fy2024-25:
@@ -57,11 +45,15 @@ jobs:
           --start 2024-04-01 --end 2025-03-31
           --minimum-coverage 0.95 --balance-tolerance-mu 0.05
           --fail-on-gate
+      - name: Refresh published evidence before merging this acquisition
+        if: always()
+        run: git pull --ff-only origin main
       - name: Build public web-data bundle
         if: always()
         run: python scripts/build_web_bundle.py
+      - name: Validate combined evidence
+        run: python scripts/build_site.py --check
       - name: Commit public web-data bundle
-        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

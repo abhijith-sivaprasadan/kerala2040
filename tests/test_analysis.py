@@ -1,6 +1,7 @@
 from datetime import date
 
 import pandas as pd
+import pytest
 
 from kerala2040.analysis import add_daily_indicators, summarise_daily_baseline
 
@@ -32,3 +33,17 @@ def test_summary_gate_and_units() -> None:
     assert summary["consumption_twh"] == 0.2
     assert summary["aggregate_import_share"] == 0.725
     assert summary["calibration_gate_pass"] is True
+
+
+def test_gate_rejects_missing_values_and_false_balance():
+    data = _frame()
+    data.loc[0, "consumption_mu"] = float("nan")
+    assert not summarise_daily_baseline(data)["calibration_gate_pass"]
+    data = _frame()
+    data.loc[0, "internal_generation_mu"] = 200
+    assert not summarise_daily_baseline(data)["calibration_gate_pass"]
+
+
+def test_rejects_out_of_period_energy():
+    with pytest.raises(ValueError, match="out-of-period"):
+        summarise_daily_baseline(_frame(), expected_start="2025-01-02")

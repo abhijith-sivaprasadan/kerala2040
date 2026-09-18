@@ -2,27 +2,13 @@ name: extended-source-ingestion
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "configs/sources.yaml"
-      - "configs/observed_2024_25.yaml"
-      - "src/kerala2040/sources/grid_india.py"
-      - "scripts/source_audit.py"
-      - "scripts/ingest_kseb_pms.py"
-      - "scripts/ingest_ksdma_hazards.py"
-      - "scripts/ingest_grid_india_psp.py"
-      - "scripts/ingest_era5_points.py"
-      - "scripts/build_web_bundle.py"
-      - ".github/workflows/extended-source-ingestion.yml"
 
 permissions:
   contents: write
 
 concurrency:
-  group: extended-source-ingestion
-  cancel-in-progress: true
+  group: public-evidence-publisher
+  cancel-in-progress: false
 
 jobs:
   ingest:
@@ -69,12 +55,16 @@ jobs:
           CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
         run: python scripts/ingest_era5_points.py
 
+      - name: Refresh published evidence before merging this acquisition
+        if: always()
+        run: git pull --ff-only origin main
       - name: Build public evidence bundle
         if: always()
         run: python scripts/build_web_bundle.py
 
+      - name: Validate combined evidence
+        run: python scripts/build_site.py --check
       - name: Commit public evidence bundle
-        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -83,7 +73,6 @@ jobs:
             echo "Public web bundle is unchanged."
           else
             git commit -m "Update extended source evidence [skip ci]"
-            git pull --rebase
             git push
           fi
 

@@ -1,68 +1,8 @@
 {
-  "retrieved_at_utc": "2026-09-18T00:31:10+00:00",
+  "retrieved_at_utc": "2026-09-18T09:48:55+00:00",
   "classification": "official_hazard_download_catalog",
   "source_url": "https://sdma.kerala.gov.in/hazard-maps/",
   "records": [
-    {
-      "label": "Skip to content",
-      "url": "https://sdma.kerala.gov.in/hazard-maps/#content"
-    },
-    {
-      "label": "DDMA",
-      "url": "https://sdma.kerala.gov.in/hazard-maps/"
-    },
-    {
-      "label": "Landslide Early Warning",
-      "url": "https://sdma.kerala.gov.in/landslide-early-warning/"
-    },
-    {
-      "label": "Coastal Erosion Monitoring System",
-      "url": "https://sdma.kerala.gov.in/coastal-erosion-monitoring-system/"
-    },
-    {
-      "label": "Urban Floods",
-      "url": "https://sdma.kerala.gov.in/urban-floods/"
-    },
-    {
-      "label": "Landslides 2018",
-      "url": "https://sdma.kerala.gov.in/landslides-2018/"
-    },
-    {
-      "label": "Landslides 2019",
-      "url": "https://sdma.kerala.gov.in/landslides-2019/"
-    },
-    {
-      "label": "Crowd Sourcing Flood 2018",
-      "url": "https://sdma.kerala.gov.in/crowd-sourcing-flood-2018/"
-    },
-    {
-      "label": "Thiruvambadi Landslide",
-      "url": "https://sdma.kerala.gov.in/thiruvambadi-landslide-preparedness/"
-    },
-    {
-      "label": "Drought Risk Reduction",
-      "url": "https://sdma.kerala.gov.in/drought-risk-reduction/"
-    },
-    {
-      "label": "Flood",
-      "url": "https://sdma.kerala.gov.in/flood-homescreen/"
-    },
-    {
-      "label": "Landslides 2024",
-      "url": "https://sdma.kerala.gov.in/landslides-2024/"
-    },
-    {
-      "label": "Reports \u2013 Landslides 2024",
-      "url": "https://sdma.kerala.gov.in/reports-landslides-2024/"
-    },
-    {
-      "label": "Landslides 2021",
-      "url": "https://sdma.kerala.gov.in/landslides-2021/"
-    },
-    {
-      "label": "Floods 2018",
-      "url": "https://sdma.kerala.gov.in/floods_2018/"
-    },
     {
       "label": "Flood Hazard Probability (based on Historic Data) Maps and Exposure of Schools and Hospitals in each district (PDFs)",
       "url": "https://sdma.kerala.gov.in/wp-content/uploads/2022/06/Flood-Probability-Report-2022_Final.pdf"
@@ -86,26 +26,6 @@
     {
       "label": "Click here for the PDF Map",
       "url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/06/Landslide_Susceptibility_Zones_Districts_FINAL.pdf"
-    },
-    {
-      "label": "Click here for the Map",
-      "url": "https://sdma.kerala.gov.in/wp-content/uploads/2018/10/KL-Drought-1.jpg"
-    },
-    {
-      "label": "Click here for the Map",
-      "url": "https://sdma.kerala.gov.in/wp-content/uploads/2018/10/Map-Coastal-Hazard-Susceptibility.jpg"
-    },
-    {
-      "label": "Click here for the Map",
-      "url": "https://sdma.kerala.gov.in/wp-content/uploads/2018/10/Map-Major-Industrial-Accident-Hazard-Zones.jpg"
-    },
-    {
-      "label": "Click here for the Map",
-      "url": "https://sdma.kerala.gov.in/wp-content/uploads/2018/10/Map-Major-Festival-Hazard.jpg"
-    },
-    {
-      "label": "#masthead",
-      "url": "https://sdma.kerala.gov.in/hazard-maps/#masthead"
     }
   ]
 }

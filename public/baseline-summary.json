@@ -38,5 +38,8 @@
   "storage_days": 354,
   "storage_pct_energy_weighted_max": 73.52428136051557,
   "storage_pct_energy_weighted_median": 64.18740251201979,
-  "storage_pct_energy_weighted_min": 24.568371892159274
+  "storage_pct_energy_weighted_min": 24.568371892159274,
+  "gate_scope": "daily_coverage_and_accounting_only",
+  "hourly_model_calibrated": false,
+  "aggregation_scope": "observed_days_only"
 }

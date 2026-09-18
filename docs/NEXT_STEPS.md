@@ -1,0 +1,66 @@
+# Kerala 2040: next research steps
+
+## What now works
+
+The research repository is the source of truth: `docs/` contains the interface and
+`public/` contains the dated evidence snapshot. `scripts/build_site.py` validates
+the manifest and packages both together. The website repository deploys that
+package on push, manual dispatch and a six-hour schedule. Browsers need no API
+keys and do not depend on raw.githubusercontent.com for research data.
+
+Independent ingestion jobs preserve previously published layers, identify retained
+evidence dates, validate the combined snapshot, and share one publishing lock.
+The historical artifact recovery workflow requires explicit run IDs rather than
+silently restoring a fixed old run. Full-year acquisition is manual because it is
+slow and should not run whenever the interface changes.
+
+## Your next actions, in order
+
+1. **Confirm the CET submission date and freeze the scope.** Make the first release
+   a defensible historical electricity balance, a constrained scenario design and
+   one sourced circular-industry case. Do not promise optimised 2040 results yet.
+2. **Obtain hourly or 15-minute demand and interchange for FY2024–25.** Request
+   timestamped Kerala demand, imports/exports, units, timezone, missing-data flags
+   and revision history from SLDC/KSEBL, with permission to use/publish derived
+   results. See [the data specification](hourly_demand_gap.md). Do not send secrets
+   or confidential utility data to the public repository.
+3. **Close the historical reconciliation.** The current snapshot has 354/365 days,
+   with 11 dates explicitly missing. Recover those dates or document their absence.
+   Reconcile SLDC system consumption, Economic Review sales and CEA requirement
+   using their actual accounting boundaries; do not scale a partial sum to an
+   annual result without an explicitly labelled estimation method.
+4. **Calibrate the chronological model.** Validate load, generation, imports,
+   peak behaviour, hydro energy and storage against history. Passing a daily
+   accounting identity does not satisfy this gate. The existing PyPSA model is
+   only a smoke test, not a completed Kerala capacity-expansion model.
+5. **Complete numerical constraints before solving scenarios.** Secure resource
+   profiles, technology costs, grid limits, hydro/water constraints and licensed
+   spatial exclusions. Hazard catalogues are not GIS overlays. Then implement
+   S0/S2/S3 and compare reliability, imports, cost and sensitivity under common
+   assumptions. Downloaded website specifications do not run the solver.
+6. **Choose the circular case and finance evidence.** Confirm KMML or TTPL,
+   obtain quantities, chemistry, disposal costs, recovery costs and credible
+   offtake. Separate commissioned recovery from planned projects. Specify Kerala,
+   KSEBL, Union and private financing rather than assigning all costs to the state.
+
+## Working locally
+
+Use Python 3.11 or 3.12. From the research repository:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
+python scripts/build_site.py --check
+python scripts/build_site.py --output _site
+python -m http.server 5173 --directory _site --bind 127.0.0.1
+```
+
+Open http://127.0.0.1:5173. Do not open index.html directly as a file: browsers
+restrict fetching JSON with file URLs. Edit the interface in the research repo,
+not independently in the generated website copy.
+
+Run `pytest`, `ruff check src tests scripts` and `node --test tests/web.test.cjs`
+before publishing. Run the manual historical/extended ingestion workflows when
+new acquisition is needed. External endpoint outages remain visible in source
+audits; reachability never proves that a dataset has been validated.
