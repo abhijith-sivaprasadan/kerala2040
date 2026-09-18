@@ -78,19 +78,21 @@ def build_renewable_profiles(weather: pd.DataFrame) -> tuple[pd.DataFrame, dict[
     grouped["timestamp_ist"] = grouped["timestamp_utc"].dt.tz_convert("Asia/Kolkata")
     counts = work.groupby("timestamp_utc").size().rename("points_available")
     grouped = grouped.merge(counts, on="timestamp_utc", how="left")
-    grouped["classification"] = "proxy"
+    grouped["classification"] = "modelled_resource_profile"
     grouped["source_type"] = "weather_derived_resource_profile"
     grouped["source"] = "NASA POWER representative-point hourly weather"
 
     summary = {
-        "classification": "proxy",
+        "classification": "modelled_resource_profile",
         "source_type": "weather_derived_resource_profile",
         "source": "NASA POWER representative-point hourly weather",
+        "source_url": "https://power.larc.nasa.gov/api/temporal/hourly/point",
         "source_components": [
             {
-                "classification": "reanalysis",
+                "classification": "remote_sensing_or_reanalysis",
                 "source_type": "reanalysis_remote_sensing",
                 "source": "NASA POWER representative-point hourly weather",
+                "source_url": "https://power.larc.nasa.gov/api/temporal/hourly/point",
             }
         ],
         "note": "Proxy renewable availability; not measured Kerala solar or wind generation.",

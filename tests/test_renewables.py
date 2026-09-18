@@ -22,6 +22,6 @@ def test_weather_profiles_are_bounded_and_labelled():
     assert profiles["solar_p_max_pu"].between(0, 1).all()
     assert profiles["wind_p_max_pu"].between(0, 1).all()
     assert profiles["points_available"].eq(2).all()
-    assert summary["classification"] == "proxy"
+    assert summary["classification"] == "modelled_resource_profile"
     assert "not measured" in summary["note"].lower()
     assert "NASA POWER" in summary["source"]

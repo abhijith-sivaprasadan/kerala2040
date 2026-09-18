@@ -1,6 +1,6 @@
 version: 1
-classification: catalogue_only
-source_type: gis_acquisition_and_processing_manifest
+classification: unresolved
+source_type: gis_catalogue_only
 source: Official agencies listed per layer
 note: Catalogue entries are not model-ready GIS data.
 rule: >-

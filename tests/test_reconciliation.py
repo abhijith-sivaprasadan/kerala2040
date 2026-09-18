@@ -36,5 +36,8 @@ def test_reconciliation_keeps_boundaries_explicit():
     assert rows["implied_energy_input_minus_sales"]["value_mu"] == 10.0
     assert result["checks"]["implied_energy_input_minus_sales_pct"] == 10.0
     assert rows["gross_import_minus_exports_arithmetic"]["classification"] == (
-        "derived_noncanonical_cross_check"
+        "derived_from_measured"
+    )
+    assert "Not treated as canonical net imports" in (
+        rows["gross_import_minus_exports_arithmetic"]["note"]
     )

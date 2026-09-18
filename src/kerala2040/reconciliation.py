@@ -40,7 +40,7 @@ def build_energy_reconciliation(
     add(
         "sldc_consumption_observed_days",
         baseline_summary["consumption_twh"] * 1000.0,
-        "derived_from_measured_daily",
+        "derived_from_measured",
         "SLDC system consumption; observed archive days only",
         "Kerala SLDC",
         "daily_system_balance",
@@ -48,7 +48,7 @@ def build_energy_reconciliation(
     add(
         "sldc_internal_generation_observed_days",
         baseline_summary["internal_generation_twh"] * 1000.0,
-        "derived_from_measured_daily",
+        "derived_from_measured",
         "SLDC internal generation; observed archive days only",
         "Kerala SLDC",
         "daily_system_balance",
@@ -56,7 +56,7 @@ def build_energy_reconciliation(
     add(
         "sldc_net_import_observed_days",
         baseline_summary["net_import_twh"] * 1000.0,
-        "derived_from_measured_daily",
+        "derived_from_measured",
         "SLDC net interface import; observed archive days only",
         "Kerala SLDC",
         "daily_system_balance",
@@ -147,7 +147,7 @@ def build_energy_reconciliation(
     add(
         "implied_energy_input_minus_sales",
         implied_loss_mu,
-        "derived_accounting_check",
+        "derived_from_measured",
         "Total energy input minus annual sales/open access",
         "Derived from Kerala Economic Review 2025 values",
         "loss_reconciliation",
@@ -161,7 +161,7 @@ def build_energy_reconciliation(
     add(
         "gross_import_minus_exports_arithmetic",
         gross_minus_exports,
-        "derived_noncanonical_cross_check",
+        "derived_from_measured",
         "Gross import minus reported exports",
         "Derived from Kerala Economic Review 2025 values",
         "external_energy",
@@ -180,9 +180,14 @@ def build_energy_reconciliation(
         )
 
     return {
-        "classification": "derived",
+        "classification": "derived_from_measured",
         "source_type": "accounting_reconciliation",
         "source": "Kerala SLDC + Kerala State Planning Board/KSEBL Economic Review 2025 + CEA Resource Adequacy Plan",
+        "source_urls": [
+            "https://sldckerala.com/index.php?id=1",
+            "https://spb.kerala.gov.in/economic-review/ER2025/index.php",
+            "https://cea.nic.in/resource_adequacy_st/report-on-resource-adequacy-plan-for-kerala-up-to-2035-36/",
+        ],
         "period": observed.get("period", "FY2024-25"),
         "rows": rows,
         "checks": {

@@ -33,11 +33,10 @@ def test_hydro_diagnostics_keep_observed_days_only():
         "southwest_monsoon",
         "post_monsoon",
     }
-    assert summary["classification"] == "derived"
+    assert summary["classification"] == "derived_from_measured"
     assert "Kerala SLDC" in summary["source"]
     assert summary["days"] == 3
     assert summary["correlations"]["imports_vs_hydro"] < 0
-
 
 
 def test_reservoir_level_diagnostics_are_contextual():
