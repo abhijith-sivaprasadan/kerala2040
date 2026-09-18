@@ -24,7 +24,10 @@ def main() -> int:
         "--baseline-summary", type=Path, default=Path("results/baseline/summary.json")
     )
     parser.add_argument(
-        "--proxy-summary", type=Path, default=Path("public/hourly-load-proxy-summary.json")
+        "--proxy-summary",
+        type=Path,
+        default=None,
+        help="Optional synthetic/proxy comparison. Excluded by default from observed reconciliation.",
     )
     parser.add_argument("--output-dir", type=Path, default=Path("results/reconciliation"))
     args = parser.parse_args()
@@ -38,7 +41,7 @@ def main() -> int:
     baseline = json.loads(args.baseline_summary.read_text(encoding="utf-8"))
     proxy = (
         json.loads(args.proxy_summary.read_text(encoding="utf-8"))
-        if args.proxy_summary.exists()
+        if args.proxy_summary is not None and args.proxy_summary.exists()
         else None
     )
 
