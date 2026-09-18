@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 from pathlib import Path
@@ -46,6 +47,15 @@ def build_site(root: Path, output: Path) -> None:
     for name in ("index.html", "manifest.webmanifest", "robots.txt"):
         shutil.copy2(root / "docs" / name, output / name)
     shutil.copytree(root / "docs/assets", output / "assets", dirs_exist_ok=True)
+    # Immutable filenames prevent a new HTML page from running an old cached app.
+    html = (output / "index.html").read_text(encoding="utf-8")
+    for name in ("app.js", "styles.css", "platform.css"):
+        asset = root / "docs/assets" / name
+        digest = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
+        versioned = f"{asset.stem}.{digest}{asset.suffix}"
+        shutil.copy2(asset, output / "assets" / versioned)
+        html = html.replace(f"assets/{name}", f"assets/{versioned}")
+    (output / "index.html").write_text(html, encoding="utf-8")
     shutil.copytree(root / "public", output / "data", dirs_exist_ok=True)
     (output / ".nojekyll").touch()
 

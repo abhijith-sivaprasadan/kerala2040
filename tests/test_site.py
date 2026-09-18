@@ -32,6 +32,9 @@ def test_packaged_site_has_every_advertised_download(tmp_path):
     site.build_site(ROOT, tmp_path)
     data = site.validate_bundle(tmp_path / "data")
     assert (tmp_path / "assets/app.js").exists()
+    html = (tmp_path / "index.html").read_text(encoding="utf-8")
+    assert 'src="assets/app.js"' not in html
+    assert any(p.name in html for p in (tmp_path / "assets").glob("app.*.js"))
     assert all((tmp_path / "data" / name).exists() for name in data["metadata"]["files"].values())
 
 
