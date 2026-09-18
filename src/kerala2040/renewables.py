@@ -78,11 +78,22 @@ def build_renewable_profiles(weather: pd.DataFrame) -> tuple[pd.DataFrame, dict[
     grouped["timestamp_ist"] = grouped["timestamp_utc"].dt.tz_convert("Asia/Kolkata")
     counts = work.groupby("timestamp_utc").size().rename("points_available")
     grouped = grouped.merge(counts, on="timestamp_utc", how="left")
-    grouped["classification"] = "weather_derived_resource_profile_not_measured_generation"
+    grouped["classification"] = "proxy"
+    grouped["source_type"] = "weather_derived_resource_profile"
+    grouped["source"] = "NASA POWER representative-point hourly weather"
 
     summary = {
-        "classification": "weather_derived_resource_profile_not_measured_generation",
-        "source_family": "NASA POWER representative points",
+        "classification": "proxy",
+        "source_type": "weather_derived_resource_profile",
+        "source": "NASA POWER representative-point hourly weather",
+        "source_components": [
+            {
+                "classification": "reanalysis",
+                "source_type": "reanalysis_remote_sensing",
+                "source": "NASA POWER representative-point hourly weather",
+            }
+        ],
+        "note": "Proxy renewable availability; not measured Kerala solar or wind generation.",
         "hours": int(len(grouped)),
         "period_start_utc": (
             grouped["timestamp_utc"].min().isoformat() if not grouped.empty else None
