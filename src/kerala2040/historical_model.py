@@ -6,8 +6,6 @@ system energy as average MW over 24-hour weighted snapshots.
 
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 import pandas as pd
 
@@ -23,7 +21,7 @@ _REQUIRED = {
 
 def build_daily_observed_replay(
     daily: pd.DataFrame,
-    observed: dict[str, Any],
+    observed: dict[str, object],
 ):
     """Build a fixed-profile PyPSA network from observed SLDC daily energy."""
     import pypsa
@@ -122,7 +120,7 @@ def build_daily_observed_replay(
         "source_type": "observed_daily_replay",
         "source": "Kerala SLDC system statistics + Kerala State Planning Board/KSEBL Economic Review 2025",
         "period": observed.get("period", "FY2024-25"),
-        "observed_days": int(len(work)),
+        "observed_days": len(work),
         "snapshot_duration_hours": 24,
         "import_p_nom_role": "normalisation_only_not_transfer_capability",
         "hourly_telemetry_used": False,
@@ -133,7 +131,7 @@ def build_daily_observed_replay(
     return network
 
 
-def replay_energy_summary(network) -> dict[str, Any]:
+def replay_energy_summary(network) -> dict[str, object]:
     """Report energy represented by fixed profiles before/after optimisation."""
     weights = network.snapshot_weightings["generators"]
     load_weights = network.snapshot_weightings["objective"]
