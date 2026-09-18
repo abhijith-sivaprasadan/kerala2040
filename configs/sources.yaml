@@ -71,11 +71,14 @@ sources:
     priority: P0
     organisation: Central Electricity Authority
     home: https://cea.nic.in/
+    daily_power_supply_position: https://cea.nic.in/pdm_genreview/daily-power-supply-position-report/?lang=en
     acquisition: official_pdf_xls_csv
-    use: [capacity, generation, demand, transmission, resource_adequacy, pumped_storage]
+    use: [capacity, generation, demand, transmission, resource_adequacy, pumped_storage, daily_power_supply_cross_check]
     note: >-
       CEA publications are used for national/state cross-checks and planning benchmarks,
-      not to replace more granular Kerala SLDC observations.
+      not to replace more granular Kerala SLDC observations. The official Daily Power
+      Supply Position route is retained as a fallback cross-check when Grid-India's
+      file API is unavailable from automated runners.
 
   kserc:
     priority: P0
