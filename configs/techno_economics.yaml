@@ -1,5 +1,7 @@
 version: 2
-classification: sourced_benchmark_registry_not_final_model_inputs
+classification: published_external_scenario
+source_type: sourced_benchmark_registry
+source: CEA and CERC official publications listed below
 currency: INR
 price_basis_rule: >-
   Preserve each source's stated cost basis. Do not interpolate or promote a published
