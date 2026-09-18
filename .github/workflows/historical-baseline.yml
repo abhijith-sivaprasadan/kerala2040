@@ -7,6 +7,16 @@ on:
     paths:
       - "src/kerala2040/load_proxy.py"
       - "scripts/build_hourly_load_proxy.py"
+      - "src/kerala2040/hydro.py"
+      - "src/kerala2040/renewables.py"
+      - "src/kerala2040/historical_model.py"
+      - "src/kerala2040/reconciliation.py"
+      - "src/kerala2040/generators.py"
+      - "scripts/analyse_hydro.py"
+      - "scripts/build_renewable_profiles.py"
+      - "scripts/build_historical_model.py"
+      - "scripts/reconcile_energy.py"
+      - "scripts/build_generator_database.py"
       - ".github/workflows/historical-baseline.yml"
 
 permissions:
@@ -51,6 +61,26 @@ jobs:
           --start 2024-04-01 --end 2025-03-31
           --minimum-coverage 0.95 --balance-tolerance-mu 0.05
           --fail-on-gate
+      - name: Analyse observed hydro/storage/import relationships
+        if: always()
+        run: python scripts/analyse_hydro.py
+      - name: Build weather-derived renewable availability proxies
+        if: always()
+        run: |
+          if [ -f data/processed/weather_points.parquet ]; then
+            python scripts/build_renewable_profiles.py
+          else
+            echo "NASA POWER weather acquisition unavailable; renewable proxy profiles not built."
+          fi
+      - name: Build canonical generator/capacity inventory
+        if: always()
+        run: python scripts/build_generator_database.py
+      - name: Build observed-day PyPSA replay
+        if: always()
+        run: python scripts/build_historical_model.py
+      - name: Reconcile official FY2024-25 energy accounting
+        if: always()
+        run: python scripts/reconcile_energy.py
       - name: Build provenance-safe hourly load proxy
         if: always()
         run: python scripts/build_hourly_load_proxy.py
@@ -81,7 +111,13 @@ jobs:
             data/processed/*.parquet
             data/processed/*.json
             results/baseline/**
+            results/hydro/**
+            results/resources/**
+            results/inventory/**
+            results/reconciliation/**
+            results/models/**
             figures/baseline/**
+            figures/hydro/**
             public/**
       - name: Calibration gate result
         if: always()
