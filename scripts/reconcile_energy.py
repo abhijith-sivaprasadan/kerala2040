@@ -21,7 +21,7 @@ def main() -> int:
         "--cea", type=Path, default=Path("configs/cea_resource_adequacy_2025.yaml")
     )
     parser.add_argument(
-        "--baseline-summary", type=Path, default=Path("public/baseline-summary.json")
+        "--baseline-summary", type=Path, default=Path("results/baseline/summary.json")
     )
     parser.add_argument(
         "--proxy-summary", type=Path, default=Path("public/hourly-load-proxy-summary.json")
