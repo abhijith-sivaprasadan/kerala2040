@@ -53,7 +53,7 @@ scenarios:
     wind_expansion: expandable
     battery_storage: fixed_existing
     pumped_storage: fixed_existing
-    ev_smart_charging: off
+    ev_smart_charging: "off"
     ecological_constraint: legal_minimum
     fiscal_constraint: none
 
