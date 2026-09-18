@@ -1,10 +1,4 @@
-import runpy
-from pathlib import Path
-
-_module = runpy.run_path(str(Path(__file__).resolve().parents[1] / "scripts" / "ingest_era5_points.py"))
-PERIODS = _module["PERIODS"]
-POINTS = _module["POINTS"]
-request_for = _module["request_for"]
+from kerala2040.sources.era5 import PERIODS, POINTS, request_for
 
 
 def test_era5_periods_cover_fy2024_25_in_three_month_chunks() -> None:
