@@ -1,0 +1,103 @@
+version: 1
+classification: gis_acquisition_and_processing_manifest
+rule: >-
+  A catalogue link is not a processed constraint. A layer becomes model-ready only after
+  its raw file, hash, CRS, vintage, licence/access condition and processing rule are recorded.
+
+layers:
+  ksdma_flood_historic_10_25_50:
+    source: Kerala State Disaster Management Authority
+    url: https://sdma.kerala.gov.in/wp-content/uploads/2026/06/1.-Flood-Return-Probability-Historical-10-25-50-years.zip
+    expected_format: raster_zip
+    raw_path: data/external/gis/ksdma/flood_historic_10_25_50.zip
+    role: hazard_constraint
+    acquisition_status: not_downloaded_in_repository
+  ksdma_flood_historic_100_200_500:
+    source: Kerala State Disaster Management Authority
+    url: https://sdma.kerala.gov.in/wp-content/uploads/2026/06/2.Flood-Return-Probability-Historical-100-200-500-years.zip
+    expected_format: raster_zip
+    raw_path: data/external/gis/ksdma/flood_historic_100_200_500.zip
+    role: hazard_constraint
+    acquisition_status: not_downloaded_in_repository
+  ksdma_flood_rcp85_10_25_50:
+    source: Kerala State Disaster Management Authority
+    url: https://sdma.kerala.gov.in/wp-content/uploads/2026/06/3.-Flood-Return-Probability-RCP8.5-10-25-50-years.zip
+    expected_format: raster_zip
+    raw_path: data/external/gis/ksdma/flood_rcp85_10_25_50.zip
+    role: climate_hazard_constraint
+    acquisition_status: not_downloaded_in_repository
+  ksdma_flood_rcp85_100_200_500:
+    source: Kerala State Disaster Management Authority
+    url: https://sdma.kerala.gov.in/wp-content/uploads/2026/06/4.Flood-Return-Probability-RCP8.5-100-200-500-years.zip
+    expected_format: raster_zip
+    raw_path: data/external/gis/ksdma/flood_rcp85_100_200_500.zip
+    role: climate_hazard_constraint
+    acquisition_status: not_downloaded_in_repository
+  ksdma_landslide:
+    source: Kerala State Disaster Management Authority / Geological Survey of India
+    landing_page: https://sdma.kerala.gov.in/hazard-maps/
+    expected_format: shapefile_or_authoritative_download
+    raw_path: data/external/gis/ksdma/landslide
+    role: slope_and_landslide_constraint
+    acquisition_status: authoritative_geometry_not_yet_secured
+  kerala_forest_protected_areas:
+    source: Kerala Forest and Wildlife Department
+    landing_page: https://forest.kerala.gov.in/
+    expected_format: vector
+    raw_path: data/external/gis/forest/protected_areas
+    role: hard_ecological_exclusion
+    acquisition_status: authoritative_geometry_not_yet_secured
+  bhuvan_lulc:
+    source: NRSC/ISRO Bhuvan
+    landing_page: https://bhuvan.nrsc.gov.in/
+    expected_format: raster_or_ogc_service
+    raw_path: data/external/gis/bhuvan/lulc
+    role: land_use_constraint
+    acquisition_status: not_downloaded
+  bhuvan_dem:
+    source: NRSC/ISRO Bhuvan
+    landing_page: https://bhuvan.nrsc.gov.in/
+    expected_format: raster
+    raw_path: data/external/gis/bhuvan/dem
+    role: slope_terrain_constraint
+    acquisition_status: not_downloaded
+  bhuvan_waterbodies:
+    source: NRSC/ISRO Bhuvan
+    landing_page: https://bhuvan.nrsc.gov.in/
+    expected_format: vector_or_raster
+    raw_path: data/external/gis/bhuvan/waterbodies
+    role: land_and_floating_solar_screening
+    acquisition_status: not_downloaded
+  niwe_wind_atlas_150m:
+    source: National Institute of Wind Energy
+    landing_page: https://niwe.res.in/Open_data_Set/open_wind_dataset/
+    expected_format: national_archive
+    raw_path: data/external/gis/niwe/wind_atlas_150m
+    role: wind_resource_potential
+    acquisition_status: download_form_required
+    access_note: full archive is large and should not be mirrored to Git
+  western_ghats_esa:
+    source: Ministry of Environment Forest and Climate Change
+    landing_page: https://www.moef.gov.in/esa-notifications
+    expected_format: authoritative_vector_or_georeferenced_schedule
+    raw_path: data/external/gis/moefcc/western_ghats_esa
+    role: legal_policy_constraint
+    acquisition_status: current_authoritative_geometry_not_yet_secured
+    legal_status_rule: preserve notification date and draft/final status
+
+processing_contract:
+  target_crs: EPSG:32643
+  required_metadata:
+    - source_url
+    - retrieved_at_utc
+    - sha256
+    - source_vintage
+    - source_crs
+    - licence_or_access_condition
+    - processing_steps
+  outputs:
+    exclusions: data/processed/gis/exclusions.gpkg
+    renewable_eligibility: data/processed/gis/renewable_eligibility.gpkg
+    capacity_ceiling_summary: results/gis/capacity_ceiling_summary.json
+  model_rule: >-
+    No GIS-derived capacity ceiling is valid until raw and processed provenance are complete.
