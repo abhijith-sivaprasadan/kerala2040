@@ -20,6 +20,7 @@ when it is independently acquired.
 - `historical_category_consumption_fy2016_fy2022.csv`: CSTEP Table 4, historical KSEB category sales/consumption.
 - `demand_projection_fy2023_fy2040.csv`: CSTEP Appendix Table 1, annual demand pathway by category plus EV, induction cooking and T&D losses.
 - `ev_projection_milestones.csv`: CSTEP Tables 8 and 10, EV stock and annual energy-demand milestones.
+- `peak_demand_projection_milestones.csv`: CSTEP Table 13 peak/off-peak demand milestones.
 - `capacity_additions_bau_fy2023_fy2040.csv`: CSTEP Appendix Table 4.
 - `capacity_additions_high_re_fy2023_fy2040.csv`: CSTEP Appendix Table 6.
 - `renewable_potential_benchmarks.csv`: CSTEP GIS/resource-potential results.
