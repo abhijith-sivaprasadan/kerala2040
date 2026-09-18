@@ -1,91 +1,85 @@
-version: 1
-classification: external_study_result
-source_type: sourced_benchmark_registry
-source: CEA and CERC official publications listed below
-note: Published benchmark assumptions are retained for comparison; final Kerala model inputs remain unresolved until explicitly selected.
+version: 2
+classification: sourced_benchmark_registry_not_final_model_inputs
 currency: INR
 price_basis_rule: >-
-  Preserve each source's stated base year and nominal/real treatment. Do not mix benchmark
-  series or interpolate to 2040 until a documented harmonisation method and price year are chosen.
+  Preserve each source's stated cost basis. Do not interpolate or promote a published
+  benchmark into a Kerala 2040 model input until a documented harmonisation method is chosen.
 
 sources:
-  cea_optimal_mix_2029_30:
+  cea_optimal_mix_2029_30_v2:
     publisher: Central Electricity Authority
-    title: Report on Optimal Generation Capacity Mix for 2029-30
-    url: https://cea.nic.in/wp-content/uploads/irp/2020/12/Optimal_mix_report_2029-30_FINAL.pdf
+    title: Report on Optimal Generation Capacity Mix for 2029-30, Version 2.0
+    publication_date: 2023-04
+    landing_page: https://cea.nic.in/notification/report-on-optimal-generation-capacity-mix-for-the-year-2029-30-version-2-0/?lang=en
+    pdf: https://cea.nic.in/wp-content/uploads/notification/2023/05/Optimal_mix_report__2029_30_Version_2.0__For_Uploading.pdf
     evidence: official_planning_study
-    base_year: 2021-22
+    verified_pages:
+      operating_parameters: 47
+      financial_parameters: 48
     note: >-
-      Used only as a historical CEA modelling benchmark. It reports a 10.36% discount rate,
-      technology cost/lifetime assumptions and explicit solar/BESS cost trajectories.
-
-  cea_draft_nep_2022:
-    publisher: Central Electricity Authority
-    title: Draft National Electricity Plan, September 2022
-    url: https://cea.nic.in/wp-content/uploads/irp/2022/09/DRAFT_NATIONAL_ELECTRICITY_PLAN_9_SEP_2022_2-1.pdf
-    evidence: official_draft_planning_document
-    note: >-
-      Annexure 8.1 gives nominal capital-cost values used for fund-requirement assessment.
-      These are not silently adopted as Kerala 2040 optimisation costs.
+      Values below are transcribed only from the verified CEA tables. They are external
+      national-planning assumptions, not selected Kerala 2040 costs.
 
   cerc_re_tariff_2024:
     publisher: Central Electricity Regulatory Commission
     title: CERC Terms and Conditions for Tariff determination from Renewable Energy Sources Regulations, 2024
-    url: https://www.cercind.gov.in/regulations/189-Noti.pdf
+    landing_page: https://cercind.gov.in/Current_reg.html
     evidence: current_regulatory_reference
+    extraction_status: source_verified_values_not_yet_transcribed
     note: >-
-      Preferred reference for current regulatory financial/technical norms where applicable;
-      project-specific solar capital costs are not a universal Kerala model cost.
+      The regulation exists and is retained as a future source. No numerical value from it
+      is used in this registry until individually verified.
 
-benchmarks:
-  cea_optimal_mix_2029_30:
-    discount_rate_pct: 10.36
+verified_external_benchmarks:
+  cea_optimal_mix_2029_30_v2:
+    source_page_financial_parameters: 48
+    cost_basis: actual_2021_22_cost_level_no_inflation_for_capex_calculation
     technologies:
       solar:
-        lifetime_years: 25
-        fixed_om_pct_capex_per_year: 1.0
         capex_crore_per_mw:
-          "2021-22": 4.50
-          "2029-30": 4.10
-      wind:
-        lifetime_years: 25
+          "2021-22": 4.5
+          "2029-30": 4.1
         fixed_om_pct_capex_per_year: 1.0
-        capex_crore_per_mw:
-          "2021-22": 6.00
+        construction_time_years: 0.5
+        lifetime_years: 25
+        classification: published_external_scenario
+      wind_onshore:
+        capex_crore_per_mw: 6.0
+        fixed_om_pct_capex_per_year: 1.0
+        construction_time_years: 1.5
+        lifetime_years: 25
+        classification: published_external_scenario
       pumped_storage:
+        reported_capex_crore_per_mw_range: [3.0, 8.0]
+        fixed_om_pct_capex_per_year: 5.0
+        construction_time_years: 7
         lifetime_years: 40
-        fixed_om_pct_capex_per_year: 2.5
-        capex_crore_per_mw_range_2021_22: [2.0, 5.7]
-        note: site-specific hydro/PSP costs are required for final modelling
+        pump_efficiency_pct:
+          value: 80
+          source_page: 47
+        classification: published_external_scenario
+        note: >-
+          CEA notes hydro and pumped-storage candidate capex is project-specific; this
+          range must not substitute for Kerala site costs.
       bess_4h:
-        lifetime_years: 10
-        fixed_om_pct_capex_per_year: 2.0
-        duration_hours: 4
-        capex_crore_per_mw:
-          "2021-22": 7.00
-          "2029-30": 4.30
-        note: bundled 4-hour BESS cost in the cited CEA study
-
-  cea_draft_nep_fund_requirement:
-    interpretation: nominal_fund_requirement_benchmark_not_selected_model_input
-    capex_crore_per_mw:
-      solar:
-        "2025-26": 4.77
-        "2030-31": 5.19
-      wind:
-        "2025-26": 6.66
-        "2030-31": 7.59
-      pumped_storage:
-        "2025-26": 5.55
-        "2030-31": 6.33
-      bess:
-        "2025-26": 7.37
-        "2030-31": 6.63
+        reported_capex_crore_per_mw_range: [8.22, 4.72]
+        fixed_om_pct_capex_per_year: 1.0
+        construction_time_years: 0.5
+        lifetime_years: 14
+        round_trip_losses_pct:
+          value: 12
+          source_page: 47
+        classification: published_external_scenario
+        note: >-
+          The CEA table reports the 4-hour BESS cost trajectory as a range. This registry
+          preserves the published values without silently assigning unverified year labels
+          to each endpoint.
 
 model_input_grid:
+  classification: unresolved
   rule: >-
-    Null values are intentional. A numerical optimisation must fail validation if a required
-    field remains unresolved rather than filling it with a convenient benchmark.
+    Null values are intentional. Final optimisation must fail input validation if a required
+    techno-economic field is unresolved. External study benchmarks above are not defaults.
   years: [2025, 2030, 2040]
   technologies:
     solar_pv:
@@ -93,7 +87,6 @@ model_input_grid:
       fixed_om_inr_per_kw_year: {2025: null, 2030: null, 2040: null}
       variable_om_inr_per_mwh: {2025: null, 2030: null, 2040: null}
       lifetime_years: null
-      efficiency_or_performance: null
       selection_status: unresolved
     wind_onshore:
       capex_inr_per_kw: {2025: null, 2030: null, 2040: null}
@@ -130,7 +123,3 @@ system_finance:
   price_year: null
   inflation_treatment: null
   selection_status: unresolved
-  benchmark_discount_rate_pct:
-    value: 10.36
-    source: cea_optimal_mix_2029_30
-    classification: historical_planning_benchmark_not_final
