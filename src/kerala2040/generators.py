@@ -52,7 +52,9 @@ def generator_database(
     )
     official_mix = observed_capacity["electricity"]["capacity_mix_mw"]
     summary = {
-        "classification": "canonical_capacity_inventory_seed",
+        "classification": "derived",
+        "source_type": "canonical_inventory_seed",
+        "source": "KSEB Project Management System public portal + Kerala State Planning Board/KSEBL Economic Review 2025",
         "project_records": int(len(frame)),
         "completed_records": int(len(completed)),
         "portal_data_as_of_label": project_payload.get("tracker", {}).get("data_as_of_label"),
