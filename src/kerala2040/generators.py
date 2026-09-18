@@ -34,7 +34,8 @@ def generator_database(
                 "owner": None,
                 "historical_generation_mu": None,
                 "source": "KSEB Project Management System public portal",
-                "source_classification": "official_project_portal_record",
+                "source_classification": "official_observed_reference",
+                "source_url": "https://pms.kseb.in/explore-projects",
                 "owner_status": "not_exposed_by_current_portal_export",
                 "generation_status": "plant_level_history_not_in_current_evidence",
             }
@@ -50,9 +51,13 @@ def generator_database(
     )
     official_mix = observed_capacity["electricity"]["capacity_mix_mw"]
     summary = {
-        "classification": "derived",
+        "classification": "derived_from_measured",
         "source_type": "canonical_inventory_seed",
         "source": "KSEB Project Management System public portal + Kerala State Planning Board/KSEBL Economic Review 2025",
+        "source_urls": [
+            "https://pms.kseb.in/explore-projects",
+            "https://spb.kerala.gov.in/economic-review/ER2025/index.php",
+        ],
         "project_records": len(frame),
         "completed_records": len(completed),
         "portal_data_as_of_label": project_payload.get("tracker", {}).get("data_as_of_label"),
