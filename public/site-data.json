@@ -1,10 +1,10 @@
 {
   "metadata": {
     "project": "Kerala 2040 \u2014 Open Energy Intelligence",
-    "generated_at_utc": "2026-09-18T21:46:31+00:00",
+    "generated_at_utc": "2026-09-18T22:01:37+00:00",
     "research_repo": "https://github.com/abhijith-sivaprasadan/kerala2040",
     "web_repo": "https://github.com/kerala2040/kerala2040.github.io",
-    "git_sha": "4f9ec2acd464a31d1ba9c1d93c7b6d9320bda29e",
+    "git_sha": "29d829aa346f73ebd8ef0d1a2b241c868d9bd033",
     "model_year": 2040,
     "principle": "Energy sovereignty means retaining sufficient controllable generation, storage, flexible demand and infrastructure to withstand climate, hydrological and market shocks while using interstate trade strategically. It does not mean autarky or zero imports.",
     "status": {
@@ -103,7 +103,7 @@
     "layer_provenance": {
       "sldc_daily": {
         "preserved": false,
-        "evidence_bundle_at_utc": "2026-09-18T21:46:31+00:00"
+        "evidence_bundle_at_utc": "2026-09-18T22:01:37+00:00"
       },
       "kseb_project_inventory": {
         "preserved": true,
@@ -119,11 +119,11 @@
       },
       "grid_india_psp": {
         "preserved": false,
-        "evidence_bundle_at_utc": "2026-09-18T21:46:31+00:00"
+        "evidence_bundle_at_utc": "2026-09-18T22:01:37+00:00"
       },
       "hourly_load_proxy": {
         "preserved": false,
-        "evidence_bundle_at_utc": "2026-09-18T21:46:31+00:00"
+        "evidence_bundle_at_utc": "2026-09-18T22:01:37+00:00"
       },
       "source_audit": {
         "preserved": true,
