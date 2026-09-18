@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Probe registered source endpoints and write a lightweight availability audit."""
 
 from __future__ import annotations
@@ -6,7 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -78,7 +77,7 @@ def main() -> int:
 
     config = yaml.safe_load(args.config.read_text(encoding="utf-8")) or {}
     results: dict[str, Any] = {
-        "generated_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "generated_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
         "classification": "connectivity_probe_not_data_validation",
         "sources": {},
     }
