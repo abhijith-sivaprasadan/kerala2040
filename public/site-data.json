@@ -1,76 +1,1200 @@
 {
   "metadata": {
-    "project": "Kerala 2040 — Open Energy Intelligence",
-    "generated_at_utc": "2026-09-17T21:45:00+00:00",
+    "project": "Kerala 2040 \u2014 Open Energy Intelligence",
+    "generated_at_utc": "2026-09-18T09:00:54+00:00",
     "research_repo": "https://github.com/abhijith-sivaprasadan/kerala2040",
     "web_repo": "https://github.com/kerala2040/kerala2040.github.io",
+    "git_sha": "31fec90c6f27a8a6be813752872f4e4d28a73fdd",
     "model_year": 2040,
     "principle": "Energy sovereignty means retaining sufficient controllable generation, storage, flexible demand and infrastructure to withstand climate, hydrological and market shocks while using interstate trade strategically. It does not mean autarky or zero imports.",
     "status": {
-      "sldc_daily": {"available": false, "evidence": "measured", "note": "Historical pipeline refresh is running; bundle will publish automatically."},
-      "baseline_summary": {"available": false, "evidence": "derived", "note": "Summary publishes after the historical daily evidence run."},
-      "reservoir_storage": {"available": false, "evidence": "measured", "note": "Historical reservoir chronology is being rebuilt into the public bundle."},
-      "weather": {"available": false, "evidence": "measured/reanalysis", "note": "Weather pipeline exists but the public evidence bundle has not yet published its processed output."},
-      "hourly_state_load": {"available": false, "evidence": "gap", "note": "No authenticated FY2024-25 Kerala 8760/35040 load chronology is published in this bundle."},
-      "grid_india_psp": {"available": false, "evidence": "cross-check source", "note": "Integration remains non-blocking because upstream access has been unreliable."}
+      "official_observed_2024_25": {
+        "available": true,
+        "evidence": "sourced observed",
+        "note": "Kerala Economic Review 2025 / KSEBL annual FY2024-25 reference values."
+      },
+      "sldc_daily": {
+        "available": true,
+        "evidence": "measured",
+        "note": "Kerala SLDC daily system accounting."
+      },
+      "baseline_summary": {
+        "available": true,
+        "evidence": "derived",
+        "note": "Derived only after historical calibration checks."
+      },
+      "reservoir_storage": {
+        "available": true,
+        "evidence": "measured",
+        "note": "Kerala SLDC reservoir-storage chronology."
+      },
+      "weather": {
+        "available": true,
+        "evidence": "measured/reanalysis",
+        "note": "NASA POWER representative-point hourly weather."
+      },
+      "era5_reanalysis": {
+        "available": false,
+        "evidence": "reanalysis",
+        "note": "Copernicus ERA5 Kerala-domain daily climate manifest."
+      },
+      "grid_india_psp": {
+        "available": false,
+        "evidence": "official cross-check",
+        "note": "Current API integration is configured; processed FY2024-25 rows not in this bundle yet."
+      },
+      "kseb_project_inventory": {
+        "available": false,
+        "evidence": "official project portal",
+        "note": "KSEB PMS parser configured; current project inventory not in this bundle yet."
+      },
+      "hazard_layers": {
+        "available": false,
+        "evidence": "official GIS catalog",
+        "note": "KSDMA hazard-layer manifest not in this bundle yet."
+      },
+      "hourly_state_load": {
+        "available": false,
+        "evidence": "gap",
+        "note": "No authenticated FY2024-25 Kerala 8760/35040 state-load chronology is published in this bundle."
+      }
     },
+    "source_audit_summary": {},
     "files": {
       "scenarios": "scenarios.json",
       "published_references": "published-references.json",
       "sources": "sources.json",
+      "observed_reference": "observed-reference.json",
+      "cea_resource_adequacy": "cea-resource-adequacy.json",
+      "circular_industry": "circular-industry.json",
+      "non_electric_energy": "non-electric-energy.json",
+      "ogd_targets": "ogd-targets.json",
+      "ecology_constraints": "ecology-constraints.json",
+      "baseline_summary": "baseline-summary.json",
+      "daily_balance": "daily-balance.json",
+      "monthly_balance": "monthly-balance.json",
+      "import_duration": "import-duration.json",
       "screening_nodes": "screening-nodes.json"
     }
   },
-  "baseline": null,
+  "observed": {
+    "version": 1,
+    "period": "FY2024-25",
+    "classification": "sourced_observed_reference",
+    "purpose": "Official observed Kerala power-system values used to validate the reconstructed SLDC/Grid-India historical baseline. These are not model outputs and are not combined with planning-scenario values unless their scopes match.",
+    "sources": {
+      "economic_review_2025_volume_1": {
+        "publisher": "Kerala State Planning Board",
+        "title": "Economic Review 2025, Volume I",
+        "url": "https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume1%20Eng%20final.pdf",
+        "underlying_source": "Kerala State Electricity Board Ltd"
+      },
+      "economic_review_2025_volume_2": {
+        "publisher": "Kerala State Planning Board",
+        "title": "Economic Review 2025, Volume II",
+        "url": "https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume%202%20Eng%20final.pdf",
+        "underlying_source": "Kerala State Electricity Board Ltd / Motor Vehicle Department"
+      }
+    },
+    "electricity": {
+      "installed_capacity_mw": 4412.14,
+      "capacity_mix_mw": {
+        "hydel": 2284.42,
+        "thermal": 536.54,
+        "solar": 1519.66,
+        "wind": 71.53
+      },
+      "annual_sales_within_state_and_open_access_mu": 29311.76,
+      "per_capita_consumption_kwh": 816,
+      "gross_import_per_annum_mu": 25790.95,
+      "export_per_annum_mu": 1789.65,
+      "consumers_lakh": 140.7,
+      "maximum_peak_demand_mw": 5797,
+      "maximum_peak_date": "2024-05-02",
+      "maximum_daily_consumption_mu": 115.95,
+      "morning_peak_demand_mw": 4515,
+      "day_peak_demand_mw": 5111,
+      "td_loss_pct": 9.27,
+      "revenue_from_sale_power_rs_lakh": 2116411,
+      "network": {
+        "ht_lines_km": 68576,
+        "lt_lines_km": 307674,
+        "distribution_transformers_count": 92203,
+        "distribution_transformers_mva": 11323
+      },
+      "energy_sources_2024_25_mu": {
+        "gross_generation_ksebl": 7393.77,
+        "purchase_central_generating_stations_at_periphery": 11565.82,
+        "purchase_long_medium_short_swap_at_periphery": 13129.84,
+        "purchase_ipp_cpp_inside_state": 1590.65,
+        "total_power_purchase": 26286.3,
+        "private_ipp_export_open_access": 77.16,
+        "open_access_availed_at_periphery": 453.64,
+        "auxiliary_consumption": 115.08,
+        "exports_sales_swap_return_open_access": 1789.64,
+        "total_energy_input_state_consumption": 32306.15
+      },
+      "scope_notes": [
+        "Gross import, annual sales, and total energy input have different accounting scopes. Do not divide one by another to create an import share without reconciliation.",
+        "Installed capacity includes state, central and private-sector capacity reported for Kerala."
+      ]
+    },
+    "transport": {
+      "electric_vehicle_registrations": {
+        "calendar_2024": {
+          "transport": 5448,
+          "non_transport": 77964,
+          "total": 83412
+        },
+        "2025_to_august_31": {
+          "transport": 3951,
+          "non_transport": 61390,
+          "total": 65341
+        },
+        "source": "Motor Vehicle Department via Kerala Economic Review 2025"
+      }
+    }
+  },
+  "cea_resource_adequacy": {
+    "version": 1,
+    "classification": "official_resource_adequacy_reference",
+    "source": {
+      "publisher": "Central Electricity Authority",
+      "title": "Report on Resource Adequacy Plan for Kerala (Up to 2035-36), Version 2.0",
+      "publication_period": "December 2025",
+      "landing_page": "https://cea.nic.in/resource_adequacy_st/report-on-resource-adequacy-plan-for-kerala-up-to-2035-36/",
+      "source_inputs": "Kerala SLDC and KSEBL",
+      "caveat": "This is an official planning study and validation reference. Contracted capacity, forecast requirement and the CEA study's demand accounting are kept separate from Kerala Economic Review installed-capacity and sales definitions."
+    },
+    "actual_2024_25": {
+      "electrical_energy_requirement_mu": 31624,
+      "peak_demand_mw": 5904,
+      "note": "These actual values use CEA resource-adequacy accounting. The peak differs from the Kerala Economic Review/KSEBL maximum peak reference of 5797 MW, so neither value is silently substituted for the other."
+    },
+    "hourly_demand_2024_25": {
+      "source_status": "official_hourly_series_analyzed_but_raw_public_download_not_secured",
+      "seasonal_note": "Demand is higher from February to May.",
+      "april_pattern_note": "Two peaks are visible, approximately daytime 15:00 and night 23:00.",
+      "frequency_bins": [
+        {
+          "min_mw": 2000,
+          "max_mw": 2500,
+          "hours": 46,
+          "approximate_share_pct": 1
+        },
+        {
+          "min_mw": 2500,
+          "max_mw": 3000,
+          "hours": 835,
+          "approximate_share_pct": 10
+        },
+        {
+          "min_mw": 3000,
+          "max_mw": 3500,
+          "hours": 2257,
+          "approximate_share_pct": 26
+        },
+        {
+          "min_mw": 3500,
+          "max_mw": 4000,
+          "hours": 2711,
+          "approximate_share_pct": 31
+        },
+        {
+          "min_mw": 4000,
+          "max_mw": 4500,
+          "hours": 1968,
+          "approximate_share_pct": 22
+        },
+        {
+          "min_mw": 4500,
+          "max_mw": 5000,
+          "hours": 629,
+          "approximate_share_pct": 7
+        },
+        {
+          "min_mw": 5000,
+          "max_mw": 5500,
+          "hours": 290,
+          "approximate_share_pct": 3
+        },
+        {
+          "min_mw": 5500,
+          "max_mw": 6000,
+          "hours": 24,
+          "approximate_share_pct": 0.3
+        }
+      ],
+      "validation_use": [
+        "hourly_proxy_frequency_distribution",
+        "peak_validation",
+        "seasonal_shape_validation",
+        "peak_hour_validation"
+      ],
+      "rule": "Any reconstructed hourly chronology must remain labelled proxy/reconstruction until the underlying Kerala SLDC/KSEBL hourly or 15-minute telemetry is obtained."
+    },
+    "contracted_capacity_march_2025_mw": {
+      "total_including_dre": 7323,
+      "coal": 2171,
+      "gas": 360,
+      "nuclear": 371,
+      "hydro": 2131,
+      "wind": 145,
+      "solar": 797,
+      "distributed_renewable_energy": 1347,
+      "scope_note": "Contracted capacity, not in-state installed capacity."
+    },
+    "forecast_2025_26_to_2035_36": {
+      "electrical_energy_requirement_cagr_pct": 5.1,
+      "peak_demand_cagr_pct": 3.7,
+      "existing_plus_planned_without_expansion_2035_36": {
+        "unserved_energy_mu": 13868,
+        "share_of_projected_annual_requirement_pct": 24.8
+      }
+    },
+    "likely_optimal_contracted_capacity_2035_36_mw": {
+      "total": 18348,
+      "coal": 3871,
+      "gas": 360,
+      "nuclear": 371,
+      "hydro": 3283,
+      "wind": 1159,
+      "solar": 1947,
+      "round_the_clock": 800,
+      "distributed_renewable_energy": 5109,
+      "storage_power_mw": 550,
+      "storage_energy_mwh": 1600,
+      "mtoa_stoa": 897,
+      "note": "CEA study result retained as an external planning benchmark, not adopted as the Kerala 2040 model optimum."
+    }
+  },
+  "circular_industry": {
+    "version": 1,
+    "classification": "sourced_industrial_circularity_reference",
+    "principle": "A by-product or recovery claim enters the Kerala 2040 model only when its process origin, quantity/capacity or composition, recovery route, and source are explicit enough to support a mass/value balance. Planned projects are kept separate from commissioned facilities.",
+    "cases": {
+      "ttpl": {
+        "organisation": "Travancore Titanium Products Limited",
+        "process": "sulphate_route_titanium_dioxide",
+        "evidence_strength": "strong_public_process_evidence",
+        "sources": {
+          "sustainability": {
+            "url": "https://travancoretitanium.com/?page_id=328",
+            "note": "Official TTPL sustainability page."
+          },
+          "copperas": {
+            "url": "https://travancoretitanium.com/?p=669",
+            "note": "Official TTPL Copperas product/by-product page."
+          },
+          "weak_acid": {
+            "url": "https://travancoretitanium.com/?p=661",
+            "note": "Official TTPL weak-acid by-product page."
+          },
+          "red_gypsum": {
+            "url": "https://travancoretitanium.com/?p=653",
+            "note": "Official TTPL red-gypsum page."
+          },
+          "plaster_of_paris_project": {
+            "url": "https://travancoretitanium.com/wp-content/uploads/2024/07/Proj_KV-14.pdf",
+            "note": "Official technical tender for a Plaster of Paris unit using white gypsum."
+          }
+        },
+        "observed_or_commissioned": {
+          "copperas_recovery_capacity_t_per_day": 165,
+          "copperas_product": "ferrous_sulphate_heptahydrate",
+          "copperas_typical_feso4_pct": 90.2,
+          "weak_acid_typical_h2so4_pct": 18.8,
+          "weak_acid_typical_feso4_pct": 17.8,
+          "red_gypsum_typical_gypsum_pct": 65,
+          "red_gypsum_typical_total_iron_pct": 25,
+          "water_recovery": {
+            "status": "installed",
+            "description": "Neutralisation plant with water-recovery/recycle module."
+          }
+        },
+        "planned_or_development": {
+          "plaster_of_paris_from_white_gypsum": {
+            "status": "project_tender",
+            "description": "Value-addition route for white gypsum generated from effluent neutralisation."
+          },
+          "sodium_sulphate": {
+            "status": "planned"
+          },
+          "iron_oxide_pigments": {
+            "status": "planned"
+          }
+        },
+        "modelling_use": [
+          "mass_balance",
+          "avoided_disposal",
+          "product_revenue",
+          "process_water_recovery",
+          "industrial_symbiosis"
+        ]
+      },
+      "fact": {
+        "organisation": "Fertilisers and Chemicals Travancore Limited",
+        "evidence_strength": "strong_public_byproduct_evidence",
+        "sources": {
+          "byproducts": {
+            "url": "https://fact.co.in/home/Dynamicpages?MenuId=30",
+            "note": "Official FACT by-products page."
+          },
+          "annual_report_2024_25": {
+            "url": "https://fact.co.in/images/upload/Annual-Report-2024-25_5028.pdf",
+            "note": "Official FACT 2024-25 annual report."
+          }
+        },
+        "observed_or_commissioned": {
+          "gypsum": {
+            "origin": "phosphoric_acid_manufacture",
+            "typical_purity_pct": "90-95",
+            "uses": [
+              "cement",
+              "plasters"
+            ]
+          },
+          "carbon_dioxide": {
+            "origin": "ammonia_production",
+            "status": "utilised_after_liquefaction",
+            "uses": [
+              "pharma",
+              "beverages",
+              "welding",
+              "desalination",
+              "oil_exploration"
+            ]
+          }
+        },
+        "planned_or_development": {
+          "new_urea_plant_for_better_co2_utilisation": {
+            "status": "pipeline"
+          },
+          "phosphoric_and_sulphuric_acid_capacity_enhancement": {
+            "status": "pipeline"
+          }
+        },
+        "modelling_use": [
+          "cross_facility_symbiosis",
+          "byproduct_market",
+          "co2_utilisation_screening"
+        ]
+      },
+      "kmml": {
+        "organisation": "Kerala Minerals and Metals Limited",
+        "evidence_strength": "partial_public_evidence",
+        "sources": {
+          "financials": {
+            "url": "https://www.kmml.com/financials",
+            "note": "Official financials page; latest clearly indexed annual report found publicly is 2022-23."
+          },
+          "annual_report_2022_23": {
+            "url": "https://www.kmml.com/uploads/ckeditor_files/1718428992_KMML%2BAnnual%2BReport%2B2022-23%2BLatest.pdf",
+            "note": "Official KMML annual report."
+          }
+        },
+        "modelling_use": [
+          "mineral_sands_process_mapping",
+          "titanium_value_chain",
+          "waste_and_byproduct_screening"
+        ],
+        "limitation": "Do not assign recovery quantities or economics until a facility-level mass-flow/environmental source is secured."
+      },
+      "kspcb": {
+        "organisation": "Kerala State Pollution Control Board",
+        "role": "statewide_hazardous_waste_baseline",
+        "sources": {
+          "hazardous_waste": {
+            "url": "https://kspcb.kerala.gov.in/activities/waste-management/hazardous-waste",
+            "note": "Official page currently lists the Hazardous and Other Waste Annual Inventory 2024-2025, authorised recyclers and hazardous-waste utilisation guidance."
+          }
+        },
+        "modelling_use": [
+          "disposal_baseline",
+          "authorised_recyclers",
+          "hazardous_waste_inventory",
+          "avoided_disposal_value"
+        ]
+      }
+    }
+  },
+  "non_electric_energy": {
+    "version": 1,
+    "classification": "sourced_non_electric_energy_reference",
+    "source": {
+      "publisher": "Petroleum Planning and Analysis Cell",
+      "title": "Oil and Gas Snapshot of States, 2024-25",
+      "snapshot_date": "2024-09-30",
+      "url": "https://ppac.gov.in/download.php?file=rep_studies%2F1729769716_State_one_pager_Volume_2024-25_Edition_II_Apr_Sep.pdf",
+      "note": "Snapshot values are dated infrastructure/context indicators. They are not silently annualised or treated as a complete Kerala final-energy balance."
+    },
+    "kerala_infrastructure_2024_09_30": {
+      "refinery_count": 1,
+      "refinery_capacity_mmtpa": 15.5,
+      "lpg_distributors": 701,
+      "cng_png_geographical_areas": 7,
+      "cng_stations": 160,
+      "lng_terminal_count": 1,
+      "lng_terminal_capacity_mmtpa": 5,
+      "total_retail_outlets": 2859,
+      "ev_charging_stations_at_retail_outlets": 627,
+      "depots_terminals": 12,
+      "lpg_bottling_plants_psu": 7,
+      "aviation_fuel_stations": 17,
+      "major_product_pipeline_km": 181
+    },
+    "fiscal_snapshot_2024_25": {
+      "petroleum_sales_tax_vat_rs_crore": 2278,
+      "petroleum_sgst_utgst_rs_crore": 94,
+      "caveat": "Snapshot publication value; preserve PPAC's provisional/accounting basis."
+    },
+    "earlier_snapshot_2024_07_01": {
+      "source_url": "https://ppac.gov.in/download.php?file=rep_studies%2F1723691385_PPAC-Oil-and-Gas-Snapshot-14-aug-2024-v4_compressed.pdf",
+      "monthly_average_consumption": {
+        "pol_tmt": 562.7,
+        "petrol_tmt": 157.0,
+        "diesel_tmt": 197.8,
+        "lpg_tmt": 90.7,
+        "cng_mmscm": 5.34
+      },
+      "ethanol_blending_nov_2023_to_jun_2024": {
+        "volume_crore_litres": 19,
+        "average_blending_pct": 12.11
+      },
+      "rule": "These are monthly-average/snapshot values. Do not multiply by 12 or compare directly with FY totals without verifying the PPAC accounting period and coverage."
+    }
+  },
+  "ogd_targets": {
+    "version": 1,
+    "classification": "curated_ogd_catalog_targets",
+    "portal": "https://www.data.gov.in/",
+    "credential_env": "DATA_GOV_API_KEY",
+    "access_note": "The account-level API key can be used for API-enabled resources. Because api.data.gov.in has timed out repeatedly from GitHub-hosted runners, Catalog API/Zip Download and the original ministry source are retained as equivalent acquisition fallbacks.",
+    "targets": {
+      "renewable_installed_capacity": {
+        "priority": "P0",
+        "title": "State-wise Installed Capacity of Grid Interactive Renewable Power",
+        "catalog_url": "https://kerala.data.gov.in/catalog/state-wise-installed-capacity-grid-interactive-renewable-power",
+        "publisher": "Ministry of New and Renewable Energy",
+        "updated_on": "2025-06-02",
+        "access": [
+          "catalog_api",
+          "zip_download"
+        ],
+        "variables": [
+          "solar",
+          "wind",
+          "small_hydro",
+          "biomass"
+        ],
+        "use": [
+          "capacity_cross_check",
+          "historical_renewable_growth"
+        ]
+      },
+      "station_monthly_generation": {
+        "priority": "P0",
+        "title": "Power Generation",
+        "catalog_url": "https://kerala.data.gov.in/catalog/power-generation",
+        "publisher": "Central Electricity Authority",
+        "updated_on": "2024-10-10",
+        "access": [
+          "catalog_api",
+          "zip_download"
+        ],
+        "variables": [
+          "location",
+          "sector",
+          "category",
+          "fuel",
+          "utility",
+          "station",
+          "installed_capacity",
+          "programmed_generation",
+          "actual_generation"
+        ],
+        "use": [
+          "plant_generation_cross_check",
+          "thermal_hydro_context"
+        ]
+      },
+      "renewable_potential": {
+        "priority": "P1",
+        "title": "Renewable Energy dataset group",
+        "catalog_url": "https://www.data.gov.in/dataset-group-name/Renewable%20Energy",
+        "publisher": "Ministry of New and Renewable Energy",
+        "access": [
+          "catalog_api",
+          "zip_download"
+        ],
+        "use": [
+          "resource_potential_cross_check"
+        ],
+        "note": "Technical potential must not be treated as ecologically buildable capacity."
+      },
+      "kerala_vehicle_registration_legacy": {
+        "priority": "P2",
+        "title": "Kerala Vehicle Registration Statistics",
+        "catalog_url": "https://kerala.data.gov.in/catalog/kerala-vehicle-registration-statistics",
+        "publisher": "Kerala Transport Department",
+        "updated_on": "2025-02-12",
+        "access": [
+          "catalog_api",
+          "zip_download"
+        ],
+        "use": [
+          "historical_fleet_structure"
+        ],
+        "limitation": "The underlying statistics are as of 2018; current EV counts come from newer MVD/Economic Review evidence."
+      },
+      "ev_registrations_vahan_2020_2023": {
+        "priority": "P2",
+        "title": "State/UT-wise Number of Electric Vehicles Registered in Vahan4 from 2020 to 2023",
+        "resource_url": "https://kerala.data.gov.in/resource/stateut-wise-number-electric-vehicles-evs-registered-vahan4-2020-2023",
+        "publisher": "Rajya Sabha / VAHAN",
+        "published_on": "2024-08-09",
+        "access": [
+          "csv_download"
+        ],
+        "use": [
+          "ev_growth_cross_check"
+        ]
+      }
+    }
+  },
+  "ecology_constraints": {
+    "version": 1,
+    "classification": "sourced_ecological_and_hazard_constraints",
+    "principle": "Ecological and hazard layers are model constraints, not post-hoc scores. A technical renewable resource is not treated as buildable capacity until these exclusions and network/access constraints are applied.",
+    "layers": {
+      "ksdma_flood_historic": {
+        "source": "Kerala State Disaster Management Authority",
+        "url": "https://sdma.kerala.gov.in/hazard-maps/",
+        "data": "Flood Hazard Probability of Kerala based on historic data",
+        "format": "raster_zip",
+        "return_periods_years": [
+          10,
+          25,
+          50,
+          100,
+          200,
+          500
+        ],
+        "role": "hard_or_penalised_siting_constraint"
+      },
+      "ksdma_flood_rcp85": {
+        "source": "Kerala State Disaster Management Authority",
+        "url": "https://sdma.kerala.gov.in/hazard-maps/",
+        "data": "Flood Hazard Probability of Kerala based on RCP8.5 climate-change scenario",
+        "format": "raster_zip",
+        "return_periods_years": [
+          10,
+          25,
+          50,
+          100,
+          200,
+          500
+        ],
+        "role": "climate_stress_siting_constraint"
+      },
+      "ksdma_landslide_gsi": {
+        "source": "Kerala State Disaster Management Authority / Geological Survey of India",
+        "url": "https://sdma.kerala.gov.in/hazard-maps/",
+        "data": "Landslide Susceptibility Zones of districts of Kerala",
+        "reference_year": 2022,
+        "format": "shapefile",
+        "role": "hard_or_penalised_siting_constraint",
+        "note": "KSDMA states the GSI product supersedes the older NCESS susceptibility map."
+      },
+      "ksdma_coastal_hazard": {
+        "source": "Kerala State Disaster Management Authority",
+        "url": "https://sdma.kerala.gov.in/hazard-maps/",
+        "data": "Coastal Hazard Susceptibility Map of Kerala",
+        "role": "coastal_infrastructure_screening"
+      },
+      "kerala_forest": {
+        "source": "Kerala Forest and Wildlife Department",
+        "url": "https://forest.kerala.gov.in/",
+        "data": [
+          "reserve_forest",
+          "protected_areas",
+          "forest_divisions",
+          "wildlife_areas"
+        ],
+        "role": "ecological_exclusion_and_buffering",
+        "note": "Authoritative geometry should be obtained from the department/GIS source where available."
+      },
+      "western_ghats_esa": {
+        "source": "Ministry of Environment Forest and Climate Change",
+        "landing_page": "https://www.moef.gov.in/esa-notifications",
+        "current_status_date": "2026-07-27",
+        "current_status": "draft_notification",
+        "note": "The 2026 Western Ghats ESA publication is a draft. Kerala 2040 will preserve legal status and version date rather than treating draft boundaries as a final legal layer.",
+        "older_reference": {
+          "kerala_esa_area_sq_km": 9993.7,
+          "forest_area_sq_km": 9107,
+          "non_forest_area_sq_km": 886.7,
+          "caveat": "Historical draft/reference figures only; use current authoritative geometry for siting."
+        }
+      },
+      "bhuvan_lulc": {
+        "source": "NRSC / ISRO Bhuvan",
+        "url": "https://bhuvan.nrsc.gov.in/",
+        "acquisition": "WMS_WMTS_or_download",
+        "data": [
+          "land_use_land_cover",
+          "elevation_dem",
+          "waterbodies",
+          "geomorphology"
+        ],
+        "role": "land_availability_and_terrain_screening",
+        "note": "Bhuvan thematic services support OGC web services. Dataset vintage and scale must be recorded per layer before model use."
+      },
+      "niwe_wind_atlas_150m": {
+        "source": "National Institute of Wind Energy",
+        "url": "https://niwe.res.in/Open_data_Set/open_wind_dataset/11/",
+        "resolution_m": 500,
+        "hub_height_m": 150,
+        "variables": [
+          "mean_wind_speed",
+          "weibull_k",
+          "weibull_a",
+          "mean_wind_power_density",
+          "mean_temperature",
+          "pressure",
+          "air_density",
+          "wind_direction",
+          "joint_frequency_distribution"
+        ],
+        "role": "technical_wind_resource_screening",
+        "access_note": "Full national archive is approximately 240 MB compressed and requires the download form.",
+        "model_rule": "Technical wind resource is intersected with ecological/terrain/grid constraints before capacity is allowed."
+      }
+    }
+  },
+  "baseline": {
+    "aggregate_import_share": 0.7381082853969048,
+    "aggregate_internal_share": 0.26189173742948724,
+    "balance_tolerance_mu": 0.05,
+    "calibration_gate_pass": true,
+    "consumption_twh": 30.6662569,
+    "coverage_fraction": 0.9698630136986301,
+    "daily_import_share_median": 0.7714177936069327,
+    "daily_import_share_p95": 0.8458664178373716,
+    "duplicate_days": 0,
+    "expected_days": 365,
+    "expected_end": "2025-03-31",
+    "expected_start": "2024-04-01",
+    "hydro_generation_twh": 7.214471,
+    "hydro_share_consumption": 0.23525763263269342,
+    "hydro_share_internal_generation": 0.898301087853278,
+    "internal_generation_twh": 8.031239300000001,
+    "max_abs_balance_error_mu": 0.00010000000000331966,
+    "minimum_coverage": 0.95,
+    "missing_days": [
+      "2024-08-12",
+      "2024-09-06",
+      "2024-09-20",
+      "2024-10-26",
+      "2024-11-17",
+      "2024-11-30",
+      "2024-12-16",
+      "2025-02-19",
+      "2025-03-05",
+      "2025-03-10",
+      "2025-03-17"
+    ],
+    "missing_days_count": 11,
+    "net_import_twh": 22.6350183,
+    "observed_end": "2025-03-31",
+    "observed_start": "2024-04-01",
+    "rows": 354,
+    "storage_days": 354,
+    "storage_pct_energy_weighted_max": 73.52428136051557,
+    "storage_pct_energy_weighted_median": 64.18740251201979,
+    "storage_pct_energy_weighted_min": 24.568371892159274
+  },
   "scenarios": [
-    {"id":"S0_business_as_usual","code":"S0","name":"Business As Usual","type":"reference","description":"Existing structural import dependence, hydro exposure and moderate local renewable growth.","ecology_constraint":"baseline_legal_exclusions","demand_flexibility":"low","import_option":true},
-    {"id":"S1_maximum_local_generation","code":"S1","name":"Maximum Local Generation","type":"stress pathway","description":"Stress-test aggressive local generation build-out before ecological constraints are tightened, exposing land, biodiversity, water and system-cost consequences.","ecology_constraint":"baseline_legal_exclusions","demand_flexibility":"medium","import_option":true},
-    {"id":"S2_solar_storage","code":"S2","name":"Solar + Storage","type":"technology pathway","description":"Rooftop, floating and suitable ground PV with batteries, pumped storage and hydro balancing.","ecology_constraint":"baseline_legal_exclusions","demand_flexibility":"medium","import_option":true},
-    {"id":"S3_integrated_sovereignty","code":"S3","name":"Integrated Sovereignty","type":"system pathway","description":"Diversified generation, strategic reservoir dispatch, distributed storage, demand response, EV smart charging/V2G, cooling flexibility and strong interconnection.","ecology_constraint":"spatial_suitability","demand_flexibility":"high","import_option":true},
-    {"id":"S4_ecological_sovereignty","code":"S4","name":"Ecological Sovereignty","type":"constraint pathway","description":"S3 with strict biodiversity, forest, watershed, wetland, slope, landslide, coastal and land-use constraints fed back as technology-specific capacity limits.","ecology_constraint":"strict_ecological_carrying_capacity","demand_flexibility":"high","import_option":true}
+    {
+      "id": "S0_business_as_usual",
+      "code": "S0",
+      "name": "Business As Usual",
+      "type": null,
+      "description": "Existing structural import dependence, hydro exposure and moderate local RE growth.",
+      "ecology_constraint": "baseline_legal_exclusions",
+      "demand_flexibility": "low",
+      "import_option": "enabled"
+    },
+    {
+      "id": "S1_maximum_local_generation",
+      "code": "S1",
+      "name": "Maximum Local Generation",
+      "type": null,
+      "description": "Stress-test aggressive local generation build-out before ecological constraints are tightened. Intended to expose land, biodiversity, water and system-cost consequences rather than to be presented as a recommendation.",
+      "ecology_constraint": "baseline_legal_exclusions",
+      "demand_flexibility": "medium",
+      "import_option": "enabled"
+    },
+    {
+      "id": "S2_solar_storage",
+      "code": "S2",
+      "name": "Solar Storage",
+      "type": null,
+      "description": "Rooftop, floating and suitable ground PV with BESS/pumped storage and hydro balancing.",
+      "ecology_constraint": "baseline_legal_exclusions",
+      "demand_flexibility": "medium",
+      "import_option": "enabled"
+    },
+    {
+      "id": "S3_integrated_sovereignty",
+      "code": "S3",
+      "name": "Integrated Sovereignty",
+      "type": null,
+      "description": "Diversified generation, strategic reservoir dispatch, distributed storage, demand response, EV smart charging/V2G, cooling flexibility and strong interconnection.",
+      "ecology_constraint": "spatial_suitability",
+      "demand_flexibility": "high",
+      "import_option": "enabled"
+    },
+    {
+      "id": "S4_ecological_sovereignty",
+      "code": "S4",
+      "name": "Ecological Sovereignty",
+      "type": null,
+      "description": "S3 with strict biodiversity, forest, watershed, wetland, slope, landslide, coastal and land-use constraints fed back as technology-specific capacity limits.",
+      "ecology_constraint": "strict_ecological_carrying_capacity",
+      "demand_flexibility": "high",
+      "import_option": "enabled"
+    }
   ],
   "stress_tests": {
-    "dry_hydro":{"description":"Multi-season adverse inflow/hydrology case derived from climate/hydrology data."},
-    "cloudy_low_solar":{"description":"Sustained low-solar period preserving observed weather covariance."},
-    "heat_wave":{"description":"High cooling-demand and thermal-stress event."},
-    "ev_surge":{"description":"Higher-than-central electrification trajectory with unmanaged and managed charging variants."},
-    "battery_cost_high":{"description":"Storage capital-cost sensitivity."},
-    "import_restriction":{"description":"Temporary reduction in interstate transfer availability, not permanent isolation."},
-    "import_price_high":{"description":"High external procurement-price stress."},
-    "extreme_monsoon_flood":{"description":"Infrastructure and hydrology stress with ecological/resilience implications."}
+    "dry_hydro": {
+      "description": "Multi-season adverse inflow/hydrology case derived from climate/hydrology data."
+    },
+    "cloudy_low_solar": {
+      "description": "Sustained low-solar period preserving observed weather covariance."
+    },
+    "heat_wave": {
+      "description": "High cooling-demand and thermal-stress event."
+    },
+    "ev_surge": {
+      "description": "Higher-than-central electrification trajectory with unmanaged and managed charging variants."
+    },
+    "battery_cost_high": {
+      "description": "Storage capital-cost sensitivity."
+    },
+    "import_restriction": {
+      "description": "Temporary reduction in interstate transfer availability, not permanent isolation."
+    },
+    "import_price_high": {
+      "description": "High external procurement-price stress."
+    },
+    "extreme_monsoon_flood": {
+      "description": "Infrastructure and hydrology stress with ecological/resilience implications."
+    }
   },
   "references": {
     "cstep_2024": {
-      "title":"Kerala Energy Transition Roadmap 2040",
-      "publisher":"Center for Study of Science, Technology and Policy (CSTEP)",
-      "year":2024,
-      "primary_url":"https://cstep.in/publication/kerala-energy-transition-roadmap-2040/",
-      "fy2040":{"bau_end_use_demand_mu":40446,"ev_demand_mu":1286,"induction_cooking_demand_mu":415,"final_demand_without_td_losses_mu":42147,"final_demand_with_td_losses_mu":45519,"td_loss_pct":8.0,"peak_demand_mw":7594,"off_peak_demand_mw":3169},
-      "cited_capacity_addition_bau_mw":{"solar":8391,"wind":1794,"large_hydro":515,"small_hydro":119},
-      "caveat":"Published CSTEP scenario architecture; retained as an external benchmark, not a Kerala 2040 model result."
+      "title": "Kerala Energy Transition Roadmap 2040",
+      "publisher": "Center for Study of Science, Technology and Policy (CSTEP)",
+      "year": 2024,
+      "primary_url": "https://cstep.in/publication/kerala-energy-transition-roadmap-2040/",
+      "government_hosted_pdf": "https://keralaenergy.gov.in/wp-content/uploads/2023/12/CSTEP_KL_Roadmap_2040_01Feb24-1-4.pdf",
+      "methodology_note": "Demand forecast is based on historical category consumption and adds explicit EV and induction-cooking demand. Its FY22 load shape was derived from FY16 15-minute data and extrapolated, so it is a useful published benchmark rather than a substitute for a current measured hourly series.",
+      "fy2040": {
+        "bau_end_use_demand_mu": 40446,
+        "ev_demand_mu": 1286,
+        "induction_cooking_demand_mu": 415,
+        "final_demand_without_td_losses_mu": 42147,
+        "final_demand_with_td_losses_mu": 45519,
+        "td_loss_pct": 8.0,
+        "peak_demand_mw": 7594,
+        "off_peak_demand_mw": 3169
+      },
+      "cited_capacity_addition_bau_mw": {
+        "solar": 8391,
+        "wind": 1794,
+        "large_hydro": 515,
+        "small_hydro": 119
+      },
+      "caveat": "CSTEP capacity additions and demand trajectories represent one published study's scenario architecture. Kerala2040 will reproduce or challenge them using newer measured data, climate stress and explicit ecological constraints."
     },
     "kerala_cn50_2026": {
-      "title":"Carbon Neutral Kerala by 2050",
-      "publisher":"Directorate of Environment and Climate Change, Government of Kerala / Vasudha Foundation",
-      "year":2026,
-      "primary_url":"https://climatechange.envt.kerala.gov.in/wp-content/uploads/2026/06/Carbon-Neutral-Kerala-by-2050-Report.pdf",
-      "in_state_resource_potential_gw":{"ground_mounted_solar":12.40,"onshore_wind_150m":2.62,"conventional_hydro":2.47,"small_hydro":0.65,"biomass":0.78,"total":18.92},
-      "net_grid_demand_twh":{"bau_2030":41.59,"bau_2040":65.98,"cn50_2030":46.91,"cn50_2040":88.56},
-      "caveat":"Different scope and assumptions from CSTEP; values must not be blended into a single forecast."
+      "title": "Carbon Neutral Kerala by 2050",
+      "publisher": "Directorate of Environment and Climate Change, Government of Kerala / Vasudha Foundation",
+      "year": 2026,
+      "primary_url": "https://climatechange.envt.kerala.gov.in/wp-content/uploads/2026/06/Carbon-Neutral-Kerala-by-2050-Report.pdf",
+      "note": "This newer pathway explicitly treats interstate procurement as a flexible option, excludes exceptionally wet 2021-22 hydro PLF from its baseline, and reports in-state renewable resource potential as insufficient for projected demand beyond 2030.",
+      "in_state_resource_potential_gw": {
+        "ground_mounted_solar": 12.4,
+        "onshore_wind_150m": 2.62,
+        "conventional_hydro": 2.47,
+        "small_hydro": 0.65,
+        "biomass": 0.78,
+        "total": 18.92
+      },
+      "net_grid_demand_twh": {
+        "bau_2030": 41.59,
+        "bau_2040": 65.98,
+        "cn50_2030": 46.91,
+        "cn50_2040": 88.56
+      },
+      "caveat": "The 2026 CN50 and 2024 CSTEP studies use different scopes, assumptions and electrification trajectories. Their 2040 demand values must not be blended into a single target."
     }
   },
   "sources": {
-    "kerala_sldc":{"system_statistics_url":"https://sldckerala.com/index.php?id=1","acquisition":"public_html_form","note":"Kerala system-statistics and storage reports; original accounting labels are preserved."},
-    "grid_india_daily_psp":{"file_api":"https://webapi.grid-india.in/api/v1/file","acquisition":"public_json_api_plus_xls","note":"Official per-state daily peak-demand and energy cross-check; national TimeSeries is not Kerala hourly load."},
-    "nasa_power":{"endpoint":"https://power.larc.nasa.gov/api/temporal/hourly/point","acquisition":"public_json_api","note":"Representative-point weather inputs; not a claim of statewide renewable-resource potential."},
-    "data_gov_in":{"endpoint":"https://api.data.gov.in/resource","acquisition":"authenticated_json_api","note":"Government of India open-data API used where a relevant dataset is identified."},
-    "niti_iced":{"home":"https://www.iced.niti.gov.in/","acquisition":"discovery_download","note":"Discovery and cross-check source; primary official sources remain preferred."}
+    "kerala_sldc": {
+      "priority": "P0",
+      "organisation": "Kerala State Load Despatch Centre",
+      "system_statistics_url": "https://sldckerala.com/index.php?id=1",
+      "storage_url": "https://sldckerala.com/index.php?id=7",
+      "acquisition": "public_html_form",
+      "minimum_delay_seconds": 0.8,
+      "timezone": "Asia/Kolkata",
+      "use": [
+        "load",
+        "generation",
+        "imports",
+        "interface_flows",
+        "hydro",
+        "forecasting"
+      ],
+      "note": "System-statistics and storage reports expose independent historical date forms. Their accounting labels are preserved rather than collapsed into one import metric."
+    },
+    "grid_india_daily_psp": {
+      "priority": "P0",
+      "organisation": "Grid-India",
+      "file_api": "https://webapi.grid-india.in/api/v1/file",
+      "cdn_root": "https://webcdn.grid-india.in/",
+      "acquisition": "public_json_api_plus_xls",
+      "file_type": "DAILY_PSP_REPORT",
+      "state": "Kerala",
+      "use": [
+        "daily_peak",
+        "energy_met",
+        "shortages",
+        "interstate_cross_check"
+      ],
+      "note": "MOP_E provides official per-state daily peak-demand and energy metrics. TimeSeries in these workbooks is national, not a Kerala hourly series."
+    },
+    "kerala_spb": {
+      "priority": "P0",
+      "organisation": "Kerala State Planning Board",
+      "home": "https://spb.kerala.gov.in/",
+      "economic_review_2025": "https://spb.kerala.gov.in/economic-review/ER2025/index.php",
+      "acquisition": "official_pdf_and_html",
+      "use": [
+        "annual_energy_baseline",
+        "capacity",
+        "network",
+        "losses",
+        "transport",
+        "economy"
+      ],
+      "note": "Economic Review 2025 provides the current official FY2024-25 Kerala baseline, including capacity, annual sales, imports/exports, peak demand and EV registrations."
+    },
+    "kseb_pms": {
+      "priority": "P0",
+      "organisation": "Kerala State Electricity Board Ltd",
+      "tracker": "https://pms.kseb.in/tracker",
+      "explorer": "https://pms.kseb.in/explore-projects",
+      "acquisition": "public_html",
+      "use": [
+        "generation_projects",
+        "project_pipeline"
+      ],
+      "note": "The project-management portal is reachable even when the main kseb.in site is not. Its tracker landing page carries an older data-as-of label, so project dates are treated as project records rather than a guaranteed current operational snapshot."
+    },
+    "cea": {
+      "priority": "P0",
+      "organisation": "Central Electricity Authority",
+      "home": "https://cea.nic.in/",
+      "acquisition": "official_pdf_xls_csv",
+      "use": [
+        "capacity",
+        "generation",
+        "demand",
+        "transmission",
+        "resource_adequacy",
+        "pumped_storage"
+      ],
+      "note": "CEA publications are used for national/state cross-checks and planning benchmarks, not to replace more granular Kerala SLDC observations."
+    },
+    "kserc": {
+      "priority": "P0",
+      "organisation": "Kerala State Electricity Regulatory Commission",
+      "home": "https://dev.erckerala.org/",
+      "acquisition": "official_orders_pdf",
+      "use": [
+        "tariff_orders",
+        "arr_erc",
+        "power_purchase_costs",
+        "approved_capex"
+      ],
+      "note": "Regulatory orders are the preferred source for approved cost and tariff assumptions."
+    },
+    "era5": {
+      "priority": "P0",
+      "organisation": "Copernicus Climate Data Store",
+      "endpoint": "https://cds.climate.copernicus.eu/api",
+      "acquisition": "authenticated_api",
+      "api_key_env": "CDSAPI_KEY",
+      "use": [
+        "historical_weather",
+        "solar",
+        "wind",
+        "climate_hydro_features"
+      ],
+      "note": "ERA5 is the main reanalysis source. Kerala 2040 stores derived model inputs and provenance rather than committing the full raw reanalysis archive."
+    },
+    "nasa_power": {
+      "priority": "P1",
+      "organisation": "NASA POWER",
+      "endpoint": "https://power.larc.nasa.gov/api/temporal/hourly/point",
+      "acquisition": "public_json_api",
+      "time_standard": "UTC",
+      "community": "RE",
+      "parameters": [
+        "T2M",
+        "RH2M",
+        "ALLSKY_SFC_SW_DWN",
+        "WS10M",
+        "PRECTOTCORR"
+      ],
+      "representative_points": {
+        "thiruvananthapuram": {
+          "lat": 8.5241,
+          "lon": 76.9366
+        },
+        "kochi": {
+          "lat": 9.9312,
+          "lon": 76.2673
+        },
+        "palakkad": {
+          "lat": 10.7867,
+          "lon": 76.6548
+        },
+        "kozhikode": {
+          "lat": 11.2588,
+          "lon": 75.7804
+        },
+        "kannur": {
+          "lat": 11.8745,
+          "lon": 75.3704
+        }
+      },
+      "use": [
+        "rapid_weather",
+        "solar_cross_check"
+      ],
+      "note": "Representative point data are weather inputs, not a claim that one point represents statewide resource potential. Spatial weighting comes later."
+    },
+    "data_gov_in": {
+      "priority": "P1",
+      "organisation": "Open Government Data Platform India",
+      "endpoint": "https://api.data.gov.in/resource",
+      "catalog": "https://www.data.gov.in/",
+      "acquisition": "authenticated_json_api_plus_download_fallback",
+      "api_key_env": "DATA_GOV_API_KEY",
+      "resource_ids": {},
+      "use": [
+        "renewables",
+        "transport",
+        "fuel",
+        "demographics",
+        "statistics"
+      ],
+      "note": "One account-level API key applies across API-enabled OGD resources. The API host has timed out from GitHub-hosted runners, so downloadable resources and primary-source alternatives are retained as fallbacks."
+    },
+    "niti_iced": {
+      "priority": "P1",
+      "organisation": "NITI Aayog India Climate and Energy Dashboard",
+      "home": "https://www.iced.niti.gov.in/",
+      "acquisition": "discovery_download",
+      "use": [
+        "discovery",
+        "cross_check",
+        "power",
+        "transport",
+        "buildings"
+      ],
+      "note": "No stable documented public API is assumed. ICED is used to discover and cross-check datasets; primary official sources remain preferred."
+    },
+    "india_wris": {
+      "priority": "P0",
+      "organisation": "India-WRIS",
+      "home": "https://indiawris.gov.in/",
+      "acquisition": "portal_download_or_api_if_documented",
+      "use": [
+        "reservoirs",
+        "storage",
+        "inflow",
+        "catchments"
+      ],
+      "note": "Used to extend hydro chronology beyond the Kerala SLDC storage reports when accessible."
+    },
+    "niwe": {
+      "priority": "P1",
+      "organisation": "National Institute of Wind Energy",
+      "home": "https://niwe.res.in/",
+      "open_data": "https://niwe.res.in/Open_data_Set/open_wind_dataset/",
+      "acquisition": "official_open_dataset",
+      "use": [
+        "wind_resource",
+        "measurement_stations",
+        "technical_potential"
+      ],
+      "note": "NIWE publishes the 150 m wind atlas dataset at 500 m resolution. The full file is large and download-gated by a user-information form, so Kerala 2040 does not silently mirror it."
+    },
+    "ksdma": {
+      "priority": "P0",
+      "organisation": "Kerala State Disaster Management Authority",
+      "hazard_maps": "https://sdma.kerala.gov.in/hazard-maps/",
+      "acquisition": "public_gis_downloads",
+      "use": [
+        "flood",
+        "landslide",
+        "coastal_hazard",
+        "ecological_siting_constraints"
+      ],
+      "note": "KSDMA publishes flood probability rasters and GSI landslide-susceptibility shapefiles suitable for explicit exclusion and stress-test layers."
+    },
+    "bhuvan": {
+      "priority": "P1",
+      "organisation": "NRSC/ISRO Bhuvan",
+      "home": "https://bhuvan.nrsc.gov.in/",
+      "acquisition": "portal_download",
+      "use": [
+        "lulc",
+        "dem",
+        "water",
+        "geomorphology",
+        "spatial_constraints"
+      ],
+      "note": "Large GIS layers are catalogued separately from the lightweight web bundle."
+    },
+    "kerala_forest": {
+      "priority": "P1",
+      "organisation": "Kerala Forest and Wildlife Department",
+      "home": "https://forest.kerala.gov.in/",
+      "acquisition": "official_gis_and_reports",
+      "use": [
+        "protected_areas",
+        "forest_constraints",
+        "biodiversity"
+      ],
+      "note": "Used as an ecological exclusion source alongside national protected-area datasets."
+    },
+    "kspcb": {
+      "priority": "P1",
+      "organisation": "Kerala State Pollution Control Board",
+      "home": "https://kspcb.kerala.gov.in/",
+      "acquisition": "official_reports",
+      "use": [
+        "hazardous_waste",
+        "recyclers",
+        "industrial_waste_inventory"
+      ],
+      "note": "Supports circular-industry mass-flow and disposal-baseline work."
+    },
+    "ppac": {
+      "priority": "P1",
+      "organisation": "Petroleum Planning and Analysis Cell",
+      "home": "https://ppac.gov.in/",
+      "acquisition": "official_tables_and_ogd",
+      "use": [
+        "petroleum_product_sales",
+        "whole_energy_balance"
+      ],
+      "note": "Used for non-electric energy context and transport-fuel trajectories."
+    },
+    "vahan": {
+      "priority": "P1",
+      "organisation": "Ministry of Road Transport and Highways / VAHAN",
+      "home": "https://analytics.parivahan.gov.in/",
+      "acquisition": "public_dashboard_plus_official_reports",
+      "use": [
+        "vehicle_fleet",
+        "fuel_type",
+        "ev_trajectory"
+      ],
+      "note": "Kerala Economic Review is used as the reproducible fallback for current EV counts."
+    },
+    "kmml": {
+      "priority": "P2",
+      "organisation": "Kerala Minerals and Metals Limited",
+      "home": "https://www.kmml.com/",
+      "acquisition": "annual_and_environment_reports",
+      "use": [
+        "material_flows",
+        "waste_recovery",
+        "circular_industry_case"
+      ],
+      "note": "Candidate primary circular-industry case; quantitative claims require a mass balance."
+    },
+    "ttpl": {
+      "priority": "P2",
+      "organisation": "Travancore Titanium Products Limited",
+      "home": "https://travancoretitanium.com/",
+      "acquisition": "annual_and_environment_reports",
+      "use": [
+        "process_residues",
+        "recovery_projects",
+        "circular_industry_case"
+      ],
+      "note": "Candidate titanium-process circularity cross-check."
+    },
+    "fact": {
+      "priority": "P2",
+      "organisation": "Fertilisers and Chemicals Travancore Limited",
+      "home": "https://fact.co.in/",
+      "acquisition": "annual_and_environment_reports",
+      "use": [
+        "co2",
+        "gypsum",
+        "industrial_symbiosis"
+      ],
+      "note": "Candidate industrial-symbiosis source for post-baseline expansion."
+    }
   },
+  "source_audit": null,
+  "kseb_projects": null,
+  "hazard_catalog": null,
+  "era5": null,
   "screening_nodes": [
-    {"name":"Kochi industrial-demand hub","lat":9.9312,"lon":76.2673,"kind":"grid","note":"Demand, industry, port and flexibility screening node."},
-    {"name":"Idukki hydro-storage system","lat":9.85,"lon":76.97,"kind":"storage","note":"Hydro flexibility, reservoir and pumped-storage screening area."},
-    {"name":"Ramakkalmedu wind area","lat":9.79,"lon":77.16,"kind":"wind","note":"Wind-resource screening area; ecology and grid constraints required."},
-    {"name":"Chavara circular-industry cluster","lat":9.0,"lon":76.53,"kind":"circular","note":"Mineral-sands, TiO2 and by-product recovery research cluster."},
-    {"name":"Vizhinjam coastal-energy node","lat":8.38,"lon":76.98,"kind":"marine","note":"Port, wave-energy history, shore-power and marine-resource screening node."}
+    {
+      "name": "Kochi industrial-demand hub",
+      "lat": 9.9312,
+      "lon": 76.2673,
+      "kind": "grid",
+      "note": "Demand, industry, port and flexibility screening node."
+    },
+    {
+      "name": "Idukki hydro-storage system",
+      "lat": 9.85,
+      "lon": 76.97,
+      "kind": "storage",
+      "note": "Hydro flexibility, reservoir and pumped-storage screening area."
+    },
+    {
+      "name": "Ramakkalmedu wind area",
+      "lat": 9.79,
+      "lon": 77.16,
+      "kind": "wind",
+      "note": "Wind-resource screening area; ecology and grid constraints required."
+    },
+    {
+      "name": "Chavara circular-industry cluster",
+      "lat": 9.0,
+      "lon": 76.53,
+      "kind": "circular",
+      "note": "Mineral-sands, TiO2 and by-product recovery research cluster."
+    },
+    {
+      "name": "Vizhinjam coastal-energy node",
+      "lat": 8.38,
+      "lon": 76.98,
+      "kind": "marine",
+      "note": "Port, wave-energy history, shore-power and marine-resource screening node."
+    }
   ]
 }
