@@ -21,7 +21,15 @@ from kerala2040.analysis import add_daily_indicators
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
+
+def _load_json(path: Path) -> Any:
+    if not path.exists():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def _jsonable(value: Any) -> Any:
@@ -64,6 +72,7 @@ def _scenario_payload(config: dict[str, Any]) -> list[dict[str, Any]]:
                 "id": key,
                 "code": code,
                 "name": label,
+                "type": value.get("type"),
                 "description": value.get("description"),
                 "ecology_constraint": value.get("ecology_constraint"),
                 "demand_flexibility": value.get("demand_flexibility"),
@@ -86,7 +95,9 @@ def _load_daily(root: Path) -> pd.DataFrame | None:
     return None
 
 
-def _daily_products(data: pd.DataFrame) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+def _daily_products(
+    data: pd.DataFrame,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     work = data.copy()
     work["date"] = pd.to_datetime(work["date"]).dt.normalize()
     wanted = [
@@ -130,6 +141,47 @@ def _daily_products(data: pd.DataFrame) -> tuple[list[dict[str, Any]], list[dict
     return daily.to_dict("records"), monthly.to_dict("records"), duration.to_dict("records")
 
 
+def _grid_india_product(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    frame = pd.read_parquet(path)
+    if frame.empty:
+        return None
+    columns = [
+        c
+        for c in [
+            "date",
+            "peak_demand_met_mw",
+            "peak_shortage_mw",
+            "energy_met_mu",
+            "drawal_schedule_mu",
+            "od_ud_mu",
+            "max_od_ud_mw",
+            "energy_shortage_mu",
+        ]
+        if c in frame.columns
+    ]
+    work = frame[columns].copy()
+    if "date" in work.columns:
+        work["date"] = pd.to_datetime(work["date"]).dt.strftime("%Y-%m-%d")
+    return {
+        "classification": "official_independent_cross_check",
+        "source": "Grid-India Daily PSP MOP_E",
+        "records": work.to_dict("records"),
+    }
+
+
+def _source_audit_summary(payload: dict[str, Any] | None) -> dict[str, int]:
+    if not payload:
+        return {}
+    sources = payload.get("sources", {})
+    counts: dict[str, int] = {}
+    for entry in sources.values():
+        status = str(entry.get("status", "unknown"))
+        counts[status] = counts.get(status, 0) + 1
+    return counts
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("."))
@@ -141,16 +193,26 @@ def main() -> int:
     scenarios_cfg = _load_yaml(root / "configs/scenarios_2040.yaml")
     references_cfg = _load_yaml(root / "configs/published_2040_references.yaml")
     sources_cfg = _load_yaml(root / "configs/sources.yaml")
+    observed_cfg = _load_yaml(root / "configs/observed_2024_25.yaml")
 
     summary_path = root / "results/baseline/summary.json"
-    summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else None
+    summary = _load_json(summary_path)
     daily_frame = _load_daily(root)
     storage_path = root / "data/processed/sldc_storage_daily.parquet"
     weather_files = sorted((root / "data/processed").glob("*weather*.parquet")) + sorted(
         (root / "data/processed").glob("*nasa*.parquet")
     )
+    era5_manifest = _load_json(root / "data/processed/era5_daily_manifest.json")
+    grid_india = _grid_india_product(root / "data/processed/grid_india_psp.parquet")
+    kseb_projects = _load_json(root / "data/processed/kseb_pms_projects.json")
+    hazard_catalog = _load_json(root / "data/processed/ksdma_hazard_manifest.json")
+    source_audit = _load_json(root / "results/source_audit.json")
 
-    if daily_frame is not None and storage_path.exists() and "storage_pct_energy_weighted" not in daily_frame.columns:
+    if (
+        daily_frame is not None
+        and storage_path.exists()
+        and "storage_pct_energy_weighted" not in daily_frame.columns
+    ):
         storage = pd.read_parquet(storage_path).copy()
         storage["date"] = pd.to_datetime(storage["date"]).dt.normalize()
         daily_frame["date"] = pd.to_datetime(daily_frame["date"]).dt.normalize()
@@ -162,20 +224,72 @@ def main() -> int:
     git_sha = os.getenv("GITHUB_SHA") or os.getenv("GIT_COMMIT")
     scenarios = _scenario_payload(scenarios_cfg)
 
+    hazard_count = len((hazard_catalog or {}).get("records", []))
+    project_count = len((kseb_projects or {}).get("projects", []))
+    grid_records = len((grid_india or {}).get("records", []))
+
     status = {
-        "sldc_daily": {"available": daily_frame is not None, "evidence": "measured"},
-        "baseline_summary": {"available": summary is not None, "evidence": "derived"},
-        "reservoir_storage": {"available": storage_path.exists(), "evidence": "measured"},
-        "weather": {"available": bool(weather_files), "evidence": "measured/reanalysis"},
+        "official_observed_2024_25": {
+            "available": bool(observed_cfg),
+            "evidence": "sourced observed",
+            "note": "Kerala Economic Review 2025 / KSEBL annual FY2024-25 reference values.",
+        },
+        "sldc_daily": {
+            "available": daily_frame is not None,
+            "evidence": "measured",
+            "note": "Kerala SLDC daily system accounting.",
+        },
+        "baseline_summary": {
+            "available": summary is not None,
+            "evidence": "derived",
+            "note": "Derived only after historical calibration checks.",
+        },
+        "reservoir_storage": {
+            "available": storage_path.exists(),
+            "evidence": "measured",
+            "note": "Kerala SLDC reservoir-storage chronology.",
+        },
+        "weather": {
+            "available": bool(weather_files),
+            "evidence": "measured/reanalysis",
+            "note": "NASA POWER representative-point hourly weather.",
+        },
+        "era5_reanalysis": {
+            "available": era5_manifest is not None,
+            "evidence": "reanalysis",
+            "note": "Copernicus ERA5 Kerala-domain daily climate manifest.",
+        },
+        "grid_india_psp": {
+            "available": grid_records > 0,
+            "evidence": "official cross-check",
+            "note": (
+                f"{grid_records} official state-day records available."
+                if grid_records
+                else "Current API integration is configured; processed FY2024-25 rows not in this bundle yet."
+            ),
+        },
+        "kseb_project_inventory": {
+            "available": project_count > 0,
+            "evidence": "official project portal",
+            "note": (
+                f"{project_count} project records parsed from KSEB PMS."
+                if project_count
+                else "KSEB PMS parser configured; current project inventory not in this bundle yet."
+            ),
+        },
+        "hazard_layers": {
+            "available": hazard_count > 0,
+            "evidence": "official GIS catalog",
+            "note": (
+                f"{hazard_count} KSDMA hazard download links catalogued."
+                if hazard_count
+                else "KSDMA hazard-layer manifest not in this bundle yet."
+            ),
+        },
         "hourly_state_load": {
             "available": False,
             "evidence": "gap",
-            "note": "No authenticated FY2024-25 Kerala 8760/35040 load chronology is published in this bundle.",
-        },
-        "grid_india_psp": {
-            "available": False,
-            "evidence": "cross-check source",
-            "note": "Integration remains non-blocking because upstream access has been unreliable.",
+            "note": "No authenticated FY2024-25 Kerala 8760/35040 state-load chronology is published in this bundle.",
         },
     }
 
@@ -188,17 +302,27 @@ def main() -> int:
         "model_year": scenarios_cfg.get("model_year", 2040),
         "principle": scenarios_cfg.get("principle"),
         "status": status,
+        "source_audit_summary": _source_audit_summary(source_audit),
         "files": {},
     }
 
-    _write(out / "scenarios.json", {"scenarios": scenarios, "stress_tests": scenarios_cfg.get("stress_tests", {}), "rules": scenarios_cfg.get("rules", [])})
+    _write(
+        out / "scenarios.json",
+        {
+            "scenarios": scenarios,
+            "stress_tests": scenarios_cfg.get("stress_tests", {}),
+            "rules": scenarios_cfg.get("rules", []),
+        },
+    )
     _write(out / "published-references.json", references_cfg)
     _write(out / "sources.json", sources_cfg)
+    _write(out / "observed-reference.json", observed_cfg)
     metadata["files"].update(
         {
             "scenarios": "scenarios.json",
             "published_references": "published-references.json",
             "sources": "sources.json",
+            "observed_reference": "observed-reference.json",
         }
     )
 
@@ -208,9 +332,18 @@ def main() -> int:
 
     if daily_frame is not None:
         daily, monthly, duration = _daily_products(daily_frame)
-        _write(out / "daily-balance.json", {"unit": "MU/day", "evidence": "measured/derived", "records": daily})
-        _write(out / "monthly-balance.json", {"unit": "MU/month", "evidence": "measured/derived", "records": monthly})
-        _write(out / "import-duration.json", {"evidence": "derived from measured daily balance", "records": duration})
+        _write(
+            out / "daily-balance.json",
+            {"unit": "MU/day", "evidence": "measured/derived", "records": daily},
+        )
+        _write(
+            out / "monthly-balance.json",
+            {"unit": "MU/month", "evidence": "measured/derived", "records": monthly},
+        )
+        _write(
+            out / "import-duration.json",
+            {"evidence": "derived from measured daily balance", "records": duration},
+        )
         metadata["files"].update(
             {
                 "daily_balance": "daily-balance.json",
@@ -219,28 +352,91 @@ def main() -> int:
             }
         )
 
+    if grid_india:
+        _write(out / "grid-india-daily.json", grid_india)
+        metadata["files"]["grid_india_daily"] = "grid-india-daily.json"
+
+    if kseb_projects:
+        _write(out / "kseb-projects.json", kseb_projects)
+        metadata["files"]["kseb_projects"] = "kseb-projects.json"
+
+    if hazard_catalog:
+        _write(out / "hazard-catalog.json", hazard_catalog)
+        metadata["files"]["hazard_catalog"] = "hazard-catalog.json"
+
+    if source_audit:
+        _write(out / "source-audit.json", source_audit)
+        metadata["files"]["source_audit"] = "source-audit.json"
+
+    if era5_manifest:
+        _write(out / "era5-daily-manifest.json", era5_manifest)
+        metadata["files"]["era5_daily_manifest"] = "era5-daily-manifest.json"
+
     screening_nodes = [
-        {"name": "Kochi industrial-demand hub", "lat": 9.9312, "lon": 76.2673, "kind": "grid", "note": "Demand, industry, port and flexibility screening node."},
-        {"name": "Idukki hydro-storage system", "lat": 9.85, "lon": 76.97, "kind": "storage", "note": "Hydro flexibility, reservoir and pumped-storage screening area."},
-        {"name": "Ramakkalmedu wind area", "lat": 9.79, "lon": 77.16, "kind": "wind", "note": "Wind-resource screening area; ecology and grid constraints required."},
-        {"name": "Chavara circular-industry cluster", "lat": 9.0, "lon": 76.53, "kind": "circular", "note": "Mineral-sands, TiO2 and by-product recovery research cluster."},
-        {"name": "Vizhinjam coastal-energy node", "lat": 8.38, "lon": 76.98, "kind": "marine", "note": "Port, wave-energy history, shore-power and marine-resource screening node."},
+        {
+            "name": "Kochi industrial-demand hub",
+            "lat": 9.9312,
+            "lon": 76.2673,
+            "kind": "grid",
+            "note": "Demand, industry, port and flexibility screening node.",
+        },
+        {
+            "name": "Idukki hydro-storage system",
+            "lat": 9.85,
+            "lon": 76.97,
+            "kind": "storage",
+            "note": "Hydro flexibility, reservoir and pumped-storage screening area.",
+        },
+        {
+            "name": "Ramakkalmedu wind area",
+            "lat": 9.79,
+            "lon": 77.16,
+            "kind": "wind",
+            "note": "Wind-resource screening area; ecology and grid constraints required.",
+        },
+        {
+            "name": "Chavara circular-industry cluster",
+            "lat": 9.0,
+            "lon": 76.53,
+            "kind": "circular",
+            "note": "Mineral-sands, TiO2 and by-product recovery research cluster.",
+        },
+        {
+            "name": "Vizhinjam coastal-energy node",
+            "lat": 8.38,
+            "lon": 76.98,
+            "kind": "marine",
+            "note": "Port, wave-energy history, shore-power and marine-resource screening node.",
+        },
     ]
-    _write(out / "screening-nodes.json", {"classification": "research screening; not siting approval", "records": screening_nodes})
+    _write(
+        out / "screening-nodes.json",
+        {"classification": "research screening; not siting approval", "records": screening_nodes},
+    )
     metadata["files"]["screening_nodes"] = "screening-nodes.json"
     _write(out / "metadata.json", metadata)
 
     site_manifest = {
         "metadata": metadata,
+        "observed": observed_cfg,
         "baseline": summary,
         "scenarios": scenarios,
         "stress_tests": scenarios_cfg.get("stress_tests", {}),
         "references": references_cfg.get("references", {}),
         "sources": sources_cfg.get("sources", {}),
+        "source_audit": source_audit,
+        "kseb_projects": kseb_projects,
+        "hazard_catalog": hazard_catalog,
+        "era5": era5_manifest,
         "screening_nodes": screening_nodes,
     }
     _write(out / "site-data.json", site_manifest)
-    print(json.dumps({"output": str(out), "files": sorted(p.name for p in out.glob("*.json"))}, indent=2))
+    print(
+        json.dumps(
+            {"output": str(out), "files": sorted(p.name for p in out.glob("*.json"))},
+            indent=2,
+        )
+    )
     return 0
 
 
