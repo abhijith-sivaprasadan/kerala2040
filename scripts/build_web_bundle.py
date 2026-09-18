@@ -181,6 +181,43 @@ def _source_audit_summary(payload: dict[str, Any] | None) -> dict[str, int]:
     return counts
 
 
+def _load_kseb_history(root: Path) -> dict[str, Any] | None:
+    parts = [
+        root / "data/manual/kseb_capacity_generation.json",
+        root / "data/manual/kseb_system_balance.json",
+        root / "data/manual/kseb_network_consumers.json",
+        root / "data/manual/kseb_losses_consumption.json",
+    ]
+    loaded = [_load_json(path) for path in parts]
+    loaded = [item for item in loaded if item]
+    if not loaded:
+        return None
+    payload: dict[str, Any] = {
+        "version": 1,
+        "classification": "official_kseb_export_user_supplied",
+        "received_date": "2026-09-18",
+        "source_description": (
+            "User-supplied KSEB export bundle. Values are preserved from the exported "
+            "tables; duplicate chart exports are omitted from the normalized dataset."
+        ),
+        "validation": {},
+        "source_files": {},
+        "series": {},
+        "caveats": [
+            "No raw hourly or 15-minute Kerala demand chronology is present in this export.",
+            "Annual series end in different years; coverage is preserved rather than extrapolated.",
+            "The Power Purchased_Import label is preserved from the KSEB export and is not silently redefined as net interstate imports.",
+        ],
+    }
+    for item in loaded:
+        payload["series"].update(item.get("series", {}))
+        payload["source_files"].update(item.get("source_files", {}))
+        if item.get("source_file"):
+            payload["source_files"]["annual_energy_balance"] = item["source_file"]
+        payload["validation"].update(item.get("validation", {}))
+    return payload
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("."))
@@ -220,6 +257,7 @@ def main() -> int:
     kseb_projects = _load_json(root / "data/processed/kseb_pms_projects.json")
     hazard_catalog = _load_json(root / "data/processed/ksdma_hazard_manifest.json")
     source_audit = _load_json(root / "results/source_audit.json")
+    kseb_history = _load_kseb_history(root)
 
     if (
         daily_frame is not None
@@ -240,6 +278,7 @@ def main() -> int:
     hazard_count = len((hazard_catalog or {}).get("records", []))
     project_count = len((kseb_projects or {}).get("projects", []))
     grid_records = len((grid_india or {}).get("records", []))
+    kseb_series_count = len((kseb_history or {}).get("series", {}))
 
     status = {
         "official_observed_2024_25": {
@@ -306,6 +345,15 @@ def main() -> int:
                 else "KSDMA hazard-layer manifest not in this bundle yet."
             ),
         },
+        "kseb_historical_export": {
+            "available": kseb_series_count > 0,
+            "evidence": "official KSEB export",
+            "note": (
+                f"{kseb_series_count} normalized historical series from the user-supplied KSEB export bundle. "
+                "This adds annual capacity, generation, system-balance, network, consumer and loss history; "
+                "it does not contain an hourly load chronology."
+            ),
+        },
         "hourly_state_load": {
             "available": False,
             "evidence": "gap",
@@ -343,6 +391,8 @@ def main() -> int:
     _write(out / "ogd-targets.json", ogd_cfg)
     _write(out / "ecology-constraints.json", ecology_cfg)
     _write(out / "research-scope.json", scope_cfg)
+    if kseb_history:
+        _write(out / "kseb-history.json", kseb_history)
     metadata["files"].update(
         {
             "scenarios": "scenarios.json",
@@ -355,6 +405,7 @@ def main() -> int:
             "ogd_targets": "ogd-targets.json",
             "ecology_constraints": "ecology-constraints.json",
             "research_scope": "research-scope.json",
+            **({"kseb_history": "kseb-history.json"} if kseb_history else {}),
         }
     )
 
@@ -456,6 +507,16 @@ def main() -> int:
         "non_electric_energy": non_electric_cfg,
         "ogd_targets": ogd_cfg,
         "ecology_constraints": ecology_cfg,
+        "kseb_history": (
+            {
+                "classification": kseb_history.get("classification"),
+                "received_date": kseb_history.get("received_date"),
+                "validation": kseb_history.get("validation", {}),
+                "series_available": sorted(kseb_history.get("series", {}).keys()),
+            }
+            if kseb_history
+            else None
+        ),
         "baseline": summary,
         "scenarios": scenarios,
         "stress_tests": scenarios_cfg.get("stress_tests", {}),
