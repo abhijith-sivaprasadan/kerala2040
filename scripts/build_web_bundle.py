@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Build the public Kerala 2040 web-data bundle from configs and processed evidence.
 
 The bundle never fabricates missing observations. Files that are unavailable are reported
@@ -10,7 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -220,7 +219,7 @@ def main() -> int:
         if len(keep) > 1:
             daily_frame = daily_frame.merge(storage[keep], on="date", how="left")
 
-    generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    generated_at = datetime.now(UTC).replace(microsecond=0).isoformat()
     git_sha = os.getenv("GITHUB_SHA") or os.getenv("GIT_COMMIT")
     scenarios = _scenario_payload(scenarios_cfg)
 
