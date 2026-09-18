@@ -153,6 +153,83 @@ def hydro_operating_envelope(frame: pd.DataFrame) -> list[dict[str, Any]]:
     return records
 
 
+
+def build_reservoir_level_diagnostics(
+    hydro_daily: pd.DataFrame,
+    reservoir_rows: pd.DataFrame,
+) -> tuple[pd.DataFrame, list[dict[str, Any]]]:
+    """Join reported reservoir levels to system hydro without implying plant dispatch."""
+    required = {
+        "date",
+        "reservoir",
+        "level_m",
+        "min_drawdown_level_m",
+        "full_level_m",
+        "full_storage_mu",
+    }
+    missing = sorted(required - set(reservoir_rows.columns))
+    if missing:
+        raise ValueError(f"reservoir rows missing required columns: {missing}")
+
+    levels = reservoir_rows.copy()
+    levels["date"] = pd.to_datetime(levels["date"]).dt.normalize()
+    levels = levels.merge(
+        hydro_daily[["date", "hydel_total_mu"]],
+        on="date",
+        how="inner",
+        validate="many_to_one",
+    )
+    span = (
+        pd.to_numeric(levels["full_level_m"], errors="coerce")
+        - pd.to_numeric(levels["min_drawdown_level_m"], errors="coerce")
+    )
+    levels["normalised_level"] = (
+        pd.to_numeric(levels["level_m"], errors="coerce")
+        - pd.to_numeric(levels["min_drawdown_level_m"], errors="coerce")
+    ) / span.where(span > 0)
+    levels["normalised_level"] = levels["normalised_level"].clip(lower=0.0, upper=1.0)
+
+    summary: list[dict[str, Any]] = []
+    for reservoir, group in levels.groupby("reservoir"):
+        valid = group[["normalised_level", "hydel_total_mu"]].dropna()
+        corr = None
+        if (
+            len(valid) >= 3
+            and valid["normalised_level"].nunique() > 1
+            and valid["hydel_total_mu"].nunique() > 1
+        ):
+            corr = float(valid.corr().iloc[0, 1])
+        full_storage = pd.to_numeric(group["full_storage_mu"], errors="coerce").dropna()
+        summary.append(
+            {
+                "reservoir": str(reservoir),
+                "days": len(group),
+                "full_storage_mu_reference": (
+                    float(full_storage.median()) if not full_storage.empty else None
+                ),
+                "normalised_level_min": float(valid["normalised_level"].min())
+                if not valid.empty
+                else None,
+                "normalised_level_median": float(valid["normalised_level"].median())
+                if not valid.empty
+                else None,
+                "normalised_level_max": float(valid["normalised_level"].max())
+                if not valid.empty
+                else None,
+                "system_hydro_vs_level_correlation": corr,
+                "interpretation": (
+                    "Contextual correlation with system-wide hydro generation; "
+                    "not plant-specific dispatch evidence."
+                ),
+            }
+        )
+    return levels, sorted(
+        summary,
+        key=lambda item: item["full_storage_mu_reference"] or 0.0,
+        reverse=True,
+    )
+
+
 def summarise_hydro(frame: pd.DataFrame) -> dict[str, Any]:
     """Create empirical hydro/import/storage diagnostics without causal claims."""
     seasonal: dict[str, dict[str, float | int]] = {}
