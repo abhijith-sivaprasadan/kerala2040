@@ -31,8 +31,13 @@ POINTS = {
     "kozhikode": (11.2588, 75.7804),
     "kannur": (11.8745, 75.3704),
 }
+# CDS enforces request-cost limits. Three-month chunks are small enough for the
+# same five-variable, hourly point-box request that succeeds for Jan-Mar 2025,
+# while still keeping the artifact count manageable.
 PERIODS = [
-    ("2024-04_to_2024-12", "2024", [f"{m:02d}" for m in range(4, 13)]),
+    ("2024-04_to_2024-06", "2024", [f"{m:02d}" for m in range(4, 7)]),
+    ("2024-07_to_2024-09", "2024", [f"{m:02d}" for m in range(7, 10)]),
+    ("2024-10_to_2024-12", "2024", [f"{m:02d}" for m in range(10, 13)]),
     ("2025-01_to_2025-03", "2025", [f"{m:02d}" for m in range(1, 4)]),
 ]
 DAYS = [f"{d:02d}" for d in range(1, 32)]
