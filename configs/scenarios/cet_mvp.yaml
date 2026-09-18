@@ -1,3 +1,7 @@
+classification: scenario_assumption
+source_type: structural_scenario_design
+source: Kerala 2040 research design
+provenance_note: Scenario definitions are research choices, not observed data or solved results.
 scenarios:
   - id: s0_bau
     description: Current-trajectory reference; no sovereignty target imposed.
