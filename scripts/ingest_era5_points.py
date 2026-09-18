@@ -16,27 +16,7 @@ from typing import Any
 
 import cdsapi
 
-DATASET = "reanalysis-era5-single-levels"
-VARIABLES = [
-    "2m_temperature",
-    "10m_u_component_of_wind",
-    "10m_v_component_of_wind",
-    "surface_solar_radiation_downwards",
-    "total_precipitation",
-]
-POINTS = {
-    "thiruvananthapuram": (8.5241, 76.9366),
-    "kochi": (9.9312, 76.2673),
-    "palakkad": (10.7867, 76.6548),
-    "kozhikode": (11.2588, 75.7804),
-    "kannur": (11.8745, 75.3704),
-}
-PERIODS = [
-    ("2024-04_to_2024-12", "2024", [f"{m:02d}" for m in range(4, 13)]),
-    ("2025-01_to_2025-03", "2025", [f"{m:02d}" for m in range(1, 4)]),
-]
-DAYS = [f"{d:02d}" for d in range(1, 32)]
-HOURS = [f"{h:02d}:00" for h in range(24)]
+from kerala2040.sources.era5 import DATASET, PERIODS, POINTS, VARIABLES, request_for
 
 
 def sha256(path: Path) -> str:
@@ -45,24 +25,6 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
-
-
-def request_for(lat: float, lon: float, year: str, months: list[str]) -> dict[str, Any]:
-    # Request a small box around each representative location. ERA5 is 0.25 degrees,
-    # so this resolves to the nearest small set of grid cells without claiming statewide
-    # spatial coverage.
-    pad = 0.13
-    return {
-        "product_type": ["reanalysis"],
-        "variable": VARIABLES,
-        "year": [year],
-        "month": months,
-        "day": DAYS,
-        "time": HOURS,
-        "data_format": "netcdf",
-        "download_format": "unarchived",
-        "area": [lat + pad, lon - pad, lat - pad, lon + pad],
-    }
 
 
 def main() -> int:
