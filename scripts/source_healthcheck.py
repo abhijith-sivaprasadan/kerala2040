@@ -19,10 +19,15 @@ def run() -> dict:
     results: dict[str, dict] = {}
 
     try:
-        latest = fetch_system_statistics()
+        # Probe the dated archive route used by the research pipeline. The undated
+        # landing page can render without a report date and is not the acquisition
+        # contract used for historical reconstruction.
+        probe_date = date(2025, 3, 31)
+        latest = fetch_system_statistics(probe_date)
         metrics = latest["metrics"]
         results["kerala_sldc"] = {
             "status": "ok",
+            "probe_mode": "dated_archive",
             "report_date": latest["report_date"],
             "internal_generation_mu": metrics["internal_generation_mu"],
             "net_import_mu": metrics["net_import_interface_mu"],
