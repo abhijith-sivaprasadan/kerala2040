@@ -1,10 +1,10 @@
 {
   "metadata": {
     "project": "Kerala 2040 \u2014 Open Energy Intelligence",
-    "generated_at_utc": "2026-09-18T20:16:19+00:00",
+    "generated_at_utc": "2026-09-18T21:46:31+00:00",
     "research_repo": "https://github.com/abhijith-sivaprasadan/kerala2040",
     "web_repo": "https://github.com/kerala2040/kerala2040.github.io",
-    "git_sha": "456aa0d59f1655cf62a6016e11836cc7f43de782",
+    "git_sha": "4f9ec2acd464a31d1ba9c1d93c7b6d9320bda29e",
     "model_year": 2040,
     "principle": "Energy sovereignty means retaining sufficient controllable generation, storage, flexible demand and infrastructure to withstand climate, hydrological and market shocks while using interstate trade strategically. It does not mean autarky or zero imports.",
     "status": {
@@ -30,8 +30,8 @@
       },
       "weather": {
         "available": true,
-        "evidence": "measured/reanalysis",
-        "note": "NASA POWER representative-point hourly weather."
+        "evidence": "reanalysis/remote-sensing-derived",
+        "note": "NASA POWER representative-point hourly weather; not station or plant telemetry."
       },
       "era5_reanalysis": {
         "available": true,
@@ -103,7 +103,7 @@
     "layer_provenance": {
       "sldc_daily": {
         "preserved": false,
-        "evidence_bundle_at_utc": "2026-09-18T20:16:19+00:00"
+        "evidence_bundle_at_utc": "2026-09-18T21:46:31+00:00"
       },
       "kseb_project_inventory": {
         "preserved": true,
@@ -119,11 +119,11 @@
       },
       "grid_india_psp": {
         "preserved": false,
-        "evidence_bundle_at_utc": "2026-09-18T20:16:19+00:00"
+        "evidence_bundle_at_utc": "2026-09-18T21:46:31+00:00"
       },
       "hourly_load_proxy": {
         "preserved": false,
-        "evidence_bundle_at_utc": "2026-09-18T20:16:19+00:00"
+        "evidence_bundle_at_utc": "2026-09-18T21:46:31+00:00"
       },
       "source_audit": {
         "preserved": true,
@@ -823,6 +823,19 @@
   },
   "hourly_load_proxy": {
     "classification": "proxy_reconstruction_not_measured_telemetry",
+    "source_type": "reconstruction_from_observed_and_official_reference",
+    "source": "Kerala SLDC daily system statistics + CEA Resource Adequacy Plan for Kerala",
+    "source_components": [
+      {
+        "classification": "observed",
+        "source": "Kerala State Load Despatch Centre daily system statistics"
+      },
+      {
+        "classification": "official_reference",
+        "source": "Central Electricity Authority Resource Adequacy Plan for Kerala"
+      }
+    ],
+    "note": "Proxy reconstruction; not measured hourly or 15-minute Kerala telemetry.",
     "period": "FY2024-25",
     "timezone": "Asia/Kolkata",
     "resolution": "1h",
