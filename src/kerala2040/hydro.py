@@ -158,7 +158,7 @@ def summarise_hydro(frame: pd.DataFrame) -> dict[str, Any]:
     seasonal: dict[str, dict[str, float | int]] = {}
     for season, group in frame.groupby("season"):
         seasonal[str(season)] = {
-            "days": int(len(group)),
+            "days": len(group),
             "hydro_mu_mean": float(group["hydel_total_mu"].mean()),
             "hydro_mu_median": float(group["hydel_total_mu"].median()),
             "net_import_mu_mean": float(group["net_import_interface_mu"].mean()),
