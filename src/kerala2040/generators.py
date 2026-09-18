@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+
 import pandas as pd
 
 
@@ -21,7 +22,7 @@ def generator_database(
     observed_capacity: dict[str, object],
 ) -> tuple[pd.DataFrame, dict[str, object]]:
     """Normalise KSEB project records and compare them with official aggregate capacity."""
-    records: list[dict[str, Any]] = []
+    records: list[dict[str, object]] = []
     for item in project_payload.get("projects", []):
         records.append(
             {
