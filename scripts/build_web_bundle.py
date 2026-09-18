@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Build the public Kerala 2040 web-data bundle from configs and processed evidence.
 
 The bundle never fabricates missing observations. Files that are unavailable are reported
@@ -10,7 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -37,7 +36,7 @@ def _jsonable(value: Any) -> Any:
         return {str(k): _jsonable(v) for k, v in value.items()}
     if isinstance(value, (list, tuple)):
         return [_jsonable(v) for v in value]
-    if isinstance(value, pd.Timestamp):
+    if isinstance(value, (pd.Timestamp, datetime, date)):
         return value.isoformat()
     if value is None:
         return None
@@ -194,6 +193,11 @@ def main() -> int:
     references_cfg = _load_yaml(root / "configs/published_2040_references.yaml")
     sources_cfg = _load_yaml(root / "configs/sources.yaml")
     observed_cfg = _load_yaml(root / "configs/observed_2024_25.yaml")
+    cea_cfg = _load_yaml(root / "configs/cea_resource_adequacy_2025.yaml")
+    circular_cfg = _load_yaml(root / "configs/circular_industry_references.yaml")
+    non_electric_cfg = _load_yaml(root / "configs/non_electric_energy_references.yaml")
+    ogd_cfg = _load_yaml(root / "configs/ogd_targets.yaml")
+    ecology_cfg = _load_yaml(root / "configs/ecology_constraints.yaml")
 
     summary_path = root / "results/baseline/summary.json"
     summary = _load_json(summary_path)
@@ -220,7 +224,7 @@ def main() -> int:
         if len(keep) > 1:
             daily_frame = daily_frame.merge(storage[keep], on="date", how="left")
 
-    generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    generated_at = datetime.now(UTC).replace(microsecond=0).isoformat()
     git_sha = os.getenv("GITHUB_SHA") or os.getenv("GIT_COMMIT")
     scenarios = _scenario_payload(scenarios_cfg)
 
@@ -317,12 +321,22 @@ def main() -> int:
     _write(out / "published-references.json", references_cfg)
     _write(out / "sources.json", sources_cfg)
     _write(out / "observed-reference.json", observed_cfg)
+    _write(out / "cea-resource-adequacy.json", cea_cfg)
+    _write(out / "circular-industry.json", circular_cfg)
+    _write(out / "non-electric-energy.json", non_electric_cfg)
+    _write(out / "ogd-targets.json", ogd_cfg)
+    _write(out / "ecology-constraints.json", ecology_cfg)
     metadata["files"].update(
         {
             "scenarios": "scenarios.json",
             "published_references": "published-references.json",
             "sources": "sources.json",
             "observed_reference": "observed-reference.json",
+            "cea_resource_adequacy": "cea-resource-adequacy.json",
+            "circular_industry": "circular-industry.json",
+            "non_electric_energy": "non-electric-energy.json",
+            "ogd_targets": "ogd-targets.json",
+            "ecology_constraints": "ecology-constraints.json",
         }
     )
 
@@ -419,6 +433,11 @@ def main() -> int:
     site_manifest = {
         "metadata": metadata,
         "observed": observed_cfg,
+        "cea_resource_adequacy": cea_cfg,
+        "circular_industry": circular_cfg,
+        "non_electric_energy": non_electric_cfg,
+        "ogd_targets": ogd_cfg,
+        "ecology_constraints": ecology_cfg,
         "baseline": summary,
         "scenarios": scenarios,
         "stress_tests": scenarios_cfg.get("stress_tests", {}),
