@@ -21,6 +21,12 @@ _FILE_TYPE = "DAILY_PSP_REPORT"
 _DATE_RE = re.compile(r"(?<!\d)(\d{2})\.(\d{2})\.(\d{2})(?!\d)")
 
 
+def fiscal_year_label(day: date) -> str:
+    """Return Grid-India fiscal-year label such as 2024-2025."""
+    start = day.year if day.month >= 4 else day.year - 1
+    return f"{start}-{start + 1}"
+
+
 def _report_date(entry: dict[str, Any]) -> date | None:
     text = " ".join(str(entry.get(key, "")) for key in ("Title_", "FilePath", "name"))
     match = _DATE_RE.search(text)
@@ -56,20 +62,29 @@ def legacy_report_entries(start: date, end: date) -> list[dict[str, Any]]:
     return rows
 
 
-def list_daily_psp_files(
+def list_month_psp_files(
+    month: date,
     *,
     session: Session | None = None,
     timeout: float = 60.0,
     verify_tls: bool = True,
 ) -> list[dict[str, Any]]:
-    """List official Grid-India Daily PSP report files."""
+    """List Daily PSP files for one Grid-India fiscal-year/month bucket.
+
+    The current Grid-India file API requires both the fiscal year and month.
+    """
     own_session = session is None
     session = session or build_session()
     try:
         response = checked(
             session.post(
                 API_URL,
-                json={"_source": "GRDW", "_type": _FILE_TYPE},
+                json={
+                    "_source": "GRDW",
+                    "_type": _FILE_TYPE,
+                    "_fileDate": fiscal_year_label(month),
+                    "_month": month.strftime("%m"),
+                },
                 timeout=timeout,
                 verify=verify_tls,
                 headers={"Origin": "https://grid-india.in"},
@@ -93,6 +108,60 @@ def list_daily_psp_files(
     finally:
         if own_session:
             session.close()
+
+
+def discover_daily_psp_files(
+    start: date,
+    end: date,
+    *,
+    session: Session | None = None,
+    timeout: float = 60.0,
+    verify_tls: bool = True,
+) -> list[dict[str, Any]]:
+    """Discover and de-duplicate current API files over a date range."""
+    if end < start:
+        raise ValueError("end must be on or after start")
+    own_session = session is None
+    session = session or build_session()
+    try:
+        cursor = date(start.year, start.month, 1)
+        stop = date(end.year, end.month, 1)
+        by_day: dict[str, dict[str, Any]] = {}
+        while cursor <= stop:
+            for entry in list_month_psp_files(
+                cursor,
+                session=session,
+                timeout=timeout,
+                verify_tls=verify_tls,
+            ):
+                report_day = entry.get("report_date")
+                if not report_day:
+                    continue
+                parsed = date.fromisoformat(report_day)
+                if not start <= parsed <= end:
+                    continue
+                # Grid-India occasionally publishes corrected versions; keep the
+                # last returned item for a date rather than duplicating rows.
+                by_day[report_day] = entry
+            if cursor.month == 12:
+                cursor = date(cursor.year + 1, 1, 1)
+            else:
+                cursor = date(cursor.year, cursor.month + 1, 1)
+        return [by_day[key] for key in sorted(by_day)]
+    finally:
+        if own_session:
+            session.close()
+
+
+def list_daily_psp_files(
+    *,
+    session: Session | None = None,
+    timeout: float = 60.0,
+    verify_tls: bool = True,
+) -> list[dict[str, Any]]:
+    """Compatibility helper returning files for the current calendar month."""
+    today = date.today()
+    return list_month_psp_files(today, session=session, timeout=timeout, verify_tls=verify_tls)
 
 
 def select_report_files(
@@ -185,7 +254,9 @@ def extract_state_row(sheet: pd.DataFrame, state: str = "Kerala") -> dict[str, A
     raise ValueError(f"state {state!r} not found in MOP_E sheet")
 
 
-def parse_mop_e_state(content: bytes, state: str = "Kerala", filename: str = "report.xls") -> dict[str, Any]:
+def parse_mop_e_state(
+    content: bytes, state: str = "Kerala", filename: str = "report.xls"
+) -> dict[str, Any]:
     """Parse a legacy XLS or XLSX PSP workbook and extract the state row."""
     suffix = filename.lower().rsplit(".", maxsplit=1)[-1]
     engine = "openpyxl" if suffix == "xlsx" else "xlrd"
