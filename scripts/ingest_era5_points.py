@@ -12,9 +12,11 @@ import json
 import os
 from datetime import UTC, datetime
 from pathlib import Path
+
 import cdsapi
 
 from kerala2040.sources.era5 import DATASET, PERIODS, POINTS, VARIABLES, request_for
+
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -23,23 +25,6 @@ def sha256(path: Path) -> str:
             digest.update(chunk)
     return digest.hexdigest()
 
-
-def request_for(lat: float, lon: float, year: str, months: list[str]) -> dict[str, Any]:
-    # Request a small box around each representative location. ERA5 is 0.25 degrees,
-    # so this resolves to the nearest small set of grid cells without claiming statewide
-    # spatial coverage.
-    pad = 0.13
-    return {
-        "product_type": ["reanalysis"],
-        "variable": VARIABLES,
-        "year": [year],
-        "month": months,
-        "day": DAYS,
-        "time": HOURS,
-        "data_format": "netcdf",
-        "download_format": "unarchived",
-        "area": [lat + pad, lon - pad, lat - pad, lon + pad],
-    }
 
 
 def main() -> int:
