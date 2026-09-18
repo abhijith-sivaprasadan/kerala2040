@@ -22,11 +22,13 @@ test('all evidence comes from the deployed snapshot and downloads exist',async()
     return {ok:true,json:async()=>JSON.parse(fs.readFileSync(file,'utf8'))};
   }});
   await vm.runInContext('loadPlatformData()',c);
-  assert.equal(urls.length,5);
+  assert.equal(urls.length,6);
   assert.ok(urls.every(url=>url.startsWith('data/')));
   assert.ok(vm.runInContext('state.daily.records.length',c)>0);
   assert.ok(vm.runInContext('state.ksebHistory.series.installed_capacity.length',c)>0);
   assert.equal(vm.runInContext('state.data.baseline.rows === state.daily.records.length',c),true);
+  assert.match(vm.runInContext('state.hourlyProxy.classification',c),/proxy/i);
+  assert.match(vm.runInContext('state.hourlyProxy.classification',c),/not_measured|not measured/i);
 });
 test('disabled trade survives scenario normalisation',()=>{
   const c=context();

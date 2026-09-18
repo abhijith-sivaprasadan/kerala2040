@@ -304,8 +304,8 @@ def main() -> int:
         },
         "weather": {
             "available": bool(weather_files),
-            "evidence": "measured/reanalysis",
-            "note": "NASA POWER representative-point hourly weather.",
+            "evidence": "reanalysis/remote-sensing-derived",
+            "note": "NASA POWER representative-point hourly weather; not station or plant telemetry.",
         },
         "era5_reanalysis": {
             "available": bool((era5_manifest or {}).get("files_succeeded", 0)),

@@ -1,3 +1,10 @@
+classification: scenario_assumption
+source_type: provisional_stress_test
+source: Kerala 2040 research assumption
+provenance_note: >-
+  The 0.80 and 0.60 hydro multipliers below are synthetic/provisional scenario assumptions.
+  They are not observed Kerala hydrology and must be replaced by sourced inflow/hydrology cases
+  before publication.
 id: drought
 kind: hydro_availability
 cases:

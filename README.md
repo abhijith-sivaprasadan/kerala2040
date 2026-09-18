@@ -36,6 +36,22 @@ The first operational release connects:
 
 See [`docs/data_connectivity_v1.md`](docs/data_connectivity_v1.md).
 
+## Current modelling foundation
+
+The repository now distinguishes an **observed daily replay** from provisional
+chronological proxies. The FY2024-25 PyPSA replay uses Kerala SLDC observed daily
+energy and Kerala State Planning Board/KSEBL installed-capacity references; it
+does not consume the reconstructed 8,760-hour load proxy. Weather-derived solar
+and wind availability are explicitly labelled proxy resource profiles, not
+measured Kerala generation.
+
+Hydro diagnostics, official-accounting reconciliation, the generator inventory,
+2040 scenario dimensions, techno-economic source registry and GIS acquisition
+manifest are reproducible workflows. Numerical 2040 optimisation remains blocked
+until unresolved inputs are sourced.
+
+See [`docs/DATA_PROVENANCE_POLICY.md`](docs/DATA_PROVENANCE_POLICY.md).
+
 ```bash
 python -m venv .venv
 # Linux/macOS
@@ -82,6 +98,8 @@ The CET release path still targets:
 8. Interconnection is an asset; the project studies sovereignty and resilience, not autarky.
 9. Observed data, sourced assumptions and scenario choices remain distinguishable.
 10. No 2040 conclusion before the historical calibration gate passes.
+11. Every model-facing dataset states its classification and source; proxy,
+    synthetic, derived and scenario-assumption data are never presented as observations.
 
 ## Repository layout
 
