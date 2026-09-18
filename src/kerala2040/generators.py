@@ -6,7 +6,6 @@ import re
 
 import pandas as pd
 
-
 _YEAR_RE = re.compile(r"(19|20)\d{2}")
 
 
