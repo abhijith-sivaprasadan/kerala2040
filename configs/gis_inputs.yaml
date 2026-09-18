@@ -1,5 +1,8 @@
 version: 1
-classification: gis_acquisition_and_processing_manifest
+classification: catalogue_only
+source_type: gis_acquisition_and_processing_manifest
+source: Official agencies listed per layer
+note: Catalogue entries are not model-ready GIS data.
 rule: >-
   A catalogue link is not a processed constraint. A layer becomes model-ready only after
   its raw file, hash, CRS, vintage, licence/access condition and processing rule are recorded.
