@@ -1,5 +1,8 @@
 version: 1
-classification: structural_scenario_framework_no_numeric_results
+classification: scenario_assumption
+source_type: structural_scenario_framework
+source: Kerala 2040 research design
+note: No numerical capacity, demand, cost, transfer-limit or reliability answers are encoded here.
 model_year: 2040
 rule: >-
   This file defines which levers differ between scenarios. It deliberately does not
