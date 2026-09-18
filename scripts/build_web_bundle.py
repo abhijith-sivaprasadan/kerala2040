@@ -247,6 +247,7 @@ def main() -> int:
 
     summary_path = root / "results/baseline/summary.json"
     summary = _load_json(summary_path)
+    hourly_proxy_summary = _load_json(root / "results/baseline/hourly_load_proxy_summary.json")
     daily_frame = _load_daily(root)
     storage_path = root / "data/processed/sldc_storage_daily.parquet"
     weather_files = sorted((root / "data/processed").glob("*weather*.parquet")) + sorted(
@@ -354,6 +355,16 @@ def main() -> int:
                 "it does not contain an hourly load chronology."
             ),
         },
+        "hourly_load_proxy": {
+            "available": hourly_proxy_summary is not None,
+            "evidence": "proxy reconstruction",
+            "note": (
+                "8760-hour reconstruction constrained by SLDC daily energy and CEA aggregate hourly references; "
+                "this is not measured telemetry."
+                if hourly_proxy_summary is not None
+                else "Proxy builder is available in the research code, but no generated calibration summary is in this bundle yet."
+            ),
+        },
         "hourly_state_load": {
             "available": False,
             "evidence": "gap",
@@ -412,6 +423,10 @@ def main() -> int:
     if summary is not None:
         _write(out / "baseline-summary.json", summary)
         metadata["files"]["baseline_summary"] = "baseline-summary.json"
+
+    if hourly_proxy_summary is not None:
+        _write(out / "hourly-load-proxy-summary.json", hourly_proxy_summary)
+        metadata["files"]["hourly_load_proxy_summary"] = "hourly-load-proxy-summary.json"
 
     if daily_frame is not None:
         daily, monthly, duration = _daily_products(daily_frame)
@@ -518,6 +533,7 @@ def main() -> int:
             else None
         ),
         "baseline": summary,
+        "hourly_load_proxy": hourly_proxy_summary,
         "scenarios": scenarios,
         "stress_tests": scenarios_cfg.get("stress_tests", {}),
         "references": references_cfg.get("references", {}),
@@ -535,6 +551,7 @@ def main() -> int:
         ("hazard_layers", "hazard_catalog", ["hazard_catalog"]),
         ("era5_reanalysis", "era5", ["era5_daily_manifest"]),
         ("grid_india_psp", None, ["grid_india_daily"]),
+        ("hourly_load_proxy", "hourly_load_proxy", ["hourly_load_proxy_summary"]),
         ("source_audit", "source_audit", ["source_audit"]),
     ]
     metadata["layer_provenance"] = {}
@@ -572,6 +589,7 @@ def main() -> int:
     if site_manifest.get("baseline"):
         site_manifest["baseline"].update({"gate_scope": "daily_coverage_and_accounting_only",
                                         "hourly_model_calibrated": False,
+                                        "hourly_load_proxy_available": bool(site_manifest.get("hourly_load_proxy")),
                                         "aggregation_scope": "observed_days_only"})
         _write(out / "baseline-summary.json", site_manifest["baseline"])
     _write(out / "metadata.json", metadata)
