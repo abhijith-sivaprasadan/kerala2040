@@ -13,11 +13,10 @@ import pandas as pd
 import requests
 
 from kerala2040.sources.grid_india import (
+    discover_daily_psp_files,
     download_report,
     legacy_report_entries,
-    list_daily_psp_files,
     parse_mop_e_state,
-    select_report_files,
 )
 from kerala2040.sources.http import build_session
 
@@ -38,15 +37,21 @@ def main() -> int:
             selected = legacy_report_entries(args.start, args.end)
         else:
             try:
-                entries = list_daily_psp_files(session=session, verify_tls=True)
+                selected = discover_daily_psp_files(
+                    args.start,
+                    args.end,
+                    session=session,
+                    verify_tls=True,
+                )
             except requests.exceptions.RequestException:
                 if not args.allow_insecure_tls_fallback:
                     raise
-                try:
-                    entries = list_daily_psp_files(session=session, verify_tls=False)
-                except requests.exceptions.RequestException:
-                    entries = legacy_report_entries(args.start, args.end)
-            selected = select_report_files(entries, start=args.start, end=args.end)
+                selected = discover_daily_psp_files(
+                    args.start,
+                    args.end,
+                    session=session,
+                    verify_tls=False,
+                )
 
         rows = []
         failures = []
