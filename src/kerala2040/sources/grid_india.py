@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 from io import BytesIO
 from typing import Any
 from urllib.parse import quote
@@ -160,7 +160,7 @@ def list_daily_psp_files(
     verify_tls: bool = True,
 ) -> list[dict[str, Any]]:
     """Compatibility helper returning files for the current calendar month."""
-    today = date.today()
+    today = datetime.now(UTC).date()
     return list_month_psp_files(today, session=session, timeout=timeout, verify_tls=verify_tls)
 
 
