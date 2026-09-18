@@ -2,6 +2,12 @@ name: historical-baseline
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/kerala2040/load_proxy.py"
+      - "scripts/build_hourly_load_proxy.py"
+      - ".github/workflows/historical-baseline.yml"
 
 permissions:
   contents: write
@@ -45,6 +51,9 @@ jobs:
           --start 2024-04-01 --end 2025-03-31
           --minimum-coverage 0.95 --balance-tolerance-mu 0.05
           --fail-on-gate
+      - name: Build provenance-safe hourly load proxy
+        if: always()
+        run: python scripts/build_hourly_load_proxy.py
       - name: Refresh published evidence before merging this acquisition
         if: always()
         run: git pull --ff-only origin main
