@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import re
-from typing import Any
-
 import pandas as pd
 
 
@@ -19,9 +17,9 @@ def _commissioning_year(label: str | None) -> int | None:
 
 
 def generator_database(
-    project_payload: dict[str, Any],
-    observed_capacity: dict[str, Any],
-) -> tuple[pd.DataFrame, dict[str, Any]]:
+    project_payload: dict[str, object],
+    observed_capacity: dict[str, object],
+) -> tuple[pd.DataFrame, dict[str, object]]:
     """Normalise KSEB project records and compare them with official aggregate capacity."""
     records: list[dict[str, Any]] = []
     for item in project_payload.get("projects", []):
@@ -55,8 +53,8 @@ def generator_database(
         "classification": "derived",
         "source_type": "canonical_inventory_seed",
         "source": "KSEB Project Management System public portal + Kerala State Planning Board/KSEBL Economic Review 2025",
-        "project_records": int(len(frame)),
-        "completed_records": int(len(completed)),
+        "project_records": len(frame),
+        "completed_records": len(completed),
         "portal_data_as_of_label": project_payload.get("tracker", {}).get("data_as_of_label"),
         "completed_portal_capacity_by_technology_mw": {
             str(key): float(value) for key, value in completed_by_tech.items()
