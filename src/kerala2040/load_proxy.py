@@ -194,7 +194,7 @@ def proxy_summary(
         "period": "FY2024-25",
         "timezone": "Asia/Kolkata",
         "resolution": "1h",
-        "hours": int(len(hourly)),
+        "hours": len(hourly),
         "daily_observations_measured": int((~daily["daily_energy_imputed"]).sum()),
         "daily_observations_interpolated": int(daily["daily_energy_imputed"].sum()),
         "interpolated_dates": imputed_dates,
