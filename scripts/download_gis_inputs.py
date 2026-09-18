@@ -50,7 +50,7 @@ def main() -> int:
             path = Path(item["raw_path"])
             record = {
                 "layer_id": layer_id,
-                "classification": "catalogue_only",
+                "classification": "unresolved",
                 "source_type": "official_gis_source",
                 "source": item["source"],
                 "url": url or item.get("landing_page"),
@@ -71,6 +71,7 @@ def main() -> int:
             if path.exists() and path.is_file() and not args.force:
                 record.update(
                     {
+                        "classification": "official_observed_reference",
                         "status": "already_present",
                         "bytes": path.stat().st_size,
                         "sha256": _sha256(path),
@@ -103,6 +104,7 @@ def main() -> int:
                 temp.replace(path)
                 record.update(
                     {
+                        "classification": "official_observed_reference",
                         "status": "downloaded_not_yet_model_ready",
                         "bytes": path.stat().st_size,
                         "sha256": _sha256(path),
@@ -123,7 +125,7 @@ def main() -> int:
         session.close()
 
     result = {
-        "classification": "derived",
+        "classification": "derived_from_measured",
         "source_type": "gis_acquisition_manifest",
         "source": "Configured official GIS sources in configs/gis_inputs.yaml",
         "model_ready": False,
