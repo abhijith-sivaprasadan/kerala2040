@@ -2,6 +2,10 @@ name: extended-source-ingestion
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/extended-source-ingestion.yml"
 
 permissions:
   contents: write
