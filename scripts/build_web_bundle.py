@@ -193,6 +193,10 @@ def main() -> int:
     references_cfg = _load_yaml(root / "configs/published_2040_references.yaml")
     sources_cfg = _load_yaml(root / "configs/sources.yaml")
     observed_cfg = _load_yaml(root / "configs/observed_2024_25.yaml")
+    cea_cfg = _load_yaml(root / "configs/cea_resource_adequacy_2025.yaml")
+    circular_cfg = _load_yaml(root / "configs/circular_industry_references.yaml")
+    non_electric_cfg = _load_yaml(root / "configs/non_electric_energy_references.yaml")
+    ogd_cfg = _load_yaml(root / "configs/ogd_targets.yaml")
 
     summary_path = root / "results/baseline/summary.json"
     summary = _load_json(summary_path)
@@ -316,12 +320,20 @@ def main() -> int:
     _write(out / "published-references.json", references_cfg)
     _write(out / "sources.json", sources_cfg)
     _write(out / "observed-reference.json", observed_cfg)
+    _write(out / "cea-resource-adequacy.json", cea_cfg)
+    _write(out / "circular-industry.json", circular_cfg)
+    _write(out / "non-electric-energy.json", non_electric_cfg)
+    _write(out / "ogd-targets.json", ogd_cfg)
     metadata["files"].update(
         {
             "scenarios": "scenarios.json",
             "published_references": "published-references.json",
             "sources": "sources.json",
             "observed_reference": "observed-reference.json",
+            "cea_resource_adequacy": "cea-resource-adequacy.json",
+            "circular_industry": "circular-industry.json",
+            "non_electric_energy": "non-electric-energy.json",
+            "ogd_targets": "ogd-targets.json",
         }
     )
 
@@ -418,6 +430,10 @@ def main() -> int:
     site_manifest = {
         "metadata": metadata,
         "observed": observed_cfg,
+        "cea_resource_adequacy": cea_cfg,
+        "circular_industry": circular_cfg,
+        "non_electric_energy": non_electric_cfg,
+        "ogd_targets": ogd_cfg,
         "baseline": summary,
         "scenarios": scenarios,
         "stress_tests": scenarios_cfg.get("stress_tests", {}),
