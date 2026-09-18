@@ -1,9 +1,9 @@
 {
   "project": "Kerala 2040 \u2014 Open Energy Intelligence",
-  "generated_at_utc": "2026-09-18T09:00:54+00:00",
+  "generated_at_utc": "2026-09-18T09:03:50+00:00",
   "research_repo": "https://github.com/abhijith-sivaprasadan/kerala2040",
   "web_repo": "https://github.com/kerala2040/kerala2040.github.io",
-  "git_sha": "31fec90c6f27a8a6be813752872f4e4d28a73fdd",
+  "git_sha": "cff91e09609cbc35ac1f694e2252c0c6e577d63e",
   "model_year": 2040,
   "principle": "Energy sovereignty means retaining sufficient controllable generation, storage, flexible demand and infrastructure to withstand climate, hydrological and market shocks while using interstate trade strategically. It does not mean autarky or zero imports.",
   "status": {
@@ -43,14 +43,14 @@
       "note": "Current API integration is configured; processed FY2024-25 rows not in this bundle yet."
     },
     "kseb_project_inventory": {
-      "available": false,
+      "available": true,
       "evidence": "official project portal",
-      "note": "KSEB PMS parser configured; current project inventory not in this bundle yet."
+      "note": "KSEB PMS tracker summary is connected; detailed project-card parsing returned zero records and remains a parser gap."
     },
     "hazard_layers": {
-      "available": false,
+      "available": true,
       "evidence": "official GIS catalog",
-      "note": "KSDMA hazard-layer manifest not in this bundle yet."
+      "note": "26 KSDMA hazard download links catalogued."
     },
     "hourly_state_load": {
       "available": false,
@@ -58,7 +58,12 @@
       "note": "No authenticated FY2024-25 Kerala 8760/35040 state-load chronology is published in this bundle."
     }
   },
-  "source_audit_summary": {},
+  "source_audit_summary": {
+    "reachable": 14,
+    "unreachable": 5,
+    "http_error": 1,
+    "reachable_restricted": 1
+  },
   "files": {
     "scenarios": "scenarios.json",
     "published_references": "published-references.json",
@@ -73,6 +78,9 @@
     "daily_balance": "daily-balance.json",
     "monthly_balance": "monthly-balance.json",
     "import_duration": "import-duration.json",
+    "kseb_projects": "kseb-projects.json",
+    "hazard_catalog": "hazard-catalog.json",
+    "source_audit": "source-audit.json",
     "screening_nodes": "screening-nodes.json"
   }
 }

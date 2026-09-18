@@ -1,0 +1,14 @@
+{
+  "retrieved_at_utc": "2026-09-18T00:31:08+00:00",
+  "classification": "official_project_portal_record",
+  "tracker_url": "https://pms.kseb.in/tracker",
+  "explorer_url": "https://pms.kseb.in/explore-projects",
+  "tracker": {
+    "data_as_of_label": "20/02/2023 10:03 AM",
+    "ongoing_projects": 11,
+    "completed_projects": 59,
+    "capacity_being_added_mw": 227.0,
+    "installed_capacity_mw": 2901.0
+  },
+  "projects": []
+}
