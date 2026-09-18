@@ -18,10 +18,10 @@ def test_scenario_framework_has_no_numeric_capacity_answers():
 
 def test_final_techno_economic_grid_is_unresolved():
     config = _load("configs/techno_economics.yaml")
-    assert config["classification"] == "external_study_result"
+    assert config["classification"] == "published_external_scenario"
     for source in config["sources"].values():
         assert source["publisher"]
-        assert source["url"]
+        assert source.get("pdf") or source.get("landing_page")
         assert source["evidence"]
     grid = config["model_input_grid"]["technologies"]
 
@@ -33,7 +33,7 @@ def test_final_techno_economic_grid_is_unresolved():
 
 def test_gis_manifest_does_not_claim_catalogue_as_model_ready():
     config = _load("configs/gis_inputs.yaml")
-    assert config["classification"] == "catalogue_only"
+    assert config["classification"] == "unresolved"
     for layer in config["layers"].values():
         assert "source" in layer
         assert "role" in layer
