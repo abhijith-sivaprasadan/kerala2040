@@ -145,18 +145,17 @@ def fit_proxy_shape(
     total_hours = max(float(target_counts.sum()), 1.0)
     best: ProxyFit | None = None
 
+    daily_mean_mw = daily["consumption_mu"].to_numpy(dtype=float) * 1000.0 / 24.0
+
     for afternoon_amp in np.linspace(0.0, 0.45, 46):
         for night_amp in np.linspace(0.0, 0.55, 56):
-            hourly = build_hourly_proxy(
-                daily,
-                afternoon_amplitude=float(afternoon_amp),
-                night_amplitude=float(night_amp),
-            )
-            counts = np.asarray(duration_counts(hourly["load_mw"], bins), dtype=float)
+            shape = diurnal_shape(float(afternoon_amp), float(night_amp))
+            values = (daily_mean_mw[:, None] * shape[None, :]).ravel()
+            counts = np.asarray(duration_counts(values, bins), dtype=float)
             duration_rmse = float(
                 np.sqrt(np.mean(((counts - target_counts) / total_hours) ** 2))
             )
-            peak_mw = float(hourly["load_mw"].max())
+            peak_mw = float(values.max())
             peak_error = (peak_mw - float(target_peak_mw)) / float(target_peak_mw)
             objective = duration_rmse**2 + 4.0 * peak_error**2
 
@@ -220,7 +219,7 @@ def proxy_summary(
             {
                 **item,
                 "proxy_hours": int(proxy_count),
-                "difference_hours": int(proxy_count) - int(item["hours"]),
+                "difference_hours": int(proxy_count) - item["hours"],
             }
             for item, proxy_count in zip(bins, fit.duration_counts, strict=True)
         ],
