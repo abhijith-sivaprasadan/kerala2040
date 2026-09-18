@@ -273,12 +273,17 @@ def main() -> int:
             ),
         },
         "kseb_project_inventory": {
-            "available": project_count > 0,
+            "available": kseb_projects is not None,
             "evidence": "official project portal",
             "note": (
-                f"{project_count} project records parsed from KSEB PMS."
+                f"{project_count} detailed project records parsed from KSEB PMS."
                 if project_count
-                else "KSEB PMS parser configured; current project inventory not in this bundle yet."
+                else (
+                    "KSEB PMS tracker summary is connected; detailed project-card parsing "
+                    "returned zero records and remains a parser gap."
+                    if kseb_projects is not None
+                    else "KSEB PMS project inventory is not in this bundle yet."
+                )
             ),
         },
         "hazard_layers": {
