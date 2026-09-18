@@ -18,7 +18,7 @@ historical_demand:
   report_page: 19
   immediate_source: CSTEP 2024
   upstream_source_named_by_cstep: KSEB Power System Statistics 2021-22
-  classification: official_observed_reference_as_republished_by_cstep
+  classification: official_observed_reference
 
 demand_projection:
   report_pages: [19, 20, 21, 22, 23, 24, 54]
