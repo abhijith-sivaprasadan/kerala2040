@@ -218,7 +218,7 @@ def proxy_summary(
         "duration_bins": [
             {
                 **item,
-                "proxy_hours": int(proxy_count),
+                "proxy_hours": proxy_count,
                 "difference_hours": int(proxy_count) - item["hours"],
             }
             for item, proxy_count in zip(bins, fit.duration_counts, strict=True)
