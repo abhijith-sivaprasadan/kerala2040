@@ -1,5 +1,8 @@
 version: 1
-classification: sourced_benchmark_registry_not_final_model_inputs
+classification: external_study_result
+source_type: sourced_benchmark_registry
+source: CEA and CERC official publications listed below
+note: Published benchmark assumptions are retained for comparison; final Kerala model inputs remain unresolved until explicitly selected.
 currency: INR
 price_basis_rule: >-
   Preserve each source's stated base year and nominal/real treatment. Do not mix benchmark
