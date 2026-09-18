@@ -81,7 +81,6 @@ def main() -> int:
                     )
 
         for entry in selected:
-        for entry in selected:
             try:
                 try:
                     content, provenance = download_report(entry, session=session, verify_tls=True)
