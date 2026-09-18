@@ -8,6 +8,8 @@ source:
   publication_page: https://cstep.in/publication/kerala-energy-transition-roadmap-2040/
   citation: "CSTEP. (2024). Kerala Energy Transition Roadmap 2040. CSTEP-RR-2024-01."
   user_supplied_file: Kerala-Energy-Transition-Roadmap-2040_3-1(1).pdf
+  user_supplied_file_sha256: be2148d870b8f73950a36918d0aa8d627203a47277ae87afd92faaf84a25894a
+  user_supplied_file_bytes: 3116071
 
 extraction:
   extracted_for_repository_on: 2026-09-18
