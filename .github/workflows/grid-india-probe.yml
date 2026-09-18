@@ -26,7 +26,7 @@ jobs:
         run: >-
           python scripts/ingest_grid_india_psp.py
           --start 2025-03-28 --end 2025-03-31
-          --state Kerala --legacy-direct --allow-insecure-tls-fallback
+          --state Kerala --allow-insecure-tls-fallback
           --output results/grid_india_kerala_sample.parquet
       - uses: actions/upload-artifact@v4
         if: always()
