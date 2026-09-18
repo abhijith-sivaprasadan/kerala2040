@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Retrieve FY2024-25 ERA5 hourly weather at representative Kerala points.
 
 Raw NetCDF files are kept as workflow artifacts rather than committed to git. A compact
@@ -11,7 +10,7 @@ import argparse
 import hashlib
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -125,7 +124,7 @@ def main() -> int:
                 )
 
     payload = {
-        "retrieved_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "retrieved_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
         "classification": "reanalysis_input",
         "dataset": DATASET,
         "dataset_url": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels",
