@@ -1,0 +1,7 @@
+financial_year,peak_demand_mw,off_peak_demand_mw,classification,source,report_page
+2022,4374,1825,published_external_scenario,CSTEP 2024,24
+2023,4474,1867,published_external_scenario,CSTEP 2024,24
+2025,4746,1981,published_external_scenario,CSTEP 2024,24
+2030,5503,2297,published_external_scenario,CSTEP 2024,24
+2035,6423,2681,published_external_scenario,CSTEP 2024,24
+2040,7594,3169,published_external_scenario,CSTEP 2024,24

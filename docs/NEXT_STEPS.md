@@ -28,11 +28,15 @@ See [the mandatory provenance policy](DATA_PROVENANCE_POLICY.md).
 1. **Confirm the CET submission date and freeze the scope.** Make the first release
    a defensible historical electricity balance, a constrained scenario design and
    one sourced circular-industry case. Do not promise optimised 2040 results yet.
-2. **Obtain hourly or 15-minute demand and interchange for FY2024–25.** Request
-   timestamped Kerala demand, imports/exports, units, timezone, missing-data flags
-   and revision history from SLDC/KSEBL, with permission to use/publish derived
-   results. See [the data specification](hourly_demand_gap.md). Do not send secrets
-   or confidential utility data to the public repository.
+2. **Obtain hourly or 15-minute demand and interchange for FY2024–25, and recover
+   the CSTEP FY2016 15-minute source series.** Request timestamped Kerala demand,
+   imports/exports, units, timezone, missing-data flags and revision history from
+   SLDC/KSEBL. Separately, CSTEP's 2024 roadmap confirms that observed FY2016
+   15-minute Kerala data existed and was used to derive its FY2022 load curve; request
+   that raw series from CSTEP/EMC/KSEBL/SLDC as an independent historical validation
+   dataset. See [the data specification](hourly_demand_gap.md). Do not digitise the
+   CSTEP figure and call it measured data, and do not send secrets or confidential
+   utility data to the public repository.
 3. **Close the historical reconciliation.** The reconciliation workflow is now
    implemented and preserves SLDC, Economic Review/KSEBL and CEA accounting
    boundaries separately. The current snapshot still has 354/365 SLDC days, with
@@ -54,6 +58,7 @@ See [the mandatory provenance policy](DATA_PROVENANCE_POLICY.md).
    KSEBL, Union and private financing rather than assigning all costs to the state.
 
 See the [SLDC request draft](SLDC_DATA_REQUEST_DRAFT.md),
+[CSTEP FY2016 data request draft](CSTEP_FY2016_DATA_REQUEST_DRAFT.md),
 [KMML case plan](KMML_CASE_PLAN.md) and [Energy Project review](ENERGYPROJECT_REVIEW.md).
 The study covers all of Kerala; atlas markers are illustrative, not a complete grid.
 

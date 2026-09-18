@@ -25,6 +25,23 @@ The study projects FY2040 final electricity requirement of 45,519 MU including T
 7,594 MW peak demand. Its FY22 load curve was derived from FY16 15-minute observations and
 extrapolated. We retain these values as a published benchmark, not as our calibrated 2040 answer.
 
+A machine-readable extraction is maintained in `data/external/cstep_2024/`. It includes the
+published FY2016-FY2022 category consumption table, FY2023-FY2040 demand pathway, EV and
+peak-demand milestones, BAU and High-RE capacity-addition paths, CSTEP GIS/resource-potential
+benchmarks, supply-model assumptions and storage results. Projected values are classified
+`published_external_scenario`; historical values reproduced from KSEB are classified
+`official_observed_reference` with CSTEP as the immediate source and KSEB retained as the
+upstream source named by CSTEP.
+
+CSTEP's GIS results (for example 10,953 MW usable solar and 2,993 MW wind potential) are
+validation benchmarks, not this project's GIS capacity ceilings. CSTEP's reported storage
+power/energy pairs are preserved exactly as published; their implied durations are unusually long,
+so the underlying storage-calculation definition must be verified before using them as model targets.
+
+The FY2016 15-minute series itself is **not** present in the report. Recovering that underlying
+dataset from CSTEP/EMC/KSEBL/SLDC is now a priority acquisition task. Figure digitisation must
+not be presented as measured telemetry.
+
 ### DoECC / Vasudha Foundation — *Carbon Neutral Kerala by 2050* (2026)
 Primary report: https://climatechange.envt.kerala.gov.in/wp-content/uploads/2026/06/Carbon-Neutral-Kerala-by-2050-Report.pdf
 
