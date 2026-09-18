@@ -33,7 +33,8 @@ def test_hydro_diagnostics_keep_observed_days_only():
         "southwest_monsoon",
         "post_monsoon",
     }
-    assert summary["classification"].startswith("derived_from_observed")
+    assert summary["classification"] == "derived"
+    assert "Kerala SLDC" in summary["source"]
     assert summary["days"] == 3
     assert summary["correlations"]["imports_vs_hydro"] < 0
 
