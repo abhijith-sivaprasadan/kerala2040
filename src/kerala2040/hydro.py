@@ -144,7 +144,7 @@ def hydro_operating_envelope(frame: pd.DataFrame) -> list[dict[str, Any]]:
         records.append(
             {
                 "storage_band_pct": str(label),
-                "days": int(len(group)),
+                "days": len(group),
                 "hydro_mu_q10": float(values.quantile(0.10)),
                 "hydro_mu_median": float(values.median()),
                 "hydro_mu_q90": float(values.quantile(0.90)),
@@ -209,7 +209,7 @@ def summarise_hydro(frame: pd.DataFrame) -> dict[str, Any]:
             ),
         ],
         "causal_interpretation": False,
-        "days": int(len(frame)),
+        "days": len(frame),
         "period_start": frame["date"].min().date().isoformat() if not frame.empty else None,
         "period_end": frame["date"].max().date().isoformat() if not frame.empty else None,
         "correlations": correlations,
