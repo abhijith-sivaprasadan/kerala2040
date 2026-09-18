@@ -32,6 +32,9 @@ def main() -> int:
     parser.add_argument("--allow-insecure-tls-fallback", action="store_true")
     args = parser.parse_args()
 
+    rows = []
+    failures = []
+    selected = []
     with build_session() as session:
         if args.legacy_direct:
             selected = legacy_report_entries(args.start, args.end)
@@ -43,18 +46,41 @@ def main() -> int:
                     session=session,
                     verify_tls=True,
                 )
-            except requests.exceptions.RequestException:
-                if not args.allow_insecure_tls_fallback:
-                    raise
-                selected = discover_daily_psp_files(
-                    args.start,
-                    args.end,
-                    session=session,
-                    verify_tls=False,
-                )
+            except requests.exceptions.RequestException as secure_exc:
+                if args.allow_insecure_tls_fallback:
+                    try:
+                        selected = discover_daily_psp_files(
+                            args.start,
+                            args.end,
+                            session=session,
+                            verify_tls=False,
+                        )
+                    except requests.exceptions.RequestException as insecure_exc:
+                        failures.append(
+                            {
+                                "stage": "discovery",
+                                "date": None,
+                                "file_path": None,
+                                "error": (
+                                    "Grid-India file API unavailable after TLS and "
+                                    f"insecure retries: {type(insecure_exc).__name__}: {insecure_exc}"
+                                ),
+                            }
+                        )
+                else:
+                    failures.append(
+                        {
+                            "stage": "discovery",
+                            "date": None,
+                            "file_path": None,
+                            "error": (
+                                "Grid-India file API unavailable: "
+                                f"{type(secure_exc).__name__}: {secure_exc}"
+                            ),
+                        }
+                    )
 
-        rows = []
-        failures = []
+        for entry in selected:
         for entry in selected:
             try:
                 try:
