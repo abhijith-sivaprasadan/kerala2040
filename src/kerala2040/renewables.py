@@ -94,7 +94,7 @@ def build_renewable_profiles(weather: pd.DataFrame) -> tuple[pd.DataFrame, dict[
             }
         ],
         "note": "Proxy renewable availability; not measured Kerala solar or wind generation.",
-        "hours": int(len(grouped)),
+        "hours": len(grouped),
         "period_start_utc": (
             grouped["timestamp_utc"].min().isoformat() if not grouped.empty else None
         ),
