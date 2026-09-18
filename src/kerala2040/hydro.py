@@ -181,7 +181,33 @@ def summarise_hydro(frame: pd.DataFrame) -> dict[str, Any]:
         )
 
     return {
-        "classification": "derived_from_observed_daily_hydro_storage_and_weather",
+        "classification": "derived",
+        "source_type": "derived_from_primary_official_and_reanalysis",
+        "source": "Kerala SLDC system statistics + Kerala SLDC storage reports"
+            + (" + NASA POWER representative-point weather" if "precip_mm_day_mean" in frame else ""),
+        "source_components": [
+            {
+                "classification": "observed",
+                "source_type": "primary_official",
+                "source": "Kerala State Load Despatch Centre system statistics",
+            },
+            {
+                "classification": "observed",
+                "source_type": "primary_official",
+                "source": "Kerala State Load Despatch Centre storage statistics",
+            },
+            *(
+                [
+                    {
+                        "classification": "reanalysis",
+                        "source_type": "reanalysis_remote_sensing",
+                        "source": "NASA POWER representative-point hourly weather",
+                    }
+                ]
+                if "precip_mm_day_mean" in frame
+                else []
+            ),
+        ],
         "causal_interpretation": False,
         "days": int(len(frame)),
         "period_start": frame["date"].min().date().isoformat() if not frame.empty else None,
