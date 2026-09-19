@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from kerala2040.sldc_gap_recovery import probe_from_committed_qa, probe_missing_dates
+from kerala2040.sldc_gap_recovery import probe_missing_dates
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -87,9 +87,6 @@ def test_partial_http_failure_does_not_count_as_missing_source(tmp_path):
 
 
 def test_uses_exact_committed_qa_dates_not_an_arbitrary_selection(tmp_path):
-    session = FakeSession([Response(_html("2024-08-12")) for _ in range(11)])
-    # First date matches, second date rejects both endpoints, exhausting
-    # the deliberately synthetic mock; use only a source-QA identity check here.
     qa = json.loads(
         (ROOT / "data/external/sldc_fy2024_25/qa_report.json").read_text()
     )
