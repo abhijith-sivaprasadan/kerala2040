@@ -1,0 +1,60 @@
+name: PyPSA chronology and observed evidence figures
+
+on:
+  pull_request:
+    paths:
+      - "src/kerala2040/chronological_screen.py"
+      - "scripts/run_hourly_screening.py"
+      - "scripts/build_sldc_observed_figures.py"
+      - "tests/test_chronological_screen.py"
+      - "tests/test_observed_figures.py"
+      - "configs/pypsa_screening_example.yaml"
+      - ".github/workflows/pypsa-chronological-screening.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/kerala2040/chronological_screen.py"
+      - "scripts/run_hourly_screening.py"
+      - "scripts/build_sldc_observed_figures.py"
+      - "tests/test_chronological_screen.py"
+      - "tests/test_observed_figures.py"
+      - "configs/pypsa_screening_example.yaml"
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: "24..8760 complete-hour-day window (8760 is full-year proxy)"
+        default: "48"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  solve-screening:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - name: Test provenance checks, HiGHS smoke solve and figures
+        run: |
+          ruff check src/kerala2040/chronological_screen.py scripts/run_hourly_screening.py scripts/build_sldc_observed_figures.py tests/test_chronological_screen.py tests/test_observed_figures.py
+          pytest -q tests/test_chronological_screen.py tests/test_observed_figures.py
+      - name: Build measured-daily evidence figures
+        run: python scripts/build_sldc_observed_figures.py
+      - name: Solve proxy-based hourly PyPSA screening
+        env:
+          REQUEST_HOURS: ${{ inputs.hours || (github.event_name == 'push' && '8760') || '48' }}
+        run: |
+          python scripts/run_hourly_screening.py --acknowledge-proxy --hours "$REQUEST_HOURS"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pypsa-screening-and-observed-daily-figures
+          path: |
+            results/models/hourly_proxy_screening/
+            results/figures/sldc_observed_fy2024_25/
+          retention-days: 30
