@@ -51,6 +51,21 @@ def validate_bundle(public: Path) -> dict:
                 raise ValueError("Hourly proxy contains invalid load values")
             if abs(sum(row["load_mw"] for row in hourly) / 1000 - proxy["annual_energy_mu"]) > 1e-6:
                 raise ValueError("Hourly series energy disagrees with proxy summary")
+    if "audit_readiness" in files:
+        audit = read(files["audit_readiness"])
+        if audit.get("classification") != "repository_evidence_audit_not_external_source_validation":
+            raise ValueError("Audit evidence classification is missing or incorrect")
+        if audit.get("finding_count") != len(audit.get("findings", [])):
+            raise ValueError("Audit finding counts do not match the source report")
+        if audit.get("open_findings", 0) + audit.get("closed_findings", 0) != audit["finding_count"]:
+            raise ValueError("Audit open and closed totals disagree")
+        if "sldc_station_evidence" in files:
+            station = read(files["sldc_station_evidence"])
+            if audit.get("source_qa_sha256") != station.get("source_archive_sha256"):
+                raise ValueError("Audit and station evidence identify different SLDC archives")
+        for gate in audit.get("release_gates", {}).values():
+            if gate.get("passed") and gate.get("blocking_checks"):
+                raise ValueError("An audit release gate is both passed and blocked")
     if "research_results" in files:
         research = read(files["research_results"])
         if research != site.get("research_results"):
