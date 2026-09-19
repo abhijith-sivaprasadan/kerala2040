@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from requests.exceptions import ConnectionError as RequestConnectionError
+
 from kerala2040.sldc_gap_recovery import probe_missing_dates
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -73,7 +75,7 @@ def test_wrong_date_and_false_balance_never_create_observations(tmp_path):
 def test_partial_http_failure_does_not_count_as_missing_source(tmp_path):
     class Failed:
         def post(self, *_args, **_kwargs):
-            raise ConnectionError("transport unavailable")
+            raise RequestConnectionError("transport unavailable")
 
     report = probe_missing_dates(
         ["2024-08-12"], tmp_path, Failed(), pause_seconds=0
