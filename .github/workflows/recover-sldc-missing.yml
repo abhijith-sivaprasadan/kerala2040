@@ -1,0 +1,37 @@
+name: Recheck missing FY2024-25 SLDC daily reports
+
+on:
+  push:
+    paths:
+      - ".github/workflows/recover-sldc-missing.yml"
+      - "scripts/recover_sldc_missing_days.py"
+      - "src/kerala2040/sldc_gap_recovery.py"
+      - "tests/test_sldc_gap_recovery.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recheck-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only source-reader dependencies
+        run: python -m pip install requests pandas beautifulsoup4 lxml
+      - name: Retry the eleven exact public SLDC dates
+        run: python scripts/recover_sldc_missing_days.py --pause 0.8
+      - name: Preserve unsuccessful attempts and verified candidates for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sldc-11-missing-date-recovery-attempts-NOT-OBSERVED-DATA
+          path: results/acquisition/sldc_missing_dates/
+          retention-days: 90
+          if-no-files-found: warn
