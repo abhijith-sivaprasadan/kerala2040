@@ -1,0 +1,65 @@
+name: Generate FY2024-25 generator register audit
+
+on:
+  pull_request:
+    paths:
+      - "configs/generator_reconciliation_2024_25.yaml"
+      - "configs/observed_2024_25.yaml"
+      - "public/kseb-projects.json"
+      - "src/kerala2040/generators.py"
+      - "scripts/build_generator_database.py"
+      - "tests/test_generators.py"
+      - ".github/workflows/generator-register.yml"
+  push:
+    branches: [main]
+    paths:
+      - "configs/generator_reconciliation_2024_25.yaml"
+      - "configs/observed_2024_25.yaml"
+      - "public/kseb-projects.json"
+      - "src/kerala2040/generators.py"
+      - "scripts/build_generator_database.py"
+      - ".github/workflows/generator-register.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only inventory build dependencies
+        run: pip install "pandas>=2.2,<3" "pyyaml>=6,<7" "pyarrow>=17,<22" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Verify generator source constraints and output contract
+        run: |
+          ruff check src/kerala2040/generators.py scripts/build_generator_database.py tests/test_generators.py
+          pytest -q tests/test_generators.py
+          python scripts/build_generator_database.py
+      - name: Guard against treating portal rows as the verified fleet
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s = json.loads(Path("results/inventory/generator_capacity_summary.json").read_text())
+          assert s["project_records"] == 70
+          assert s["uncaptured_portal_items"] == 17
+          assert s["official_fy2024_25_commissioned_plant_count"] == 2
+          assert s["official_fy2024_25_commissioned_additions_mw"] == 100.0
+          assert s["name_unit_portal_mw_conflict_count"] >= 2
+          assert s["completed_portal_capacity_is_verified_fleet"] is False
+          assert s["full_station_register_verified"] is False
+          assert s["plant_level_fy_generation_verified"] is False
+          assert s["plant_level_availability_verified"] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fy2024-25-generator-register-PROVISIONAL-NOT-COMPLETE-FLEET
+          path: results/inventory/
+          retention-days: 90
