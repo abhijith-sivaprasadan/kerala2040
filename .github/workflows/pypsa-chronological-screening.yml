@@ -48,7 +48,7 @@ jobs:
         run: python scripts/build_sldc_observed_figures.py
       - name: Solve proxy-based hourly PyPSA screening
         env:
-          REQUEST_HOURS: ${{ inputs.hours || '48' }}
+          REQUEST_HOURS: ${{ inputs.hours || (github.event_name == 'push' && '8760') || '48' }}
         run: |
           python scripts/run_hourly_screening.py --acknowledge-proxy --hours "$REQUEST_HOURS"
       - uses: actions/upload-artifact@v4
