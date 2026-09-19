@@ -65,3 +65,20 @@ test('scenario export includes selected stress and stays explicitly unsolved',()
   assert.equal(payload.stress_tests.dry_hydro.description,'Drought');
   assert.equal(payload.evidence_commit,'evidence-sha');
 });
+
+test('audit card rendering escapes source text and never turns a blocked gate green',()=>{
+  const c=context();
+  vm.runInContext("state.audit={classification:'repository_evidence_audit_not_external_source_validation',"+
+    "finding_count:1,open_findings:1,closed_findings:0,source_qa_sha256:'sha',evidence_limit:'committed only',"+
+    "findings:[{id:'hydro_<test>',priority:'P0',acquisition:'<img src=x onerror=alert(1)>',"+
+    "evidence:'docs/OBSERVED_DAILY_PYPSA.md',verification:{status:'blocked_missing_verified_evidence',"+
+    "detail:'No verified cascade',evidence:'docs/OBSERVED_DAILY_PYPSA.md'}}],"+
+    "release_gates:{techno_economic_2040:{passed:false,blocking_checks:['hydro_physics'],"+
+    "description:'Unavailable'}}}",c);
+  const html=vm.runInContext("auditFindingHTML(state.audit.findings[0])",c);
+  assert.match(html,/Blocked \/ missing evidence/);
+  assert.ok(!html.includes('<img'));
+  assert.match(html,/&lt;img/);
+  assert.match(html,/Inspect source evidence/);
+  assert.equal(vm.runInContext("state.audit.release_gates.techno_economic_2040.passed",c),false);
+});
