@@ -8,6 +8,7 @@ policy: >-
   Workflow artifacts, local files and private agency data require separate review.
 sources:
   sldc_request: docs/SLDC_DATA_REQUEST_DRAFT.md
+  sldc_missing_dates_request: docs/SLDC_MISSING_11_REQUEST_DRAFT.md
   cstep_2016_request: docs/CSTEP_FY2016_DATA_REQUEST_DRAFT.md
   audit_roadmap: docs/MODELLING_DATA_ROADMAP.md
   project_qa: data/external/sldc_fy2024_25/qa_report.json
@@ -19,7 +20,11 @@ findings:
   - id: sldc_missing_days
     priority: P0
     check: sldc_daily_coverage
-    acquisition: Recover the 11 absent FY2024-25 dated public SLDC reports or record irrecoverability.
+    acquisition: >-
+      Eleven FY2024-25 reports remain unverified. Public historical-form retry on
+      19 September 2026 yielded no verifiable dated reports; 13 August 2024
+      successfully matched the existing observed-day control. Request the
+      eleven original five-section reports from SLDC; do not impute missing days.
     evidence: data/external/sldc_fy2024_25/qa_report.json
   - id: measured_interval_demand_interchange
     priority: P0
