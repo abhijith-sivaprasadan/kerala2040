@@ -1,0 +1,61 @@
+version: 1
+classification: official_crosscheck_of_project_portal_not_complete_operating_fleet
+snapshot_date: "2025-03-31"
+source_scope: "Kerala FY2024-25 in-state installed generation, not contracted imports"
+primary_sources:
+  economic_review_2025:
+    url: https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume1%20Eng%20final.pdf
+    locator: "Chapter 11, printed pages 570-572; Table 11.2.4 and major achievements"
+    role: "In-state installed capacity and KSEBL-owned vs all-owner boundaries; confirms both projects"
+  cea_march_2025:
+    url: https://cea.nic.in/wp-content/uploads/installed/2025/03/IC_March_2025_allocation_wise.pdf
+    locator: "Final page, projects commissioned during FY2024-25"
+    role: "Unit-level Thottiyar and Pallivasal Extension commissioning dates and MW"
+  portal:
+    url: https://pms.kseb.in/explore-projects
+    locator: "Public project explorer (dated tracker label retained in public/kseb-projects.json)"
+    role: "Project inventory seed only, not a complete dated operating-fleet register"
+
+official_totals:
+  as_of: "2025-03-31"
+  all_kerala_installed_mw: 4412.14
+  all_kerala_hydel_mw: 2284.42
+  ksebl_owned_installed_mw_rounded: 2409.8
+  ksebl_owned_hydel_mw_rounded: 2196.4
+  ksebl_hydel_station_count: 44
+  ownership_boundary: "All Kerala totals include KSEBL and non-KSEBL; not identical to state-owned capacity."
+  source: economic_review_2025
+
+official_commissioned_during_fy:
+  - portal_name: Thottiyar HEP
+    plant: Thottiyar HEP
+    technology: Hydro
+    owner: KSEBL
+    commissioned_mw: 40.0
+    units:
+      - {unit: "1", capacity_mw: 10.0, commissioning_date: "2024-07-10"}
+      - {unit: "2", capacity_mw: 30.0, commissioning_date: "2024-09-30"}
+    sources: [cea_march_2025, economic_review_2025]
+    note: "Portal still records 'Ongoing'; CEA records both units as commissioned within FY2024-25."
+  - portal_name: Pallivasal Extension Scheme
+    plant: Pallivasal Extension Scheme
+    technology: Hydro
+    owner: KSEBL
+    commissioned_mw: 60.0
+    units:
+      - {unit: "1", capacity_mw: 30.0, commissioning_date: "2024-12-24"}
+      - {unit: "2", capacity_mw: 30.0, commissioning_date: "2024-12-24"}
+    sources: [cea_march_2025, economic_review_2025]
+    note: >-
+      CEA gives 24 December 2024 for commissioning of both units; the KSEBL
+      annual report describes grid synchronisation on 5 and 24 December 2024.
+      Commissioning and synchronisation dates are not silently substituted.
+
+required_for_full_register:
+  - "Resolve project portal's 70 captured records against 87 listed items, including completeness and version date."
+  - "Obtain KSEBL dated station/unit list and map aliases, old plants and extensions without double-counting."
+  - "Recover non-KSEBL/IPPs/CPPs and distributed PV/wind ownership/capacity by the same 2025-03-31 boundary."
+  - "Reconcile station-level actual generation by FY2024-25, outages/deratings and retirement status."
+  - "Resolve portal kW/MW name-versus-capacity conflicts and absent/non-generating rows."
+  - "Separate station-design annual MU from actual measured FY generation and available dispatchable MW."
+release_gate: partial_or_provisional

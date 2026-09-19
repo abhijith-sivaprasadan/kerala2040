@@ -18,6 +18,8 @@ ERA5 = "public/era5-daily-manifest.json"
 TECH = "configs/techno_economics.yaml"
 GIS = "configs/gis_inputs.yaml"
 FINDINGS = "configs/audit_findings.yaml"
+GENERATORS = "configs/generator_reconciliation_2024_25.yaml"
+PROJECTS = "public/kseb-projects.json"
 
 STATUS_PASS = "verified_in_committed_evidence"
 STATUS_PARTIAL = "partial_or_provisional"
@@ -105,6 +107,52 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
                             "validation still required."),
         TECH,
     )
+    generator = _yaml(root, GENERATORS)
+    portal = _json(root, PROJECTS)
+    official = generator["official_totals"]
+    if generator.get("classification") != (
+        "official_crosscheck_of_project_portal_not_complete_operating_fleet"
+    ):
+        raise ValueError("Generator reconciliation classification mismatch")
+    if abs(
+        float(official["all_kerala_installed_mw"])
+        - float(_yaml(root, "configs/observed_2024_25.yaml")["electricity"][
+            "installed_capacity_mw"
+        ])
+    ) > 0.01:
+        raise ValueError("Generator all-owner capacity does not match official baseline")
+    names = {item["name"]: item for item in portal["projects"]}
+    events = generator["official_commissioned_during_fy"]
+    crosschecked_mw = 0.0
+    for event in events:
+        name = event["portal_name"]
+        if name not in names or names[name]["technology"] != event["technology"]:
+            raise ValueError("Generator crosscheck project absent or technology differs")
+        sources = event["sources"]
+        if len(set(sources)) < 2 or any(
+            key not in generator["primary_sources"]
+            or not generator["primary_sources"][key].get("url")
+            for key in sources
+        ):
+            raise ValueError("Generator commissioning requires two documented sources")
+        mw = float(event["commissioned_mw"])
+        if abs(sum(float(unit["capacity_mw"]) for unit in event["units"]) - mw) > 0.001:
+            raise ValueError("Generator crosscheck unit MW differ from commissioned MW")
+        crosschecked_mw += mw
+    reported = int(portal["portal_reported_total"])
+    observed_portal = len(portal["projects"])
+    if reported < observed_portal:
+        raise ValueError("Generator portal reported count is less than acquired records")
+    generator_check = _check(
+        STATUS_PARTIAL,
+        f"{observed_portal}/{reported} portal project records captured; "
+        f"{len(events)} FY2024-25 plant additions independently crosschecked "
+        f"({crosschecked_mw:g} MW). KSEBL owned vs all-owner installed totals are "
+        "kept separate. The project explorer is not a validated complete "
+        "commissioned/available fleet; generation, outages and non-KSEBL assets "
+        "are not reconciled.",
+        "docs/GENERATOR_REGISTER_FY2024_25_RECONCILIATION.md",
+    )
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
@@ -134,12 +182,7 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
             "reconciliation checks. The 8,760-hour proxy cannot satisfy this gate.",
             "docs/INTERVAL_ELECTRICITY_SOURCE_REVIEW.md",
         ),
-        "generator_assets": _check(
-            STATUS_PARTIAL,
-            "Inventory builder and project tracker exist, but commissioned plant-level "
-            "assets/availability and generation are not reconciled and approved.",
-            "scripts/build_generator_database.py",
-        ),
+        "generator_assets": generator_check,
         "hydro_physics": _check(
             STATUS_BLOCKED,
             "Daily observed reservoir and hydro evidence does not establish verified "

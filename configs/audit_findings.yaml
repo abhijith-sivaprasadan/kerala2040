@@ -12,6 +12,8 @@ sources:
   cstep_2016_request: docs/CSTEP_FY2016_DATA_REQUEST_DRAFT.md
   audit_roadmap: docs/MODELLING_DATA_ROADMAP.md
   interval_electricity_review: docs/INTERVAL_ELECTRICITY_SOURCE_REVIEW.md
+  generator_register_review: docs/GENERATOR_REGISTER_FY2024_25_RECONCILIATION.md
+  generator_unit_crosschecks: configs/generator_reconciliation_2024_25.yaml
   project_qa: data/external/sldc_fy2024_25/qa_report.json
   era5_manifest: public/era5-daily-manifest.json
   gis_catalogue: configs/gis_inputs.yaml
@@ -40,8 +42,14 @@ findings:
   - id: generator_register
     priority: P0
     check: generator_assets
-    acquisition: Reconcile commissioned plant MW, outages, fuel, ownership, retirement and production against KSEBL/CEA.
-    evidence: scripts/build_generator_database.py
+    acquisition: >-
+      FY2024-25 KSEBL/CEA crosschecks establish Thottiyar (40 MW) and Pallivasal
+      Extension (60 MW) commissioning despite the project portal marking both
+      ongoing. Two name-embedded kW values conflict with the portal MW fields;
+      70 of 87 portal items are captured. Still reconcile the full KSEBL and
+      non-KSEBL fleet, actual plant generation, outages, fuel, retirement and
+      ownership against the dated FY-end official capacity boundary.
+    evidence: docs/GENERATOR_REGISTER_FY2024_25_RECONCILIATION.md
   - id: reservoir_operations
     priority: P0
     check: hydro_physics
