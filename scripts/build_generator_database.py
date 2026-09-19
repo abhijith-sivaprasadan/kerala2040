@@ -19,12 +19,18 @@ def main() -> int:
     parser.add_argument(
         "--observed", type=Path, default=Path("configs/observed_2024_25.yaml")
     )
+    parser.add_argument(
+        "--reconciliation",
+        type=Path,
+        default=Path("configs/generator_reconciliation_2024_25.yaml"),
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("results/inventory"))
     args = parser.parse_args()
 
     projects = json.loads(args.projects.read_text(encoding="utf-8"))
     observed = yaml.safe_load(args.observed.read_text(encoding="utf-8"))
-    frame, summary = generator_database(projects, observed)
+    reconciliation = yaml.safe_load(args.reconciliation.read_text(encoding="utf-8"))
+    frame, summary = generator_database(projects, observed, reconciliation)
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     frame.to_csv(args.output_dir / "generator_capacity_database.csv", index=False)
