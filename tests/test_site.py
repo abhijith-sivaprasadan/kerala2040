@@ -76,3 +76,19 @@ def test_rejects_corrupt_hourly_chronology(tmp_path, corruption):
     path.write_text(json.dumps(data))
     with pytest.raises(ValueError, match="timestamps|energy"):
         site.validate_bundle(tmp_path / "public")
+
+
+def test_live_site_excludes_synthetic_downloads_even_after_rebuild(tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "hourly-load-proxy.json").write_text("{}")
+    site.build_site(ROOT, tmp_path)
+    live = site.validate_bundle(data)
+    assert "hourly_load_proxy" not in live
+    assert live["screening_nodes"] == []
+    assert not list(data.glob("*proxy*"))
+    assert "hourly_load_proxy" not in live["metadata"]["files"]
+    products = live["research_results"]["products"]
+    assert not {"renewables", "replay", "scenario_dimensions", "techno_economics"} & products.keys()
+    assert products["cstep"]["classification"] == "published_external_scenario"
+    assert (ROOT / "public/hourly-load-proxy.json").exists()

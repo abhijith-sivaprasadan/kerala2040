@@ -163,7 +163,7 @@
           </a>
           <button class="reference-row" data-route="data">
             <div class="reference-date">DATA</div>
-            <div><h3>Kerala 2040 evidence registry</h3><p>Measured, derived, proxy and scenario evidence kept separately.</p></div>
+            <div><h3>Kerala 2040 evidence registry</h3><p>Observed evidence and published external benchmarks, with sources and dates.</p></div>
             <span>Open →</span>
           </button>
         </div>
@@ -216,8 +216,6 @@
               <option value="duration">Import dependence</option>
               <option value="hydro_seasons">Hydro and imports · observed seasons</option>
               <option value="cstep_demand">CSTEP demand pathway · external benchmark</option>
-              <option value="hourly_proxy">Hourly load · reconstruction</option>
-              <option value="proxy_duration">Load-duration fit · reconstruction</option>
               <option value="india_mix">India average day · Energy Project</option>
               <option value="india_price">India market price · Energy Project</option>
               <option value="kseb_capacity">KSEB capacity history</option>
@@ -242,9 +240,11 @@
         <div class="module-grid">
           <section class="data-module">
             <div class="module-head">
-              <div><div class="section-label">CAPACITY</div><h3>Current installed capacity mix</h3></div>
+              <div><div class="section-label">CAPACITY</div><h3>Installed capacity · 31 March 2025</h3></div>
               <span class="source-label">Kerala Economic Review 2025</span>
             </div>
+            <p class="chart-note"><strong>4,412.14 MW statewide</strong> · Kerala Economic Review 2025 / KSEBL, as at 31 March 2025. KSEBL-owned capacity alone is 2,409.8 MW. This is a dated official reference, not a live September 2026 total. <a href="https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume1%20Eng%20final.pdf#page=594" target="_blank" rel="noopener">Source, printed pp. 569–571 ↗</a></p>
+            <p class="chart-note">The user-supplied KSEB historical export reports 4,412.09 MW for FY2024–25 (0.05 MW lower). Published technology components total 4,412.15 MW (0.01 MW above the report total). Source figures are retained without silently adjusting them.</p>
             <div id="capacityChart" class="chart lg"></div>
           </section>
           <section class="data-module">

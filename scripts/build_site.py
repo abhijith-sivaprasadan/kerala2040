@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import math
@@ -72,11 +73,37 @@ def validate_bundle(public: Path) -> dict:
     return site
 
 
+def live_manifest(source: dict) -> dict:
+    """Keep development-only synthetic/model outputs in GitHub, never in Pages."""
+    site = copy.deepcopy(source)
+    metadata = site["metadata"]
+    for key in ("hourly_load_proxy", "hourly_load_proxy_summary"):
+        metadata["files"].pop(key, None)
+        metadata.get("status", {}).pop(key, None)
+        metadata.get("layer_provenance", {}).pop(key, None)
+    site.pop("hourly_load_proxy", None)
+    site["stress_tests"] = {}
+    site["screening_nodes"] = []
+    if site.get("baseline"):
+        site["baseline"].pop("hourly_load_proxy_available", None)
+    research = site.get("research_results", {})
+    for key in ("renewables", "replay", "scenario_dimensions", "techno_economics"):
+        research.get("products", {}).pop(key, None)
+        research.get("artifact_provenance", {}).pop(key, None)
+    research["limitations"] = [
+        "Development-only synthetic series and model outputs are retained in GitHub, not this website.",
+        "Published external scenarios remain labelled benchmarks, not Kerala 2040 results.",
+        "Raw GIS acquisition is not a model-ready exclusion map or capacity ceiling.",
+    ]
+    metadata["publication_policy"] = "observed_and_derived_evidence_plus_labelled_published_external_benchmarks"
+    return site
+
+
 def build_site(root: Path, output: Path) -> None:
     root, output = root.resolve(), output.resolve()
     if output == root or output == root / "docs" or output == root / "public":
         raise ValueError("Build into a separate directory, not a source directory")
-    validate_bundle(root / "public")
+    source = validate_bundle(root / "public")
     output.mkdir(parents=True, exist_ok=True)
     for name in ("index.html", "manifest.webmanifest", "robots.txt"):
         shutil.copy2(root / "docs" / name, output / name)
@@ -90,7 +117,24 @@ def build_site(root: Path, output: Path) -> None:
         shutil.copy2(asset, output / "assets" / versioned)
         html = html.replace(f"assets/{name}", f"assets/{versioned}")
     (output / "index.html").write_text(html, encoding="utf-8")
-    shutil.copytree(root / "public", output / "data", dirs_exist_ok=True)
+    site = live_manifest(source)
+    data_dir = output / "data"
+    data_dir.mkdir(exist_ok=True)
+    allowed = set(site["metadata"]["files"].values()) | {"site-data.json", "metadata.json"}
+    # Remove stale files from a previous build, including direct proxy download URLs.
+    for path in data_dir.iterdir():
+        if path.is_file() and path.name not in allowed:
+            path.unlink()
+    for name in allowed:
+        shutil.copy2(root / "public" / name, data_dir / name)
+    products = {"site-data.json": site, "metadata.json": site["metadata"],
+                "baseline-summary.json": site.get("baseline"),
+                "research-results.json": site.get("research_results"),
+                "screening-nodes.json": {"classification": "unresolved", "records": [], "note": "Verified site geometries not yet published; illustrative markers remain in GitHub."}}
+    for name, payload in products.items():
+        if payload is not None:
+            (data_dir / name).write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    validate_bundle(data_dir)
     (output / ".nojekyll").touch()
 
 

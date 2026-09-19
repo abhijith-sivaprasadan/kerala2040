@@ -135,7 +135,7 @@ function renderHeadline() {
   const metrics = o ? [
     ['FY2024-25 electricity sales', `${fmt(o.annual_sales_within_state_and_open_access_mu / 1000, 2)} TWh`, 'within state + open access', 'Kerala Economic Review 2025'],
     ['FY2024-25 maximum peak', `${fmt(o.maximum_peak_demand_mw / 1000, 2)} GW`, o.maximum_peak_date || 'observed maximum', 'Kerala Economic Review 2025'],
-    ['Installed capacity', `${fmt(o.installed_capacity_mw / 1000, 2)} GW`, 'reported FY2024-25 mix', 'Kerala Economic Review 2025'],
+    ['Installed capacity', `${fmt(o.installed_capacity_mw, 2)} MW`, 'as at 31 March 2025', 'Kerala Economic Review 2025'],
     ['T&D loss', `${fmt(o.td_loss_pct, 2)}%`, 'reported FY2024-25', 'Kerala Economic Review 2025']
   ] : [
     ['CSTEP 2040 demand', `${fmt(cstep.fy2040?.final_demand_with_td_losses_mu / 1000, 1)} TWh`, 'incl. T&D losses', 'CSTEP 2024'],
@@ -436,7 +436,6 @@ function renderElectricityEvidence() {
     ['ERA5 reanalysis', st.era5_reanalysis, 'Independent hourly climate/reanalysis input'],
     ['Grid-India cross-check', st.grid_india_psp, 'Independent official daily cross-check'],
     ['KSEB historical export', st.kseb_historical_export, 'Annual capacity, generation, purchases, losses, network and consumer history'],
-    ['Hourly load reconstruction', st.hourly_load_proxy || {available:false,evidence:'status'}, 'Proxy constrained by SLDC daily energy and CEA aggregate hourly references; not telemetry'],
     ['Measured hourly Kerala load', st.hourly_state_load || {available:false,evidence:'gap'}, 'Authenticated 8760/35040 chronology remains an open data gap']
   ];
   qs('#electricityEvidence').innerHTML = rows.map(([label,s,desc]) => {
@@ -492,7 +491,7 @@ function renderStressSelection() {
   const selected = [...state.selectedStress];
   qs('#stressSelection').innerHTML = selected.length
     ? selected.map(id => `<p><strong>${esc(id.replaceAll('_',' '))}</strong> — ${esc(state.data.stress_tests[id]?.description)}</p>`).join('')
-    : '<p>Select stresses to include in a downloadable scenario specification.</p>';
+    : '<p>Model-development assumptions and stress inputs are maintained in GitHub.</p>';
 }
 
 function downloadSpecification() {
@@ -577,11 +576,10 @@ function renderConnectedEvidence() {
   const b=baseline();
   qs('.energy-motif').innerHTML = (state.monthly?.records||[]).map(r=>`<i style="height:${Math.max(0,Math.min(100,100*(n(r.import_share)||0)))}%" title="${esc(r.month)}: ${pct(r.import_share)} imports"></i>`).join('');
   qs('#heroCoverage').textContent=b ? `Bars: monthly import share. ${b.rows} of ${b.expected_days} days · FY2024–25. ${b.missing_days_count} missing days. This share describes observed SLDC system accounting, not a full-year forecast.` : 'Historical daily evidence is not available in this snapshot.';
-  const proxyReady = !!state.hourlyProxy;
-  qs('#researchReadiness').innerHTML=`<p><strong>Research status</strong> · ${b?.calibration_gate_pass?'Daily accounting checks passed.':'Daily accounting needs review.'} ${proxyReady?'An 8760-hour proxy reconstruction is available for chronological model development; measured hourly telemetry is still missing.':'Hourly chronology reconstruction is still pending.'} Published 2040 studies are benchmarks; scenario selections are design specifications.</p><a href="${REPO}/blob/main/docs/NEXT_STEPS.md">CET research checklist ↗</a>`;
+  qs('#researchReadiness').innerHTML=`<p><strong>Research status</strong> · ${b?.calibration_gate_pass?'Daily accounting checks passed.':'Daily accounting needs review.'} Measured hourly Kerala telemetry is still missing; no synthetic chronology is published here. Published 2040 studies are benchmarks; scenario selections are design specifications.</p><a href="${REPO}/blob/main/docs/NEXT_STEPS.md">CET research checklist ↗</a>`;
   const rows=state.daily?.records||[];
   qs('#dailyTable').innerHTML=`<p>Missing dates: ${esc(b?.missing_days?.join(', ')||'none reported')}. No interpolation is applied.</p><a class="text-link" href="data/daily-balance.json">Download all ${rows.length} observations ↓</a><div class="table-scroll"><table><thead><tr><th>Date</th><th>Consumption (MU)</th><th>Generation (MU)</th><th>Net imports (MU)</th><th>Storage (%)</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.date)}</td><td>${fmt(r.consumption_mu,2)}</td><td>${fmt(r.internal_generation_mu,2)}</td><td>${fmt(r.net_import_interface_mu,2)}</td><td>${fmt(r.storage_pct_energy_weighted,1)}</td></tr>`).join('')}</tbody></table></div>`;
-  qs('#reconciliation').innerHTML=`<p>SLDC consumption sums available daily records. Economic Review sales and CEA energy requirement have different accounting boundaries. None is silently substituted for another.</p>${evidenceDetails('SLDC coverage and daily accounting',b)}${evidenceDetails('Economic Review annual electricity reference',observed()?.electricity)}${evidenceDetails('CEA resource adequacy · actual FY2024–25',state.data.cea_resource_adequacy?.actual_2024_25,true)}${evidenceDetails('CEA hourly demand evidence and source',state.data.cea_resource_adequacy?.hourly_demand_2024_25)}${evidenceDetails('Hourly load reconstruction diagnostics · proxy, not telemetry',state.hourlyProxy)}${evidenceDetails('CEA source',state.data.cea_resource_adequacy?.source)}`;
+  qs('#reconciliation').innerHTML=`<p>SLDC consumption sums available daily records. Economic Review sales and CEA energy requirement have different accounting boundaries. None is silently substituted for another.</p>${evidenceDetails('SLDC coverage and daily accounting',b)}${evidenceDetails('Economic Review annual electricity reference',observed()?.electricity)}${evidenceDetails('CEA resource adequacy · actual FY2024–25',state.data.cea_resource_adequacy?.actual_2024_25,true)}${evidenceDetails('CEA hourly demand evidence and source',state.data.cea_resource_adequacy?.hourly_demand_2024_25)}${evidenceDetails('CEA source',state.data.cea_resource_adequacy?.source)}`;
   qs('#fuelEvidence').innerHTML=evidenceDetails('PPAC context · keep snapshot periods explicit',state.data.non_electric_energy);
   qs('#ecologyEvidence').innerHTML=evidenceDetails('Ecological and hazard constraint registry',state.data.ecology_constraints?.layers,true)+evidenceDetails('KSDMA source catalogue',state.data.hazard_catalog)+evidenceDetails('KSEB project inventory · partial if no project rows',state.data.kseb_projects);
 }
