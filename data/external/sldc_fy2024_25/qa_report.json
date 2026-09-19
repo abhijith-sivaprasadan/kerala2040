@@ -1,0 +1,50 @@
+{
+  "source_archive_sha256": "5c1bb8cbe67a9b3a9149080250b4bfcfbf2d30592f3f5afdb6248e2b25623101",
+  "source": "Kerala SLDC public dated form reports; user-acquired raw HTML; index.csv retains retrieval time and per-response SHA256",
+  "financial_year": "2024-04-01 to 2025-03-31",
+  "expected_days": 365,
+  "observed_days": 354,
+  "missing_dates": [
+    "2024-08-12",
+    "2024-09-06",
+    "2024-09-20",
+    "2024-10-26",
+    "2024-11-17",
+    "2024-11-30",
+    "2024-12-16",
+    "2025-02-19",
+    "2025-03-05",
+    "2025-03-10",
+    "2025-03-17"
+  ],
+  "sections_per_observed_day": 5,
+  "verified_raw_html_count": 1770,
+  "bad_raw_sha256_count": 0,
+  "bad_response_report_date_count": 0,
+  "max_abs_daily_balance_residual_mu": 0.0001,
+  "observed_days_totals_mu": {
+    "hydro_mu": 7214.471,
+    "internal_generation_mu": 8031.2393,
+    "net_import_mu": 22635.0183,
+    "consumption_mu": 30666.2569
+  },
+  "observed_days_import_interface_additivity_discrepancies_gt_0_1_mu": 0,
+  "sample_import_interface_discrepancies": [],
+  "normalized_row_counts": {
+    "daily_balance": 365,
+    "hydro_station": 5779,
+    "import_interface": 2832,
+    "reservoir": 5664,
+    "selected_intraday_extrema": 3540
+  },
+  "limitations": [
+    "No hourly/15-minute continuous demand or dispatch time series",
+    "Rows for non-reporting dates are explicitly missing, not zero or interpolated",
+    "Blank station cells remain blank (not equated to zero)",
+    "No reservoir-to-generator physical topology or cascade/double-count protection is established",
+    "Daily observed generation maxima are not plant nameplate capacities",
+    "Daily interchange energy is not line MW transfer capability",
+    "The original downloader has redundant CSV table exports: table_01 includes document context and table_03 contains the principal data table; do not concatenate them",
+    "Availability/merit order section has variable table count and rate coverage; not fully normalised here"
+  ]
+}

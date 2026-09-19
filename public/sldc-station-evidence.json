@@ -1,0 +1,524 @@
+{
+  "classification": "derived_from_measured",
+  "source_type": "normalised_official_sldc_daily_public_reports",
+  "source": "Kerala SLDC Generation, Imports, Storage, Availability and Others; FY2024\u201325",
+  "source_url": "https://sldckerala.com/index.php?id=1",
+  "source_archive_sha256": "5c1bb8cbe67a9b3a9149080250b4bfcfbf2d30592f3f5afdb6248e2b25623101",
+  "period": "2024-04-01 to 2025-03-31",
+  "resolution": "daily; selected reported intraday extrema only",
+  "observed_days": 354,
+  "expected_days": 365,
+  "missing_dates": [
+    "2024-08-12",
+    "2024-09-06",
+    "2024-09-20",
+    "2024-10-26",
+    "2024-11-17",
+    "2024-11-30",
+    "2024-12-16",
+    "2025-02-19",
+    "2025-03-05",
+    "2025-03-10",
+    "2025-03-17"
+  ],
+  "reported_row_counts": {
+    "daily_balance": 365,
+    "hydro_station": 5779,
+    "import_interface": 2832,
+    "reservoir": 5664,
+    "selected_intraday_extrema": 3540
+  },
+  "energy_balance_max_error_mu": 0.0001,
+  "observed_totals_mu": {
+    "hydro_mu": 7214.471,
+    "internal_generation_mu": 8031.2393,
+    "net_import_mu": 22635.0183,
+    "consumption_mu": 30666.2569
+  },
+  "monthly": [
+    {
+      "month": "2024-04",
+      "observed_days": 30,
+      "hydro_mu": 569.6154,
+      "net_import_mu": 2559.656,
+      "consumption_mu": 3191.0264,
+      "internal_generation_mu": 631.3706,
+      "top_station_mu": {
+        "Idukki": 207.04,
+        "Sabarigiri": 145.5816,
+        "Kuttiadi": 50.7158,
+        "Lower Periyar": 15.244,
+        "Idamalayar": 28.8779,
+        "Neriamangalam": 11.6735,
+        "Sholayar": 23.2754,
+        "Poringalkuthu, PLBE": 11.1079
+      }
+    },
+    {
+      "month": "2024-05",
+      "observed_days": 31,
+      "hydro_mu": 540.7981,
+      "net_import_mu": 2247.7685,
+      "consumption_mu": 2846.4866,
+      "internal_generation_mu": 598.7184,
+      "top_station_mu": {
+        "Idukki": 220.623,
+        "Sabarigiri": 121.023,
+        "Kuttiadi": 43.0319,
+        "Lower Periyar": 25.435,
+        "Idamalayar": 22.0195,
+        "Neriamangalam": 13.1099,
+        "Sholayar": 14.1262,
+        "Poringalkuthu, PLBE": 11.7998
+      }
+    },
+    {
+      "month": "2024-06",
+      "observed_days": 30,
+      "hydro_mu": 730.105,
+      "net_import_mu": 1635.1383,
+      "consumption_mu": 2438.5085,
+      "internal_generation_mu": 803.3711,
+      "top_station_mu": {
+        "Idukki": 265.422,
+        "Sabarigiri": 154.8049,
+        "Kuttiadi": 57.6291,
+        "Lower Periyar": 52.82,
+        "Idamalayar": 28.7535,
+        "Neriamangalam": 28.5836,
+        "Sholayar": 13.7567,
+        "Poringalkuthu, PLBE": 21.6865
+      }
+    },
+    {
+      "month": "2024-07",
+      "observed_days": 31,
+      "hydro_mu": 887.5435,
+      "net_import_mu": 1396.5589,
+      "consumption_mu": 2368.8013,
+      "internal_generation_mu": 972.2429,
+      "top_station_mu": {
+        "Idukki": 238.877,
+        "Sabarigiri": 159.45,
+        "Kuttiadi": 122.1279,
+        "Lower Periyar": 99.424,
+        "Idamalayar": 22.7567,
+        "Neriamangalam": 48.1939,
+        "Sholayar": 7.8806,
+        "Poringalkuthu, PLBE": 39.6179
+      }
+    },
+    {
+      "month": "2024-08",
+      "observed_days": 30,
+      "hydro_mu": 940.303,
+      "net_import_mu": 1388.3698,
+      "consumption_mu": 2410.6072,
+      "internal_generation_mu": 1022.2372,
+      "top_station_mu": {
+        "Idukki": 269.401,
+        "Sabarigiri": 148.6225,
+        "Kuttiadi": 111.3925,
+        "Lower Periyar": 108.053,
+        "Idamalayar": 41.6868,
+        "Neriamangalam": 47.9515,
+        "Sholayar": 31.9065,
+        "Poringalkuthu, PLBE": 31.0203
+      }
+    },
+    {
+      "month": "2024-09",
+      "observed_days": 28,
+      "hydro_mu": 741.5245,
+      "net_import_mu": 1482.6118,
+      "consumption_mu": 2311.9008,
+      "internal_generation_mu": 829.2891,
+      "top_station_mu": {
+        "Idukki": 205.859,
+        "Sabarigiri": 111.3178,
+        "Kuttiadi": 95.0603,
+        "Lower Periyar": 78.014,
+        "Idamalayar": 31.6263,
+        "Neriamangalam": 39.3692,
+        "Sholayar": 25.4739,
+        "Poringalkuthu, PLBE": 23.7214
+      }
+    },
+    {
+      "month": "2024-10",
+      "observed_days": 30,
+      "hydro_mu": 565.3228,
+      "net_import_mu": 1857.429,
+      "consumption_mu": 2491.1664,
+      "internal_generation_mu": 633.7373,
+      "top_station_mu": {
+        "Idukki": 125.974,
+        "Sabarigiri": 82.718,
+        "Kuttiadi": 60.5582,
+        "Lower Periyar": 63.001,
+        "Idamalayar": 21.8373,
+        "Neriamangalam": 38.0062,
+        "Sholayar": 26.8412,
+        "Poringalkuthu, PLBE": 26.932
+      }
+    },
+    {
+      "month": "2024-11",
+      "observed_days": 28,
+      "hydro_mu": 470.8472,
+      "net_import_mu": 1838.1504,
+      "consumption_mu": 2364.1918,
+      "internal_generation_mu": 526.0411,
+      "top_station_mu": {
+        "Idukki": 121.229,
+        "Sabarigiri": 80.7158,
+        "Kuttiadi": 43.3089,
+        "Lower Periyar": 50.359,
+        "Idamalayar": 8.7944,
+        "Neriamangalam": 30.6995,
+        "Sholayar": 22.4333,
+        "Poringalkuthu, PLBE": 15.8876
+      }
+    },
+    {
+      "month": "2024-12",
+      "observed_days": 30,
+      "hydro_mu": 402.5535,
+      "net_import_mu": 2006.5279,
+      "consumption_mu": 2478.2457,
+      "internal_generation_mu": 471.7173,
+      "top_station_mu": {
+        "Idukki": 117.883,
+        "Sabarigiri": 55.8483,
+        "Kuttiadi": 43.7432,
+        "Lower Periyar": 34.06,
+        "Idamalayar": 28.1138,
+        "Neriamangalam": 17.8935,
+        "Sholayar": 12.4555,
+        "Poringalkuthu, PLBE": 7.8379
+      }
+    },
+    {
+      "month": "2025-01",
+      "observed_days": 31,
+      "hydro_mu": 452.5967,
+      "net_import_mu": 2087.9877,
+      "consumption_mu": 2609.2957,
+      "internal_generation_mu": 521.3078,
+      "top_station_mu": {
+        "Idukki": 173.143,
+        "Sabarigiri": 74.9088,
+        "Kuttiadi": 41.6254,
+        "Lower Periyar": 17.945,
+        "Idamalayar": 30.9719,
+        "Neriamangalam": 15.2789,
+        "Sholayar": 19.3787,
+        "Poringalkuthu, PLBE": 5.6022
+      }
+    },
+    {
+      "month": "2025-02",
+      "observed_days": 27,
+      "hydro_mu": 447.2584,
+      "net_import_mu": 1924.3023,
+      "consumption_mu": 2429.1181,
+      "internal_generation_mu": 504.8158,
+      "top_station_mu": {
+        "Idukki": 171.108,
+        "Sabarigiri": 94.304,
+        "Kuttiadi": 38.1602,
+        "Lower Periyar": 11.145,
+        "Idamalayar": 30.5601,
+        "Neriamangalam": 10.8508,
+        "Sholayar": 20.195,
+        "Poringalkuthu, PLBE": 9.3973
+      }
+    },
+    {
+      "month": "2025-03",
+      "observed_days": 28,
+      "hydro_mu": 466.0029,
+      "net_import_mu": 2210.5177,
+      "consumption_mu": 2726.9084,
+      "internal_generation_mu": 516.3907,
+      "top_station_mu": {
+        "Idukki": 221.741,
+        "Sabarigiri": 58.3225,
+        "Kuttiadi": 36.2968,
+        "Lower Periyar": 11.26,
+        "Idamalayar": 32.7462,
+        "Neriamangalam": 11.0313,
+        "Sholayar": 24.6882,
+        "Poringalkuthu, PLBE": 9.5969
+      }
+    }
+  ],
+  "stations": [
+    {
+      "station_name_as_reported": "Idukki",
+      "generation_mu": 2338.3,
+      "days_with_reported_generation": 354
+    },
+    {
+      "station_name_as_reported": "Sabarigiri",
+      "generation_mu": 1287.6172,
+      "days_with_reported_generation": 354
+    },
+    {
+      "station_name_as_reported": "Kuttiadi",
+      "generation_mu": 743.6502,
+      "days_with_reported_generation": 354
+    },
+    {
+      "station_name_as_reported": "Lower Periyar",
+      "generation_mu": 566.76,
+      "days_with_reported_generation": 346
+    },
+    {
+      "station_name_as_reported": "Idamalayar",
+      "generation_mu": 328.7444,
+      "days_with_reported_generation": 338
+    },
+    {
+      "station_name_as_reported": "Neriamangalam",
+      "generation_mu": 312.6418,
+      "days_with_reported_generation": 343
+    },
+    {
+      "station_name_as_reported": "Sholayar",
+      "generation_mu": 242.4112,
+      "days_with_reported_generation": 346
+    },
+    {
+      "station_name_as_reported": "Poringalkuthu, PLBE",
+      "generation_mu": 214.2077,
+      "days_with_reported_generation": 353
+    },
+    {
+      "station_name_as_reported": "Kakkad",
+      "generation_mu": 200.9926,
+      "days_with_reported_generation": 348
+    },
+    {
+      "station_name_as_reported": "Panniar",
+      "generation_mu": 165.6529,
+      "days_with_reported_generation": 338
+    },
+    {
+      "station_name_as_reported": "Pallivasal",
+      "generation_mu": 136.0064,
+      "days_with_reported_generation": 354
+    },
+    {
+      "station_name_as_reported": "Sengulam",
+      "generation_mu": 122.7761,
+      "days_with_reported_generation": 344
+    },
+    {
+      "station_name_as_reported": "Kallada",
+      "generation_mu": 65.8409,
+      "days_with_reported_generation": 354
+    },
+    {
+      "station_name_as_reported": "Kuthungal",
+      "generation_mu": 49.2856,
+      "days_with_reported_generation": 338
+    },
+    {
+      "station_name_as_reported": "PES-Pallivasal",
+      "generation_mu": 46.981,
+      "days_with_reported_generation": 103
+    },
+    {
+      "station_name_as_reported": "Maniyar",
+      "generation_mu": 29.5561,
+      "days_with_reported_generation": 345
+    },
+    {
+      "station_name_as_reported": "Malankara",
+      "generation_mu": 28.1011,
+      "days_with_reported_generation": 353
+    }
+  ],
+  "interfaces": [
+    {
+      "interface_name_as_reported": "400KV KOZHKOD",
+      "import_mu": 4627.905,
+      "days_with_reported_import": 354
+    },
+    {
+      "interface_name_as_reported": "400KV KOCHI+KOTTAYAM",
+      "import_mu": 4163.221,
+      "days_with_reported_import": 354
+    },
+    {
+      "interface_name_as_reported": "220KV_KNPA+SBGR +PVUD+EDMN",
+      "import_mu": 3719.1702,
+      "days_with_reported_import": 354
+    },
+    {
+      "interface_name_as_reported": "400KV TVM",
+      "import_mu": 3031.862,
+      "days_with_reported_import": 354
+    },
+    {
+      "interface_name_as_reported": "400KV MDKA",
+      "import_mu": 2529.586,
+      "days_with_reported_import": 354
+    },
+    {
+      "interface_name_as_reported": "400KV PKKD",
+      "import_mu": 2408.3123,
+      "days_with_reported_import": 354
+    },
+    {
+      "interface_name_as_reported": "400KV NORTH TRSR",
+      "import_mu": 1920.0236,
+      "days_with_reported_import": 354
+    },
+    {
+      "interface_name_as_reported": "110KV_MJSM +PRSLA",
+      "import_mu": 234.9425,
+      "days_with_reported_import": 354
+    }
+  ],
+  "reservoirs": [
+    {
+      "reservoir_name_as_reported": "ANAYIRANKAL",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 0.0,
+      "storage_pct_max": 100.0
+    },
+    {
+      "reservoir_name_as_reported": "IDAMALAYAR",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 25.0,
+      "storage_pct_max": 84.0
+    },
+    {
+      "reservoir_name_as_reported": "IDUKKI",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 28.0,
+      "storage_pct_max": 73.0
+    },
+    {
+      "reservoir_name_as_reported": "KAKKAD",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 0.0,
+      "storage_pct_max": 0.0
+    },
+    {
+      "reservoir_name_as_reported": "KAKKI",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 0.0,
+      "storage_pct_max": 0.0
+    },
+    {
+      "reservoir_name_as_reported": "KUNDALA",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 12.0,
+      "storage_pct_max": 96.0
+    },
+    {
+      "reservoir_name_as_reported": "KUTTIADI",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 28.0,
+      "storage_pct_max": 100.0
+    },
+    {
+      "reservoir_name_as_reported": "LOWER PERIYAR",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 0.0,
+      "storage_pct_max": 100.0
+    },
+    {
+      "reservoir_name_as_reported": "MADUPPATTY",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 53.0,
+      "storage_pct_max": 99.0
+    },
+    {
+      "reservoir_name_as_reported": "NERIAMANGALAM",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 0.0,
+      "storage_pct_max": 99.0
+    },
+    {
+      "reservoir_name_as_reported": "PAMBA",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 18.0,
+      "storage_pct_max": 65.0
+    },
+    {
+      "reservoir_name_as_reported": "PONMUDI",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 0.0,
+      "storage_pct_max": 95.0
+    },
+    {
+      "reservoir_name_as_reported": "PORINGAL",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 24.0,
+      "storage_pct_max": 96.0
+    },
+    {
+      "reservoir_name_as_reported": "SENGULAM (SBR)",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 0.0,
+      "storage_pct_max": 0.0
+    },
+    {
+      "reservoir_name_as_reported": "SHOLAYAR",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 8.0,
+      "storage_pct_max": 100.0
+    },
+    {
+      "reservoir_name_as_reported": "THARIODE",
+      "observation_count": 354,
+      "first_date": "2024-04-01",
+      "last_date": "2025-03-31",
+      "storage_pct_min": 3.0,
+      "storage_pct_max": 95.0
+    }
+  ],
+  "limitations": [
+    "354 of 365 days are observed; missing days are not zero or interpolated.",
+    "Reported daily station generation is not measured hourly dispatch or nameplate capacity.",
+    "Empty source cells are unknown, not zero; station totals cover days with reported numeric values only.",
+    "Interface energy is not transfer capability; monthly/annual totals are sums of observed days only.",
+    "Reservoir storage and station generation are separate observations, not a validated cascade/energy conversion.",
+    "Reported extrema are isolated peak/minimum observations, not a continuous hourly or 15-minute load profile.",
+    "Availability/merit-order tables remain in the raw archive; they are not fully normalised here."
+  ]
+}

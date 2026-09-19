@@ -92,3 +92,21 @@ def test_live_site_excludes_synthetic_downloads_even_after_rebuild(tmp_path):
     assert not {"renewables", "replay", "scenario_dimensions", "techno_economics"} & products.keys()
     assert products["cstep"]["classification"] == "published_external_scenario"
     assert (ROOT / "public/hourly-load-proxy.json").exists()
+
+
+def test_expanded_sldc_archive_is_published_without_synthetic_hourly_telemetry(tmp_path):
+    full = ROOT / "public/sldc-station-evidence.json"
+    if not full.exists():
+        pytest.skip("Optional local archive not staged")
+    layer = json.loads(full.read_text(encoding="utf-8"))
+    assert layer["classification"] == "derived_from_measured"
+    assert layer["observed_days"] == 354
+    assert len(layer["missing_dates"]) == 11
+    assert layer["reported_row_counts"]["hydro_station"] == 5779
+    assert layer["reported_row_counts"]["reservoir"] == 5664
+    assert layer["observed_totals_mu"]["consumption_mu"] == 30666.2569
+    site.build_site(ROOT, tmp_path)
+    published = json.loads((tmp_path / "data/site-data.json").read_text(encoding="utf-8"))
+    assert published["metadata"]["files"]["sldc_station_evidence"] == "sldc-station-evidence.json"
+    assert (tmp_path / "data/sldc-processed-evidence.zip").exists()
+    assert not list((tmp_path / "data").glob("*proxy*"))

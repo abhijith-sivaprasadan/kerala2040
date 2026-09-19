@@ -17,6 +17,8 @@ const state = {
   hourlyProxy: null,
   hourlySeries: null,
   nationalContext: null,
+  sldcStationEvidence: null,
+  nationalContext: null,
   chartRows: [],
   chartColumns: [],
   chartTitle: '',
@@ -63,6 +65,7 @@ async function loadPlatformData() {
     files.hourly_load_proxy ? fetchJSON(`${RAW}${files.hourly_load_proxy}`, true) : null,
     files.energyproject_context ? fetchJSON(`${RAW}${files.energyproject_context}`, true) : null
   ]);
+  state.sldcStationEvidence = files.sldc_station_evidence ? await fetchJSON(`${RAW}${files.sldc_station_evidence}`) : null;
 }
 
 function refs() {
@@ -678,6 +681,7 @@ function bindInteractions() {
   qs('#electricityMetric')?.addEventListener('change',e=>renderElectricityChart(e.target.value));
   qs('#electricityPeriod')?.addEventListener('change',()=>renderElectricityChart(qs('#electricityMetric').value));
   qs('#chartUnit')?.addEventListener('change',()=>renderElectricityChart(qs('#electricityMetric').value));
+  qs('#sldcDetailMetric')?.addEventListener('change',()=>renderSldcDeepDive());
   qs('#downloadChartData')?.addEventListener('click',downloadChartData);
   qs('#downloadChartImage')?.addEventListener('click',()=>{
     if(window.Plotly)Plotly.downloadImage('electricityChart',{format:'png',filename:`kerala2040-${qs('#electricityMetric').value}`,width:1400,height:650});
@@ -707,13 +711,13 @@ function bindTheme() {
   qs('#themeToggle')?.addEventListener('click',()=>{
     const next=document.documentElement.dataset.theme==='dark'?'light':'dark';
     document.documentElement.dataset.theme=next;try { localStorage.setItem('k2040-theme',next); } catch {}
-    if(state.data) {renderOverview();renderElectricity();renderPathwayReferences();renderScenarioLab(state.selectedScenario);}
+    if(state.data) {renderOverview();renderElectricity();renderSldcDeepDive();renderPathwayReferences();renderScenarioLab(state.selectedScenario);}
   });
 }
 
 function renderAll() {
   
-  renderPlatformMeta();renderHeadline();renderOverview();renderEvidenceFeed();renderElectricity();renderPathwayReferences();renderScenarioLab();renderIndustry();renderDataCentre();
+  renderPlatformMeta();renderHeadline();renderOverview();renderEvidenceFeed();renderElectricity();renderSldcDeepDive();renderPathwayReferences();renderScenarioLab();renderIndustry();renderDataCentre();
   renderConnectedEvidence();
   renderResearchProgress();
   if (!window.Plotly) qsa('.chart:not(#scenarioInputChart)').forEach(el=>el.innerHTML='<p class="model-gate">Charts could not load. Use the data tables and downloads below.</p>');
@@ -751,4 +755,46 @@ function renderResearchProgress(){
   if(p.reconciliation)box.innerHTML+=`<details><summary>Official energy reconciliation · different accounting boundaries</summary><div class="table-scroll"><table><thead><tr><th>Metric</th><th>MU</th><th>Boundary</th><th>Source</th></tr></thead><tbody>${p.reconciliation.rows.map(r=>`<tr><td>${esc(r.metric.replaceAll('_',' '))}</td><td>${fmt(r.value_mu,2)}</td><td>${esc(r.boundary)}</td><td>${esc(r.source)}</td></tr>`).join('')}</tbody></table></div></details>`;
   if(p.gis)box.innerHTML+=`<details><summary>Ecological acquisition register</summary><div class="table-scroll"><table><thead><tr><th>Layer</th><th>State</th><th>Source</th></tr></thead><tbody>${p.gis.records.map(r=>`<tr><td>${esc(r.layer_id.replaceAll('_',' '))}</td><td>${r.local_exists?'Raw file acquired':'Unresolved'}</td><td>${esc(r.source)}</td></tr>`).join('')}</tbody></table></div></details>`;
   box.innerHTML+=`<p><a href="${REPO}/blob/main/docs/CSTEP_FY2016_DATA_REQUEST_DRAFT.md" target="_blank" rel="noopener">CSTEP FY2016 data request ↗</a> · <a href="${REPO}/blob/main/docs/NEXT_STEPS.md" target="_blank" rel="noopener">Next research steps ↗</a></p>`;
+}
+
+// Expand the historical daily evidence only when the independently validated archive
+// is packaged. Missing dates remain gaps; no interval chronology is inferred.
+function renderSldcDeepDive() {
+  const box=qs('#sldcDetailChart'), note=qs('#sldcDetailNote'), limits=qs('#sldcDetailLimitations');
+  if(!box||!note||!limits)return;
+  const e=state.sldcStationEvidence;
+  if(!e) {
+    box.innerHTML='<p class="model-gate">Expanded historical SLDC tables are not packaged in this snapshot.</p>';
+    note.textContent='The independent historical data layer remains under integration.';
+    return;
+  }
+  const metric=qs('#sldcDetailMetric')?.value||'stations';
+  const c=chartTheme();let traces=[],options=layout(),description='';
+  if(metric==='stations') {
+    const rows=e.stations.filter(r=>r.days_with_reported_generation>0).slice(0,12);
+    traces=[{type:'bar',orientation:'h',name:'Reported generation',x:rows.map(r=>r.generation_mu/1000),y:rows.map(r=>r.station_name_as_reported),marker:{color:c.green},hovertemplate:'%{y}<br>%{x:.3f} TWh<extra>Observed days only</extra>'}];
+    options={...layout({xTitle:'Reported generation (TWh; observed days only)'}),margin:{l:165,r:30,t:15,b:65},yaxis:{autorange:'reversed',automargin:true}};
+    description='Station names are preserved as reported. Only nonblank daily generation values contribute; these are not installed capacity or plant-level hourly dispatch.';
+  } else if(metric==='interfaces') {
+    const rows=e.interfaces;
+    traces=[{type:'bar',orientation:'h',name:'Reported net import',x:rows.map(r=>r.import_mu/1000),y:rows.map(r=>r.interface_name_as_reported),marker:{color:c.amber},hovertemplate:'%{y}<br>%{x:.3f} TWh<extra>Reported daily energy</extra>'}];
+    options={...layout({xTitle:'Reported interface energy (TWh; observed days only)'}),margin:{l:195,r:30,t:15,b:65},yaxis:{autorange:'reversed',automargin:true}};
+    description='Reported grouped imports are daily energy measurements, not MW transfer limits or a solved regional grid model.';
+  } else if(metric==='months') {
+    const rows=e.monthly;
+    traces=[['Hydro','hydro_mu',c.green],['Net imports','net_import_mu',c.amber]].map(([name,key,color])=>({type:'bar',name,x:rows.map(r=>r.month),y:rows.map(r=>r[key]/1000),marker:{color},hovertemplate:'%{x}<br>%{y:.3f} TWh<extra>'+name+'</extra>'}));
+    options={...layout({xTitle:'Calendar month',yTitle:'Reported energy (TWh; observed days only)'}),barmode:'group'};
+    description='Monthly values exclude missing dates. Coverage by month is recorded in the downloadable JSON; no missing-date scaling or interpolation.';
+  } else if(metric==='reservoirs') {
+    const rows=e.reservoirs.filter(r=>r.observation_count>0);
+    traces=[{type:'bar',orientation:'h',name:'Minimum reported storage',y:rows.map(r=>r.reservoir_name_as_reported),x:rows.map(r=>r.storage_pct_min),marker:{color:c.amber}},
+      {type:'bar',orientation:'h',name:'Observed range above minimum',y:rows.map(r=>r.reservoir_name_as_reported),x:rows.map(r=>r.storage_pct_max-r.storage_pct_min),marker:{color:c.green}}];
+    options={...layout({xTitle:'Reported storage (%)'}),barmode:'stack',margin:{l:160,r:30,t:15,b:65},yaxis:{autorange:'reversed',automargin:true}};
+    description='Minima and maxima of each reservoir’s reported daily storage percentage; not turbine capacity, usable energy or a validated reservoir–plant cascade.';
+  }
+  const suffix=`${e.observed_days}/${e.expected_days} days · source archive SHA-256 ${e.source_archive_sha256.slice(0,12)}…`;
+  note.textContent=`${description} ${suffix}`;
+  limits.innerHTML=`<p>${e.reported_row_counts.hydro_station.toLocaleString()} station, ${e.reported_row_counts.import_interface.toLocaleString()} interface and ${e.reported_row_counts.reservoir.toLocaleString()} reservoir rows. 11 missing days: ${e.missing_dates.join(', ')}.</p><ul>${e.limitations.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+  if(window.Plotly)Plotly.react(box,traces,options,{responsive:true,displaylogo:false});
+  else box.innerHTML='<p class="model-gate">Chart library unavailable; download the source-labelled data tables below.</p>';
 }

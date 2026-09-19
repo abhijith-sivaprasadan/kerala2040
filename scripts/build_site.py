@@ -118,6 +118,20 @@ def build_site(root: Path, output: Path) -> None:
         html = html.replace(f"assets/{name}", f"assets/{versioned}")
     (output / "index.html").write_text(html, encoding="utf-8")
     site = live_manifest(source)
+    # The expanded station-level report is an optional, user-acquired public evidence
+    # layer; future config-only bundle rebuilds cannot silently remove its provenance.
+    station_path = root / "public" / "sldc-station-evidence.json"
+    if station_path.exists():
+        station = json.loads(station_path.read_text(encoding="utf-8"))
+        if (station.get("classification") != "derived_from_measured"
+                or station.get("observed_days") != 354
+                or station.get("expected_days") != 365
+                or len(station.get("missing_dates", [])) != 11
+                or len(station.get("monthly", [])) != 12
+                or len(station.get("source_archive_sha256", "")) != 64):
+            raise ValueError("Expanded SLDC evidence has missing provenance/coverage")
+        site["metadata"]["files"]["sldc_station_evidence"] = "sldc-station-evidence.json"
+        site["sldc_station_evidence"] = station
     data_dir = output / "data"
     data_dir.mkdir(exist_ok=True)
     allowed = set(site["metadata"]["files"].values()) | {"site-data.json", "metadata.json"}
@@ -134,6 +148,13 @@ def build_site(root: Path, output: Path) -> None:
     for name, payload in products.items():
         if payload is not None:
             (data_dir / name).write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    if station_path.exists():
+        # Full CSV archive is separately downloadable; original raw HTML archive
+        # remains outside Pages and is identified by SHA-256 in the QA report.
+        published = root / "public" / "sldc-processed-evidence.zip"
+        if not published.exists():
+            raise ValueError("Expanded SLDC source summaries must have the processed CSV download")
+        shutil.copy2(published, data_dir / published.name)
     validate_bundle(data_dir)
     (output / ".nojekyll").touch()
 
