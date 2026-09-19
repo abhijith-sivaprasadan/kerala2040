@@ -18,6 +18,7 @@ const state = {
   hourlySeries: null,
   nationalContext: null,
   sldcStationEvidence: null,
+  audit: null,
   nationalContext: null,
   chartRows: [],
   chartColumns: [],
@@ -66,6 +67,7 @@ async function loadPlatformData() {
     files.energyproject_context ? fetchJSON(`${RAW}${files.energyproject_context}`, true) : null
   ]);
   state.sldcStationEvidence = files.sldc_station_evidence ? await fetchJSON(`${RAW}${files.sldc_station_evidence}`) : null;
+  state.audit = files.audit_readiness ? await fetchJSON(`${RAW}${files.audit_readiness}`, true) : null;
 }
 
 function refs() {
@@ -659,14 +661,14 @@ function bindRouteButtons(root=document) {
 }
 
 function navigate(route) {
-  const valid=['overview','electricity','pathways','atlas','industry','data'];
+  const valid=['overview','electricity','pathways','atlas','industry','audit','data'];
   const target=valid.includes(route)?route:'overview';
   if(location.hash!==`#${target}`) history.pushState(null,'',`#${target}`);
   showView(target);
 }
 
 function showView(route) {
-  if (!['overview','electricity','pathways','atlas','industry','data'].includes(route)) route='overview';
+  if (!['overview','electricity','pathways','atlas','industry','audit','data'].includes(route)) route='overview';
   qsa('.view').forEach(v=>v.classList.toggle('active',v.dataset.view===route));
   qsa('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.route===route));
   qsa('.nav-link').forEach(b=>b.setAttribute('aria-current',b.dataset.route===route?'page':'false'));
@@ -693,6 +695,9 @@ function bindInteractions() {
   qs('#mapNodeList')?.addEventListener('click',e=>{const b=e.target.closest('[data-node]');if(!b)return;const node=getNodes().find(x=>x.name===b.dataset.node);selectMapNode(node)});
   qs('#industryTabs')?.addEventListener('click',e=>{const b=e.target.closest('[data-industry]');if(!b)return;state.industryCase=b.dataset.industry;renderIndustry()});
   qs('#sourceSearch')?.addEventListener('input',e=>{const term=e.target.value.trim().toLowerCase();qsa('#sourceRegistry [data-search],#downloadGrid [data-search]').forEach(el=>el.hidden=term&&!el.dataset.search.includes(term))});
+  for(const selector of ['#auditSearch','#auditPriority','#auditStatus']) {
+    qs(selector)?.addEventListener(selector==='#auditSearch'?'input':'change',renderAuditFindings);
+  }
   window.addEventListener('popstate',()=>showView(location.hash.slice(1)||'overview'));
   window.addEventListener('hashchange',()=>showView(location.hash.slice(1)||'overview'));
 }
@@ -715,11 +720,100 @@ function bindTheme() {
   });
 }
 
+// The audit is built from source checks at website packaging time, not from
+// arbitrary client-side percentages or an unverified live API.
+const auditStatusLabel = status => ({
+  verified_in_committed_evidence: 'Verified evidence',
+  partial_or_provisional: 'Partial / provisional',
+  blocked_missing_verified_evidence: 'Blocked / missing evidence'
+}[status] || 'Unverified');
+
+function auditStatusClass(status) {
+  return status === 'verified_in_committed_evidence' ? 'verified' :
+    status === 'partial_or_provisional' ? 'partial' : 'blocked';
+}
+
+function auditFindingHTML(item) {
+  const v=item.verification||{};
+  const source=String(v.evidence||item.evidence||'');
+  const sourceURL=source&&!source.includes('..')&&!source.startsWith('/') ?
+    REPO+'/blob/main/'+source.split('/').map(encodeURIComponent).join('/') : '';
+  return '<article class="audit-finding">' +
+    '<div class="audit-finding-top"><span class="audit-priority">'+esc(item.priority)+'</span>' +
+    '<span class="audit-pill '+auditStatusClass(v.status)+'">'+esc(auditStatusLabel(v.status))+'</span></div>' +
+    '<h3>'+esc(item.id.replaceAll('_',' '))+'</h3>' +
+    '<p class="audit-acquisition">'+esc(item.acquisition)+'</p>' +
+    '<p class="audit-evidence-detail">'+esc(v.detail||'No verified evidence recorded.')+'</p>' +
+    (sourceURL?'<a target="_blank" rel="noopener" href="'+esc(sourceURL)+'">Inspect source evidence ↗</a>':'') +
+    '</article>';
+}
+
+function renderAuditFindings() {
+  const box=qs('#auditFindings'),count=qs('#auditResultCount'),audit=state.audit;
+  if(!box||!count||!audit)return;
+  const search=(qs('#auditSearch')?.value||'').trim().toLowerCase();
+  const priority=qs('#auditPriority')?.value||'all';
+  const status=qs('#auditStatus')?.value||'all';
+  const results=(audit.findings||[]).filter(item=>
+    (priority==='all'||item.priority===priority) &&
+    (status==='all'||item.verification?.status===status) &&
+    (!search||[item.id,item.acquisition,item.priority,item.evidence,
+      item.verification?.detail,item.verification?.evidence].join(' ').toLowerCase().includes(search)));
+  count.textContent=results.length+' of '+audit.finding_count+
+    ' findings · statuses describe committed evidence, not completed code.';
+  box.innerHTML=results.length?results.map(auditFindingHTML).join(''):
+    '<p class="audit-empty">No findings match this filter. Change the filters to view all acquisitions.</p>';
+}
+
+function renderAudit() {
+  const audit=state.audit;
+  const overview=qs('#auditOverviewText');
+  if(!audit||audit.classification!=='repository_evidence_audit_not_external_source_validation') {
+    if(overview)overview.textContent='A verified audit has not been packaged in this evidence snapshot.';
+    const summary=qs('#auditSummary');
+    if(summary)summary.textContent='Audit unavailable — no readiness claims can be made.';
+    return;
+  }
+  const findings=audit.findings||[];
+  const partial=findings.filter(f=>f.verification?.status==='partial_or_provisional').length;
+  const blocked=findings.filter(f=>f.verification?.status==='blocked_missing_verified_evidence').length;
+  if(overview)overview.textContent=audit.open_findings+' of '+audit.finding_count+
+    ' acquisition findings remain open. Observed-day accounting passes; full-year and 2040 scientific gates are still blocked.';
+  const summary=qs('#auditSummary');
+  if(summary)summary.innerHTML=[
+    [audit.finding_count,'Tracked acquisitions'],
+    [audit.closed_findings,'Verified acquisitions'],
+    [partial,'Partial evidence'],
+    [blocked,'Blocked evidence']
+  ].map(([value,label])=>'<div class="audit-stat"><strong>'+esc(value)+
+    '</strong><span>'+esc(label)+'</span></div>').join('');
+  const provenance=qs('#auditProvenance');
+  if(provenance)provenance.textContent='Repository-evidence audit · SLDC source archive SHA-256 '+
+    audit.source_qa_sha256+' · '+audit.evidence_limit;
+  const gates=qs('#auditGates');
+  const names={
+    daily_accounting:'Available-day electricity accounting',
+    observed_full_year:'Complete measured historical chronology',
+    ecological_capacity_ceiling:'Ecological capacity ceilings',
+    techno_economic_2040:'2040 techno-economic optimisation',
+    kmml_case:'KMML measured industrial case'
+  };
+  if(gates)gates.innerHTML=Object.entries(audit.release_gates||{}).map(([name,gate])=>
+    '<article class="audit-gate"><div><span class="audit-pill '+(gate.passed?'verified':'blocked')+
+    '">'+(gate.passed?'PASS':'BLOCKED')+'</span><h3>'+esc(names[name]||name.replaceAll('_',' '))+'</h3></div>'+
+    '<p>'+esc(gate.description)+'</p>'+
+    '<small>'+(gate.blocking_checks?.length?'Outstanding checks: '+esc(gate.blocking_checks.join(', ')):
+      'All checks specified for this limited gate passed.')+'</small></article>'
+  ).join('');
+  renderAuditFindings();
+}
+
 function renderAll() {
   
   renderPlatformMeta();renderHeadline();renderOverview();renderEvidenceFeed();renderElectricity();renderSldcDeepDive();renderPathwayReferences();renderScenarioLab();renderIndustry();renderDataCentre();
   renderConnectedEvidence();
   renderResearchProgress();
+  renderAudit();
   if (!window.Plotly) qsa('.chart:not(#scenarioInputChart)').forEach(el=>el.innerHTML='<p class="model-gate">Charts could not load. Use the data tables and downloads below.</p>');
 }
 
