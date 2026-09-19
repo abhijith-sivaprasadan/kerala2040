@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from requests import Session
+from requests.exceptions import RequestException
 
 from kerala2040.sources.sldc import SYSTEM_STATS_URL, parse_system_statistics
 
@@ -92,14 +93,14 @@ def probe_missing_dates(
                 attempts.append(detail)
                 if accepted:
                     break
-            except (ValueError, OSError, RuntimeError) as exc:
+            except (ValueError, RuntimeError) as exc:
                 detail.update({
                     "result": "unverified_response",
                     "exception_type": type(exc).__name__,
                     "detail": str(exc)[:350],
                 })
                 attempts.append(detail)
-            except Exception as exc:
+            except RequestException as exc:
                 # Transport and TLS failures are evidence of a failed request,
                 # never proof that no dated report exists in the agency records.
                 detail.update({
