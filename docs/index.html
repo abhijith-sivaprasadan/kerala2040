@@ -56,6 +56,7 @@
         <button data-route="pathways" class="nav-link">Scenarios &amp; models</button>
         <button data-route="atlas" class="nav-link">Energy atlas</button>
         <button data-route="industry" class="nav-link">Circular industry</button>
+        <button data-route="audit" class="nav-link">Research readiness</button>
         <button data-route="data" class="nav-link">Sources</button>
       </div>
     </nav>
@@ -87,6 +88,12 @@
         <div id="headlineMetrics" class="shell headline-grid" aria-live="polite"></div>
       </section>
       <section class="shell research-notice" id="researchReadiness" aria-live="polite"></section>
+      <section class="shell audit-overview" aria-labelledby="auditOverviewTitle">
+        <div><div class="section-label">EVIDENCE AUDIT · SCIENTIFIC RELEASE GATES</div>
+          <h2 id="auditOverviewTitle">What can the research support today?</h2>
+          <p id="auditOverviewText">Checking the published audit…</p></div>
+        <button class="button secondary" data-route="audit">Explore research readiness →</button>
+      </section>
 
       <section class="shell home-section">
         <div class="section-heading">
@@ -387,6 +394,44 @@
       </div>
     </section>
 
+    <section class="view" data-view="audit">
+      <div class="page-mast shell">
+        <div><div class="section-label">SCIENTIFIC TRANSPARENCY · EVIDENCE AUDIT</div>
+          <h1>Research readiness</h1>
+          <p>The documented data gaps, independently checked source evidence and requirements before Kerala 2040 can publish validated planning results.</p></div>
+        <span class="status-label neutral">Evidence-based · not a forecast</span>
+      </div>
+      <div class="shell page-content">
+        <section class="audit-intro data-module" aria-labelledby="auditSummaryTitle">
+          <div class="section-label">CURRENT SOURCE EVIDENCE</div>
+          <h2 id="auditSummaryTitle">Scientific readiness, not software completion</h2>
+          <p>Passed daily accounting only verifies available daily observations. Reconstructed hourly screening, source catalogues and a successful optimisation run cannot certify the missing underlying data or physical constraints.</p>
+          <div id="auditSummary" class="audit-summary" aria-live="polite">Loading verified audit evidence…</div>
+          <p id="auditProvenance" class="audit-provenance"></p>
+        </section>
+        <section class="data-module" aria-labelledby="auditGatesTitle">
+          <div class="module-head"><div><div class="section-label">PUBLICATION REQUIREMENTS</div><h2 id="auditGatesTitle">Scientific release gates</h2></div></div>
+          <p>A gate passes only when every required underlying check is verified. The 2040 model remains an explicitly provisional research sensitivity.</p>
+          <div id="auditGates" class="audit-gates"></div>
+        </section>
+        <section class="data-module" aria-labelledby="auditFindingsTitle">
+          <div class="module-head"><div><div class="section-label">AUDIT REGISTER</div><h2 id="auditFindingsTitle">Outstanding source acquisitions</h2></div></div>
+          <div class="audit-filters">
+            <label for="auditSearch">Find a source or workstream<input id="auditSearch" type="search" placeholder="Search acquisition, evidence or identifier" /></label>
+            <label for="auditPriority">Priority<select id="auditPriority"><option value="all">All priorities</option><option value="P0">P0 — essential</option><option value="P1">P1 — supporting</option><option value="P2">P2 — industrial case</option></select></label>
+            <label for="auditStatus">Evidence status<select id="auditStatus"><option value="all">All statuses</option><option value="verified_in_committed_evidence">Verified</option><option value="partial_or_provisional">Partial</option><option value="blocked_missing_verified_evidence">Blocked</option></select></label>
+          </div>
+          <p id="auditResultCount" class="audit-provenance" aria-live="polite"></p>
+          <div id="auditFindings" class="audit-findings"></div>
+        </section>
+        <section class="method-note audit-method" aria-labelledby="auditMethodTitle">
+          <div><div class="section-label">TRACEABILITY</div><h2 id="auditMethodTitle">What this audit does — and does not — establish</h2></div>
+          <p>The checks inspect the research repository’s committed evidence. They cannot establish what is held in private utility records, local unpublished archives, or external workflow artifacts. Missing here means not validated within this published research snapshot, not that the information does not exist.</p>
+          <p><a href="data/audit-readiness.json" download>Download the machine-readable audit ↓</a> · <a href="https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/docs/AUDIT_RELEASE_GATES.md" target="_blank" rel="noopener">Audit methodology and closure requirements ↗</a></p>
+        </section>
+      </div>
+    </section>
+
     <section class="view" data-view="data">
       <div class="page-mast shell">
         <div>
@@ -432,6 +477,7 @@
         <button data-route="electricity">Data &amp; statistics</button>
         <button data-route="pathways">Scenarios</button>
         <button data-route="atlas">Atlas</button>
+        <button data-route="audit">Readiness</button>
         <button data-route="data">Sources</button>
       </div>
     </div>
