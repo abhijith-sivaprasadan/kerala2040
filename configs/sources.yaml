@@ -26,6 +26,19 @@ sources:
       System-statistics and storage reports expose independent historical date forms.
       Their accounting labels are preserved rather than collapsed into one import metric.
 
+  srpc_dsm:
+    priority: P0
+    organisation: Southern Regional Power Committee
+    home: https://www.srpc.kar.nic.in/html/
+    acquisition: official_weekly_dsm_statements_and_data_files
+    geography: Southern Region / Kerala drawee entity
+    use: [actual_interchange_cross_check, scheduled_interchange, deviation_accounting]
+    note: >-
+      Official DSM material publishes Kerala schedule/actual-drawal accounting and
+      describes blockwise commercial outputs. Treat it as an independent regional
+      interchange source, not Kerala state demand and not a substitute for verified
+      Kerala interface limits. Revision precedence and metering boundary must be checked.
+
   grid_india_daily_psp:
     priority: P0
     organisation: Grid-India
