@@ -122,7 +122,9 @@ def generator_database(
                 "portal_date_label": item.get("milestone_date_label"),
                 "commissioning_year": (
                     _commissioning_year(item.get("milestone_date_label"))
-                    if item.get("milestone") == "commissioned_on" else None
+                    if item.get("milestone") == "commissioned_on"
+                    or (item.get("milestone") is None and item.get("status") == "Completed")
+                    else None
                 ),
                 "unit_label_capacity_mw": named_mw,
                 "unit_label_conflicts_with_portal_mw": conflict,
