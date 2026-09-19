@@ -2,9 +2,10 @@
 
 **Energy Sovereignty, Ecological Resilience and Fiscal Feasibility**
 
-> **v1.0 — data-connectivity foundation.** This release has live source
-> adapters and reproducible ingestion, but 2040 numerical results are not yet
-> validated and must not be treated as policy recommendations.
+> **v1.0.0 — Data Platform / Historical Foundation.** This release provides
+> source-labelled historical evidence, reproducible ingestion and a public dashboard.
+> It is **not** a validated 2040 capacity-expansion or policy model.
+> See [release notes](docs/releases/v1.0.0.md) for the scope and limitations.
 
 Kerala 2040 is an independent, reproducible energy-systems research project
 asking how Kerala can reduce structural electricity-import dependence and
@@ -20,7 +21,9 @@ Dashboard source lives in `docs/` and deploys through GitHub Pages.
 **https://kerala2040.github.io/**
 
 See [next steps and the release workflow](docs/NEXT_STEPS.md).
-The site deploys a validated snapshot of `docs/` + `public/` from this repository.
+The website release is built from an immutable research commit recorded in its
+`SOURCE_COMMIT`. Its public `RELEASE_MANIFEST.json` identifies the research
+commit and evidence snapshot; the website is not the source of truth for development-only data.
 
 ## v1.0 connected data layer
 
