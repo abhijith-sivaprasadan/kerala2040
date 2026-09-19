@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
+import math
 import shutil
+from datetime import datetime, timedelta
+from itertools import pairwise
 from pathlib import Path
 
 
@@ -23,6 +27,37 @@ def validate_bundle(public: Path) -> dict:
         read(name)
     if read("metadata.json") != metadata:
         raise ValueError("Manifest and metadata disagree")
+    if "hourly_load_proxy_summary" in files:
+        proxy = read(files["hourly_load_proxy_summary"])
+        if proxy != site.get("hourly_load_proxy"):
+            raise ValueError("Proxy summary and manifest disagree")
+        if proxy.get("classification") != "proxy_reconstruction_not_measured_telemetry":
+            raise ValueError("Hourly proxy must be explicitly classified as reconstruction")
+        if "hourly_load_proxy" in files:
+            product = read(files["hourly_load_proxy"])
+            hourly = product["records"]
+            if product.get("classification") != proxy["classification"]:
+                raise ValueError("Hourly series classification disagrees with summary")
+            times = [datetime.fromisoformat(row["timestamp"]) for row in hourly]
+            if len(hourly) != proxy["hours"] or len(hourly) != 8760:
+                raise ValueError("Hourly proxy must contain the complete FY2024-25 chronology")
+            if times[0].isoformat() != "2024-04-01T00:00:00+05:30" or any(
+                right - left != timedelta(hours=1) for left, right in pairwise(times)
+            ):
+                raise ValueError("Hourly proxy timestamps must be consecutive IST intervals")
+            if any(not math.isfinite(row["load_mw"]) or row["load_mw"] <= 0 for row in hourly):
+                raise ValueError("Hourly proxy contains invalid load values")
+            if abs(sum(row["load_mw"] for row in hourly) / 1000 - proxy["annual_energy_mu"]) > 1e-6:
+                raise ValueError("Hourly series energy disagrees with proxy summary")
+    if "research_results" in files:
+        research = read(files["research_results"])
+        if research != site.get("research_results"):
+            raise ValueError("Research products and manifest disagree")
+        products = research["products"]
+        if products.get("renewables", {}).get("classification") not in (None, "modelled_resource_profile"):
+            raise ValueError("Renewables must retain modelled-resource classification")
+        if products.get("gis", {}).get("model_ready"):
+            raise ValueError("Raw GIS acquisition is not model-ready")
     if metadata["status"]["sldc_daily"]["available"]:
         rows = read(files["daily_balance"])["records"]
         dates = [row["date"] for row in rows]
@@ -38,11 +73,37 @@ def validate_bundle(public: Path) -> dict:
     return site
 
 
+def live_manifest(source: dict) -> dict:
+    """Keep development-only synthetic/model outputs in GitHub, never in Pages."""
+    site = copy.deepcopy(source)
+    metadata = site["metadata"]
+    for key in ("hourly_load_proxy", "hourly_load_proxy_summary"):
+        metadata["files"].pop(key, None)
+        metadata.get("status", {}).pop(key, None)
+        metadata.get("layer_provenance", {}).pop(key, None)
+    site.pop("hourly_load_proxy", None)
+    site["stress_tests"] = {}
+    site["screening_nodes"] = []
+    if site.get("baseline"):
+        site["baseline"].pop("hourly_load_proxy_available", None)
+    research = site.get("research_results", {})
+    for key in ("renewables", "replay", "scenario_dimensions", "techno_economics"):
+        research.get("products", {}).pop(key, None)
+        research.get("artifact_provenance", {}).pop(key, None)
+    research["limitations"] = [
+        "Development-only synthetic series and model outputs are retained in GitHub, not this website.",
+        "Published external scenarios remain labelled benchmarks, not Kerala 2040 results.",
+        "Raw GIS acquisition is not a model-ready exclusion map or capacity ceiling.",
+    ]
+    metadata["publication_policy"] = "observed_and_derived_evidence_plus_labelled_published_external_benchmarks"
+    return site
+
+
 def build_site(root: Path, output: Path) -> None:
     root, output = root.resolve(), output.resolve()
     if output == root or output == root / "docs" or output == root / "public":
         raise ValueError("Build into a separate directory, not a source directory")
-    validate_bundle(root / "public")
+    source = validate_bundle(root / "public")
     output.mkdir(parents=True, exist_ok=True)
     for name in ("index.html", "manifest.webmanifest", "robots.txt"):
         shutil.copy2(root / "docs" / name, output / name)
@@ -56,7 +117,24 @@ def build_site(root: Path, output: Path) -> None:
         shutil.copy2(asset, output / "assets" / versioned)
         html = html.replace(f"assets/{name}", f"assets/{versioned}")
     (output / "index.html").write_text(html, encoding="utf-8")
-    shutil.copytree(root / "public", output / "data", dirs_exist_ok=True)
+    site = live_manifest(source)
+    data_dir = output / "data"
+    data_dir.mkdir(exist_ok=True)
+    allowed = set(site["metadata"]["files"].values()) | {"site-data.json", "metadata.json"}
+    # Remove stale files from a previous build, including direct proxy download URLs.
+    for path in data_dir.iterdir():
+        if path.is_file() and path.name not in allowed:
+            path.unlink()
+    for name in allowed:
+        shutil.copy2(root / "public" / name, data_dir / name)
+    products = {"site-data.json": site, "metadata.json": site["metadata"],
+                "baseline-summary.json": site.get("baseline"),
+                "research-results.json": site.get("research_results"),
+                "screening-nodes.json": {"classification": "unresolved", "records": [], "note": "Verified site geometries not yet published; illustrative markers remain in GitHub."}}
+    for name, payload in products.items():
+        if payload is not None:
+            (data_dir / name).write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    validate_bundle(data_dir)
     (output / ".nojekyll").touch()
 
 

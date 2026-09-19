@@ -55,5 +55,40 @@ def test_config_only_rebuild_preserves_acquired_evidence(tmp_path):
                     "--root", str(tmp_path)], check=True, capture_output=True, env=env)
     after = site.validate_bundle(tmp_path / "public")
     assert after["baseline"]["rows"] == before["baseline"]["rows"]
+    assert after["research_results"] == before["research_results"]
     assert after["metadata"]["layer_provenance"]["sldc_daily"]["preserved"]
     assert after["metadata"]["status"]["sldc_daily"]["available"]
+    for layer, field in (("kseb_historical_export", "kseb_history"),
+                         ("energyproject_context", "energyproject_context")):
+        assert after[field] == before[field]
+        assert after["metadata"]["status"][layer] == before["metadata"]["status"][layer]
+
+
+@pytest.mark.parametrize("corruption", ["timestamp", "load_mw"])
+def test_rejects_corrupt_hourly_chronology(tmp_path, corruption):
+    shutil.copytree(ROOT / "public", tmp_path / "public")
+    path = tmp_path / "public/hourly-load-proxy.json"
+    data = json.loads(path.read_text())
+    if corruption == "timestamp":
+        data["records"][1]["timestamp"] = data["records"][0]["timestamp"]
+    else:
+        data["records"][1]["load_mw"] += 100
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="timestamps|energy"):
+        site.validate_bundle(tmp_path / "public")
+
+
+def test_live_site_excludes_synthetic_downloads_even_after_rebuild(tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "hourly-load-proxy.json").write_text("{}")
+    site.build_site(ROOT, tmp_path)
+    live = site.validate_bundle(data)
+    assert "hourly_load_proxy" not in live
+    assert live["screening_nodes"] == []
+    assert not list(data.glob("*proxy*"))
+    assert "hourly_load_proxy" not in live["metadata"]["files"]
+    products = live["research_results"]["products"]
+    assert not {"renewables", "replay", "scenario_dimensions", "techno_economics"} & products.keys()
+    assert products["cstep"]["classification"] == "published_external_scenario"
+    assert (ROOT / "public/hourly-load-proxy.json").exists()

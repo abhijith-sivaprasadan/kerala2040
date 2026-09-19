@@ -50,7 +50,7 @@ Hydro diagnostics, official-accounting reconciliation, the generator inventory,
 manifest are reproducible workflows. Numerical 2040 optimisation remains blocked
 until unresolved inputs are sourced.
 
-See [`docs/DATA_PROVENANCE_POLICY.md`](docs/DATA_PROVENANCE_POLICY.md).
+See [`docs/PROVENANCE_CORE_RULES.md`](docs/PROVENANCE_CORE_RULES.md).
 
 ```bash
 python -m venv .venv

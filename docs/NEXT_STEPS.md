@@ -21,7 +21,7 @@ dimensions, a sourced techno-economic benchmark registry and a GIS acquisition
 manifest. These are foundations, not validated 2040 results.
 
 The 8,760-hour load reconstruction remains **proxy data, not measured telemetry**.
-See [the mandatory provenance policy](DATA_PROVENANCE_POLICY.md).
+See [the mandatory provenance policy](PROVENANCE_CORE_RULES.md).
 
 ## Your next actions, in order
 

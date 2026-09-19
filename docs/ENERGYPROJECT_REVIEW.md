@@ -28,4 +28,33 @@ its current-month figures as incomplete and gives a data date.
 Their published contact is hello@energyproject.in. A useful question is whether
 their NLDC workflow includes historical state-level time-block demand/interchange,
 which primary archive it uses, and what reuse terms apply. No outreach was sent
-and no automated dependency on their site has been added.
+and no message has been sent.
+
+## Public chart inputs verified during this review
+
+The public grid page's client JavaScript fetches JSON under `/data`. Verified
+endpoints are `/data/grid/monthly_summary.json`, `/data/grid/daily_summary.json`,
+`/data/capacity.json`, `/data/grid/timeseries/2026-09.json` and
+`/data/dam/2026-09.json`. The first three provide national summaries; the latter
+two are the default month's generation and market interval products. This
+establishes how the browser receives data, not how the publisher extracts its
+upstream NLDC/IEX/CEA records. No upstream ETL implementation was established.
+
+The September snapshot contains 17 complete generation days (1–17 September)
+and 18 market days (1–18 September), with 96 quarter-hour observations per day.
+The JSON does not declare its timezone. Market clearing prices are divided by
+1,000 from rupees/MWh to rupees/kWh, matching the site's client conversion.
+Historical interval navigation marked as requiring sign-in was not traversed.
+
+`scripts/ingest_energyproject.py` reproducibly fetches the public summary and
+latest month's two interval products. It retains raw responses and SHA-256
+hashes locally and publishes limited derived average-day profiles with source
+attribution, per-field sample counts, date coverage and explicit limitations.
+No redistribution licence was established; the raw archive is not republished.
+Run it manually, then `scripts/build_web_bundle.py` and `scripts/build_site.py`
+to update the snapshot. No credentials or live third-party requests are needed
+by visitors to the published dashboard.
+
+These profiles support national context charts only. They must not fill the
+Kerala hourly demand/interchange gap, become a Kerala tariff, or be treated as
+a full-year model input. A missing field remains missing in the averages.

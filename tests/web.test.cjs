@@ -22,13 +22,27 @@ test('all evidence comes from the deployed snapshot and downloads exist',async()
     return {ok:true,json:async()=>JSON.parse(fs.readFileSync(file,'utf8'))};
   }});
   await vm.runInContext('loadPlatformData()',c);
-  assert.equal(urls.length,6);
+  const files=JSON.parse(fs.readFileSync(path.join(root,'public/site-data.json'),'utf8')).metadata.files;
+  const requested=['daily_balance','monthly_balance','import_duration','kseb_history','hourly_load_proxy_summary','hourly_load_proxy','energyproject_context'];
+  assert.equal(urls.length,1+requested.filter(key=>files[key]).length);
   assert.ok(urls.every(url=>url.startsWith('data/')));
   assert.ok(vm.runInContext('state.daily.records.length',c)>0);
   assert.ok(vm.runInContext('state.ksebHistory.series.installed_capacity.length',c)>0);
   assert.equal(vm.runInContext('state.data.baseline.rows === state.daily.records.length',c),true);
   assert.match(vm.runInContext('state.hourlyProxy.classification',c),/proxy/i);
   assert.match(vm.runInContext('state.hourlyProxy.classification',c),/not_measured|not measured/i);
+});
+
+test('hourly reconstruction loads when present without being treated as telemetry',async()=>{
+  const c=context({fetch:async url=>{
+    const file=path.join(root,'public',url.replace(/^data\//,''));
+    let payload=url.endsWith('hourly-load-proxy-summary.json') ? {classification:'proxy_reconstruction_not_measured_telemetry',hours:8760} : JSON.parse(fs.readFileSync(file,'utf8'));
+    if(url.endsWith('site-data.json')) payload.metadata.files.hourly_load_proxy_summary='hourly-load-proxy-summary.json';
+    return {ok:true,json:async()=>payload};
+  }});
+  await vm.runInContext('loadPlatformData()',c);
+  assert.equal(vm.runInContext('state.hourlyProxy.hours',c),8760);
+  assert.equal(vm.runInContext('state.hourlyProxy.classification',c),'proxy_reconstruction_not_measured_telemetry');
 });
 test('disabled trade survives scenario normalisation',()=>{
   const c=context();

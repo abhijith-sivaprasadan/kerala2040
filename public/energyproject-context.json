@@ -1,0 +1,2932 @@
+{
+  "classification": "secondary_national_context_not_kerala_telemetry",
+  "geography": "India",
+  "publisher": "Energy Project",
+  "source_page": "https://www.energyproject.in/grid",
+  "upstream_sources_as_attributed": [
+    "NLDC",
+    "IEX",
+    "CEA"
+  ],
+  "retrieved_at_utc": "2026-09-18T20:30:22.254262+00:00",
+  "sources": [
+    {
+      "url": "https://www.energyproject.in/data/grid/monthly_summary.json",
+      "sha256": "530315e1fe713ebc1d24b56fa6a409b9552c215377fb20210a25c7f9fcde6568"
+    },
+    {
+      "url": "https://www.energyproject.in/data/grid/timeseries/2026-09.json",
+      "sha256": "b9ed7243fb3cb351d9e2fd9164729dbfe6d666007bf54ef1cc3805b5f1bd3355"
+    },
+    {
+      "url": "https://www.energyproject.in/data/dam/2026-09.json",
+      "sha256": "18db08cbec1eaebbe112aec50c9ec1d3f3ecb04e0a7b4d850eb69a57a1ed619e"
+    }
+  ],
+  "month": "2026-09",
+  "month_complete": false,
+  "generation_days": 17,
+  "market_days": 18,
+  "generation_date_range": [
+    "2026-09-01",
+    "2026-09-17"
+  ],
+  "market_date_range": [
+    "2026-09-01",
+    "2026-09-18"
+  ],
+  "profile_unit": "MW",
+  "interval_minutes": 15,
+  "time_basis": "Source clock labels; timezone not declared in downloaded JSON",
+  "generation_average_day": [
+    {
+      "time": "00:00",
+      "demand": 224206.35294117648,
+      "thermal": 158835.0588235294,
+      "solar": 0.0,
+      "wind": 14653.588235294117,
+      "hydro": 31737.58823529412,
+      "gas": 7984.294117647059,
+      "nuclear": 6818.0,
+      "storage_gen": 3366.470588235294,
+      "storage_demand": 51.35294117647059,
+      "others": 2157.3529411764707,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "00:15",
+      "demand": 223405.5294117647,
+      "thermal": 159477.9411764706,
+      "solar": 0.0,
+      "wind": 14598.0,
+      "hydro": 31184.117647058825,
+      "gas": 7814.35294117647,
+      "nuclear": 6818.176470588235,
+      "storage_gen": 2892.823529411765,
+      "storage_demand": 82.6470588235294,
+      "others": 2164.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "00:30",
+      "demand": 222138.41176470587,
+      "thermal": 158852.29411764705,
+      "solar": 0.0,
+      "wind": 14497.588235294117,
+      "hydro": 31070.529411764706,
+      "gas": 7618.705882352941,
+      "nuclear": 6817.529411764706,
+      "storage_gen": 2556.3529411764707,
+      "storage_demand": 81.52941176470588,
+      "others": 2162.176470588235,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "00:45",
+      "demand": 220912.82352941178,
+      "thermal": 158528.9411764706,
+      "solar": 0.0,
+      "wind": 14405.470588235294,
+      "hydro": 30751.70588235294,
+      "gas": 7355.882352941177,
+      "nuclear": 6812.470588235294,
+      "storage_gen": 2380.764705882353,
+      "storage_demand": 111.05882352941177,
+      "others": 2154.235294117647,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "01:00",
+      "demand": 219365.17647058822,
+      "thermal": 158169.23529411765,
+      "solar": 0.0,
+      "wind": 14318.29411764706,
+      "hydro": 30454.235294117647,
+      "gas": 7024.588235294118,
+      "nuclear": 6816.529411764706,
+      "storage_gen": 2137.235294117647,
+      "storage_demand": 129.58823529411765,
+      "others": 2151.235294117647,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "01:15",
+      "demand": 217854.35294117648,
+      "thermal": 157791.23529411765,
+      "solar": 0.0,
+      "wind": 14236.411764705883,
+      "hydro": 29949.117647058825,
+      "gas": 6695.823529411765,
+      "nuclear": 6820.470588235294,
+      "storage_gen": 2044.1764705882354,
+      "storage_demand": 136.76470588235293,
+      "others": 2175.0,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "01:30",
+      "demand": 216840.70588235295,
+      "thermal": 157632.17647058822,
+      "solar": 0.0,
+      "wind": 14137.70588235294,
+      "hydro": 29641.352941176472,
+      "gas": 6266.705882352941,
+      "nuclear": 6817.176470588235,
+      "storage_gen": 1980.0588235294117,
+      "storage_demand": 161.47058823529412,
+      "others": 2165.0,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "01:45",
+      "demand": 215883.0588235294,
+      "thermal": 157729.88235294117,
+      "solar": 0.0,
+      "wind": 14031.235294117647,
+      "hydro": 29298.41176470588,
+      "gas": 5936.823529411765,
+      "nuclear": 6820.823529411765,
+      "storage_gen": 1752.2941176470588,
+      "storage_demand": 186.2941176470588,
+      "others": 2148.529411764706,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "02:00",
+      "demand": 214696.88235294117,
+      "thermal": 157502.17647058822,
+      "solar": 0.0,
+      "wind": 13902.411764705883,
+      "hydro": 29057.647058823528,
+      "gas": 5580.117647058823,
+      "nuclear": 6823.176470588235,
+      "storage_gen": 1625.9411764705883,
+      "storage_demand": 197.94117647058823,
+      "others": 2163.0,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "02:15",
+      "demand": 213741.64705882352,
+      "thermal": 157840.82352941178,
+      "solar": 0.0,
+      "wind": 13786.823529411764,
+      "hydro": 28774.117647058825,
+      "gas": 5299.058823529412,
+      "nuclear": 6823.235294117647,
+      "storage_gen": 1292.8823529411766,
+      "storage_demand": 317.29411764705884,
+      "others": 2174.823529411765,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "02:30",
+      "demand": 212917.23529411765,
+      "thermal": 157609.58823529413,
+      "solar": 0.0,
+      "wind": 13660.176470588236,
+      "hydro": 28459.823529411766,
+      "gas": 5130.411764705882,
+      "nuclear": 6828.823529411765,
+      "storage_gen": 1231.1176470588234,
+      "storage_demand": 316.94117647058823,
+      "others": 2168.176470588235,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "02:45",
+      "demand": 212612.76470588235,
+      "thermal": 157954.35294117648,
+      "solar": 0.0,
+      "wind": 13490.35294117647,
+      "hydro": 28192.058823529413,
+      "gas": 4979.882352941177,
+      "nuclear": 6830.64705882353,
+      "storage_gen": 1167.235294117647,
+      "storage_demand": 316.70588235294116,
+      "others": 2165.0,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "03:00",
+      "demand": 211891.70588235295,
+      "thermal": 157722.64705882352,
+      "solar": 0.0,
+      "wind": 13322.35294117647,
+      "hydro": 27996.882352941175,
+      "gas": 4852.294117647059,
+      "nuclear": 6836.588235294118,
+      "storage_gen": 1131.764705882353,
+      "storage_demand": 295.3529411764706,
+      "others": 2172.470588235294,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "03:15",
+      "demand": 211377.4705882353,
+      "thermal": 157950.9411764706,
+      "solar": 0.0,
+      "wind": 13127.058823529413,
+      "hydro": 27689.58823529412,
+      "gas": 4729.882352941177,
+      "nuclear": 6837.764705882353,
+      "storage_gen": 1106.0588235294117,
+      "storage_demand": 307.88235294117646,
+      "others": 2173.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "03:30",
+      "demand": 210851.4705882353,
+      "thermal": 157841.88235294117,
+      "solar": 0.0,
+      "wind": 12971.882352941177,
+      "hydro": 27609.647058823528,
+      "gas": 4641.470588235294,
+      "nuclear": 6838.294117647059,
+      "storage_gen": 1088.5294117647059,
+      "storage_demand": 315.1764705882353,
+      "others": 2181.6470588235293,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "03:45",
+      "demand": 210236.11764705883,
+      "thermal": 157491.17647058822,
+      "solar": 0.0,
+      "wind": 12779.29411764706,
+      "hydro": 27584.647058823528,
+      "gas": 4612.588235294118,
+      "nuclear": 6839.411764705882,
+      "storage_gen": 1054.2941176470588,
+      "storage_demand": 322.6470588235294,
+      "others": 2165.529411764706,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "04:00",
+      "demand": 209381.76470588235,
+      "thermal": 156926.58823529413,
+      "solar": 0.0,
+      "wind": 12568.588235294117,
+      "hydro": 27584.352941176472,
+      "gas": 4576.529411764706,
+      "nuclear": 6836.411764705882,
+      "storage_gen": 1020.8823529411765,
+      "storage_demand": 321.70588235294116,
+      "others": 2164.176470588235,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "04:15",
+      "demand": 210365.23529411765,
+      "thermal": 157737.0,
+      "solar": 0.0,
+      "wind": 12340.29411764706,
+      "hydro": 27903.941176470587,
+      "gas": 4628.294117647059,
+      "nuclear": 6838.764705882353,
+      "storage_gen": 1074.6470588235295,
+      "storage_demand": 294.52941176470586,
+      "others": 2185.9411764705883,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "04:30",
+      "demand": 210443.4705882353,
+      "thermal": 157705.29411764705,
+      "solar": 0.0,
+      "wind": 12142.176470588236,
+      "hydro": 28146.529411764706,
+      "gas": 4660.470588235294,
+      "nuclear": 6838.411764705882,
+      "storage_gen": 1177.8235294117646,
+      "storage_demand": 170.35294117647058,
+      "others": 2177.0588235294117,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "04:45",
+      "demand": 210631.58823529413,
+      "thermal": 157618.70588235295,
+      "solar": 0.0,
+      "wind": 11929.529411764706,
+      "hydro": 28479.764705882353,
+      "gas": 4710.058823529412,
+      "nuclear": 6838.058823529412,
+      "storage_gen": 1285.6470588235295,
+      "storage_demand": 123.58823529411765,
+      "others": 2174.5882352941176,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "05:00",
+      "demand": 211023.4705882353,
+      "thermal": 157595.70588235295,
+      "solar": 183.2941176470588,
+      "wind": 11754.764705882353,
+      "hydro": 28821.176470588234,
+      "gas": 4762.35294117647,
+      "nuclear": 6842.35294117647,
+      "storage_gen": 1412.9411764705883,
+      "storage_demand": 85.29411764705883,
+      "others": 2177.705882352941,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "05:15",
+      "demand": 212299.35294117648,
+      "thermal": 158141.70588235295,
+      "solar": 223.94117647058823,
+      "wind": 11591.470588235294,
+      "hydro": 29569.41176470588,
+      "gas": 4799.470588235294,
+      "nuclear": 6839.470588235294,
+      "storage_gen": 1569.235294117647,
+      "storage_demand": 53.64705882352941,
+      "others": 2172.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "05:30",
+      "demand": 213292.64705882352,
+      "thermal": 158338.5294117647,
+      "solar": 220.52941176470588,
+      "wind": 11426.235294117647,
+      "hydro": 30374.235294117647,
+      "gas": 4817.529411764706,
+      "nuclear": 6841.117647058823,
+      "storage_gen": 1767.9411764705883,
+      "storage_demand": 55.0,
+      "others": 2165.4117647058824,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "05:45",
+      "demand": 214224.29411764705,
+      "thermal": 158672.17647058822,
+      "solar": 245.47058823529412,
+      "wind": 11289.117647058823,
+      "hydro": 31002.058823529413,
+      "gas": 4810.705882352941,
+      "nuclear": 6844.294117647059,
+      "storage_gen": 1856.4117647058824,
+      "storage_demand": 73.3529411764706,
+      "others": 2200.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "06:00",
+      "demand": 214683.29411764705,
+      "thermal": 158832.76470588235,
+      "solar": 275.2352941176471,
+      "wind": 11168.35294117647,
+      "hydro": 31542.58823529412,
+      "gas": 4783.529411764706,
+      "nuclear": 6840.705882352941,
+      "storage_gen": 1915.1764705882354,
+      "storage_demand": 69.70588235294117,
+      "others": 2196.176470588235,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "06:15",
+      "demand": 215647.41176470587,
+      "thermal": 159384.64705882352,
+      "solar": 495.52941176470586,
+      "wind": 11019.29411764706,
+      "hydro": 32085.529411764706,
+      "gas": 4867.117647058823,
+      "nuclear": 6840.0,
+      "storage_gen": 1869.0,
+      "storage_demand": 83.58823529411765,
+      "others": 2130.4117647058824,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "06:30",
+      "demand": 217349.23529411765,
+      "thermal": 159866.64705882352,
+      "solar": 1208.5294117647059,
+      "wind": 10716.470588235294,
+      "hydro": 32912.76470588235,
+      "gas": 4941.529411764706,
+      "nuclear": 6834.705882352941,
+      "storage_gen": 1949.7058823529412,
+      "storage_demand": 88.11764705882354,
+      "others": 2136.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "06:45",
+      "demand": 218869.23529411765,
+      "thermal": 159666.76470588235,
+      "solar": 3124.823529411765,
+      "wind": 10540.941176470587,
+      "hydro": 32990.117647058825,
+      "gas": 4930.764705882353,
+      "nuclear": 6838.058823529412,
+      "storage_gen": 1810.0588235294117,
+      "storage_demand": 101.70588235294117,
+      "others": 2132.823529411765,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "07:00",
+      "demand": 220189.58823529413,
+      "thermal": 158484.82352941178,
+      "solar": 6311.470588235294,
+      "wind": 10255.764705882353,
+      "hydro": 32647.764705882353,
+      "gas": 4844.35294117647,
+      "nuclear": 6851.941176470588,
+      "storage_gen": 1765.1764705882354,
+      "storage_demand": 143.41176470588235,
+      "others": 2164.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "07:15",
+      "demand": 222874.0,
+      "thermal": 158479.76470588235,
+      "solar": 10711.058823529413,
+      "wind": 9930.529411764706,
+      "hydro": 31756.176470588234,
+      "gas": 4555.764705882353,
+      "nuclear": 6854.823529411765,
+      "storage_gen": 1620.1764705882354,
+      "storage_demand": 175.35294117647058,
+      "others": 2156.705882352941,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "07:30",
+      "demand": 225075.4705882353,
+      "thermal": 157250.17647058822,
+      "solar": 16127.529411764706,
+      "wind": 9603.588235294117,
+      "hydro": 30652.70588235294,
+      "gas": 4253.529411764706,
+      "nuclear": 6853.588235294118,
+      "storage_gen": 1208.0,
+      "storage_demand": 238.2941176470588,
+      "others": 2153.470588235294,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "07:45",
+      "demand": 227136.76470588235,
+      "thermal": 155492.64705882352,
+      "solar": 22200.352941176472,
+      "wind": 9420.529411764706,
+      "hydro": 29067.823529411766,
+      "gas": 3894.8823529411766,
+      "nuclear": 6859.294117647059,
+      "storage_gen": 1056.6470588235295,
+      "storage_demand": 227.41176470588235,
+      "others": 2149.0,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "08:00",
+      "demand": 228487.5294117647,
+      "thermal": 152868.88235294117,
+      "solar": 28699.117647058825,
+      "wind": 9368.176470588236,
+      "hydro": 26863.941176470587,
+      "gas": 3410.5882352941176,
+      "nuclear": 6859.588235294118,
+      "storage_gen": 748.4705882352941,
+      "storage_demand": 333.47058823529414,
+      "others": 2164.5882352941176,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "08:15",
+      "demand": 233890.9411764706,
+      "thermal": 152323.82352941178,
+      "solar": 35447.05882352941,
+      "wind": 9573.764705882353,
+      "hydro": 26242.70588235294,
+      "gas": 3097.6470588235293,
+      "nuclear": 6855.64705882353,
+      "storage_gen": 406.05882352941177,
+      "storage_demand": 863.9411764705883,
+      "others": 2154.823529411765,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "08:30",
+      "demand": 237235.70588235295,
+      "thermal": 149367.4705882353,
+      "solar": 42033.882352941175,
+      "wind": 9801.588235294117,
+      "hydro": 25790.647058823528,
+      "gas": 2811.0,
+      "nuclear": 6819.705882352941,
+      "storage_gen": 257.4117647058824,
+      "storage_demand": 1612.1176470588234,
+      "others": 2128.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "08:45",
+      "demand": 240141.70588235295,
+      "thermal": 146566.29411764705,
+      "solar": 47960.76470588235,
+      "wind": 10141.529411764706,
+      "hydro": 25180.176470588234,
+      "gas": 2695.176470588235,
+      "nuclear": 6813.823529411765,
+      "storage_gen": 184.52941176470588,
+      "storage_demand": 2445.529411764706,
+      "others": 2145.823529411765,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "09:00",
+      "demand": 242138.0,
+      "thermal": 143712.11764705883,
+      "solar": 53166.58823529412,
+      "wind": 10452.411764705883,
+      "hydro": 24543.0,
+      "gas": 2622.823529411765,
+      "nuclear": 6813.941176470588,
+      "storage_gen": 115.11764705882354,
+      "storage_demand": 3160.470588235294,
+      "others": 2140.9411764705883,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "09:15",
+      "demand": 246937.4705882353,
+      "thermal": 143599.9411764706,
+      "solar": 58041.82352941176,
+      "wind": 10702.70588235294,
+      "hydro": 24624.70588235294,
+      "gas": 2574.0588235294117,
+      "nuclear": 6810.764705882353,
+      "storage_gen": 88.58823529411765,
+      "storage_demand": 3882.8823529411766,
+      "others": 2140.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "09:30",
+      "demand": 248775.23529411765,
+      "thermal": 141090.29411764705,
+      "solar": 62344.23529411765,
+      "wind": 10812.470588235294,
+      "hydro": 24556.58823529412,
+      "gas": 2563.1176470588234,
+      "nuclear": 6804.941176470588,
+      "storage_gen": 90.11764705882354,
+      "storage_demand": 4059.529411764706,
+      "others": 2138.4117647058824,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "09:45",
+      "demand": 249744.82352941178,
+      "thermal": 139054.23529411765,
+      "solar": 65878.5294117647,
+      "wind": 10895.882352941177,
+      "hydro": 24040.0,
+      "gas": 2516.1176470588234,
+      "nuclear": 6801.058823529412,
+      "storage_gen": 113.76470588235294,
+      "storage_demand": 4259.941176470588,
+      "others": 2137.176470588235,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "10:00",
+      "demand": 249906.41176470587,
+      "thermal": 136677.17647058822,
+      "solar": 68763.58823529411,
+      "wind": 10968.470588235294,
+      "hydro": 23680.117647058825,
+      "gas": 2504.705882352941,
+      "nuclear": 6797.705882352941,
+      "storage_gen": 113.0,
+      "storage_demand": 4335.705882352941,
+      "others": 2156.0,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "10:15",
+      "demand": 250199.76470588235,
+      "thermal": 135209.29411764705,
+      "solar": 70950.64705882352,
+      "wind": 10988.882352941177,
+      "hydro": 23459.117647058825,
+      "gas": 2497.4117647058824,
+      "nuclear": 6797.058823529412,
+      "storage_gen": 102.3529411764706,
+      "storage_demand": 4517.117647058823,
+      "others": 2120.823529411765,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "10:30",
+      "demand": 250265.9411764706,
+      "thermal": 133547.23529411765,
+      "solar": 72723.17647058824,
+      "wind": 10957.70588235294,
+      "hydro": 23330.117647058825,
+      "gas": 2496.294117647059,
+      "nuclear": 6803.176470588235,
+      "storage_gen": 117.41176470588235,
+      "storage_demand": 4603.764705882353,
+      "others": 2103.8823529411766,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "10:45",
+      "demand": 250520.0,
+      "thermal": 132647.58823529413,
+      "solar": 74024.88235294117,
+      "wind": 11065.35294117647,
+      "hydro": 23113.41176470588,
+      "gas": 2501.3529411764707,
+      "nuclear": 6806.823529411765,
+      "storage_gen": 115.0,
+      "storage_demand": 4728.705882352941,
+      "others": 2102.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "11:00",
+      "demand": 250254.64705882352,
+      "thermal": 131534.35294117648,
+      "solar": 75171.23529411765,
+      "wind": 11102.176470588236,
+      "hydro": 22976.470588235294,
+      "gas": 2491.235294117647,
+      "nuclear": 6806.823529411765,
+      "storage_gen": 112.52941176470588,
+      "storage_demand": 4763.058823529412,
+      "others": 2101.470588235294,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "11:15",
+      "demand": 249710.58823529413,
+      "thermal": 130561.35294117648,
+      "solar": 75864.05882352941,
+      "wind": 11189.588235294117,
+      "hydro": 22766.764705882353,
+      "gas": 2497.1176470588234,
+      "nuclear": 6824.0,
+      "storage_gen": 96.29411764705883,
+      "storage_demand": 4860.235294117647,
+      "others": 2066.5882352941176,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "11:30",
+      "demand": 250311.0588235294,
+      "thermal": 130255.29411764706,
+      "solar": 76729.88235294117,
+      "wind": 11318.882352941177,
+      "hydro": 22756.647058823528,
+      "gas": 2492.9411764705883,
+      "nuclear": 6799.35294117647,
+      "storage_gen": 83.23529411764706,
+      "storage_demand": 4956.705882352941,
+      "others": 2086.6470588235293,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "11:45",
+      "demand": 250296.76470588235,
+      "thermal": 130264.41176470589,
+      "solar": 76654.11764705883,
+      "wind": 11475.176470588236,
+      "hydro": 22697.0,
+      "gas": 2492.9411764705883,
+      "nuclear": 6799.35294117647,
+      "storage_gen": 85.52941176470588,
+      "storage_demand": 4970.705882352941,
+      "others": 2069.764705882353,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "12:00",
+      "demand": 249992.5294117647,
+      "thermal": 129932.5294117647,
+      "solar": 76576.64705882352,
+      "wind": 11634.058823529413,
+      "hydro": 22693.823529411766,
+      "gas": 2483.0588235294117,
+      "nuclear": 6794.117647058823,
+      "storage_gen": 83.05882352941177,
+      "storage_demand": 5049.176470588235,
+      "others": 2085.4117647058824,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "12:15",
+      "demand": 249198.70588235295,
+      "thermal": 129177.82352941176,
+      "solar": 76534.94117647059,
+      "wind": 11854.117647058823,
+      "hydro": 22592.41176470588,
+      "gas": 2493.9411764705883,
+      "nuclear": 6803.764705882353,
+      "storage_gen": 69.6470588235294,
+      "storage_demand": 4883.529411764706,
+      "others": 2077.4117647058824,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "12:30",
+      "demand": 249019.58823529413,
+      "thermal": 129382.5294117647,
+      "solar": 76086.23529411765,
+      "wind": 12026.882352941177,
+      "hydro": 22485.117647058825,
+      "gas": 2505.705882352941,
+      "nuclear": 6801.117647058823,
+      "storage_gen": 64.82352941176471,
+      "storage_demand": 4846.764705882353,
+      "others": 2106.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "12:45",
+      "demand": 248709.4705882353,
+      "thermal": 128973.23529411765,
+      "solar": 76056.35294117648,
+      "wind": 12272.117647058823,
+      "hydro": 22411.41176470588,
+      "gas": 2517.4117647058824,
+      "nuclear": 6799.294117647059,
+      "storage_gen": 81.76470588235294,
+      "storage_demand": 4987.941176470588,
+      "others": 2118.705882352941,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "13:00",
+      "demand": 246854.76470588235,
+      "thermal": 127826.35294117648,
+      "solar": 75369.94117647059,
+      "wind": 12565.764705882353,
+      "hydro": 22255.470588235294,
+      "gas": 2504.764705882353,
+      "nuclear": 6792.823529411765,
+      "storage_gen": 86.58823529411765,
+      "storage_demand": 4944.705882352941,
+      "others": 2122.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "13:15",
+      "demand": 244585.70588235295,
+      "thermal": 125607.76470588235,
+      "solar": 74866.41176470589,
+      "wind": 12832.588235294117,
+      "hydro": 22173.058823529413,
+      "gas": 2536.705882352941,
+      "nuclear": 6803.411764705882,
+      "storage_gen": 87.6470588235294,
+      "storage_demand": 4921.882352941177,
+      "others": 2093.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "13:30",
+      "demand": 244924.0588235294,
+      "thermal": 126441.64705882352,
+      "solar": 74184.05882352941,
+      "wind": 13121.882352941177,
+      "hydro": 22163.058823529413,
+      "gas": 2552.235294117647,
+      "nuclear": 6805.0,
+      "storage_gen": 83.47058823529412,
+      "storage_demand": 4878.294117647059,
+      "others": 2095.176470588235,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "13:45",
+      "demand": 246612.0588235294,
+      "thermal": 128470.0,
+      "solar": 73392.0,
+      "wind": 13458.941176470587,
+      "hydro": 22254.529411764706,
+      "gas": 2612.0588235294117,
+      "nuclear": 6797.411764705882,
+      "storage_gen": 67.88235294117646,
+      "storage_demand": 4591.470588235294,
+      "others": 2091.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "14:00",
+      "demand": 247388.9411764706,
+      "thermal": 129919.94117647059,
+      "solar": 72207.82352941176,
+      "wind": 13828.235294117647,
+      "hydro": 22267.529411764706,
+      "gas": 2622.8823529411766,
+      "nuclear": 6800.117647058823,
+      "storage_gen": 69.6470588235294,
+      "storage_demand": 4375.235294117647,
+      "others": 2086.3529411764707,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "14:15",
+      "demand": 248114.23529411765,
+      "thermal": 131758.35294117648,
+      "solar": 70522.58823529411,
+      "wind": 14111.529411764706,
+      "hydro": 22313.823529411766,
+      "gas": 2709.0588235294117,
+      "nuclear": 6797.35294117647,
+      "storage_gen": 97.94117647058823,
+      "storage_demand": 4032.823529411765,
+      "others": 2123.764705882353,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "14:30",
+      "demand": 250130.58823529413,
+      "thermal": 134747.0588235294,
+      "solar": 68936.41176470589,
+      "wind": 14374.235294117647,
+      "hydro": 22460.941176470587,
+      "gas": 2768.235294117647,
+      "nuclear": 6793.823529411765,
+      "storage_gen": 108.17647058823529,
+      "storage_demand": 3796.235294117647,
+      "others": 2154.470588235294,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "14:45",
+      "demand": 251510.29411764705,
+      "thermal": 137704.4705882353,
+      "solar": 67034.0,
+      "wind": 14679.0,
+      "hydro": 22680.70588235294,
+      "gas": 2837.4117647058824,
+      "nuclear": 6790.411764705882,
+      "storage_gen": 105.58823529411765,
+      "storage_demand": 3531.9411764705883,
+      "others": 2151.8823529411766,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "15:00",
+      "demand": 252210.0,
+      "thermal": 140014.23529411765,
+      "solar": 64620.294117647056,
+      "wind": 14982.176470588236,
+      "hydro": 22915.823529411766,
+      "gas": 2992.294117647059,
+      "nuclear": 6790.0,
+      "storage_gen": 101.11764705882354,
+      "storage_demand": 3354.9411764705883,
+      "others": 2142.705882352941,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "15:15",
+      "demand": 251592.64705882352,
+      "thermal": 141494.88235294117,
+      "solar": 61868.294117647056,
+      "wind": 15266.529411764706,
+      "hydro": 22955.941176470587,
+      "gas": 3157.9411764705883,
+      "nuclear": 6799.764705882353,
+      "storage_gen": 121.88235294117646,
+      "storage_demand": 2910.8823529411766,
+      "others": 2165.4117647058824,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "15:30",
+      "demand": 251875.4705882353,
+      "thermal": 143879.64705882352,
+      "solar": 58942.705882352944,
+      "wind": 15614.70588235294,
+      "hydro": 23393.58823529412,
+      "gas": 3324.294117647059,
+      "nuclear": 6797.64705882353,
+      "storage_gen": 93.94117647058823,
+      "storage_demand": 2466.294117647059,
+      "others": 2146.529411764706,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "15:45",
+      "demand": 251586.64705882352,
+      "thermal": 146201.17647058822,
+      "solar": 55292.76470588235,
+      "wind": 15884.35294117647,
+      "hydro": 23741.470588235294,
+      "gas": 3617.9411764705883,
+      "nuclear": 6799.529411764706,
+      "storage_gen": 123.76470588235294,
+      "storage_demand": 2128.176470588235,
+      "others": 2158.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "16:00",
+      "demand": 250568.0,
+      "thermal": 147996.70588235295,
+      "solar": 51191.17647058824,
+      "wind": 16148.411764705883,
+      "hydro": 24371.470588235294,
+      "gas": 3894.6470588235293,
+      "nuclear": 6792.529411764706,
+      "storage_gen": 161.58823529411765,
+      "storage_demand": 1876.4117647058824,
+      "others": 2168.6470588235293,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "16:15",
+      "demand": 247739.29411764705,
+      "thermal": 148320.9411764706,
+      "solar": 46836.64705882353,
+      "wind": 16420.235294117647,
+      "hydro": 24716.529411764706,
+      "gas": 4320.235294117647,
+      "nuclear": 6800.588235294118,
+      "storage_gen": 211.11764705882354,
+      "storage_demand": 1627.9411764705883,
+      "others": 2109.3529411764707,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "16:30",
+      "demand": 246849.9411764706,
+      "thermal": 151212.41176470587,
+      "solar": 41984.05882352941,
+      "wind": 16666.882352941175,
+      "hydro": 25460.117647058825,
+      "gas": 4767.64705882353,
+      "nuclear": 6790.411764705882,
+      "storage_gen": 318.8235294117647,
+      "storage_demand": 1082.5882352941176,
+      "others": 2141.764705882353,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "16:45",
+      "demand": 245213.11764705883,
+      "thermal": 153107.5294117647,
+      "solar": 37104.17647058824,
+      "wind": 16827.117647058825,
+      "hydro": 26389.764705882353,
+      "gas": 5159.64705882353,
+      "nuclear": 6792.470588235294,
+      "storage_gen": 474.70588235294116,
+      "storage_demand": 693.8823529411765,
+      "others": 2136.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "17:00",
+      "demand": 243286.23529411765,
+      "thermal": 154589.9411764706,
+      "solar": 31925.470588235294,
+      "wind": 16916.41176470588,
+      "hydro": 27491.941176470587,
+      "gas": 5565.941176470588,
+      "nuclear": 6782.294117647059,
+      "storage_gen": 514.2941176470588,
+      "storage_demand": 362.29411764705884,
+      "others": 2129.9411764705883,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "17:15",
+      "demand": 238017.82352941178,
+      "thermal": 154310.17647058822,
+      "solar": 26009.529411764706,
+      "wind": 16952.29411764706,
+      "hydro": 27775.941176470587,
+      "gas": 6000.35294117647,
+      "nuclear": 6799.058823529412,
+      "storage_gen": 659.4117647058823,
+      "storage_demand": 264.6470588235294,
+      "others": 2124.705882352941,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "17:30",
+      "demand": 236240.88235294117,
+      "thermal": 156173.76470588235,
+      "solar": 20577.117647058825,
+      "wind": 16964.058823529413,
+      "hydro": 29006.58823529412,
+      "gas": 6453.470588235294,
+      "nuclear": 6799.235294117647,
+      "storage_gen": 763.4705882352941,
+      "storage_demand": 134.05882352941177,
+      "others": 2120.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "17:45",
+      "demand": 234113.0,
+      "thermal": 157660.29411764705,
+      "solar": 15186.588235294117,
+      "wind": 16817.470588235294,
+      "hydro": 30283.882352941175,
+      "gas": 7043.235294117647,
+      "nuclear": 6812.764705882353,
+      "storage_gen": 923.7647058823529,
+      "storage_demand": 87.11764705882354,
+      "others": 2131.529411764706,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "18:00",
+      "demand": 232548.17647058822,
+      "thermal": 158651.0,
+      "solar": 10287.29411764706,
+      "wind": 16585.235294117647,
+      "hydro": 31651.882352941175,
+      "gas": 7469.35294117647,
+      "nuclear": 6806.294117647059,
+      "storage_gen": 2015.9411764705883,
+      "storage_demand": 84.88235294117646,
+      "others": 2114.6470588235293,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "18:15",
+      "demand": 230177.5294117647,
+      "thermal": 158605.11764705883,
+      "solar": 6151.235294117647,
+      "wind": 16354.529411764706,
+      "hydro": 32494.29411764706,
+      "gas": 7954.294117647059,
+      "nuclear": 6829.529411764706,
+      "storage_gen": 2763.5882352941176,
+      "storage_demand": 93.23529411764706,
+      "others": 2109.705882352941,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "18:30",
+      "demand": 231237.23529411765,
+      "thermal": 160026.70588235295,
+      "solar": 3163.294117647059,
+      "wind": 16124.0,
+      "hydro": 34473.117647058825,
+      "gas": 8212.29411764706,
+      "nuclear": 6812.35294117647,
+      "storage_gen": 3329.529411764706,
+      "storage_demand": 62.1764705882353,
+      "others": 2101.4117647058824,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "18:45",
+      "demand": 232060.4705882353,
+      "thermal": 160719.11764705883,
+      "solar": 1433.235294117647,
+      "wind": 16077.35294117647,
+      "hydro": 35522.882352941175,
+      "gas": 8410.823529411764,
+      "nuclear": 6821.176470588235,
+      "storage_gen": 3800.705882352941,
+      "storage_demand": 36.1764705882353,
+      "others": 2105.6470588235293,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "19:00",
+      "demand": 232479.17647058822,
+      "thermal": 161167.0588235294,
+      "solar": 756.8823529411765,
+      "wind": 16102.117647058823,
+      "hydro": 36146.117647058825,
+      "gas": 8577.411764705883,
+      "nuclear": 6821.235294117647,
+      "storage_gen": 3976.0588235294117,
+      "storage_demand": 42.05882352941177,
+      "others": 2111.8823529411766,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "19:15",
+      "demand": 233523.76470588235,
+      "thermal": 161322.5294117647,
+      "solar": 553.2941176470588,
+      "wind": 16139.35294117647,
+      "hydro": 36414.17647058824,
+      "gas": 8768.470588235294,
+      "nuclear": 6830.294117647059,
+      "storage_gen": 4404.0,
+      "storage_demand": 50.35294117647059,
+      "others": 2106.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "19:30",
+      "demand": 233321.58823529413,
+      "thermal": 161503.88235294117,
+      "solar": 0.0,
+      "wind": 16176.29411764706,
+      "hydro": 36136.82352941176,
+      "gas": 8840.176470588236,
+      "nuclear": 6832.176470588235,
+      "storage_gen": 4318.529411764706,
+      "storage_demand": 51.529411764705884,
+      "others": 2096.529411764706,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "19:45",
+      "demand": 232799.23529411765,
+      "thermal": 161134.0588235294,
+      "solar": 0.0,
+      "wind": 16213.117647058823,
+      "hydro": 35899.882352941175,
+      "gas": 8823.70588235294,
+      "nuclear": 6840.470588235294,
+      "storage_gen": 4262.882352941177,
+      "storage_demand": 47.8235294117647,
+      "others": 2121.470588235294,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "20:00",
+      "demand": 231562.58823529413,
+      "thermal": 160377.0588235294,
+      "solar": 0.0,
+      "wind": 16198.35294117647,
+      "hydro": 35571.705882352944,
+      "gas": 8743.29411764706,
+      "nuclear": 6847.588235294118,
+      "storage_gen": 4118.117647058823,
+      "storage_demand": 43.588235294117645,
+      "others": 2109.5882352941176,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "20:15",
+      "demand": 231030.17647058822,
+      "thermal": 160320.5294117647,
+      "solar": 0.0,
+      "wind": 16123.058823529413,
+      "hydro": 35145.17647058824,
+      "gas": 8739.588235294117,
+      "nuclear": 6849.588235294118,
+      "storage_gen": 4080.1176470588234,
+      "storage_demand": 37.11764705882353,
+      "others": 2158.1176470588234,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "20:30",
+      "demand": 231322.5294117647,
+      "thermal": 160809.0588235294,
+      "solar": 0.0,
+      "wind": 16022.941176470587,
+      "hydro": 34979.0,
+      "gas": 8745.411764705883,
+      "nuclear": 6848.35294117647,
+      "storage_gen": 4113.764705882353,
+      "storage_demand": 36.529411764705884,
+      "others": 2167.5882352941176,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "20:45",
+      "demand": 231023.41176470587,
+      "thermal": 161283.4705882353,
+      "solar": 0.0,
+      "wind": 15880.529411764706,
+      "hydro": 34551.41176470588,
+      "gas": 8744.588235294117,
+      "nuclear": 6848.0,
+      "storage_gen": 4079.5882352941176,
+      "storage_demand": 32.88235294117647,
+      "others": 2170.823529411765,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "21:00",
+      "demand": 230484.0588235294,
+      "thermal": 161053.4705882353,
+      "solar": 0.0,
+      "wind": 15745.0,
+      "hydro": 34386.82352941176,
+      "gas": 8710.882352941177,
+      "nuclear": 6847.35294117647,
+      "storage_gen": 4044.235294117647,
+      "storage_demand": 36.35294117647059,
+      "others": 2183.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "21:15",
+      "demand": 230856.0588235294,
+      "thermal": 160870.58823529413,
+      "solar": 0.0,
+      "wind": 15625.29411764706,
+      "hydro": 34452.35294117647,
+      "gas": 8694.0,
+      "nuclear": 6846.470588235294,
+      "storage_gen": 4060.0588235294117,
+      "storage_demand": 30.705882352941178,
+      "others": 2172.0588235294117,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "21:30",
+      "demand": 231384.5294117647,
+      "thermal": 161282.11764705883,
+      "solar": 0.0,
+      "wind": 15468.882352941177,
+      "hydro": 34748.35294117647,
+      "gas": 8651.29411764706,
+      "nuclear": 6843.294117647059,
+      "storage_gen": 4079.0588235294117,
+      "storage_demand": 35.0,
+      "others": 2163.529411764706,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "21:45",
+      "demand": 230987.11764705883,
+      "thermal": 161190.29411764705,
+      "solar": 0.0,
+      "wind": 15226.29411764706,
+      "hydro": 34649.705882352944,
+      "gas": 8672.470588235294,
+      "nuclear": 6850.705882352941,
+      "storage_gen": 3993.6470588235293,
+      "storage_demand": 37.1764705882353,
+      "others": 2178.294117647059,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "22:00",
+      "demand": 230395.29411764705,
+      "thermal": 160928.41176470587,
+      "solar": 0.0,
+      "wind": 14985.70588235294,
+      "hydro": 34496.94117647059,
+      "gas": 8720.941176470587,
+      "nuclear": 6852.941176470588,
+      "storage_gen": 3910.3529411764707,
+      "storage_demand": 40.411764705882355,
+      "others": 2154.0,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "22:15",
+      "demand": 230932.5294117647,
+      "thermal": 161427.41176470587,
+      "solar": 0.0,
+      "wind": 14795.941176470587,
+      "hydro": 34493.35294117647,
+      "gas": 8800.411764705883,
+      "nuclear": 6854.588235294118,
+      "storage_gen": 3866.5882352941176,
+      "storage_demand": 31.294117647058822,
+      "others": 2181.235294117647,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "22:30",
+      "demand": 230358.82352941178,
+      "thermal": 161548.0,
+      "solar": 0.0,
+      "wind": 14638.470588235294,
+      "hydro": 33989.0,
+      "gas": 8799.588235294117,
+      "nuclear": 6858.235294117647,
+      "storage_gen": 3884.294117647059,
+      "storage_demand": 34.05882352941177,
+      "others": 2175.764705882353,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "22:45",
+      "demand": 229715.82352941178,
+      "thermal": 161361.9411764706,
+      "solar": 0.0,
+      "wind": 14526.29411764706,
+      "hydro": 33682.35294117647,
+      "gas": 8811.411764705883,
+      "nuclear": 6859.882352941177,
+      "storage_gen": 3720.470588235294,
+      "storage_demand": 30.88235294117647,
+      "others": 2186.235294117647,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "23:00",
+      "demand": 228714.0588235294,
+      "thermal": 160972.76470588235,
+      "solar": 0.0,
+      "wind": 14360.941176470587,
+      "hydro": 33362.82352941176,
+      "gas": 8759.176470588236,
+      "nuclear": 6862.705882352941,
+      "storage_gen": 3697.1176470588234,
+      "storage_demand": 40.11764705882353,
+      "others": 2174.764705882353,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "23:15",
+      "demand": 227930.58823529413,
+      "thermal": 160814.58823529413,
+      "solar": 0.0,
+      "wind": 14258.941176470587,
+      "hydro": 32957.294117647056,
+      "gas": 8663.823529411764,
+      "nuclear": 6862.882352941177,
+      "storage_gen": 3616.9411764705883,
+      "storage_demand": 36.470588235294116,
+      "others": 2175.705882352941,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "23:30",
+      "demand": 227052.0588235294,
+      "thermal": 160547.76470588235,
+      "solar": 0.0,
+      "wind": 14135.35294117647,
+      "hydro": 32573.70588235294,
+      "gas": 8607.941176470587,
+      "nuclear": 6864.588235294118,
+      "storage_gen": 3541.3529411764707,
+      "storage_demand": 49.64705882352941,
+      "others": 2164.823529411765,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    },
+    {
+      "time": "23:45",
+      "demand": 225474.5294117647,
+      "thermal": 159958.76470588235,
+      "solar": 0.0,
+      "wind": 13966.29411764706,
+      "hydro": 31893.941176470587,
+      "gas": 8504.117647058823,
+      "nuclear": 6862.764705882353,
+      "storage_gen": 3385.6470588235293,
+      "storage_demand": 50.64705882352941,
+      "others": 2178.0588235294117,
+      "sample_counts": {
+        "demand": 17,
+        "thermal": 17,
+        "solar": 17,
+        "wind": 17,
+        "hydro": 17,
+        "gas": 17,
+        "nuclear": 17,
+        "storage_gen": 17,
+        "storage_demand": 17,
+        "others": 17
+      }
+    }
+  ],
+  "market_average_day": [
+    {
+      "time": "00:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "00:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "00:30",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "00:45",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "01:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "01:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "01:30",
+      "price_inr_per_kwh": 9.888915555555556,
+      "sample_days": 18
+    },
+    {
+      "time": "01:45",
+      "price_inr_per_kwh": 9.888893333333334,
+      "sample_days": 18
+    },
+    {
+      "time": "02:00",
+      "price_inr_per_kwh": 9.688925555555555,
+      "sample_days": 18
+    },
+    {
+      "time": "02:15",
+      "price_inr_per_kwh": 9.67605611111111,
+      "sample_days": 18
+    },
+    {
+      "time": "02:30",
+      "price_inr_per_kwh": 9.677987222222223,
+      "sample_days": 18
+    },
+    {
+      "time": "02:45",
+      "price_inr_per_kwh": 9.694417777777776,
+      "sample_days": 18
+    },
+    {
+      "time": "03:00",
+      "price_inr_per_kwh": 9.670028333333333,
+      "sample_days": 18
+    },
+    {
+      "time": "03:15",
+      "price_inr_per_kwh": 9.583352777777778,
+      "sample_days": 18
+    },
+    {
+      "time": "03:30",
+      "price_inr_per_kwh": 9.527557777777778,
+      "sample_days": 18
+    },
+    {
+      "time": "03:45",
+      "price_inr_per_kwh": 9.55826,
+      "sample_days": 18
+    },
+    {
+      "time": "04:00",
+      "price_inr_per_kwh": 9.666691666666667,
+      "sample_days": 18
+    },
+    {
+      "time": "04:15",
+      "price_inr_per_kwh": 9.675584444444445,
+      "sample_days": 18
+    },
+    {
+      "time": "04:30",
+      "price_inr_per_kwh": 9.722234444444444,
+      "sample_days": 18
+    },
+    {
+      "time": "04:45",
+      "price_inr_per_kwh": 9.746214444444444,
+      "sample_days": 18
+    },
+    {
+      "time": "05:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "05:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "05:30",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "05:45",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "06:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "06:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "06:30",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "06:45",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "07:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "07:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "07:30",
+      "price_inr_per_kwh": 9.909101666666665,
+      "sample_days": 18
+    },
+    {
+      "time": "07:45",
+      "price_inr_per_kwh": 9.77276111111111,
+      "sample_days": 18
+    },
+    {
+      "time": "08:00",
+      "price_inr_per_kwh": 9.310056666666666,
+      "sample_days": 18
+    },
+    {
+      "time": "08:15",
+      "price_inr_per_kwh": 8.57757,
+      "sample_days": 18
+    },
+    {
+      "time": "08:30",
+      "price_inr_per_kwh": 7.772691111111111,
+      "sample_days": 18
+    },
+    {
+      "time": "08:45",
+      "price_inr_per_kwh": 6.8774911111111106,
+      "sample_days": 18
+    },
+    {
+      "time": "09:00",
+      "price_inr_per_kwh": 5.50091,
+      "sample_days": 18
+    },
+    {
+      "time": "09:15",
+      "price_inr_per_kwh": 4.407453888888889,
+      "sample_days": 18
+    },
+    {
+      "time": "09:30",
+      "price_inr_per_kwh": 3.8907094444444446,
+      "sample_days": 18
+    },
+    {
+      "time": "09:45",
+      "price_inr_per_kwh": 3.3963449999999997,
+      "sample_days": 18
+    },
+    {
+      "time": "10:00",
+      "price_inr_per_kwh": 3.12683,
+      "sample_days": 18
+    },
+    {
+      "time": "10:15",
+      "price_inr_per_kwh": 2.9149266666666667,
+      "sample_days": 18
+    },
+    {
+      "time": "10:30",
+      "price_inr_per_kwh": 2.824112222222222,
+      "sample_days": 18
+    },
+    {
+      "time": "10:45",
+      "price_inr_per_kwh": 2.7826072222222225,
+      "sample_days": 18
+    },
+    {
+      "time": "11:00",
+      "price_inr_per_kwh": 2.672891111111111,
+      "sample_days": 18
+    },
+    {
+      "time": "11:15",
+      "price_inr_per_kwh": 2.6355033333333333,
+      "sample_days": 18
+    },
+    {
+      "time": "11:30",
+      "price_inr_per_kwh": 2.543098888888889,
+      "sample_days": 18
+    },
+    {
+      "time": "11:45",
+      "price_inr_per_kwh": 2.5248227777777776,
+      "sample_days": 18
+    },
+    {
+      "time": "12:00",
+      "price_inr_per_kwh": 2.428411666666667,
+      "sample_days": 18
+    },
+    {
+      "time": "12:15",
+      "price_inr_per_kwh": 2.4288688888888887,
+      "sample_days": 18
+    },
+    {
+      "time": "12:30",
+      "price_inr_per_kwh": 2.398091111111111,
+      "sample_days": 18
+    },
+    {
+      "time": "12:45",
+      "price_inr_per_kwh": 2.375713888888889,
+      "sample_days": 18
+    },
+    {
+      "time": "13:00",
+      "price_inr_per_kwh": 2.2630894444444443,
+      "sample_days": 18
+    },
+    {
+      "time": "13:15",
+      "price_inr_per_kwh": 2.292398888888889,
+      "sample_days": 18
+    },
+    {
+      "time": "13:30",
+      "price_inr_per_kwh": 2.4125866666666664,
+      "sample_days": 18
+    },
+    {
+      "time": "13:45",
+      "price_inr_per_kwh": 2.4927883333333334,
+      "sample_days": 18
+    },
+    {
+      "time": "14:00",
+      "price_inr_per_kwh": 2.850755,
+      "sample_days": 18
+    },
+    {
+      "time": "14:15",
+      "price_inr_per_kwh": 3.0162355555555553,
+      "sample_days": 18
+    },
+    {
+      "time": "14:30",
+      "price_inr_per_kwh": 3.210515555555556,
+      "sample_days": 18
+    },
+    {
+      "time": "14:45",
+      "price_inr_per_kwh": 3.468705,
+      "sample_days": 18
+    },
+    {
+      "time": "15:00",
+      "price_inr_per_kwh": 4.416368888888889,
+      "sample_days": 18
+    },
+    {
+      "time": "15:15",
+      "price_inr_per_kwh": 4.992957777777778,
+      "sample_days": 18
+    },
+    {
+      "time": "15:30",
+      "price_inr_per_kwh": 5.832153888888889,
+      "sample_days": 18
+    },
+    {
+      "time": "15:45",
+      "price_inr_per_kwh": 6.575591111111111,
+      "sample_days": 18
+    },
+    {
+      "time": "16:00",
+      "price_inr_per_kwh": 8.228158888888887,
+      "sample_days": 18
+    },
+    {
+      "time": "16:15",
+      "price_inr_per_kwh": 8.420794444444443,
+      "sample_days": 18
+    },
+    {
+      "time": "16:30",
+      "price_inr_per_kwh": 8.788168333333333,
+      "sample_days": 18
+    },
+    {
+      "time": "16:45",
+      "price_inr_per_kwh": 8.824733888888888,
+      "sample_days": 18
+    },
+    {
+      "time": "17:00",
+      "price_inr_per_kwh": 9.22837611111111,
+      "sample_days": 18
+    },
+    {
+      "time": "17:15",
+      "price_inr_per_kwh": 9.444311111111112,
+      "sample_days": 18
+    },
+    {
+      "time": "17:30",
+      "price_inr_per_kwh": 9.67599,
+      "sample_days": 18
+    },
+    {
+      "time": "17:45",
+      "price_inr_per_kwh": 9.694425555555556,
+      "sample_days": 18
+    },
+    {
+      "time": "18:00",
+      "price_inr_per_kwh": 9.902787222222223,
+      "sample_days": 18
+    },
+    {
+      "time": "18:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "18:30",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "18:45",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "19:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "19:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "19:30",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "19:45",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "20:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "20:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "20:30",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "20:45",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "21:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "21:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "21:30",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "21:45",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "22:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "22:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "22:30",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "22:45",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "23:00",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "23:15",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "23:30",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    },
+    {
+      "time": "23:45",
+      "price_inr_per_kwh": 10.0,
+      "sample_days": 18
+    }
+  ],
+  "limitations": [
+    "National averages are not Kerala demand, generation or interstate interchange.",
+    "Profiles average available days by time label; they are not an ordered full-year chronology.",
+    "Storage discharge is shown separately and is not automatically classified as clean generation.",
+    "National market clearing price is not a Kerala delivered tariff or contracted procurement cost.",
+    "Upstream extraction methods and redistribution licence are not documented in these JSON files."
+  ]
+}
