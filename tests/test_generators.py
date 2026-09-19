@@ -92,7 +92,7 @@ def test_name_kw_and_raw_mw_conflicts_are_never_silently_repaired():
     assert summary["name_unit_portal_mw_conflict_count"] >= 2
     zero = frame.loc[frame["plant"].str.startswith("Sabarigiri Augmentation")].iloc[0]
     assert zero["capacity_mw"] == 0
-    assert zero["reconciled_commissioned_mw"] is None
+    assert pd.isna(zero["reconciled_commissioned_mw"])
 
 
 def test_crosscheck_rejects_unit_sums_outside_fy_and_bad_total():
