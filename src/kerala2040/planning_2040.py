@@ -14,7 +14,7 @@ import pandas as pd
 from kerala2040.chronological_screen import PROXY_CLASS
 
 REFERENCE_CLASS = "published_external_scenario"
-RESULT_CLASS = "2040_reference_demand_proxy_screening_not_hourly_forecast"
+RESULT_CLASS = "scenario_screening_using_proxy_2040_reference_not_hourly_forecast"
 
 
 def demand_references(
