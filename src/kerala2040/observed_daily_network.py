@@ -68,6 +68,11 @@ def _normalised_profile(values_mw: pd.Series) -> tuple[float, np.ndarray]:
     return p_nom, values_mw.to_numpy(dtype=float) / p_nom
 
 
+def _normalised_signed_profile(values_mw: pd.Series) -> tuple[float, np.ndarray]:
+    p_nom = max(float(values_mw.abs().max()), 1e-9)
+    return p_nom, values_mw.to_numpy(dtype=float) / p_nom
+
+
 def build_observed_detail_network(
     daily: pd.DataFrame,
     hydro: pd.DataFrame,
@@ -146,7 +151,13 @@ def build_observed_detail_network(
     network.snapshot_weightings.loc[:, :] = 24.0
     network.add("Bus", "kerala")
 
-    carriers = ["hydro_station", "hydro_unallocated", "nonhydro_internal", "interstate_import"]
+    carriers = [
+        "hydro_station",
+        "hydro_unallocated",
+        "nonhydro_internal",
+        "interstate_import",
+        "accounting_rounding",
+    ]
     for carrier in carriers:
         network.add("Carrier", carrier)
 
@@ -209,6 +220,27 @@ def build_observed_detail_network(
             p_max_pu=pu,
         )
 
+    # SLDC values are published to finite decimal precision. The interface sum can
+    # differ from aggregate net import by 0.0001 MU, and the published statewide
+    # energy balance can differ by the same order. Preserve every reported value
+    # and expose the tiny signed closure term rather than silently altering a row.
+    internal_mu = days.set_index("date")["internal_generation_mu"].reindex(day_index)
+    consumption_mu = days.set_index("date")["consumption_mu"].reindex(day_index)
+    accounting_rounding_mu = consumption_mu - internal_mu - interface_total_mu
+    if accounting_rounding_mu.abs().max() > 0.001:
+        raise ValueError("accounting closure term exceeds 0.001 MU")
+    rounding_mw = accounting_rounding_mu * 1000.0 / 24.0
+    p_nom, pu = _normalised_signed_profile(rounding_mw)
+    network.add(
+        "Generator",
+        "accounting_rounding_residual",
+        bus="kerala",
+        carrier="accounting_rounding",
+        p_nom=p_nom,
+        p_min_pu=pu,
+        p_max_pu=pu,
+    )
+
     qa_meta = dict(qa or {})
     expected_missing = qa_meta.get("missing_dates")
     network.meta = {
@@ -226,6 +258,11 @@ def build_observed_detail_network(
             "includes unreported/aggregated hydro and preserves missing station cells"
         ),
         "import_p_nom_role": "daily-profile normalisation only; not ATC or transfer capability",
+        "accounting_rounding_role": (
+            "explicit signed closure of published finite-precision interface/system values; "
+            "never a physical source"
+        ),
+        "accounting_rounding_max_abs_mu": float(accounting_rounding_mu.abs().max()),
         "hydro_p_nom_role": "daily-profile normalisation only; not nameplate capacity",
         "reservoir_constraints_used": False,
         "reservoir_constraint_reason": (
