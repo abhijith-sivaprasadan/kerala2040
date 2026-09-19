@@ -1,6 +1,6 @@
 # Draft: Kerala hourly demand and interchange request
 
-Not sent. Replace sender placeholders and confirm any institutional affiliation.
+**Status: READY TO SEND; not yet sent.** Replace sender/contact placeholders and use only a genuine personal or institutional affiliation. Public-source review on 19 September 2026 confirmed that CEA analysed FY2024-25 hourly Kerala demand and SRPC provides an independent actual-drawal accounting route, but neither replaces the requested Kerala SLDC/KSEBL interval export. See [the source review](INTERVAL_ELECTRICITY_SOURCE_REVIEW.md).
 
 To: ceso@kseb.in — Chief Engineer, Transmission–System Operation
 
