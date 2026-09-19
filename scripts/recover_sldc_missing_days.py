@@ -52,6 +52,8 @@ def main() -> int:
                     for row in result["records"]
                 ],
                 "audit_gate_closed": result["audit_gate_closed"],
+                "known_observed_control_status": result["known_observed_control_status"],
+                "interpretation": result["interpretation"],
                 "report": str(args.output / "attempts.json"),
             },
             indent=2,
