@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kerala2040"
-version = "1.0.0"
+version = "1.0.1"
 description = "Open modelling framework for Kerala 2040 energy sovereignty, ecological resilience and fiscal feasibility."
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
