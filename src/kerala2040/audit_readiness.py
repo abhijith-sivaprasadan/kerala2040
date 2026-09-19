@@ -101,14 +101,16 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         STATUS_BLOCKED if unresolved else STATUS_PARTIAL,
         f"{len(unresolved)} unresolved/null or unverified fields in 2040 model "
         "and finance inputs. External CEA/CERC benchmarks are NOT local cost defaults."
-        if unresolved else "Entries filled; independent unit/year/source validation still required.",
+        if unresolved else ("Entries filled; independent unit/year/source "
+                            "validation still required."),
         TECH,
     )
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
             "not_downloaded", "not_downloaded_in_repository",
-            "authoritative_geometry_not_yet_secured", "current_authoritative_geometry_not_yet_secured",
+            "authoritative_geometry_not_yet_secured",
+            "current_authoritative_geometry_not_yet_secured",
             "download_form_required",
         )
         for item in gis["layers"].values()
