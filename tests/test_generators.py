@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import json
+import pandas as pd
 import pytest
 import yaml
 
@@ -72,7 +73,7 @@ def test_fy2024_25_official_commissioning_crosscheck_preserves_portal():
         assert row["commissioning_evidence_status"] == (
             "independently_crosschecked_fy2024_25"
         )
-        assert row["commissioning_year"] is None
+        assert pd.isna(row["commissioning_year"])
 
 
 def test_name_kw_and_raw_mw_conflicts_are_never_silently_repaired():
@@ -87,7 +88,7 @@ def test_name_kw_and_raw_mw_conflicts_are_never_silently_repaired():
         assert row["capacity_mw"] == portal_mw
         assert row["unit_label_capacity_mw"] == pytest.approx(name_mw)
         assert bool(row["unit_label_conflicts_with_portal_mw"])
-        assert row["reconciled_commissioned_mw"] is None
+        assert pd.isna(row["reconciled_commissioned_mw"])
     assert summary["name_unit_portal_mw_conflict_count"] >= 2
     zero = frame.loc[frame["plant"].str.startswith("Sabarigiri Augmentation")].iloc[0]
     assert zero["capacity_mw"] == 0
@@ -117,7 +118,7 @@ def test_crosscheck_does_not_turn_planned_future_project_into_a_commissioned_ass
     projects, observed, crosscheck = _real_inputs()
     frame, _ = generator_database(projects, observed, crosscheck)
     row = frame.loc[frame["plant"].eq("Mankulam HEP Stage I")].iloc[0]
-    assert row["commissioning_year"] is None
-    assert row["reconciled_commissioned_mw"] is None
+    assert pd.isna(row["commissioning_year"])
+    assert pd.isna(row["reconciled_commissioned_mw"])
     assert row["owner"] is None
     assert row["status"] == "Ongoing"
