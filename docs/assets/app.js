@@ -397,7 +397,21 @@ function renderElectricityChart(metric) {
     state.chartRows=traces.flatMap(t=>t.x.map((x,i)=>({series:t.name||title,x,value:t.y[i]})));
   }
   qs('#chartValues').innerHTML=`<p class="chart-values-note">${state.chartRows.length.toLocaleString()} values. Showing the first ${Math.min(96,state.chartRows.length)}; download chart data for all values. ${esc(title)}</p><div class="table-scroll"><table><thead><tr>${state.chartColumns.map(([,label])=>`<th>${esc(label)}</th>`).join('')}</tr></thead><tbody>${state.chartRows.slice(0,96).map(r=>`<tr>${state.chartColumns.map(([key])=>`<td>${typeof r[key]==='number'?fmt(r[key],3):esc(r[key]??'—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-  if(window.Plotly)Plotly.react('electricityChart', traces, {...chartLayout,datarevision:`${metric}-${period.value}-${qs('#chartUnit').value}`}, plotConfig);
+  if(window.Plotly){
+    const revision=(state.chartRevision||0)+1;state.chartRevision=revision;
+    qs('#downloadChartImage').disabled=true;
+    const nextLayout={...chartLayout,datarevision:revision};
+    state.chartRender=Promise.resolve(state.chartRender).catch(()=>{}).then(async()=>{
+      if(revision!==state.chartRevision)return;
+      if(state.lastChartMetric!==metric){
+        Plotly.purge('electricityChart');
+        nextLayout.transition={duration:0};
+      }
+      await Plotly.react('electricityChart',traces,nextLayout,plotConfig);
+      state.lastChartMetric=metric;
+      if(revision===state.chartRevision)qs('#downloadChartImage').disabled=false;
+    }).catch(error=>{console.error(error);qs('#electricityChartNote').textContent+=' Chart could not render; use the values table or CSV.';});
+  }
 }
 
 function renderCapacityChart() {
