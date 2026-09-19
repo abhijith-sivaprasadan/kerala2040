@@ -1,0 +1,12 @@
+# EXPLICIT, ILLUSTRATIVE SENSITIVITY SETTINGS — never historical observations.
+# A value of 6500 MW is an example solver bound, NOT Kerala's ATC/transfer rating.
+classification: scenario_assumption_not_kerala_capacity_or_cost
+scope: FY2024-25 hourly proxy dispatch feasibility/sensitivity (NOT 2040 optimal expansion)
+import_limit_mw: 6500.0
+additional_solar_mw: 0.0
+battery_power_mw: 0.0
+battery_duration_h: 4.0
+battery_round_trip_efficiency: 0.88
+objective_import_per_mwh: 1.0
+objective_unserved_per_mwh: 10000.0
+objective_unit: abstract_screening_weight_not_inr
