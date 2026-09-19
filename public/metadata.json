@@ -1,9 +1,9 @@
 {
   "project": "Kerala 2040 \u2014 Open Energy Intelligence",
-  "generated_at_utc": "2026-09-19T09:07:05+00:00",
+  "generated_at_utc": "2026-09-19T09:09:26+00:00",
   "research_repo": "https://github.com/abhijith-sivaprasadan/kerala2040",
   "web_repo": "https://github.com/kerala2040/kerala2040.github.io",
-  "git_sha": "20d835f63b7d60b3f403f0df9845156ed6d955d4",
+  "git_sha": "e89a700052c31ebb41ac651b20c83617bc689b95",
   "model_year": 2040,
   "principle": "Energy sovereignty means retaining sufficient controllable generation, storage, flexible demand and infrastructure to withstand climate, hydrological and market shocks while using interstate trade strategically. It does not mean autarky or zero imports.",
   "status": {
@@ -110,27 +110,27 @@
   "layer_provenance": {
     "sldc_daily": {
       "preserved": false,
-      "evidence_bundle_at_utc": "2026-09-19T09:07:05+00:00"
+      "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
     },
     "kseb_project_inventory": {
       "preserved": false,
-      "evidence_bundle_at_utc": "2026-09-19T09:07:05+00:00"
+      "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
     },
     "hazard_layers": {
       "preserved": false,
-      "evidence_bundle_at_utc": "2026-09-19T09:07:05+00:00"
+      "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
     },
     "era5_reanalysis": {
       "preserved": false,
-      "evidence_bundle_at_utc": "2026-09-19T09:07:05+00:00"
+      "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
     },
     "grid_india_psp": {
       "preserved": false,
-      "evidence_bundle_at_utc": "2026-09-19T09:07:05+00:00"
+      "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
     },
     "hourly_load_proxy": {
       "preserved": false,
-      "evidence_bundle_at_utc": "2026-09-19T09:07:05+00:00"
+      "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
     },
     "source_audit": {
       "preserved": true,
@@ -138,11 +138,11 @@
     },
     "energyproject_context": {
       "preserved": false,
-      "evidence_bundle_at_utc": "2026-09-19T09:07:05+00:00"
+      "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
     },
     "kseb_historical_export": {
       "preserved": false,
-      "evidence_bundle_at_utc": "2026-09-19T09:07:05+00:00"
+      "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
     }
   }
 }
