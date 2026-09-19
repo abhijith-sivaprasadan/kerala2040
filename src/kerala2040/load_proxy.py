@@ -42,6 +42,12 @@ def complete_daily_energy(
 
     work = daily.loc[:, ["date", "consumption_mu"]].copy()
     work["date"] = pd.to_datetime(work["date"]).dt.normalize()
+    if work["date"].isna().any():
+        raise ValueError("daily data contains missing dates")
+    work["consumption_mu"] = pd.to_numeric(work["consumption_mu"], errors="raise")
+    observed = work["consumption_mu"].dropna()
+    if not np.isfinite(observed).all() or (observed <= 0).any():
+        raise ValueError("observed daily consumption must be finite and positive")
     if work["date"].duplicated().any():
         raise ValueError("daily data contains duplicate dates")
     work = work.set_index("date").sort_index()
@@ -49,7 +55,9 @@ def complete_daily_energy(
     index = pd.date_range(start, end, freq="D")
     work = work.reindex(index)
     work["daily_energy_imputed"] = work["consumption_mu"].isna()
-    work["consumption_mu"] = work["consumption_mu"].interpolate(method="time")
+    work["consumption_mu"] = work["consumption_mu"].interpolate(
+        method="time", limit_area="inside"
+    )
 
     if work["consumption_mu"].isna().any():
         raise ValueError("daily energy has leading/trailing gaps that cannot be interpolated")
@@ -225,7 +233,8 @@ def proxy_summary(
         ],
         "limitations": [
             "Hourly values are reconstructed, not measured Kerala SLDC/KSEBL telemetry.",
-            "Eleven missing daily SLDC totals are time-interpolated and explicitly flagged.",
+            f"{len(imputed_dates)} missing daily SLDC totals are time-interpolated and explicitly flagged.",
+            "Agreement with fitted annual energy, peak and duration constraints is not independent validation of hourly chronology.",
             "CEA frequency bins are published aggregate validation constraints, not an ordered hourly series.",
             "The two-peak intraday shape is a parsimonious calibration assumption, not direct metering evidence.",
         ],

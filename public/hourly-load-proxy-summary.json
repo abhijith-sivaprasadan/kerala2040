@@ -100,7 +100,8 @@
   ],
   "limitations": [
     "Hourly values are reconstructed, not measured Kerala SLDC/KSEBL telemetry.",
-    "Eleven missing daily SLDC totals are time-interpolated and explicitly flagged.",
+    "11 missing daily SLDC totals are time-interpolated and explicitly flagged.",
+    "Agreement with fitted annual energy, peak and duration constraints is not independent validation of hourly chronology.",
     "CEA frequency bins are published aggregate validation constraints, not an ordered hourly series.",
     "The two-peak intraday shape is a parsimonious calibration assumption, not direct metering evidence."
   ]

@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
@@ -259,6 +260,7 @@ def main() -> int:
     hazard_catalog = _load_json(root / "data/processed/ksdma_hazard_manifest.json")
     source_audit = _load_json(root / "results/source_audit.json")
     kseb_history = _load_kseb_history(root)
+    energyproject = _load_json(root / "data/processed/energyproject_context.json")
 
     if (
         daily_frame is not None
@@ -273,7 +275,12 @@ def main() -> int:
             daily_frame = daily_frame.merge(storage[keep], on="date", how="left")
 
     generated_at = datetime.now(UTC).replace(microsecond=0).isoformat()
-    git_sha = os.getenv("GITHUB_SHA") or os.getenv("GIT_COMMIT") or previous_meta.get("git_sha")
+    try:
+        git_sha = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=root, text=True, stderr=subprocess.DEVNULL
+        ).strip()
+    except (OSError, subprocess.CalledProcessError):
+        git_sha = os.getenv("GITHUB_SHA") or os.getenv("GIT_COMMIT") or previous_meta.get("git_sha")
     scenarios = _scenario_payload(scenarios_cfg)
 
     hazard_count = len((hazard_catalog or {}).get("records", []))
@@ -282,6 +289,11 @@ def main() -> int:
     kseb_series_count = len((kseb_history or {}).get("series", {}))
 
     status = {
+        "energyproject_context": {
+            "available": energyproject is not None,
+            "evidence": "secondary national context",
+            "note": "Energy Project public chart inputs; India-wide, not Kerala telemetry.",
+        },
         "official_observed_2024_25": {
             "available": bool(observed_cfg),
             "evidence": "sourced observed",
@@ -427,6 +439,20 @@ def main() -> int:
     if hourly_proxy_summary is not None:
         _write(out / "hourly-load-proxy-summary.json", hourly_proxy_summary)
         metadata["files"]["hourly_load_proxy_summary"] = "hourly-load-proxy-summary.json"
+        hourly_path = root / "data/processed/hourly_load_proxy.parquet"
+        if hourly_path.exists():
+            hourly = pd.read_parquet(hourly_path)
+            _write(out / "hourly-load-proxy.json", {
+                "classification": "proxy_reconstruction_not_measured_telemetry",
+                "unit": "MW", "timezone": "Asia/Kolkata", "interval": "1h",
+                "timestamp_convention": "interval_start",
+                "records": hourly.to_dict(orient="records"),
+            })
+            metadata["files"]["hourly_load_proxy"] = "hourly-load-proxy.json"
+
+    if energyproject is not None:
+        _write(out / "energyproject-context.json", energyproject)
+        metadata["files"]["energyproject_context"] = "energyproject-context.json"
 
     if daily_frame is not None:
         daily, monthly, duration = _daily_products(daily_frame)
@@ -534,6 +560,7 @@ def main() -> int:
         ),
         "baseline": summary,
         "hourly_load_proxy": hourly_proxy_summary,
+        "energyproject_context": energyproject,
         "scenarios": scenarios,
         "stress_tests": scenarios_cfg.get("stress_tests", {}),
         "references": references_cfg.get("references", {}),
@@ -551,8 +578,10 @@ def main() -> int:
         ("hazard_layers", "hazard_catalog", ["hazard_catalog"]),
         ("era5_reanalysis", "era5", ["era5_daily_manifest"]),
         ("grid_india_psp", None, ["grid_india_daily"]),
-        ("hourly_load_proxy", "hourly_load_proxy", ["hourly_load_proxy_summary"]),
+        ("hourly_load_proxy", "hourly_load_proxy", ["hourly_load_proxy_summary", "hourly_load_proxy"]),
         ("source_audit", "source_audit", ["source_audit"]),
+        ("energyproject_context", "energyproject_context", ["energyproject_context"]),
+        ("kseb_historical_export", "kseb_history", ["kseb_history"]),
     ]
     metadata["layer_provenance"] = {}
     for layer, field, keys in groups:

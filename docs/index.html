@@ -208,6 +208,10 @@
               <option value="daily">Daily balance</option>
               <option value="monthly">Monthly balance</option>
               <option value="duration">Import dependence</option>
+              <option value="hourly_proxy">Hourly load · reconstruction</option>
+              <option value="proxy_duration">Load-duration fit · reconstruction</option>
+              <option value="india_mix">India average day · Energy Project</option>
+              <option value="india_price">India market price · Energy Project</option>
               <option value="kseb_capacity">KSEB capacity history</option>
               <option value="kseb_energy">KSEB generation &amp; purchases</option>
               <option value="kseb_loss">KSEB T&amp;D loss history</option>
@@ -215,8 +219,15 @@
               <option value="reference">2040 planning reference</option>
             </select>
           </div>
+          <div class="chart-controls" id="electricityControls">
+            <label>Period <select id="electricityPeriod" aria-label="Electricity chart period"><option value="all">Full available period</option></select></label>
+            <label id="chartUnitControl" hidden>Display <select id="chartUnit" aria-label="National generation units"><option value="power">Power (GW)</option><option value="share">Generation share (%)</option></select></label>
+            <button type="button" id="downloadChartData" class="button secondary">Download chart data ↓</button>
+            <button type="button" id="downloadChartImage" class="button secondary">Save chart image ↓</button>
+          </div>
           <div id="electricityChart" class="chart xl"></div>
           <div id="electricityChartNote" class="chart-note"></div>
+          <details class="data-table"><summary>View chart values</summary><div id="chartValues"></div></details>
           <details class="data-table"><summary>Inspect the observations and missing dates</summary><div id="dailyTable"></div></details>
         </section>
 

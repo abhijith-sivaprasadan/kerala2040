@@ -57,3 +57,21 @@ def test_config_only_rebuild_preserves_acquired_evidence(tmp_path):
     assert after["baseline"]["rows"] == before["baseline"]["rows"]
     assert after["metadata"]["layer_provenance"]["sldc_daily"]["preserved"]
     assert after["metadata"]["status"]["sldc_daily"]["available"]
+    for layer, field in (("kseb_historical_export", "kseb_history"),
+                         ("energyproject_context", "energyproject_context")):
+        assert after[field] == before[field]
+        assert after["metadata"]["status"][layer] == before["metadata"]["status"][layer]
+
+
+@pytest.mark.parametrize("corruption", ["timestamp", "load_mw"])
+def test_rejects_corrupt_hourly_chronology(tmp_path, corruption):
+    shutil.copytree(ROOT / "public", tmp_path / "public")
+    path = tmp_path / "public/hourly-load-proxy.json"
+    data = json.loads(path.read_text())
+    if corruption == "timestamp":
+        data["records"][1]["timestamp"] = data["records"][0]["timestamp"]
+    else:
+        data["records"][1]["load_mw"] += 100
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="timestamps|energy"):
+        site.validate_bundle(tmp_path / "public")

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pytest
 
 from kerala2040.load_proxy import (
     build_hourly_proxy,
@@ -22,6 +23,20 @@ def test_complete_daily_energy_flags_and_interpolates_gap() -> None:
     missing = completed.loc[completed["daily_energy_imputed"]].iloc[0]
     assert missing["date"] == pd.Timestamp("2024-04-11")
     assert missing["consumption_mu"] == 86.4
+
+
+@pytest.mark.parametrize("index", [0, 364])
+def test_proxy_rejects_unbounded_missing_days(index: int) -> None:
+    with pytest.raises(ValueError, match="leading/trailing gaps"):
+        complete_daily_energy(_daily_frame().drop(index=index))
+
+
+@pytest.mark.parametrize("value", [np.inf, -1, 0])
+def test_proxy_rejects_invalid_observations(value: float) -> None:
+    daily = _daily_frame()
+    daily.loc[10, "consumption_mu"] = value
+    with pytest.raises(ValueError, match="finite and positive"):
+        complete_daily_energy(daily)
 
 
 def test_hourly_proxy_conserves_each_days_energy() -> None:

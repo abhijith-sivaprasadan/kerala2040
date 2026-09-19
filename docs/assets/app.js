@@ -15,6 +15,11 @@ const state = {
   duration: null,
   ksebHistory: null,
   hourlyProxy: null,
+  hourlySeries: null,
+  nationalContext: null,
+  chartRows: [],
+  chartColumns: [],
+  chartTitle: '',
   currentOverviewMetric: 'demand',
   selectedScenario: null,
   selectedStress: new Set(),
@@ -49,12 +54,14 @@ async function loadPlatformData() {
   const durationName = files.import_duration || 'import-duration.json';
   const ksebHistoryName = files.kseb_history || 'kseb-history.json';
   const hourlyProxyName = files.hourly_load_proxy_summary || 'hourly-load-proxy-summary.json';
-  [state.daily, state.monthly, state.duration, state.ksebHistory, state.hourlyProxy] = await Promise.all([
+  [state.daily, state.monthly, state.duration, state.ksebHistory, state.hourlyProxy, state.hourlySeries, state.nationalContext] = await Promise.all([
     files.daily_balance ? fetchJSON(`${RAW}${dailyName}`, true) : null,
     files.monthly_balance ? fetchJSON(`${RAW}${monthlyName}`, true) : null,
     files.import_duration ? fetchJSON(`${RAW}${durationName}`, true) : null,
     files.kseb_history ? fetchJSON(`${RAW}${ksebHistoryName}`) : null,
-    files.hourly_load_proxy_summary ? fetchJSON(`${RAW}${hourlyProxyName}`, true) : null
+    files.hourly_load_proxy_summary ? fetchJSON(`${RAW}${hourlyProxyName}`, true) : null,
+    files.hourly_load_proxy ? fetchJSON(`${RAW}${files.hourly_load_proxy}`, true) : null,
+    files.energyproject_context ? fetchJSON(`${RAW}${files.energyproject_context}`, true) : null
   ]);
 }
 
@@ -110,15 +117,17 @@ function layout({height=410, xTitle='', yTitle='', margin={l:64,r:28,t:30,b:58}}
   const c = chartTheme();
   return {
     height, margin, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+    transition:{duration:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?0:350,easing:'cubic-in-out'},
+    hovermode:'x unified',
     font:{family:'Inter, sans-serif', size:11, color:c.ink},
     xaxis:{title:xTitle, gridcolor:c.line, linecolor:c.line, zeroline:false, color:c.muted, automargin:true},
     yaxis:{title:yTitle, gridcolor:c.line, linecolor:c.line, zeroline:false, color:c.muted, automargin:true},
     legend:{orientation:'h', x:0, y:1.12, font:{size:10}},
-    hoverlabel:{font:{family:'Inter, sans-serif'}}
+    hoverlabel:{bgcolor:c.surface,bordercolor:c.line,font:{family:'Inter, sans-serif',color:c.ink}}
   };
 }
 
-const plotConfig = {displayModeBar:false, responsive:true};
+const plotConfig = {displayModeBar:false, responsive:true, scrollZoom:false};
 
 function renderHeadline() {
   const {cstep, cn50} = refs();
@@ -244,6 +253,10 @@ function renderElectricity() {
     daily: state.daily?.records,
     monthly: state.monthly?.records,
     duration: state.duration?.records,
+    hourly_proxy: state.hourlySeries?.records,
+    proxy_duration: state.hourlyProxy?.duration_bins,
+    india_mix: state.nationalContext?.generation_average_day,
+    india_price: state.nationalContext?.market_average_day,
     kseb_capacity: state.ksebHistory?.series?.installed_capacity,
     kseb_energy: state.ksebHistory?.series?.annual_energy_balance,
     kseb_loss: state.ksebHistory?.series?.td_loss,
@@ -261,15 +274,57 @@ function renderElectricity() {
 }
 
 function renderElectricityChart(metric) {
-  if (!window.Plotly) return;
   const c = chartTheme();
   const {cstep, cn50} = refs();
   let traces = [], chartLayout = layout(), title = '', note = '';
-  if (metric === 'daily' && state.daily?.records?.length) {
-    const d = state.daily.records;
+  const isTimed = ['daily','hourly_proxy'].includes(metric);
+  const period = qs('#electricityPeriod');
+  const selectedPeriod = period.value;
+  const available = metric==='hourly_proxy' ? state.hourlySeries?.records||[] : state.daily?.records||[];
+  const months = [...new Set(available.map(r=>(r.date||r.timestamp).slice(0,7)))].sort();
+  period.innerHTML = '<option value="all">Full available period</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join('');
+  period.value = months.includes(selectedPeriod)?selectedPeriod:'all';
+  period.disabled=!isTimed;
+  qs('#chartUnitControl').hidden=metric!=='india_mix';
+  const selectPeriod=rows=>period.value==='all'?rows:rows.filter(r=>(r.date||r.timestamp).startsWith(period.value));
+  state.chartRows=[];state.chartColumns=[];
+  if (metric === 'hourly_proxy' && state.hourlySeries?.records?.length) {
+    const d=selectPeriod(state.hourlySeries.records);
+    traces=[{type:'scatter',mode:'lines',name:'Reconstructed load',x:d.map(r=>r.timestamp.slice(0,19)),y:d.map(r=>r.load_mw),line:{color:c.green,width:1.6},hovertemplate:'%{x}<br>%{y:,.1f} MW<extra>Proxy · IST</extra>'},
+      {type:'scatter',mode:'markers',name:'Day energy interpolated',x:d.filter(r=>r.daily_energy_imputed).map(r=>r.timestamp.slice(0,19)),y:d.filter(r=>r.daily_energy_imputed).map(r=>r.load_mw),marker:{color:c.amber,size:3},hovertemplate:'%{x}<br>%{y:,.1f} MW<extra>Proxy · imputed daily total</extra>'}];
+    chartLayout=layout({xTitle:'Local time (IST) · interval start',yTitle:'Reconstructed load (MW)'});
+    title='Hourly Kerala load · reconstructed, not measured';
+    note=`${d.length.toLocaleString()} displayed hours. Daily energy preserved; ${state.hourlyProxy?.daily_observations_interpolated??'unknown'} missing daily totals interpolated in the full year. The assumed intraday shape is not independently validated.`;
+    state.chartRows=d;state.chartColumns=[['timestamp','Interval start (IST)'],['load_mw','Proxy load (MW)'],['daily_energy_imputed','Daily energy interpolated'],['classification','Evidence class']];
+  } else if(metric==='proxy_duration' && state.hourlyProxy?.duration_bins?.length){
+    const d=state.hourlyProxy.duration_bins;
+    traces=[['CEA reference','hours',c.ink],['Reconstruction','proxy_hours',c.green]].map(([name,key,color])=>({type:'bar',name,x:d.map(r=>`${r.min_mw}–${r.max_mw}`),y:d.map(r=>r[key]),marker:{color},hovertemplate:'%{x} MW<br>%{y} hours<extra>'+name+'</extra>'}));
+    chartLayout={...layout({xTitle:'Load interval (MW, upper bound excluded)',yTitle:'Hours'}),barmode:'group'};
+    title='Load-duration fit: published bins and reconstruction';note='These are fitting targets, not independent validation. A close annual total or peak does not establish an accurate hourly chronology. Differences remain visible here.';
+    state.chartRows=d;state.chartColumns=[['min_mw','From MW'],['max_mw','Below MW'],['hours','CEA hours'],['proxy_hours','Proxy hours'],['difference_hours','Difference hours']];
+  } else if(['india_mix','india_price'].includes(metric) && state.nationalContext){
+    const ep=state.nationalContext;
+    if(metric==='india_mix'){
+      const d=ep.generation_average_day;const share=qs('#chartUnit').value==='share';
+      const defs=[['Thermal','thermal',c.ink],['Nuclear','nuclear','#8b7196'],['Gas','gas',c.amber],['Hydro','hydro','#547f94'],['Wind','wind',c.green],['Solar','solar','#c5a54a'],['Storage discharge','storage_gen','#90ad84'],['Others','others','#aaa']];
+      traces=defs.filter(([,key])=>d.some(r=>n(r[key])!=null)).map(([name,key,color])=>({type:'scatter',mode:'lines',stackgroup:'generation',...(share?{groupnorm:'percent'}:{}),name,x:d.map(r=>r.time),y:d.map(r=>n(r[key])==null?null:r[key]/1000),line:{color,width:0.6},fillcolor:color,hovertemplate:`${name}<br>%{x}<br>%{y:.2f} ${share?'%':'GW'}<extra></extra>`}));
+      chartLayout=layout({xTitle:'Time of day · source clock',yTitle:share?'Generation share (%)':'Average generation (GW)'});chartLayout.xaxis={...chartLayout.xaxis,type:'category',tickvals:['00:00','06:00','12:00','18:00','23:45']};
+      title=`India's average generation day · ${ep.month}`;
+      state.chartRows=d;state.chartColumns=[['time','Source time'],...defs.map(([label,key])=>[key,`${label} (MW)`])];
+    }else{
+      const d=ep.market_average_day;traces=[{type:'scatter',mode:'lines',name:'National day-ahead price',x:d.map(r=>r.time),y:d.map(r=>r.price_inr_per_kwh),line:{color:c.green,width:2},fill:'tozeroy',fillcolor:'rgba(52,119,89,.12)',hovertemplate:'%{x}<br>₹%{y:.2f}/kWh<extra>National market</extra>'}];
+      chartLayout=layout({xTitle:'Time of day · source clock',yTitle:'Average market price (₹/kWh)'});chartLayout.xaxis={...chartLayout.xaxis,type:'category',tickvals:['00:00','06:00','12:00','18:00','23:45']};title=`India day-ahead market · ${ep.month}`;
+      state.chartRows=d;state.chartColumns=[['time','Source time'],['price_inr_per_kwh','Price (INR/kWh)'],['sample_days','Days sampled']];
+    }
+    note=`India-wide context via Energy Project (publisher attributes NLDC / IEX / CEA). ${ep.month_complete?'Complete':'Partial'} month: generation ${ep.generation_date_range.join(' to ')} (${ep.generation_days} days); market ${ep.market_date_range.join(' to ')} (${ep.market_days} days). Not Kerala telemetry or a delivered tariff. Storage discharge is separate; no clean-energy claim is inferred. Exported generation values remain in MW.`;
+  } else if (metric === 'daily' && state.daily?.records?.length) {
+    const d = selectPeriod(state.daily.records);
     const defs = [['Consumption','consumption_mu',c.ink],['Internal generation','internal_generation_mu',c.green],['Net imports','net_import_interface_mu',c.amber],['Hydro','hydel_total_mu',c.blue]];
     traces = defs.filter(([,k])=>d.some(r=>n(r[k])!=null)).map(([name,k,color])=>({type:'scatter', mode:'lines', name, x:d.map(r=>r.date), y:d.map(r=>r[k]), line:{width:1.6,color}, hovertemplate:`${name}<br>%{x}<br>%{y:.2f} MU<extra></extra>`}));
     chartLayout = layout({yTitle:'MU/day'}); title = 'Daily electricity balance'; note = `${d.length} records from the processed Kerala SLDC bundle.`;
+    state.chartRows=d;state.chartColumns=[['date','Date'],['consumption_mu','Consumption (MU)'],['internal_generation_mu','Internal generation (MU)'],['net_import_interface_mu','Net imports (MU)'],['hydel_total_mu','Hydro (MU)']];
+    traces.forEach(trace=>{const x=[],y=[];trace.x.forEach((date,i)=>{if(i&&Date.parse(date)-Date.parse(trace.x[i-1])>86400000){x.push(new Date(Date.parse(trace.x[i-1])+86400000).toISOString().slice(0,10));y.push(null)}x.push(date);y.push(trace.y[i])});trace.x=x;trace.y=y;trace.connectgaps=false});
+    note+=' Missing days remain gaps; hover to compare series, click a legend label to toggle it.';
   } else if (metric === 'monthly' && state.monthly?.records?.length) {
     const m = state.monthly.records;
     traces = [['Consumption','consumption_mu',c.ink],['Internal generation','internal_generation_mu',c.green],['Net imports','net_import_interface_mu',c.amber]].filter(([,k])=>m.some(r=>n(r[k])!=null)).map(([name,k,color])=>({type:'bar', name, x:m.map(r=>r.month), y:m.map(r=>r[k]), marker:{color}, hovertemplate:`${name}<br>%{x}<br>%{y:.1f} MU<extra></extra>`}));
@@ -321,7 +376,14 @@ function renderElectricityChart(metric) {
   }
   qs('#electricityChartTitle').textContent = title;
   qs('#electricityChartNote').textContent = note;
-  Plotly.react('electricityChart', traces, chartLayout, plotConfig);
+  if(metric.startsWith('india_'))qs('#electricityChartNote').innerHTML+=` <a href="https://www.energyproject.in/grid" target="_blank" rel="noopener">Source: Energy Project ↗</a>`;
+  state.chartTitle=title;
+  if(!state.chartColumns.length){
+    state.chartColumns=[['series','Series'],['x',chartLayout.xaxis?.title||'Period'],['value',chartLayout.yaxis?.title||'Value']];
+    state.chartRows=traces.flatMap(t=>t.x.map((x,i)=>({series:t.name||title,x,value:t.y[i]})));
+  }
+  qs('#chartValues').innerHTML=`<p class="chart-values-note">${state.chartRows.length.toLocaleString()} values. Showing the first ${Math.min(96,state.chartRows.length)}; download chart data for all values. ${esc(title)}</p><div class="table-scroll"><table><thead><tr>${state.chartColumns.map(([,label])=>`<th>${esc(label)}</th>`).join('')}</tr></thead><tbody>${state.chartRows.slice(0,96).map(r=>`<tr>${state.chartColumns.map(([key])=>`<td>${typeof r[key]==='number'?fmt(r[key],3):esc(r[key]??'—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  if(window.Plotly)Plotly.react('electricityChart', traces, {...chartLayout,datarevision:`${metric}-${period.value}-${qs('#chartUnit').value}`}, plotConfig);
 }
 
 function renderCapacityChart() {
@@ -508,6 +570,7 @@ function sourceEntries() {
 
 function sourceStatusKey(id) {
   return ({
+    energyproject:'energyproject_context',
     kerala_sldc:'sldc_daily',
     grid_india_daily_psp:'grid_india_psp',
     kseb_pms:'kseb_project_inventory',
@@ -587,6 +650,12 @@ function bindInteractions() {
   bindRouteButtons();
   qs('#overviewMetricTabs')?.addEventListener('click',e=>{const b=e.target.closest('[data-metric]');if(b)renderOverview(b.dataset.metric)});
   qs('#electricityMetric')?.addEventListener('change',e=>renderElectricityChart(e.target.value));
+  qs('#electricityPeriod')?.addEventListener('change',()=>renderElectricityChart(qs('#electricityMetric').value));
+  qs('#chartUnit')?.addEventListener('change',()=>renderElectricityChart(qs('#electricityMetric').value));
+  qs('#downloadChartData')?.addEventListener('click',downloadChartData);
+  qs('#downloadChartImage')?.addEventListener('click',()=>{
+    if(window.Plotly)Plotly.downloadImage('electricityChart',{format:'png',filename:`kerala2040-${qs('#electricityMetric').value}`,width:1400,height:650});
+  });
   qs('#scenarioRail')?.addEventListener('click',e=>{const b=e.target.closest('[data-scenario]');if(b)renderScenarioLab(b.dataset.scenario)});
   qs('#stressTests')?.addEventListener('click',e=>{const b=e.target.closest('[data-stress]');if(!b)return;const id=b.dataset.stress;state.selectedStress.has(id)?state.selectedStress.delete(id):state.selectedStress.add(id);b.classList.toggle('active');b.setAttribute('aria-pressed',state.selectedStress.has(id));renderStressSelection()});
   qs('#downloadSpecification')?.addEventListener('click',downloadSpecification);
@@ -596,6 +665,14 @@ function bindInteractions() {
   qs('#sourceSearch')?.addEventListener('input',e=>{const term=e.target.value.trim().toLowerCase();qsa('#sourceRegistry [data-search],#downloadGrid [data-search]').forEach(el=>el.hidden=term&&!el.dataset.search.includes(term))});
   window.addEventListener('popstate',()=>showView(location.hash.slice(1)||'overview'));
   window.addEventListener('hashchange',()=>showView(location.hash.slice(1)||'overview'));
+}
+
+function downloadChartData(){
+  const cell=value=>`"${String(value??'').replaceAll('"','""')}"`;
+  const metadata=[['Chart',state.chartTitle],['Note',qs('#electricityChartNote').textContent],['Bundle',state.data?.metadata?.git_sha||'unknown']];
+  const rows=[...metadata,[],state.chartColumns.map(([,label])=>label),...state.chartRows.map(r=>state.chartColumns.map(([key])=>r[key]))];
+  const url=URL.createObjectURL(new Blob(['\uFEFF'+rows.map(r=>r.map(cell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));
+  const link=document.createElement('a');link.href=url;link.download=`kerala2040-${qs('#electricityMetric').value}.csv`;link.click();URL.revokeObjectURL(url);
 }
 
 function bindTheme() {
@@ -609,6 +686,7 @@ function bindTheme() {
 }
 
 function renderAll() {
+  
   renderPlatformMeta();renderHeadline();renderOverview();renderEvidenceFeed();renderElectricity();renderPathwayReferences();renderScenarioLab();renderIndustry();renderDataCentre();
   renderConnectedEvidence();
   if (!window.Plotly) qsa('.chart:not(#scenarioInputChart)').forEach(el=>el.innerHTML='<p class="model-gate">Charts could not load. Use the data tables and downloads below.</p>');

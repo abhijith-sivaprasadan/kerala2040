@@ -1,6 +1,18 @@
 version: 2
 
 sources:
+  energyproject:
+    priority: P2
+    organisation: Energy Project
+    home: https://www.energyproject.in/grid
+    acquisition: public_default_chart_json
+    geography: India
+    use: [national_context, market_price_context]
+    note: >-
+      Secondary national data attributed by the publisher to NLDC, IEX and CEA.
+      Latest-month profiles are averaged from public quarter-hour chart inputs.
+      Not Kerala telemetry, not a Kerala delivered tariff, and not a replacement
+      for SLDC data. Source dates and partial-month coverage are retained.
   kerala_sldc:
     priority: P0
     organisation: Kerala State Load Despatch Centre

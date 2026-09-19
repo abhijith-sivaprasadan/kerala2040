@@ -5,7 +5,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import shutil
+from datetime import datetime, timedelta
+from itertools import pairwise
 from pathlib import Path
 
 
@@ -23,6 +26,28 @@ def validate_bundle(public: Path) -> dict:
         read(name)
     if read("metadata.json") != metadata:
         raise ValueError("Manifest and metadata disagree")
+    if "hourly_load_proxy_summary" in files:
+        proxy = read(files["hourly_load_proxy_summary"])
+        if proxy != site.get("hourly_load_proxy"):
+            raise ValueError("Proxy summary and manifest disagree")
+        if proxy.get("classification") != "proxy_reconstruction_not_measured_telemetry":
+            raise ValueError("Hourly proxy must be explicitly classified as reconstruction")
+        if "hourly_load_proxy" in files:
+            product = read(files["hourly_load_proxy"])
+            hourly = product["records"]
+            if product.get("classification") != proxy["classification"]:
+                raise ValueError("Hourly series classification disagrees with summary")
+            times = [datetime.fromisoformat(row["timestamp"]) for row in hourly]
+            if len(hourly) != proxy["hours"] or len(hourly) != 8760:
+                raise ValueError("Hourly proxy must contain the complete FY2024-25 chronology")
+            if times[0].isoformat() != "2024-04-01T00:00:00+05:30" or any(
+                right - left != timedelta(hours=1) for left, right in pairwise(times)
+            ):
+                raise ValueError("Hourly proxy timestamps must be consecutive IST intervals")
+            if any(not math.isfinite(row["load_mw"]) or row["load_mw"] <= 0 for row in hourly):
+                raise ValueError("Hourly proxy contains invalid load values")
+            if abs(sum(row["load_mw"] for row in hourly) / 1000 - proxy["annual_energy_mu"]) > 1e-6:
+                raise ValueError("Hourly series energy disagrees with proxy summary")
     if metadata["status"]["sldc_daily"]["available"]:
         rows = read(files["daily_balance"])["records"]
         dates = [row["date"] for row in rows]
