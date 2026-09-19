@@ -1,0 +1,94 @@
+"""Verify that scientific gates cannot be inferred from code or source catalogues."""
+
+from __future__ import annotations
+
+import json
+import shutil
+from pathlib import Path
+
+import pytest
+
+from kerala2040.audit_readiness import (
+    STATUS_BLOCKED,
+    STATUS_PARTIAL,
+    STATUS_PASS,
+    build_audit,
+    markdown_report,
+)
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_readiness_preserves_historical_evidence_and_blocks_2040_claims():
+    report = build_audit(ROOT)
+    assert report["classification"] == (
+        "repository_evidence_audit_not_external_source_validation"
+    )
+    assert report["finding_count"] == 17
+    assert report["closed_findings"] == 0
+    assert report["open_findings"] == 17
+    assert report["checks"]["sldc_accounting_integrity"]["status"] == STATUS_PASS
+    assert report["checks"]["sldc_daily_coverage"]["status"] == STATUS_PARTIAL
+    assert "2024-08-12" in report["checks"]["sldc_daily_coverage"]["detail"]
+    assert report["checks"]["measured_interval"]["status"] == STATUS_BLOCKED
+    assert report["checks"]["era5_complete"]["status"] == STATUS_PARTIAL
+    assert report["checks"]["technology_costs"]["status"] == STATUS_BLOCKED
+    assert report["release_gates"]["daily_accounting"]["passed"]
+    assert not report["release_gates"]["observed_full_year"]["passed"]
+    assert not report["release_gates"]["ecological_capacity_ceiling"]["passed"]
+    assert not report["release_gates"]["techno_economic_2040"]["passed"]
+    assert not report["release_gates"]["kmml_case"]["passed"]
+
+
+def test_report_does_not_present_daily_checks_as_hourly_validation():
+    report = build_audit(ROOT)
+    document = markdown_report(report)
+    assert "Daily accounting passing does not demonstrate" in document
+    assert "BLOCKED" in document
+    assert "17 acquisition findings" in document
+    assert "measured_interval" in document
+
+
+def test_source_qa_tampering_fails_closed(tmp_path):
+    for file in (
+        "data/external/sldc_fy2024_25/qa_report.json",
+        "public/era5-daily-manifest.json",
+        "configs/techno_economics.yaml",
+        "configs/gis_inputs.yaml",
+        "configs/audit_findings.yaml",
+    ):
+        target = tmp_path / file
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / file, target)
+    qa_path = tmp_path / "data/external/sldc_fy2024_25/qa_report.json"
+    qa = json.loads(qa_path.read_text())
+    qa["observed_days"] = 365
+    qa_path.write_text(json.dumps(qa))
+    with pytest.raises(ValueError, match="coverage inconsistent"):
+        build_audit(tmp_path)
+    qa["observed_days"] = 354
+    qa["bad_raw_sha256_count"] = 1
+    qa_path.write_text(json.dumps(qa))
+    with pytest.raises(ValueError, match="hash"):
+        build_audit(tmp_path)
+
+
+def test_unknown_gate_is_rejected_instead_of_counted_ready(tmp_path):
+    import yaml
+
+    for file in (
+        "data/external/sldc_fy2024_25/qa_report.json",
+        "public/era5-daily-manifest.json",
+        "configs/techno_economics.yaml",
+        "configs/gis_inputs.yaml",
+        "configs/audit_findings.yaml",
+    ):
+        target = tmp_path / file
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / file, target)
+    path = tmp_path / "configs/audit_findings.yaml"
+    config = yaml.safe_load(path.read_text())
+    config["release_gates"]["techno_economic_2040"]["required"].append("imaginary_ready")
+    path.write_text(yaml.safe_dump(config))
+    with pytest.raises(ValueError, match="Unknown"):
+        build_audit(tmp_path)
