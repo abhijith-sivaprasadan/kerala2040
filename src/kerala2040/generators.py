@@ -12,8 +12,8 @@ from datetime import date
 
 import pandas as pd
 
-_YEAR_RE = re.compile(r"(?:19|20)\\d{2}")
-_KW_IN_NAME = re.compile(r"(?<!\\d)(\\d+(?:\\.\\d+)?)\\s*kW\\b", re.IGNORECASE)
+_YEAR_RE = re.compile(r"(?:19|20)\d{2}")
+_KW_IN_NAME = re.compile(r"(?<!\d)(\d+(?:\.\d+)?)\s*kW\b", re.IGNORECASE)
 CAPACITY_TOLERANCE_MW = 0.001
 
 
