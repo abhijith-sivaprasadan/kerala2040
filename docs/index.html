@@ -207,6 +207,26 @@
           <a href="data/research-results.json">Download research outputs and source metadata ↓</a>
         </section>
 
+        <section class="data-module" aria-labelledby="sldcDetailHeading">
+          <div class="module-head">
+            <div><div class="section-label">NEW · FY2024–25 OFFICIAL SLDC DAILY REPORTS</div><h2 id="sldcDetailHeading">Hydro stations, import interfaces &amp; reservoirs</h2></div>
+            <span class="source-label">354 / 365 observed days</span>
+          </div>
+          <p>Derived from the five publicly reported SLDC sections per observed date. Station and interface figures sum <strong>reported daily energy, not hourly dispatch or MW transfer capacity</strong>. Blank source cells remain unknown; the 11 unreported days are excluded rather than interpolated.</p>
+          <label>Evidence view
+            <select id="sldcDetailMetric" aria-label="SLDC detailed evidence view">
+              <option value="stations">Station-reported generation</option>
+              <option value="interfaces">Imports by reported interface</option>
+              <option value="months">Monthly hydro and imports</option>
+              <option value="reservoirs">Reservoir storage ranges</option>
+            </select>
+          </label>
+          <div id="sldcDetailChart" class="chart xl" aria-label="Observed SLDC historical results"></div>
+          <p id="sldcDetailNote" class="chart-note"></p>
+          <p><a href="data/sldc-station-evidence.json">View evidence summary and provenance ↓</a> · <a href="data/sldc-processed-evidence.zip">Download all five processed CSV tables, QA report and processor ↓</a></p>
+          <details class="data-table"><summary>Source coverage and scientific limitations</summary><div id="sldcDetailLimitations"></div></details>
+        </section>
+
         <section class="data-module">
           <div class="module-head">
             <div><div class="section-label">SYSTEM BALANCE</div><h2 id="electricityChartTitle">Electricity explorer</h2></div>
