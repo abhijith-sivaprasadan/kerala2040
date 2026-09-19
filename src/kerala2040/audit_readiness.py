@@ -221,8 +221,8 @@ def markdown_report(audit: dict[str, Any]) -> str:
     lines = [
         "# Kerala 2040 — evidence-gated audit",
         "",
-        f"**{audit['closed_findings']}/{audit['finding_count']} acquisition findings "
-        "verified in committed evidence.**",
+        (f"**{audit['closed_findings']}/{audit['finding_count']} acquisition findings "
+         "verified in committed evidence.**"),
         "",
         f"Scope: {audit['scope']}. {audit['evidence_limit']}",
         "",
@@ -247,8 +247,8 @@ def markdown_report(audit: dict[str, Any]) -> str:
             f"{item['verification']['status']} | {item['acquisition']} |"
         )
     lines.extend([
-        "", "Daily accounting passing does not demonstrate complete-year or "
-        "hourly calibration. A proxy-based 2040 HiGHS solve does not pass "
-        "the techno-economic, hydro, grid, GIS or interval-data gates.", "",
+        "", ("Daily accounting passing does not demonstrate complete-year or "
+             "hourly calibration. A proxy-based 2040 HiGHS solve does not pass "
+             "the techno-economic, hydro, grid, GIS or interval-data gates."), "",
     ])
     return "\n".join(lines)
