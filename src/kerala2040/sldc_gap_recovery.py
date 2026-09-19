@@ -8,6 +8,7 @@ other four report sections and reintegration against the retained original archi
 
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import time
@@ -58,18 +59,19 @@ def probe_missing_dates(
         attempts = []
         accepted = None
         for endpoint in (SYSTEM_STATS_URL, FORM_ACTION_URL):
+            detail: dict[str, Any] = {"endpoint": endpoint}
             try:
                 response = session.post(
                     endpoint, data=_date_payload(iso_date), timeout=timeout
                 )
-                detail: dict[str, Any] = {
+                detail.update({
                     "endpoint": endpoint,
                     "http_status": response.status_code,
                     "final_url": response.url,
                     "retrieved_at_utc": datetime.now(UTC).isoformat(),
                     "response_sha256": hashlib.sha256(response.content).hexdigest(),
                     "response_bytes": len(response.content),
-                }
+                })
                 if response.status_code != 200:
                     detail["result"] = "http_error"
                 else:
@@ -91,21 +93,21 @@ def probe_missing_dates(
                 if accepted:
                     break
             except (ValueError, OSError, RuntimeError) as exc:
-                attempts.append({
-                    "endpoint": endpoint,
+                detail.update({
                     "result": "unverified_response",
                     "exception_type": type(exc).__name__,
                     "detail": str(exc)[:350],
                 })
+                attempts.append(detail)
             except Exception as exc:
                 # Transport and TLS failures are evidence of a failed request,
                 # never proof that no dated report exists in the agency records.
-                attempts.append({
-                    "endpoint": endpoint,
+                detail.update({
                     "result": "request_failed",
                     "exception_type": type(exc).__name__,
                     "detail": str(exc)[:350],
                 })
+                attempts.append(detail)
             if pause_seconds:
                 time.sleep(pause_seconds)
         records.append({
@@ -158,6 +160,54 @@ def probe_from_committed_qa(
     dates = qa["missing_dates"]
     if len(dates) != 11:
         raise ValueError("Expected the exact 11 source-identified missing dates")
-    return probe_missing_dates(
+    report = probe_missing_dates(
         dates, output, session, pause_seconds=pause_seconds, timeout=timeout
     )
+    # Check an already-authenticated observed day too. If it cannot be
+    # retrieved, 11 failed requests cannot establish that the reports
+    # themselves are absent; the historical form may reject automation.
+    control_day = "2024-08-13"
+    with (root / "data/external/sldc_fy2024_25/daily_balance.csv").open(
+        encoding="utf-8", newline=""
+    ) as handle:
+        control = [
+            row for row in csv.DictReader(handle)
+            if row["date"] == control_day and row["status"] == "observed"
+        ]
+    if len(control) != 1:
+        raise ValueError("No unique authenticated control date in committed baseline")
+    check = probe_missing_dates(
+        [control_day], output / "known_observed_control", session,
+        pause_seconds=pause_seconds, timeout=timeout
+    )
+    accepted = check["records"][0]["accepted_attempt"]
+    if accepted:
+        values = accepted["metrics_mu"]
+        comparisons = (
+            ("internal_generation_mu", "internal_generation_mu"),
+            ("net_import_interface_mu", "net_import_mu"),
+            ("consumption_mu", "consumption_mu"),
+        )
+        matched = all(
+            abs(float(values[metric]) - float(control[0][column]))
+            <= BALANCE_TOLERANCE_MU
+            for metric, column in comparisons
+        )
+        control_status = "confirmed" if matched else "observed_metrics_mismatch"
+    else:
+        control_status = "not_retrieved"
+    report["known_observed_control_date"] = control_day
+    report["known_observed_control_status"] = control_status
+    report["known_observed_control_attempts"] = check["records"][0]["attempts"]
+    report["interpretation"] = (
+        "The public historical date form also failed for a previously verified "
+        "observed day; this retrieval cannot show the eleven source reports "
+        "do not exist." if control_status == "not_retrieved" else
+        "Retrieved source dates still require the complete five-section raw "
+        "archive and rigorous re-integration before coverage changes."
+    )
+    (output / "attempts.json").write_text(
+        json.dumps(report, indent=2, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
+    return report
