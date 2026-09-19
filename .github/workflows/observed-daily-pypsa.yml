@@ -1,0 +1,44 @@
+name: Observed-detail PyPSA baseline
+
+on:
+  pull_request:
+    paths:
+      - "src/kerala2040/observed_daily_network.py"
+      - "scripts/build_observed_daily_network.py"
+      - "tests/test_observed_daily_network.py"
+      - "data/external/sldc_fy2024_25/**"
+      - ".github/workflows/observed-daily-pypsa.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/kerala2040/observed_daily_network.py"
+      - "scripts/build_observed_daily_network.py"
+      - "tests/test_observed_daily_network.py"
+      - "data/external/sldc_fy2024_25/**"
+      - ".github/workflows/observed-daily-pypsa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-observed-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - name: Static checks and unit tests
+        run: |
+          ruff check src/kerala2040/observed_daily_network.py scripts/build_observed_daily_network.py tests/test_observed_daily_network.py
+          pytest -q tests/test_observed_daily_network.py
+      - name: Build full FY2024-25 observed-detail network
+        run: python scripts/build_observed_daily_network.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: observed-daily-pypsa-baseline
+          path: results/models/observed_daily_detail/
+          retention-days: 30
