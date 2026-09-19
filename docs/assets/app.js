@@ -284,7 +284,7 @@ function renderElectricityChart(metric) {
   const selectedPeriod = period.value;
   const available = metric==='hourly_proxy' ? state.hourlySeries?.records||[] : state.daily?.records||[];
   const months = [...new Set(available.map(r=>(r.date||r.timestamp).slice(0,7)))].sort();
-  period.innerHTML = '<option value="all">Full available period</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join('');
+  period.innerHTML = '<option value="all">Full available period</option>'+months.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
   period.value = months.includes(selectedPeriod)?selectedPeriod:'all';
   period.disabled=!isTimed;
   qs('#chartUnitControl').hidden=metric!=='india_mix';
