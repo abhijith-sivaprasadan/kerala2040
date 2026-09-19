@@ -10,8 +10,8 @@ aggregate hydro total.
 
 from __future__ import annotations
 
-import re
 from collections.abc import Mapping
+import re
 
 import numpy as np
 import pandas as pd
@@ -261,7 +261,7 @@ def observed_detail_summary(network) -> dict[str, object]:
     return {
         "classification": "derived_from_measured",
         "model_role": "observed_daily_source_attribution_replay",
-        "observed_days": int(len(network.snapshots)),
+        "observed_days": len(network.snapshots),
         "load_mwh": load_mwh,
         "supply_mwh": supply_mwh,
         "balance_error_mwh": supply_mwh - load_mwh,
