@@ -46,6 +46,38 @@ def test_packaged_site_has_every_advertised_download(tmp_path):
     assert all((tmp_path / "data" / name).exists() for name in data["metadata"]["files"].values())
 
 
+def test_live_website_includes_source_checked_audit_without_promoting_2040(tmp_path):
+    site.build_site(ROOT, tmp_path)
+    data = site.validate_bundle(tmp_path / "data")
+    name = data["metadata"]["files"]["audit_readiness"]
+    audit = json.loads((tmp_path / "data" / name).read_text(encoding="utf-8"))
+    assert audit["classification"] == (
+        "repository_evidence_audit_not_external_source_validation"
+    )
+    assert audit["finding_count"] == 17 and audit["open_findings"] == 17
+    assert audit["checks"]["sldc_accounting_integrity"]["status"] == (
+        "verified_in_committed_evidence"
+    )
+    assert audit["checks"]["sldc_daily_coverage"]["status"] == "partial_or_provisional"
+    assert not audit["release_gates"]["techno_economic_2040"]["passed"]
+    assert not audit["release_gates"]["observed_full_year"]["passed"]
+    station = json.loads((tmp_path / "data/sldc-station-evidence.json").read_text())
+    assert audit["source_qa_sha256"] == station["source_archive_sha256"]
+    html = (tmp_path / "index.html").read_text(encoding="utf-8")
+    assert 'data-view="audit"' in html and 'data-route="audit"' in html
+    assert not list((tmp_path / "data").glob("*proxy*"))
+
+
+def test_packaged_audit_rejects_tampered_finding_totals(tmp_path):
+    site.build_site(ROOT, tmp_path)
+    path = tmp_path / "data/audit-readiness.json"
+    audit = json.loads(path.read_text())
+    audit["closed_findings"] = 17
+    path.write_text(json.dumps(audit))
+    with pytest.raises(ValueError, match="totals disagree"):
+        site.validate_bundle(tmp_path / "data")
+
+
 def test_config_only_rebuild_preserves_acquired_evidence(tmp_path):
     shutil.copytree(ROOT / "public", tmp_path / "public")
     shutil.copytree(ROOT / "configs", tmp_path / "configs")
