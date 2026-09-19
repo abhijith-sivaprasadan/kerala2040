@@ -1,0 +1,120 @@
+version: 1
+classification: audit_tracking_not_model_input
+scope: Kerala statewide FY2024-25 historical calibration and 2040 planning
+policy: >-
+  A code implementation, a source catalogue, or a successful solver run does not
+  demonstrate completed data acquisition or a validated scientific result.
+  The checks below use only evidence committed in this research repository.
+  Workflow artifacts, local files and private agency data require separate review.
+sources:
+  sldc_request: docs/SLDC_DATA_REQUEST_DRAFT.md
+  cstep_2016_request: docs/CSTEP_FY2016_DATA_REQUEST_DRAFT.md
+  audit_roadmap: docs/MODELLING_DATA_ROADMAP.md
+  project_qa: data/external/sldc_fy2024_25/qa_report.json
+  era5_manifest: public/era5-daily-manifest.json
+  gis_catalogue: configs/gis_inputs.yaml
+  economics_registry: configs/techno_economics.yaml
+
+findings:
+  - id: sldc_missing_days
+    priority: P0
+    check: sldc_daily_coverage
+    acquisition: Recover the 11 absent FY2024-25 dated public SLDC reports or record irrecoverability.
+    evidence: data/external/sldc_fy2024_25/qa_report.json
+  - id: measured_interval_demand_interchange
+    priority: P0
+    check: measured_interval
+    acquisition: Authenticated FY2024-25 15-minute demand and actual interchange, timestamps, metering boundary, revisions and permissions.
+    evidence: docs/SLDC_DATA_REQUEST_DRAFT.md
+  - id: generator_register
+    priority: P0
+    check: generator_assets
+    acquisition: Reconcile commissioned plant MW, outages, fuel, ownership, retirement and production against KSEBL/CEA.
+    evidence: scripts/build_generator_database.py
+  - id: reservoir_operations
+    priority: P0
+    check: hydro_physics
+    acquisition: Plant-reservoir cascade topology, inflow, release, spill, head, storage and environmental flow rules.
+    evidence: docs/OBSERVED_DAILY_PYPSA.md
+  - id: interstate_transfer_and_contracts
+    priority: P0
+    check: grid_transfer
+    acquisition: Verified ATC/TTC, seasonal derating, import/export and procurement contracts; daily imported energy is not a MW limit.
+    evidence: docs/OBSERVED_DAILY_PYPSA.md
+  - id: recent_lulc_georeferenced
+    priority: P0
+    check: gis_model_ready
+    acquisition: Recent source-vintage-labelled Bhuvan/NRSC Kerala LULC raster and class descriptions.
+    evidence: configs/gis_inputs.yaml
+  - id: elevation_dem
+    priority: P1
+    check: gis_model_ready
+    acquisition: Georeferenced DEM, CRS and resolution suitable for screening.
+    evidence: configs/gis_inputs.yaml
+  - id: forest_protected_areas
+    priority: P0
+    check: gis_model_ready
+    acquisition: Authoritative current forest/protected-area geometries and applicable notifications.
+    evidence: configs/gis_inputs.yaml
+  - id: wetland_waterbody_landslide
+    priority: P0
+    check: gis_model_ready
+    acquisition: Authoritative georeferenced wetlands, waterbodies and landslide constraints; preserve legal status.
+    evidence: configs/gis_inputs.yaml
+  - id: niwe_wind_resource
+    priority: P1
+    check: gis_model_ready
+    acquisition: NIWE wind raster, metadata, usage terms and turbine conversion assumptions.
+    evidence: configs/gis_inputs.yaml
+  - id: substations_lines_geospatial
+    priority: P1
+    check: gis_model_ready
+    acquisition: Permitted georeferenced substations, lines and connection constraints.
+    evidence: docs/MODELLING_DATA_ROADMAP.md
+  - id: era5_full_weather_year
+    priority: P1
+    check: era5_complete
+    acquisition: Complete FY2024-25 weather coverage with verified timestamps, units and PV/wind transformations.
+    evidence: public/era5-daily-manifest.json
+  - id: technology_costs_finance
+    priority: P0
+    check: technology_costs
+    acquisition: Dated harmonised 2040 capex/O&M, BESS MW/MWh, lifetime, financing and source-specific prices.
+    evidence: configs/techno_economics.yaml
+  - id: import_tariffs_and_prices
+    priority: P0
+    check: grid_transfer
+    acquisition: KSERC/KSEBL approved procurement prices, contracted energy, assumptions and cost year.
+    evidence: docs/MODELLING_DATA_ROADMAP.md
+  - id: kmml_material_chemistry
+    priority: P2
+    check: kmml_measured
+    acquisition: KMML throughput, waste/residual quantities, chemistry, baseline treatment, recovery yield and offtake.
+    evidence: docs/KMML_CASE_PLAN.md
+  - id: kmml_energy_water
+    priority: P2
+    check: kmml_measured
+    acquisition: KMML process electricity, heat, water and effluent time series with metering boundary and publication terms.
+    evidence: docs/KMML_CASE_PLAN.md
+  - id: cstep_2016_raw_interval
+    priority: P1
+    check: cstep_raw_2016
+    acquisition: Recover source FY2016 observed 15-minute chronology, not digitisation of a published curve.
+    evidence: docs/CSTEP_FY2016_DATA_REQUEST_DRAFT.md
+
+release_gates:
+  daily_accounting:
+    required: [sldc_accounting_integrity]
+    description: Only verified daily accounting; 354 observed days must be displayed explicitly.
+  observed_full_year:
+    required: [sldc_daily_coverage, measured_interval]
+    description: No gap-fill or proxy may pass as measured full-year chronology.
+  ecological_capacity_ceiling:
+    required: [gis_model_ready]
+    description: Catalogue files and downloaded GIS archives are not screened eligible land.
+  techno_economic_2040:
+    required: [technology_costs, grid_transfer, hydro_physics, generator_assets, gis_model_ready, era5_complete, measured_interval]
+    description: 2040 capacity expansion needs all verified physical, economic and chronology gates.
+  kmml_case:
+    required: [kmml_measured]
+    description: No numerical KMML industrial result without a measured process boundary.
