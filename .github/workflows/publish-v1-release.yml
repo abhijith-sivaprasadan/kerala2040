@@ -1,0 +1,100 @@
+name: Publish Data Platform v1.0.0
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/releases/v1.0.0.md"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-v1.0.0-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install project and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: Validate exact release commit
+        run: |
+          ruff check src tests scripts
+          pytest
+          node --check docs/assets/app.js
+          node --test tests/web.test.cjs
+          python scripts/build_site.py --check
+          python scripts/build_site.py --output _site
+      - name: Create immutable release manifest and site archive
+        env:
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          sha = os.environ["RELEASE_SHA"]
+          data = Path("_site/data/site-data.json")
+          metadata = json.loads(Path("_site/data/metadata.json").read_text(encoding="utf-8"))
+          if metadata.get("generated_at_utc") is None:
+              raise SystemExit("Cannot release an undated evidence snapshot")
+          if metadata.get("publication_policy") != "observed_and_derived_evidence_plus_labelled_published_external_benchmarks":
+              raise SystemExit("Public packaging policy does not match provenance-safe v1 scope")
+          manifest = {
+              "release_tag": "v1.0.0",
+              "release_scope": "Data Platform / Historical Foundation",
+              "research_source_commit": sha,
+              "evidence_snapshot_generated_at_utc": metadata["generated_at_utc"],
+              "evidence_source_git_sha": metadata.get("git_sha"),
+              "published_site_data_sha256": hashlib.sha256(data.read_bytes()).hexdigest(),
+              "publication_policy": metadata["publication_policy"],
+          }
+          Path("_site/RELEASE_MANIFEST.json").write_text(
+              json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+          )
+          Path("_site/SOURCE_COMMIT").write_text(
+              f"Research source: abhijith-sivaprasadan/kerala2040@{sha}\n"
+              "Release: v1.0.0\n",
+              encoding="utf-8",
+          )
+          Path("release-manifest-v1.0.0.json").write_text(
+              json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+          )
+          print(json.dumps(manifest, indent=2))
+          PY
+          cd _site
+          zip -q -r ../kerala2040-data-platform-v1.0.0-site.zip .
+          cd ..
+          sha256sum kerala2040-data-platform-v1.0.0-site.zip > kerala2040-data-platform-v1.0.0-site.zip.sha256
+      - name: Publish Git tag and GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          if gh release view v1.0.0 >/dev/null 2>&1; then
+            echo "v1.0.0 already exists; refusing to overwrite an immutable release" >&2
+            exit 1
+          fi
+          gh release create v1.0.0 \
+            --target "$RELEASE_SHA" \
+            --title "Kerala 2040 v1.0.0 — Data Platform / Historical Foundation" \
+            --notes-file docs/releases/v1.0.0.md \
+            kerala2040-data-platform-v1.0.0-site.zip \
+            kerala2040-data-platform-v1.0.0-site.zip.sha256 \
+            release-manifest-v1.0.0.json
