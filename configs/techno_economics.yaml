@@ -1,0 +1,127 @@
+version: 2
+classification: published_external_scenario
+source_type: sourced_benchmark_registry
+source: CEA and CERC official publications listed below
+currency: INR
+price_basis_rule: >-
+  Preserve each source's stated cost basis. Do not interpolate or promote a published
+  benchmark into a Kerala 2040 model input until a documented harmonisation method is chosen.
+
+sources:
+  cea_optimal_mix_2029_30_v2:
+    publisher: Central Electricity Authority
+    title: Report on Optimal Generation Capacity Mix for 2029-30, Version 2.0
+    publication_date: 2023-04
+    landing_page: https://cea.nic.in/notification/report-on-optimal-generation-capacity-mix-for-the-year-2029-30-version-2-0/?lang=en
+    pdf: https://cea.nic.in/wp-content/uploads/notification/2023/05/Optimal_mix_report__2029_30_Version_2.0__For_Uploading.pdf
+    evidence: official_planning_study
+    verified_pages:
+      operating_parameters: 47
+      financial_parameters: 48
+    note: >-
+      Values below are transcribed only from the verified CEA tables. They are external
+      national-planning assumptions, not selected Kerala 2040 costs.
+
+  cerc_re_tariff_2024:
+    publisher: Central Electricity Regulatory Commission
+    title: CERC Terms and Conditions for Tariff determination from Renewable Energy Sources Regulations, 2024
+    landing_page: https://cercind.gov.in/Current_reg.html
+    evidence: current_regulatory_reference
+    extraction_status: source_verified_values_not_yet_transcribed
+    note: >-
+      The regulation exists and is retained as a future source. No numerical value from it
+      is used in this registry until individually verified.
+
+verified_external_benchmarks:
+  cea_optimal_mix_2029_30_v2:
+    source_page_financial_parameters: 48
+    cost_basis: actual_2021_22_cost_level_no_inflation_for_capex_calculation
+    technologies:
+      solar:
+        capex_crore_per_mw:
+          "2021-22": 4.5
+          "2029-30": 4.1
+        fixed_om_pct_capex_per_year: 1.0
+        construction_time_years: 0.5
+        lifetime_years: 25
+        classification: published_external_scenario
+      wind_onshore:
+        capex_crore_per_mw: 6.0
+        fixed_om_pct_capex_per_year: 1.0
+        construction_time_years: 1.5
+        lifetime_years: 25
+        classification: published_external_scenario
+      pumped_storage:
+        reported_capex_crore_per_mw_range: [3.0, 8.0]
+        fixed_om_pct_capex_per_year: 5.0
+        construction_time_years: 7
+        lifetime_years: 40
+        pump_efficiency_pct:
+          value: 80
+          source_page: 47
+        classification: published_external_scenario
+        note: >-
+          CEA notes hydro and pumped-storage candidate capex is project-specific; this
+          range must not substitute for Kerala site costs.
+      bess_4h:
+        reported_capex_crore_per_mw_range: [8.22, 4.72]
+        fixed_om_pct_capex_per_year: 1.0
+        construction_time_years: 0.5
+        lifetime_years: 14
+        round_trip_losses_pct:
+          value: 12
+          source_page: 47
+        classification: published_external_scenario
+        note: >-
+          The CEA table reports the 4-hour BESS cost trajectory as a range. This registry
+          preserves the published values without silently assigning unverified year labels
+          to each endpoint.
+
+model_input_grid:
+  classification: unresolved
+  rule: >-
+    Null values are intentional. Final optimisation must fail input validation if a required
+    techno-economic field is unresolved. External study benchmarks above are not defaults.
+  years: [2025, 2030, 2040]
+  technologies:
+    solar_pv:
+      capex_inr_per_kw: {2025: null, 2030: null, 2040: null}
+      fixed_om_inr_per_kw_year: {2025: null, 2030: null, 2040: null}
+      variable_om_inr_per_mwh: {2025: null, 2030: null, 2040: null}
+      lifetime_years: null
+      selection_status: unresolved
+    wind_onshore:
+      capex_inr_per_kw: {2025: null, 2030: null, 2040: null}
+      fixed_om_inr_per_kw_year: {2025: null, 2030: null, 2040: null}
+      variable_om_inr_per_mwh: {2025: null, 2030: null, 2040: null}
+      lifetime_years: null
+      selection_status: unresolved
+    bess:
+      capex_power_inr_per_kw: {2025: null, 2030: null, 2040: null}
+      capex_energy_inr_per_kwh: {2025: null, 2030: null, 2040: null}
+      fixed_om_inr_per_kw_year: {2025: null, 2030: null, 2040: null}
+      round_trip_efficiency: null
+      lifetime_years: null
+      degradation_model: null
+      selection_status: unresolved
+    pumped_storage:
+      capex_inr_per_kw: {2025: null, 2030: null, 2040: null}
+      fixed_om_inr_per_kw_year: {2025: null, 2030: null, 2040: null}
+      round_trip_efficiency: null
+      lifetime_years: null
+      selection_status: requires_site_specific_data
+    transmission:
+      capex_inr_per_mw_km: {2025: null, 2030: null, 2040: null}
+      fixed_om_pct_capex_per_year: null
+      lifetime_years: null
+      selection_status: unresolved
+    demand_response:
+      activation_cost_inr_per_mwh: {2025: null, 2030: null, 2040: null}
+      enablement_capex_inr_per_kw: {2025: null, 2030: null, 2040: null}
+      selection_status: unresolved
+
+system_finance:
+  discount_rate_pct: null
+  price_year: null
+  inflation_treatment: null
+  selection_status: unresolved

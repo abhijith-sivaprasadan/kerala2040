@@ -55,6 +55,7 @@ def test_config_only_rebuild_preserves_acquired_evidence(tmp_path):
                     "--root", str(tmp_path)], check=True, capture_output=True, env=env)
     after = site.validate_bundle(tmp_path / "public")
     assert after["baseline"]["rows"] == before["baseline"]["rows"]
+    assert after["research_results"] == before["research_results"]
     assert after["metadata"]["layer_provenance"]["sldc_daily"]["preserved"]
     assert after["metadata"]["status"]["sldc_daily"]["available"]
     for layer, field in (("kseb_historical_export", "kseb_history"),

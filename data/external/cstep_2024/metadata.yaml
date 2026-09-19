@@ -1,0 +1,112 @@
+version: 1
+classification: published_external_scenario
+source:
+  organisation: Center for Study of Science, Technology and Policy
+  title: Kerala Energy Transition Roadmap 2040
+  report_id: CSTEP-RR-2024-01
+  publication_date: 2024-02
+  publication_page: https://cstep.in/publication/kerala-energy-transition-roadmap-2040/
+  citation: "CSTEP. (2024). Kerala Energy Transition Roadmap 2040. CSTEP-RR-2024-01."
+  user_supplied_file: Kerala-Energy-Transition-Roadmap-2040_3-1(1).pdf
+  user_supplied_file_sha256: be2148d870b8f73950a36918d0aa8d627203a47277ae87afd92faaf84a25894a
+  user_supplied_file_bytes: 3116071
+
+extraction:
+  extracted_for_repository_on: 2026-09-18
+  rule: Preserve published values exactly; do not silently reconcile, correct or promote them to Kerala 2040 model truth.
+  known_rounding_issue: Some appendix component rows differ from published totals by 1-2 MU or MW; published totals are preserved.
+
+historical_demand:
+  report_page: 19
+  immediate_source: CSTEP 2024
+  upstream_source_named_by_cstep: KSEB Power System Statistics 2021-22
+  classification: official_observed_reference
+
+demand_projection:
+  report_pages: [19, 20, 21, 22, 23, 24, 54]
+  classification: published_external_scenario
+  method:
+    historical_category_years: FY2016-FY2022
+    base_projection_method: category-specific CAGR
+    added_loads:
+      - electric vehicles
+      - induction cooktops
+    td_loss_trajectory_pct:
+      FY2023: 10.07
+      FY2040: 8.00
+  fy2040:
+    bau_demand_mu: 40446
+    ev_demand_mu: 1286
+    induction_cooktop_demand_mu: 415
+    final_without_td_losses_mu: 42147
+    final_with_td_losses_mu: 45519
+    peak_demand_mw: 7594
+
+load_chronology:
+  report_page: 33
+  classification: published_external_scenario
+  key_statement: CSTEP analysed observed Kerala 15-minute data for FY2016, derived an FY2022 load curve, then extrapolated the shape to FY2040.
+  raw_fy2016_series_in_report: false
+  acquisition_priority: critical
+  acquisition_targets:
+    - CSTEP
+    - Energy Management Centre Kerala
+    - KSEBL
+    - Kerala SLDC
+  use_rule: Do not digitise the plotted curve and call it measured telemetry. The underlying FY2016 15-minute series must be acquired separately.
+
+renewable_resource_method:
+  report_pages: [25, 26, 27, 28]
+  classification: published_external_scenario
+  solar_screening_criteria_named:
+    - solar radiation
+    - average temperature
+    - relative humidity
+    - elevation
+    - southward aspect
+    - slope below 5 degrees
+    - wasteland or bare ground
+    - proximity to substations
+    - proximity to major roads
+    - proximity to residential areas
+  wind_screening_criteria_named:
+    - wind power density
+    - land cover
+    - distance to substations
+    - biodiversity hotspots
+
+supply_model_assumptions:
+  report_page: 28
+  classification: published_external_scenario
+  thermal_plf_pct: 70
+  hydro_plf_pct: 60
+  thermal_auxiliary_consumption_pct: 9
+  hydro_auxiliary_consumption_pct: 1
+  solar_cuf_pct: 18
+  wind_cuf_pct: 23
+  bau_existing_power_purchases_unchanged: true
+  wind_hourly_profile_source: RE Ninja
+  solar_hourly_profile_source: CSTEP CSTEM-PV
+
+supply_scenarios:
+  bau:
+    report_pages: [29, 30, 55, 56]
+    classification: published_external_scenario
+    allocation_rule_reported:
+      solar_pct: 69
+      wind_pct: 19
+      hydro_pct: 13
+  high_re:
+    report_pages: [31, 32, 56, 57]
+    classification: published_external_scenario
+    thermal_import_reduction: approximately 6 percent year-on-year from FY2025 to FY2040
+    allocation_rule_reported:
+      solar_pct: 45
+      wind_pct: 15
+      hydro_pct: 20
+      nuclear_pct: 20
+
+storage:
+  report_pages: [35, 42]
+  classification: published_external_scenario
+  warning: The reported GWh values imply extremely long storage durations. Preserve as published and verify the original storage-calculation definition before using as a model target.

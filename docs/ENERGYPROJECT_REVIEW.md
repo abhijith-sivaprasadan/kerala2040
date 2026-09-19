@@ -28,7 +28,7 @@ its current-month figures as incomplete and gives a data date.
 Their published contact is hello@energyproject.in. A useful question is whether
 their NLDC workflow includes historical state-level time-block demand/interchange,
 which primary archive it uses, and what reuse terms apply. No outreach was sent
-and no outreach has been sent.
+and no message has been sent.
 
 ## Public chart inputs verified during this review
 

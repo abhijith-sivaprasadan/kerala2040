@@ -16,6 +16,7 @@ from typing import Any
 
 import pandas as pd
 import yaml
+from publish_research import build_research
 
 from kerala2040.analysis import add_daily_indicators
 
@@ -316,8 +317,8 @@ def main() -> int:
         },
         "weather": {
             "available": bool(weather_files),
-            "evidence": "measured/reanalysis",
-            "note": "NASA POWER representative-point hourly weather.",
+            "evidence": "reanalysis/remote-sensing-derived",
+            "note": "NASA POWER representative-point hourly weather; not station or plant telemetry.",
         },
         "era5_reanalysis": {
             "available": bool((era5_manifest or {}).get("files_succeeded", 0)),
@@ -621,6 +622,11 @@ def main() -> int:
                                         "hourly_load_proxy_available": bool(site_manifest.get("hourly_load_proxy")),
                                         "aggregation_scope": "observed_days_only"})
         _write(out / "baseline-summary.json", site_manifest["baseline"])
+    research = build_research(root)
+    if research["products"]:
+        _write(out / "research-results.json", research)
+        metadata["files"]["research_results"] = "research-results.json"
+        site_manifest["research_results"] = research
     _write(out / "metadata.json", metadata)
     _write(out / "site-data.json", site_manifest)
     print(

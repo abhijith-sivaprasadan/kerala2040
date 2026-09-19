@@ -1,0 +1,139 @@
+version: 1
+classification: scenario_assumption
+source_type: structural_scenario_framework
+source: Kerala 2040 research design
+note: No numerical capacity, demand, cost, transfer-limit or reliability answers are encoded here.
+model_year: 2040
+rule: >-
+  This file defines which levers differ between scenarios. It deliberately does not
+  contain invented capacity ceilings, demand growth, costs, transfer limits or reliability
+  thresholds. Numerical values enter only after a source or explicit scenario assumption
+  is recorded in a dedicated input dataset.
+
+dimensions:
+  demand_trajectory:
+    allowed: [reference, lower, higher]
+    numerical_series_required: true
+  demand_flexibility:
+    allowed: [low, medium, high]
+    numerical_parameters_required: true
+  interstate_trade:
+    allowed: [normal, stressed, restricted]
+    transfer_limit_required: true
+    price_series_required: true
+  hydro_operation:
+    allowed: [historical_like, strategic]
+    hydrology_required: true
+  solar_expansion:
+    allowed: [fixed_existing, expandable]
+    gis_capacity_ceiling_required: true
+  wind_expansion:
+    allowed: [fixed_existing, expandable]
+    gis_capacity_ceiling_required: true
+  battery_storage:
+    allowed: [fixed_existing, expandable]
+    cost_and_performance_required: true
+  pumped_storage:
+    allowed: [fixed_existing, expandable]
+    site_specific_constraints_required: true
+  ev_smart_charging:
+    allowed: [off, limited, high]
+    ev_charging_dataset_required: true
+  ecological_constraint:
+    allowed: [legal_minimum, spatial_suitability, strict_carrying_capacity]
+    processed_gis_required: true
+  fiscal_constraint:
+    allowed: [none, explicit_public_cap]
+    finance_dataset_required: true
+
+scenarios:
+  S0_business_as_usual:
+    demand_trajectory: reference
+    demand_flexibility: low
+    interstate_trade: normal
+    hydro_operation: historical_like
+    solar_expansion: expandable
+    wind_expansion: expandable
+    battery_storage: fixed_existing
+    pumped_storage: fixed_existing
+    ev_smart_charging: "off"
+    ecological_constraint: legal_minimum
+    fiscal_constraint: none
+
+  S1_maximum_local_generation:
+    demand_trajectory: reference
+    demand_flexibility: medium
+    interstate_trade: normal
+    hydro_operation: strategic
+    solar_expansion: expandable
+    wind_expansion: expandable
+    battery_storage: expandable
+    pumped_storage: expandable
+    ev_smart_charging: limited
+    ecological_constraint: legal_minimum
+    fiscal_constraint: none
+
+  S2_solar_storage:
+    demand_trajectory: reference
+    demand_flexibility: medium
+    interstate_trade: normal
+    hydro_operation: strategic
+    solar_expansion: expandable
+    wind_expansion: fixed_existing
+    battery_storage: expandable
+    pumped_storage: expandable
+    ev_smart_charging: limited
+    ecological_constraint: spatial_suitability
+    fiscal_constraint: none
+
+  S3_integrated_sovereignty:
+    demand_trajectory: reference
+    demand_flexibility: high
+    interstate_trade: normal
+    hydro_operation: strategic
+    solar_expansion: expandable
+    wind_expansion: expandable
+    battery_storage: expandable
+    pumped_storage: expandable
+    ev_smart_charging: high
+    ecological_constraint: spatial_suitability
+    fiscal_constraint: none
+
+  S4_ecological_sovereignty:
+    demand_trajectory: reference
+    demand_flexibility: high
+    interstate_trade: normal
+    hydro_operation: strategic
+    solar_expansion: expandable
+    wind_expansion: expandable
+    battery_storage: expandable
+    pumped_storage: expandable
+    ev_smart_charging: high
+    ecological_constraint: strict_carrying_capacity
+    fiscal_constraint: none
+
+  S5_fiscal_conservative:
+    demand_trajectory: reference
+    demand_flexibility: high
+    interstate_trade: normal
+    hydro_operation: strategic
+    solar_expansion: expandable
+    wind_expansion: expandable
+    battery_storage: expandable
+    pumped_storage: expandable
+    ev_smart_charging: limited
+    ecological_constraint: spatial_suitability
+    fiscal_constraint: explicit_public_cap
+
+unresolved_numeric_inputs:
+  - 2040 hourly demand trajectories
+  - Kerala interstate transfer capability and derating cases
+  - hourly/seasonal import price representation
+  - solar GIS-constrained capacity ceiling
+  - wind GIS-constrained capacity ceiling
+  - pumped-storage site MW and MWh
+  - battery CAPEX OPEX efficiency lifetime and degradation
+  - demand-response MW duration and rebound constraints
+  - EV flexible charging energy and connection limits
+  - reliability criterion and value of lost load
+  - public-sector annual capital exposure limit

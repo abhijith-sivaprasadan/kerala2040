@@ -48,6 +48,15 @@ def validate_bundle(public: Path) -> dict:
                 raise ValueError("Hourly proxy contains invalid load values")
             if abs(sum(row["load_mw"] for row in hourly) / 1000 - proxy["annual_energy_mu"]) > 1e-6:
                 raise ValueError("Hourly series energy disagrees with proxy summary")
+    if "research_results" in files:
+        research = read(files["research_results"])
+        if research != site.get("research_results"):
+            raise ValueError("Research products and manifest disagree")
+        products = research["products"]
+        if products.get("renewables", {}).get("classification") not in (None, "modelled_resource_profile"):
+            raise ValueError("Renewables must retain modelled-resource classification")
+        if products.get("gis", {}).get("model_ready"):
+            raise ValueError("Raw GIS acquisition is not model-ready")
     if metadata["status"]["sldc_daily"]["available"]:
         rows = read(files["daily_balance"])["records"]
         dates = [row["date"] for row in rows]

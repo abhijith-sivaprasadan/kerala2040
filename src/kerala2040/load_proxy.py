@@ -199,6 +199,19 @@ def proxy_summary(
     ]
     return {
         "classification": "proxy_reconstruction_not_measured_telemetry",
+        "source_type": "reconstruction_from_observed_and_official_reference",
+        "source": "Kerala SLDC daily system statistics + CEA Resource Adequacy Plan for Kerala",
+        "source_components": [
+            {
+                "classification": "observed",
+                "source": "Kerala State Load Despatch Centre daily system statistics",
+            },
+            {
+                "classification": "official_reference",
+                "source": "Central Electricity Authority Resource Adequacy Plan for Kerala",
+            },
+        ],
+        "note": "Proxy reconstruction; not measured hourly or 15-minute Kerala telemetry.",
         "period": "FY2024-25",
         "timezone": "Asia/Kolkata",
         "resolution": "1h",

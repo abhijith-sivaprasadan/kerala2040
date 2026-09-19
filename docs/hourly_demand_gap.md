@@ -22,6 +22,21 @@ sheet is national rather than Kerala-specific.
 These documents prove analytical use of hourly data; they do **not** by themselves provide the raw
 8,760/35,040-row series needed for reproducible model calibration.
 
+## Priority acquisition lead: CSTEP FY2016 15-minute series
+
+CSTEP states on page 33 of its 2024 *Kerala Energy Transition Roadmap 2040* that it analysed
+15-minute block-wise Kerala data observed in FY2016, derived an FY2022 load curve from those
+observations, and extrapolated the shape forward. The report does **not** include the underlying
+FY2016 block-wise dataset.
+
+This is now a critical acquisition lead. Request the underlying timestamped FY2016 series, including
+units, timezone/block convention, missing-data treatment and revision history, from CSTEP and/or the
+Kerala institutions that supported the study (EMC Kerala, KSEBL and Kerala SLDC). The extracted
+external benchmark package is stored under `data/external/cstep_2024/`.
+
+Do not digitise Figure 12 and label the result as measured telemetry. A digitised figure could only be
+used as a separately labelled figure-derived proxy/reference.
+
 ## Safe fallback order
 
 1. Continue searching primary SLDC/KSEBL/KSERC/CEA/Grid-India downloadable archives.

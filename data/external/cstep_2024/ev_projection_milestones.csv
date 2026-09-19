@@ -1,0 +1,5 @@
+financial_year,two_wheeler_count,three_wheeler_count,four_wheeler_count,bus_count,goods_commercial_count,published_total_ev_count,two_wheeler_energy_mu,three_wheeler_energy_mu,four_wheeler_energy_mu,bus_energy_mu,goods_commercial_energy_mu,published_total_ev_energy_mu,classification,source,report_pages
+2025,120717,8143,18585,225,315,147985,20.86,21.99,19.50,6.83,10.20,79,published_external_scenario,CSTEP 2024,21-22
+2030,286209,16163,46023,646,1129,350169,49.46,43.64,48.28,19.61,36.59,198,published_external_scenario,CSTEP 2024,21-22
+2035,635132,33207,104338,1540,3293,777510,109.75,89.66,109.47,46.78,106.68,462,published_external_scenario,CSTEP 2024,21-22
+2040,1368577,69033,257550,3890,14661,1713711,236.49,186.39,270.21,118.17,475.02,1286,published_external_scenario,CSTEP 2024,21-22

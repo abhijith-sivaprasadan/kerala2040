@@ -250,6 +250,8 @@ function renderElectricity() {
 
   const select = qs('#electricityMetric');
   const optionData = {
+    hydro_seasons: Object.keys(state.data?.research_results?.products?.hydro?.seasonal||{}),
+    cstep_demand: state.data?.research_results?.products?.cstep?.tables?.demand_projection_fy2023_fy2040,
     daily: state.daily?.records,
     monthly: state.monthly?.records,
     duration: state.duration?.records,
@@ -296,7 +298,19 @@ function renderElectricityChart(metric) {
     title='Hourly Kerala load · reconstructed, not measured';
     note=`${d.length.toLocaleString()} displayed hours. Daily energy preserved; ${state.hourlyProxy?.daily_observations_interpolated??'unknown'} missing daily totals interpolated in the full year. The assumed intraday shape is not independently validated.`;
     state.chartRows=d;state.chartColumns=[['timestamp','Interval start (IST)'],['load_mw','Proxy load (MW)'],['daily_energy_imputed','Daily energy interpolated'],['classification','Evidence class']];
-  } else if(metric==='proxy_duration' && state.hourlyProxy?.duration_bins?.length){
+  } else if(metric==='hydro_seasons' && state.data?.research_results?.products?.hydro){
+    const d=Object.entries(state.data.research_results.products.hydro.seasonal).map(([season,row])=>({season,...row}));
+    traces=[['Hydro','hydro_mu_mean',c.green],['Net imports','net_import_mu_mean',c.amber]].map(([name,key,color])=>({type:'bar',name,x:d.map(r=>r.season.replaceAll('_',' ')),y:d.map(r=>r[key]),marker:{color},hovertemplate:'%{x}<br>%{y:.2f} MU/day<extra>'+name+'</extra>'}));
+    chartLayout={...layout({yTitle:'Mean observed daily energy (MU)'}),barmode:'group'};
+    title='Hydro and imports across observed seasons';note='Kerala SLDC FY2024–25, 354 observed days. Unequal seasonal coverage; missing days are not filled. This comparison describes co-movement and does not establish dispatch causality.';
+    state.chartRows=d;state.chartColumns=[['season','Season'],['days','Observed days'],['hydro_mu_mean','Hydro mean (MU/day)'],['net_import_mu_mean','Net imports mean (MU/day)'],['storage_pct_mean','Storage mean (%)']];
+  } else if(metric==='cstep_demand' && state.data?.research_results?.products?.cstep){
+    const d=state.data.research_results.products.cstep.tables.demand_projection_fy2023_fy2040;
+    traces=[['Published final requirement','published_final_demand_with_td_losses_mu',c.green],['Published demand before losses','published_final_demand_without_td_losses_mu',c.amber]].map(([name,key,color])=>({type:'scatter',mode:'lines+markers',name,x:d.map(r=>r.financial_year),y:d.map(r=>r[key]/1000),line:{color,width:2},hovertemplate:'FY%{x}<br>%{y:.2f} TWh<extra>'+name+'</extra>'}));
+    chartLayout=layout({xTitle:'Financial year ending',yTitle:'Published annual demand (TWh)'});
+    title='CSTEP 2024 demand pathway · external benchmark';note='Published external scenario, report page 54. These are CSTEP projections, not observed demand or Kerala 2040 optimisation results. Published totals and rounding differences are preserved.';
+    state.chartRows=d;state.chartColumns=[['financial_year','Financial year'],['published_final_demand_with_td_losses_mu','Requirement (MU)'],['published_final_demand_without_td_losses_mu','Before losses (MU)'],['ev_demand_mu','EV (MU)'],['induction_cooktop_demand_mu','Cooking (MU)'],['classification','Evidence class'],['report_page','Report page']];
+  } else if(metric==='proxy_duration'  && state.hourlyProxy?.duration_bins?.length){
     const d=state.hourlyProxy.duration_bins;
     traces=[['CEA reference','hours',c.ink],['Reconstruction','proxy_hours',c.green]].map(([name,key,color])=>({type:'bar',name,x:d.map(r=>`${r.min_mw}–${r.max_mw}`),y:d.map(r=>r[key]),marker:{color},hovertemplate:'%{x} MW<br>%{y} hours<extra>'+name+'</extra>'}));
     chartLayout={...layout({xTitle:'Load interval (MW, upper bound excluded)',yTitle:'Hours'}),barmode:'group'};
@@ -689,6 +703,7 @@ function renderAll() {
   
   renderPlatformMeta();renderHeadline();renderOverview();renderEvidenceFeed();renderElectricity();renderPathwayReferences();renderScenarioLab();renderIndustry();renderDataCentre();
   renderConnectedEvidence();
+  renderResearchProgress();
   if (!window.Plotly) qsa('.chart:not(#scenarioInputChart)').forEach(el=>el.innerHTML='<p class="model-gate">Charts could not load. Use the data tables and downloads below.</p>');
 }
 
@@ -707,3 +722,21 @@ async function init() {
 }
 
 window.addEventListener('load',init);
+
+function renderResearchProgress(){
+  const p=state.data?.research_results?.products;
+  const box=qs('#researchProgress');if(!box)return;
+  if(!p){box.textContent='Research artifacts have not been published in this snapshot.';return;}
+  const rows=[];
+  if(p.hydro)rows.push(['Hydro analysis','Derived from SLDC observations',`${p.hydro.days} days; ${p.hydro.reservoir_level_diagnostics.length} reservoirs. Descriptive relationships, not a causal dispatch model.`]);
+  if(p.renewables)rows.push(['Renewable availability','Modelled resource profile',`${fmt(p.renewables.solar_mean_p_max_pu*100,1)}% mean solar availability; ${fmt(p.renewables.wind_mean_p_max_pu*100,1)}% generic wind. Equal-weight weather points, not measured plant generation. UTC coverage needs IST alignment.`]);
+  if(p.replay)rows.push(['PyPSA daily replay','Observed-day accounting check',`${p.replay.network_meta.observed_days} daily snapshots; ${fmt(p.replay.load_mwh/1e6,3)} TWh represented; ${fmt(p.replay.balance_error_mwh,2)} MWh balance residual. No hourly telemetry or synthetic hourly load used.`]);
+  if(p.inventory)rows.push(['Generator inventory','Portal inventory seed',`${p.inventory.project_records} project records (${p.inventory.completed_records} marked completed). Portal vintage: ${p.inventory.portal_data_as_of_label}. Not a complete current operating fleet.`]);
+  if(p.gis)rows.push(['Ecological inputs','Raw acquisition',`${p.gis.available_count} inputs acquired; ${p.gis.missing_count} unresolved. Eligibility maps and capacity ceilings are not yet model-ready.`]);
+  if(p.cstep)rows.push(['CSTEP 2024','External benchmark',`${Object.keys(p.cstep.tables).length} extracted tables with page provenance. Demand and capacity paths are external scenarios; storage interpretation remains flagged.`]);
+  rows.push(['2040 optimisation and KMML','Not yet solved','Scenario framework is present. Sourced costs, grid limits, ecological ceilings, interval telemetry and KMML operating data remain required.']);
+  box.innerHTML=`<div class="table-scroll"><table><thead><tr><th>Workstream</th><th>Evidence</th><th>Result and limits</th></tr></thead><tbody>${rows.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  if(p.reconciliation)box.innerHTML+=`<details><summary>Official energy reconciliation · different accounting boundaries</summary><div class="table-scroll"><table><thead><tr><th>Metric</th><th>MU</th><th>Boundary</th><th>Source</th></tr></thead><tbody>${p.reconciliation.rows.map(r=>`<tr><td>${esc(r.metric.replaceAll('_',' '))}</td><td>${fmt(r.value_mu,2)}</td><td>${esc(r.boundary)}</td><td>${esc(r.source)}</td></tr>`).join('')}</tbody></table></div></details>`;
+  if(p.gis)box.innerHTML+=`<details><summary>Ecological acquisition register</summary><div class="table-scroll"><table><thead><tr><th>Layer</th><th>State</th><th>Source</th></tr></thead><tbody>${p.gis.records.map(r=>`<tr><td>${esc(r.layer_id.replaceAll('_',' '))}</td><td>${r.local_exists?'Raw file acquired':'Unresolved'}</td><td>${esc(r.source)}</td></tr>`).join('')}</tbody></table></div></details>`;
+  box.innerHTML+=`<p><a href="${REPO}/blob/main/docs/CSTEP_FY2016_DATA_REQUEST_DRAFT.md" target="_blank" rel="noopener">CSTEP FY2016 data request ↗</a> · <a href="${REPO}/blob/main/docs/NEXT_STEPS.md" target="_blank" rel="noopener">Next research steps ↗</a></p>`;
+}

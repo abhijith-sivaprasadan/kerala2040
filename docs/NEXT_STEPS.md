@@ -14,22 +14,36 @@ The historical artifact recovery workflow requires explicit run IDs rather than
 silently restoring a fixed old run. Full-year acquisition is manual because it is
 slow and should not run whenever the interface changes.
 
+The modelling foundation now includes an observed-day PyPSA replay, hydro/storage
+diagnostics, official energy-accounting reconciliation, weather-derived renewable
+availability proxies, a canonical generator inventory seed, structural 2040 scenario
+dimensions, a sourced techno-economic benchmark registry and a GIS acquisition
+manifest. These are foundations, not validated 2040 results.
+
+The 8,760-hour load reconstruction remains **proxy data, not measured telemetry**.
+See [the mandatory provenance policy](PROVENANCE_CORE_RULES.md).
+
 ## Your next actions, in order
 
 1. **Confirm the CET submission date and freeze the scope.** Make the first release
    a defensible historical electricity balance, a constrained scenario design and
    one sourced circular-industry case. Do not promise optimised 2040 results yet.
-2. **Obtain hourly or 15-minute demand and interchange for FY2024–25.** Request
-   timestamped Kerala demand, imports/exports, units, timezone, missing-data flags
-   and revision history from SLDC/KSEBL, with permission to use/publish derived
-   results. See [the data specification](hourly_demand_gap.md). Do not send secrets
-   or confidential utility data to the public repository.
-3. **Close the historical reconciliation.** The current snapshot has 354/365 days,
-   with 11 dates explicitly missing. Recover those dates or document their absence.
-   Reconcile SLDC system consumption, Economic Review sales and CEA requirement
-   using their actual accounting boundaries; do not scale a partial sum to an
-   annual result without an explicitly labelled estimation method.
-4. **Calibrate the chronological model.** Validate load, generation, imports,
+2. **Obtain hourly or 15-minute demand and interchange for FY2024–25, and recover
+   the CSTEP FY2016 15-minute source series.** Request timestamped Kerala demand,
+   imports/exports, units, timezone, missing-data flags and revision history from
+   SLDC/KSEBL. Separately, CSTEP's 2024 roadmap confirms that observed FY2016
+   15-minute Kerala data existed and was used to derive its FY2022 load curve; request
+   that raw series from CSTEP/EMC/KSEBL/SLDC as an independent historical validation
+   dataset. See [the data specification](hourly_demand_gap.md). Do not digitise the
+   CSTEP figure and call it measured data, and do not send secrets or confidential
+   utility data to the public repository.
+3. **Close the historical reconciliation.** The reconciliation workflow is now
+   implemented and preserves SLDC, Economic Review/KSEBL and CEA accounting
+   boundaries separately. The current snapshot still has 354/365 SLDC days, with
+   11 dates explicitly missing; recover those dates or document their absence.
+4. **Calibrate the chronological model.** The observed-day PyPSA replay is now
+   implemented without using the synthetic hourly proxy. Next validate real hourly
+   load, generation, imports,
    peak behaviour, hydro energy and storage against history. Passing a daily
    accounting identity does not satisfy this gate. The existing PyPSA model is
    only a smoke test, not a completed Kerala capacity-expansion model.
@@ -44,6 +58,7 @@ slow and should not run whenever the interface changes.
    KSEBL, Union and private financing rather than assigning all costs to the state.
 
 See the [SLDC request draft](SLDC_DATA_REQUEST_DRAFT.md),
+[CSTEP FY2016 data request draft](CSTEP_FY2016_DATA_REQUEST_DRAFT.md),
 [KMML case plan](KMML_CASE_PLAN.md) and [Energy Project review](ENERGYPROJECT_REVIEW.md).
 The study covers all of Kerala; atlas markers are illustrative, not a complete grid.
 

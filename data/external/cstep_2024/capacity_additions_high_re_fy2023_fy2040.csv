@@ -1,0 +1,19 @@
+financial_year,solar_cumulative_addition_mw,wind_cumulative_addition_mw,hydro_cumulative_addition_mw,nuclear_cumulative_addition_mw,published_total_cumulative_addition_mw,classification,source,report_page
+2023,172,45,31,17,265,published_external_scenario,CSTEP 2024,57
+2024,401,105,73,40,618,published_external_scenario,CSTEP 2024,57
+2025,953,249,173,95,1469,published_external_scenario,CSTEP 2024,57
+2026,1512,394,274,151,2331,published_external_scenario,CSTEP 2024,57
+2027,2078,542,377,208,3204,published_external_scenario,CSTEP 2024,57
+2028,2652,692,481,265,4090,published_external_scenario,CSTEP 2024,57
+2029,3234,844,586,323,4988,published_external_scenario,CSTEP 2024,57
+2030,3825,998,693,382,5898,published_external_scenario,CSTEP 2024,57
+2031,4437,1157,804,444,6842,published_external_scenario,CSTEP 2024,57
+2032,5058,1319,916,506,7799,published_external_scenario,CSTEP 2024,57
+2033,5688,1484,1031,569,8771,published_external_scenario,CSTEP 2024,57
+2034,6328,1651,1147,633,9758,published_external_scenario,CSTEP 2024,57
+2035,6978,1820,1264,698,10761,published_external_scenario,CSTEP 2024,57
+2036,7671,2001,1390,767,11830,published_external_scenario,CSTEP 2024,57
+2037,8376,2185,1518,838,12916,published_external_scenario,CSTEP 2024,57
+2038,9091,2372,1647,909,14020,published_external_scenario,CSTEP 2024,57
+2039,9819,2561,1779,982,15141,published_external_scenario,CSTEP 2024,57
+2040,10558,2754,1913,1056,16281,published_external_scenario,CSTEP 2024,57

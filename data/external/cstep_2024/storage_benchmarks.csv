@@ -1,0 +1,5 @@
+scenario,financial_year,power_gw,energy_gwh,implied_duration_hours,classification,implied_duration_classification,source,report_page,interpretation_status
+BAU,2030,1.9,2182,1148.421,published_external_scenario,derived_from_external_published_value,CSTEP 2024,35,requires_underlying_method_verification
+BAU,2040,3.8,7163,1885.000,published_external_scenario,derived_from_external_published_value,CSTEP 2024,35,requires_underlying_method_verification
+High_RE,2030,2.1,2473,1177.619,published_external_scenario,derived_from_external_published_value,CSTEP 2024,35,requires_underlying_method_verification
+High_RE,2040,4.1,8108,1977.561,published_external_scenario,derived_from_external_published_value,CSTEP 2024,35,requires_underlying_method_verification

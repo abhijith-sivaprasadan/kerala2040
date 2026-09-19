@@ -1,4 +1,8 @@
 version: 1
+classification: scenario_assumption
+source_type: structural_scenario_design
+source: Kerala 2040 research design
+provenance_note: Scenario definitions are research choices, not observed data or model results.
 model_year: 2040
 principle: >-
   Energy sovereignty means retaining sufficient controllable generation, storage, flexible
