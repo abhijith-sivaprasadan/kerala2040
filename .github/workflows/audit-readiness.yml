@@ -1,0 +1,52 @@
+name: Audit evidence and release gates
+
+on:
+  pull_request:
+    paths:
+      - "configs/audit_findings.yaml"
+      - "configs/gis_inputs.yaml"
+      - "configs/techno_economics.yaml"
+      - "public/era5-daily-manifest.json"
+      - "data/external/sldc_fy2024_25/qa_report.json"
+      - "src/kerala2040/audit_readiness.py"
+      - "scripts/check_readiness.py"
+      - "tests/test_audit_readiness.py"
+      - ".github/workflows/audit-readiness.yml"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -e ".[dev]"
+      - name: Audit lint and regression tests
+        run: |
+          ruff check src/kerala2040/audit_readiness.py scripts/check_readiness.py tests/test_audit_readiness.py
+          pytest -q tests/test_audit_readiness.py
+      - name: Generate current evidence report (missing data are reported, not ignored)
+        run: python scripts/check_readiness.py
+      - name: Verify daily accounting is an acceptable existing limited release
+        run: python scripts/check_readiness.py --require-gate daily_accounting
+      - name: Verify incomplete 2040 optimisation is actively blocked
+        run: |
+          if python scripts/check_readiness.py --require-gate techno_economic_2040; then
+            echo "Unexpectedly passed scientific release gate; review source evidence"
+            exit 1
+          else
+            code=$?
+            test "$code" -eq 2
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kerala2040-evidence-gated-audit
+          path: results/audit/
+          retention-days: 90
