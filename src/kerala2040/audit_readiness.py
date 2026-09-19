@@ -127,10 +127,12 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         "sldc_daily_coverage": daily,
         "measured_interval": _check(
             STATUS_BLOCKED,
-            "No validated continuous measured FY2024-25 15-minute/hourly demand "
-            "and actual interchange with meter-boundary, clock and daily-reconciliation checks. "
-            "The 8,760-hour reconstructed proxy cannot satisfy this gate.",
-            "docs/SLDC_DATA_REQUEST_DRAFT.md",
+            "Official sources show that FY2024-25 hourly Kerala demand was analysed "
+            "by CEA and that SRPC publishes Kerala DSM actual-drawal accounting, but "
+            "the repository still lacks a complete authenticated interval demand plus "
+            "actual-interchange chronology with boundary, clock, revision and daily-"
+            "reconciliation checks. The 8,760-hour proxy cannot satisfy this gate.",
+            "docs/INTERVAL_ELECTRICITY_SOURCE_REVIEW.md",
         ),
         "generator_assets": _check(
             STATUS_PARTIAL,
