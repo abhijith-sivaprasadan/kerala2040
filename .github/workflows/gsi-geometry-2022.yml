@@ -1,0 +1,65 @@
+name: Decode official GSI 2022 Kerala landslide district geometries
+
+on:
+  pull_request:
+    paths:
+      - "src/kerala2040/gsi_2022_geometry.py"
+      - "scripts/validate_gsi_2022_geometry.py"
+      - "tests/test_gsi_2022_geometry.py"
+      - "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json"
+      - ".github/workflows/gsi-geometry-2022.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/kerala2040/gsi_2022_geometry.py"
+      - "scripts/validate_gsi_2022_geometry.py"
+      - "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json"
+      - ".github/workflows/gsi-geometry-2022.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  original-archive-geometry-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: src:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install vector read and regression dependencies
+        run: pip install "requests>=2.32,<3" "pyyaml>=6,<7" "shapely>=2,<3" "pyogrio>=0.10,<1" "geopandas>=1,<2" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Lint and test failure gates with explicitly synthetic polygons
+        run: |
+          ruff check src/kerala2040/gsi_2022_geometry.py scripts/validate_gsi_2022_geometry.py tests/test_gsi_2022_geometry.py
+          pytest -q tests/test_gsi_2022_geometry.py
+      - name: Redownload and decode 13 ORIGINAL GSI district archives
+        run: python scripts/validate_gsi_2022_geometry.py --download
+      - name: Confirm no statewide or legal eligibility claim
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path("results/gis/gsi_2022_geometry_audit.json").read_text())
+          assert r["source_archive_count_expected"] == 13
+          assert r["source_archive_count_verified"] == 13
+          assert r["districts_decoded"] == 13
+          assert r["official_district_boundary_overlay_complete"] is False
+          assert r["whole_Kerala_coverage_certified"] is False
+          assert r["class_legend_harmonization_certified"] is False
+          assert r["model_eligible_land_sq_km"] is None
+          assert r["model_capacity_mw"] is None
+          assert r["audit_gate_closed"] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: GSI13-original-ZIPs-geometry-profiles-NOT-statewide-or-legal
+          path: |
+            results/gis/gsi_2022_geometry_audit.json
+            results/gis/pilot_raw/ksdma/*.zip
+          retention-days: 30
