@@ -14,6 +14,7 @@ import yaml
 
 REGISTRY = "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
 ACQUISITION = "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json"
+GSI_VALIDATION = "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
 EXPECTED = {"forest_protected_areas", "elevation_dem", "wetlands_waterbodies_landslide"}
 
 
@@ -179,6 +180,33 @@ def audit_gis(root: Path) -> dict[str, Any]:
         for item in archives
     ):
         raise ValueError("GSI official archive hashes or structural status invalid")
+    gsi_validation = json.loads((root / GSI_VALIDATION).read_text(encoding="utf-8"))
+    if gsi_validation.get("classification") != (
+        "decoded_official_GSI_2022_geometry_validation_NOT_model_ready_overlay"
+    ):
+        raise ValueError("GSI geometry evidence classification mismatch")
+    if (
+        gsi_validation["published_packages_decoded"] != 13
+        or gsi_validation["total_features"] != 39
+        or gsi_validation["invalid_geometry_count_total"] != 39
+        or gsi_validation["null_geometry_count_total"] != 0
+        or gsi_validation["empty_geometry_count_total"] != 0
+        or gsi_validation["source_crs_all_districts"] != "EPSG:32643"
+        or gsi_validation["susceptibility_field"] != "Susceptibi"
+        or set(gsi_validation["susceptibility_classes"]) != {"High", "Low", "Moderate"}
+        or gsi_validation["susceptibility_semantics_verified"] is not True
+        or gsi_validation["invalidity_reason_all_features"] != "Ring Self-intersection"
+        or gsi_validation["merged_derivative_written"] is not False
+        or gsi_validation["repaired_geometry_admitted_for_model_use"] is not False
+        or gsi_validation["alappuzha_hazard_status_inferred"] is not False
+    ):
+        raise ValueError("GSI decoded geometry findings inconsistent")
+    if (
+        gsi_validation["eligible_area_sq_km"] is not None
+        or gsi_validation["capacity_ceiling_mw"] is not None
+        or gsi_validation["ecological_capacity_ceiling_ready"] is not False
+    ):
+        raise ValueError("Invalid GSI geometry cannot certify ecological capacity")
     if (
         acquired["original_files_committed_to_repository"] is not False
         or acquired["forest_official_boundary_geometries_acquired"] is not False
@@ -191,6 +219,7 @@ def audit_gis(root: Path) -> dict[str, Any]:
         "classification": "verified_official_source_routes_not_acquired_model_ready_geometry",
         "registry": REGISTRY,
         "acquisition_manifest": ACQUISITION,
+        "gsi_geometry_validation": GSI_VALIDATION,
         "workstreams": {
             "forest_protected_areas": {
                 "official_boundary_layers_reported": True,
@@ -208,6 +237,13 @@ def audit_gis(root: Path) -> dict[str, Any]:
             "wetlands_waterbodies_landslide": {
                 "published_gsi_2022_district_download_labels": len(districts),
                 "gsi_original_zips_downloaded_to_workflow_artifact": len(archives),
+                "gsi_shapefile_bundles_decoded": 13,
+                "gsi_features_decoded": 39,
+                "gsi_source_crs": "EPSG:32643",
+                "gsi_susceptibility_classes_verified": ["High", "Low", "Moderate"],
+                "gsi_invalid_source_features": 39,
+                "gsi_invalidity_reason": "Ring Self-intersection",
+                "gsi_model_overlay_admitted": False,
                 "gsi_shapefile_bundles_verified_in_committed_repo": 0,
                 "notified_wetland_polygons_verified": 0,
                 "older_ncess_landslide_not_current_reference": True,

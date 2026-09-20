@@ -115,11 +115,15 @@ findings:
     check: gis_model_ready
     acquisition: >-
       Request SWAK current wetland inventory, final-notification polygons,
-      draft outlines, waterbodies and influence zones separately. KSDMA
-      lists 13 GSI 2022 district landslide shapefile downloads, not an
-      authenticated 14-district mosaic; acquire ZIPs and validate actual
-      geospatial classes, CRS, vintage, missing coverage and source licence.
-      Do not use superseded NCESS map or turn hazards into automatic legal bans.
+      draft outlines, waterbodies and influence zones separately. All 13
+      KSDMA-hosted GSI 2022 district ZIPs are now hash-verified and decoded:
+      39 EPSG:32643 MultiPolygons, three per district, with source field
+      Susceptibi = Low/Moderate/High. All 39 fail OGC validity through ring
+      self-intersection, so no merged hazard overlay is admitted until a
+      documented geometry-repair/topology policy is validated. Alappuzha is
+      absent from the published package set and is not inferred hazard-free.
+      Do not use superseded NCESS or turn susceptibility into an automatic
+      legal exclusion.
     evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   - id: niwe_wind_resource
     priority: P1

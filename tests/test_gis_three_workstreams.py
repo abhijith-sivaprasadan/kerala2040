@@ -28,6 +28,10 @@ def _copy(tmp_path: Path) -> tuple[Path, dict]:
     archived = tmp_path / acquisition
     archived.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ROOT / acquisition, archived)
+    validation = "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+    validated = tmp_path / validation
+    validated.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / validation, validated)
     return path, yaml.safe_load(path.read_text())
 
 
@@ -44,6 +48,11 @@ def test_three_official_workstreams_are_distinct_and_not_eligible():
     hazards = result["workstreams"]["wetlands_waterbodies_landslide"]
     assert hazards["published_gsi_2022_district_download_labels"] == 13
     assert hazards["gsi_original_zips_downloaded_to_workflow_artifact"] == 13
+    assert hazards["gsi_shapefile_bundles_decoded"] == 13
+    assert hazards["gsi_features_decoded"] == 39
+    assert hazards["gsi_invalid_source_features"] == 39
+    assert hazards["gsi_invalidity_reason"] == "Ring Self-intersection"
+    assert hazards["gsi_model_overlay_admitted"] is False
     assert hazards["gsi_shapefile_bundles_verified_in_committed_repo"] == 0
     assert not result["ecological_eligibility_established"]
     assert result["eligible_area_sq_km"] is None
@@ -126,4 +135,16 @@ def test_source_hash_archive_tampering_fails_closed(tmp_path):
     data["gsi_2022"]["per_district"][0]["sha256"] = ""
     file.write_text(json.dumps(data))
     with pytest.raises(ValueError, match="archive hashes"):
+        audit_gis(tmp_path)
+
+
+def test_gsi_decoded_geometry_evidence_cannot_be_promoted_to_model_overlay(tmp_path):
+    import json
+
+    _copy(tmp_path)
+    path = tmp_path / "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+    data = json.loads(path.read_text())
+    data["merged_derivative_written"] = True
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="decoded geometry findings"):
         audit_gis(tmp_path)

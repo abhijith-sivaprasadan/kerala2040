@@ -1,0 +1,61 @@
+name: Validate GSI 2022 landslide geometries
+
+on:
+  pull_request:
+    paths:
+      - "scripts/validate_gsi_2022_landslide.py"
+      - "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json"
+      - "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+      - "src/kerala2040/gis_three_workstreams.py"
+      - ".github/workflows/gsi-2022-landslide-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/validate_gsi_2022_landslide.py"
+      - "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json"
+      - ".github/workflows/gsi-2022-landslide-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  decode-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: src:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install geospatial validation stack
+        run: pip install "geopandas>=1,<2" "pyogrio>=0.10,<1" "shapely>=2,<3" "pyproj>=3.7,<4" "requests>=2.32,<3" "pandas>=2.2,<3"
+      - name: Decode and validate all 13 official packages
+        run: python scripts/validate_gsi_2022_landslide.py
+      - name: Assert scope and fail-closed interpretation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a = json.loads(Path("results/gis/gsi_2022_geometry_validation.json").read_text())
+          assert a["published_packages_decoded"] == 13
+          assert len(a["districts_decoded"]) == 13
+          assert a["alappuzha_published_package_present"] is False
+          assert a["alappuzha_hazard_status_inferred"] is False
+          assert a["legal_exclusion_interpretation_applied"] is False
+          assert a["ecological_capacity_ceiling_ready"] is False
+          assert a["capacity_ceiling_mw"] is None
+          assert a["total_features"] == 39
+          assert a["invalid_geometry_count_total"] == 39
+          assert a["susceptibility_semantics_verified"] is True
+          assert a["raw_source_geometries_all_valid"] is False
+          assert a["merged_derivative_written"] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gsi-2022-decoded-geometry-QA-NOT-LEGAL-EXCLUSION
+          path: |
+            results/gis/gsi_2022_geometry_validation.json
+          retention-days: 90
