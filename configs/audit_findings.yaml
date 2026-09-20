@@ -96,10 +96,13 @@ findings:
     priority: P1
     check: gis_model_ready
     acquisition: >-
-      Official CartoDEM requires Bhuvan login/tile metadata. Public Copernicus
-      GLO-30/GLO-90 COGs provide DSM, not bare-earth terrain. Obtain and hash
-      real Kerala tiles, verify CRS, nodata, vertical reference and full mosaic
-      seam/coverage before computing technology-specific slope constraints.
+      Original source acquisition verified 14 Copernicus GLO-90 GeoTIFFs
+      over an approximate Kerala bounding rectangle; six requested offshore/
+      uncertain tiles returned 404. A partial DSM mosaic preserves 8,640,000
+      unknown uncovered cells and has 19 neighboring-tile diagnostics, not an
+      official-state coverage pass. Obtain legal Kerala boundary mask, independently
+      verify source height datum and DSM/DTM distinction, and calibrate
+      per-technology slope screening before any siting/eligible-area inference.
     evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   - id: forest_protected_areas
     priority: P0

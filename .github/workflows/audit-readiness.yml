@@ -8,6 +8,7 @@ on:
       - "configs/lulc_native_acquisition_2024_25.yaml"
       - "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
       - "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+      - "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
       - "src/kerala2040/gis_three_workstreams.py"
       - "tests/test_gis_three_workstreams.py"
       - "src/kerala2040/lulc_evidence.py"

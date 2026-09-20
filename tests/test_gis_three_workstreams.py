@@ -32,6 +32,10 @@ def _copy(tmp_path: Path) -> tuple[Path, dict]:
     validated = tmp_path / validation
     validated.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ROOT / validation, validated)
+    dem = "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
+    dem_path = tmp_path / dem
+    dem_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / dem, dem_path)
     return path, yaml.safe_load(path.read_text())
 
 
@@ -44,6 +48,9 @@ def test_three_official_workstreams_are_distinct_and_not_eligible():
     terrain = result["workstreams"]["elevation_dem"]
     assert terrain["dsm_is_not_bare_earth"]
     assert terrain["glo90_sample_tile_retrieved_in_workflow_artifact"]
+    assert terrain["glo90_original_tiles_retrieved"] == 14
+    assert terrain["glo90_unpublished_offshore_or_unknown_tiles"] == 6
+    assert terrain["glo90_partial_mosaic_source_uncovered_pixels"] > 0
     assert not terrain["statewide_dem_raster_verified_in_committed_repo"]
     hazards = result["workstreams"]["wetlands_waterbodies_landslide"]
     assert hazards["published_gsi_2022_district_download_labels"] == 13
@@ -147,4 +154,16 @@ def test_gsi_decoded_geometry_evidence_cannot_be_promoted_to_model_overlay(tmp_p
     data["merged_derivative_written"] = True
     path.write_text(json.dumps(data))
     with pytest.raises(ValueError, match="decoded geometry findings"):
+        audit_gis(tmp_path)
+
+
+def test_dem_evidence_cannot_assert_statewide_eligibility(tmp_path):
+    import json
+
+    _copy(tmp_path)
+    path = tmp_path / "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
+    data = json.loads(path.read_text())
+    data["mosaic"]["complete_rectangular_envelope_source_coverage"] = True
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="mosaic cannot establish"):
         audit_gis(tmp_path)

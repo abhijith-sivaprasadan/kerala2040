@@ -91,6 +91,11 @@ workstreams:
         validated_kerala_tiles: 0
     expected_raw_path: data/external/gis/terrain
     original_file_sha256: null
+    dem_envelope_manifest: data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json
+    downloaded_glo90_original_tiles_in_artifact: 14
+    requested_envelope_tiles_http404: 6
+    partial_dsm_mosaic_hash: 8049845b1927c6e643e9701f8d30d6fe505c6af45d398917c16a3f7d17bfd203
+    unknown_uncovered_envelope_cells: 8640000
     downloaded_glo90_pilot_tiles_in_workflow: 1
     source_pilot_sha256: cab81d17d0f6b42c5083f2bf61206b78c607ba59da0663e2677cfebe7f21dd79
     geospatial_mosaic_coverage_verified: false

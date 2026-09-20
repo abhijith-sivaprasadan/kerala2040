@@ -5,6 +5,7 @@ on:
     paths:
       - "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
       - "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+      - "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
       - "configs/gis_inputs.yaml"
       - "src/kerala2040/gis_three_workstreams.py"
       - "scripts/audit_gis_three_workstreams.py"
@@ -16,6 +17,7 @@ on:
     paths:
       - "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
       - "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+      - "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
       - "src/kerala2040/gis_three_workstreams.py"
       - "scripts/audit_gis_three_workstreams.py"
       - ".github/workflows/gis-three-evidence.yml"

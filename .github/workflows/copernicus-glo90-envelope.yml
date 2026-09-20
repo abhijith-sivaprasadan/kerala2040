@@ -1,0 +1,61 @@
+name: Acquire Copernicus GLO-90 Kerala DSM envelope
+
+on:
+  pull_request:
+    paths:
+      - "scripts/acquire_copernicus_glo90_envelope.py"
+      - "tests/test_copernicus_glo90_envelope.py"
+      - "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
+      - ".github/workflows/copernicus-glo90-envelope.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/acquire_copernicus_glo90_envelope.py"
+      - "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
+      - ".github/workflows/copernicus-glo90-envelope.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tile-acquisition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: src:scripts:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install raster source inspection and QA
+        run: pip install "rasterio>=1.4,<2" "numpy>=2,<3" "requests>=2.32,<3" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Check acquisition contracts
+        run: |
+          ruff check scripts/acquire_copernicus_glo90_envelope.py tests/test_copernicus_glo90_envelope.py
+          pytest -q tests/test_copernicus_glo90_envelope.py
+      - name: Acquire 20 source tiles and mosaic only if complete
+        run: python scripts/acquire_copernicus_glo90_envelope.py
+      - name: Enforce model gate regardless of tile acquisition
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("results/gis/copernicus_glo90_envelope_qa.json").read_text())
+          assert a["requested_tiles"]==20
+          assert a["source_product_type"]=="digital_surface_model_NOT_bare_earth_DTM"
+          assert a["ecological_capacity_ceiling_ready"] is False
+          assert a["kerala_official_boundary_clip_verified"] is False
+          assert a["capacity_ceiling_mw"] is None
+          assert a["eligible_area_sq_km"] is None
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Copernicus-GLO90-Kerala-envelope-originals-and-DSM-NOT-ELIGIBLE-AREA
+          retention-days: 30
+          path: |
+            results/gis/copernicus_glo90_envelope_qa.json
+            results/gis/copernicus_glo90_originals/**
+            results/gis/copernicus_glo90_envelope_DSM.tif

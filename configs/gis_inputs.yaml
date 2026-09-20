@@ -90,11 +90,15 @@ layers:
     expected_format: source_height_cog_or_cartodem_tiles_with_vertical_datum
     raw_path: data/external/gis/terrain
     role: slope_terrain_input_not_legal_eligibility
-    acquisition_status: source_routes_verified_statewide_raster_not_committed
+    acquisition_status: partial_public_dsm_envelope_mosaic_not_state_boundary_verified
+    original_tile_acquisition_evidence: data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json
+    original_tile_qa_run: https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35515526369
     note: >-
-      CartoDEM requires a Bhuvan tile download/login. Public Copernicus
-      GLO-30/GLO-90 tiles are DIGITAL SURFACE models, not bare-earth DTM;
-      sample tile or catalogue does not verify seamless Kerala coverage.
+      Authenticated 14 original Copernicus GLO90 tiles, six 404s over broad
+      envelope and a source-provenance partial DSM mosaic with NaN gaps were
+      acquired; true Kerala boundary coverage, vertical datum, land/sea mask,
+      bare-earth heights and technology-specific slope eligibility UNVERIFIED.
+      CartoDEM still requires Bhuvan access; no siting capacity asserted.
   bhuvan_waterbodies:
     source: State Wetland Authority Kerala / NRSC ISRO
     landing_page: https://envt.kerala.gov.in/state-wetland-authority-kerala-swak/
