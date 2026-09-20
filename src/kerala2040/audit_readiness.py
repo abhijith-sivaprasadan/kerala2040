@@ -181,12 +181,14 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         raise ValueError("Grid transfer source cannot certify model constraints")
     snapshots = transfer["transfer_snapshots"]
     for snapshot in snapshots:
-        if snapshot.get("atc_derivation") == "ttc_minus_stated_reliability_margin":
-            if abs(
+        if (
+            snapshot.get("atc_derivation") == "ttc_minus_stated_reliability_margin"
+            and abs(
                 float(snapshot["ttc_mw"]) - float(snapshot["reliability_margin_mw"])
                 - float(snapshot["atc_mw"])
-            ) > 0.001:
-                raise ValueError("Grid transfer snapshot ATC/margin is inconsistent")
+            ) > 0.001
+        ):
+            raise ValueError("Grid transfer snapshot ATC/margin is inconsistent")
     if transfer["unresolved_constraints"]["full_fy2024_25_dated_import_atc_mw"] is not None:
         raise ValueError("Unverified FY transfer capacity inserted in source catalogue")
     n_layers = len(gis["layers"])
