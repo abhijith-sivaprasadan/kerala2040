@@ -1,7 +1,9 @@
 """Diagnose WDPA Kerala polygon/point completeness without downloading geometry."""
 from __future__ import annotations
+
 import json
 from pathlib import Path
+
 import requests
 
 BASE = ("https://data-gis.unep-wcmc.org/server/rest/services/"
