@@ -11,8 +11,10 @@ import re
 import shutil
 import subprocess
 from datetime import datetime, timedelta
+from html.parser import HTMLParser
 from itertools import pairwise
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 from kerala2040.audit_readiness import build_audit
 from kerala2040.research_ledger import build_ledger
@@ -160,6 +162,66 @@ def source_revision(root: Path) -> str | None:
         return None
 
 
+
+class _StaticReferenceCollector(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.refs: list[tuple[str, str, str]] = []
+        self.ids: list[str] = []
+        self.routes: list[str] = []
+        self.views: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        values = dict(attrs)
+        if values.get("id"):
+            self.ids.append(values["id"])
+        if values.get("data-route"):
+            self.routes.append(values["data-route"])
+        if values.get("data-view"):
+            self.views.append(values["data-view"])
+        for attr in ("href", "src"):
+            if values.get(attr):
+                self.refs.append((tag, attr, values[attr]))
+
+
+def validate_static_site(output: Path) -> None:
+    """Reject a packaged site with broken same-origin assets or route wiring."""
+    html = (output / "index.html").read_text(encoding="utf-8")
+    parser = _StaticReferenceCollector()
+    parser.feed(html)
+
+    if len(parser.ids) != len(set(parser.ids)):
+        raise ValueError("Packaged site contains duplicate HTML ids")
+    if not set(parser.routes) <= set(parser.views):
+        raise ValueError("A data-route points at a missing view")
+
+    root = output.resolve()
+    broken = []
+    for tag, attr, raw in parser.refs:
+        parts = urlsplit(raw)
+        if parts.scheme in {"http", "https", "mailto", "data", "blob"}:
+            continue
+        if raw.startswith(("#", "//")):
+            continue
+        local = unquote(parts.path)
+        if not local:
+            continue
+        candidate = (output / local).resolve()
+        if root not in candidate.parents and candidate != root:
+            broken.append((tag, attr, raw, "escapes site root"))
+        elif not candidate.exists():
+            broken.append((tag, attr, raw, "missing"))
+    if broken:
+        raise ValueError(f"Packaged site has broken local references: {broken}")
+
+    manifest = json.loads((output / "manifest.webmanifest").read_text(encoding="utf-8"))
+    for icon in manifest.get("icons", []):
+        src = icon.get("src", "")
+        if not src or not (output / src).is_file():
+            raise ValueError(f"Packaged manifest icon is missing: {src}")
+
+
+
 def build_site(root: Path, output: Path) -> None:
     root, output = root.resolve(), output.resolve()
     if output == root or output == root / "docs" or output == root / "public":
@@ -273,6 +335,7 @@ def build_site(root: Path, output: Path) -> None:
         json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     validate_bundle(data_dir)
+    validate_static_site(output)
     (output / ".nojekyll").touch()
 
 
