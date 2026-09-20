@@ -164,7 +164,12 @@ def compare_archives(root: Path, raw_dir: Path, output: Path) -> dict[str, Any]:
                 safe_extract(dest, extracted)
                 shp_path = extracted / (source["complete_shapefile_groups"][0] + ".shp")
                 if not shp_path.exists():
-                    raise ValueError(f"{district}: exact original shapefile missing")
+                    found = list(extracted.rglob("*.shp"))
+                    if len(found) != 1:
+                        raise ValueError(
+                            f"{district}: expected one original shapefile, found {len(found)}"
+                        )
+                    shp_path = found[0]
                 frame = gpd.read_file(shp_path)
                 if frame.crs is None or frame.crs.to_epsg() != 32643:
                     raise ValueError(f"{district}: original projected CRS changed")
