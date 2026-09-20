@@ -259,7 +259,7 @@ def test_kerala_social_thumbnail_touch_icon_and_vector_art_are_packaged(tmp_path
 
 def test_built_site_has_no_broken_internal_static_references_or_routes(tmp_path):
     from html.parser import HTMLParser
-    from urllib.parse import urlsplit, unquote
+    from urllib.parse import unquote, urlsplit
 
     site.build_site(ROOT, tmp_path)
 
@@ -300,7 +300,7 @@ def test_built_site_has_no_broken_internal_static_references_or_routes(tmp_path)
         parts = urlsplit(raw)
         if parts.scheme in {"http", "https", "mailto", "data", "blob"}:
             continue
-        if raw.startswith("#") or raw.startswith("//"):
+        if raw.startswith(("#", "//")):
             continue
         local = unquote(parts.path)
         if not local:
