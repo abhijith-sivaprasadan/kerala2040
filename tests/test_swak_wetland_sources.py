@@ -36,7 +36,8 @@ class Response:
     status_code = 200
     url = "https://www.swak.kerala.gov.in/index.php"
     content = b'<a href="/wetland.pdf">Wetland Notification</a>'
-    headers = {"content-type": "text/html"}
+    def __init__(self):
+        self.headers = {"content-type": "text/html"}
 
     def raise_for_status(self):
         pass
