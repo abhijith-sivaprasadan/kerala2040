@@ -68,3 +68,25 @@ def test_geojson_zip_must_contain_exactly_one_data_resource():
         z.writestr("source/another.json", "{}")
     with pytest.raises(ValueError, match="one GeoJSON"):
         _parse_geojson(b.getvalue())
+
+
+def test_projected_indian_nsf_lcc_source_reprojects_to_wgs84():
+    from pyproj import Transformer
+    from shapely.geometry import mapping, shape
+    from shapely.ops import transform
+
+    source = json.loads(json.dumps(KERALA))
+    source["crs"] = {
+        "type": "name",
+        "properties": {"name": "urn:ogc:def:crs:EPSG::7755"},
+    }
+    projected = transform(
+        Transformer.from_crs("EPSG:4326", "EPSG:7755", always_xy=True).transform,
+        shape(source["features"][0]["geometry"]),
+    )
+    source["features"][0]["geometry"] = mapping(projected)
+    geom, properties, area = _kerala_feature(source)
+    assert properties["STATE"] == "Kerala"
+    assert abs(geom.bounds[0] - 75.0) < 0.001
+    assert abs(geom.bounds[3] - 11.8) < 0.001
+    assert 25000 < area < 55000
