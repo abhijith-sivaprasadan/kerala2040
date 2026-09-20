@@ -21,6 +21,7 @@ TECH = "configs/techno_economics.yaml"
 GIS = "configs/gis_inputs.yaml"
 LULC = "configs/lulc_native_acquisition_2024_25.yaml"
 GIS_3 = "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
+GSI_GEOM = "data/evidence/gis/gsi_2022_original_geometry_review_2026_09_20.json"
 FINDINGS = "configs/audit_findings.yaml"
 HYDRO_TOPOLOGY = "configs/hydro_topology_evidence_2024_25.yaml"
 TRANSFER = "configs/grid_transfer_contract_evidence_2024_25.yaml"
@@ -249,6 +250,36 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
     acquired_gsi = gis_public["workstreams"]["wetlands_waterbodies_landslide"][
         "gsi_original_zips_downloaded_to_workflow_artifact"
     ]
+    gsi_geom = _json(root, GSI_GEOM)
+    gsi_expected = _json(root, GIS_3.replace(
+        "configs/gis_forest_dem_wetlands_hazards_2026.yaml",
+        "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json",
+    ))["gsi_2022"]["per_district"]
+    expected_hashes = {entry["district"]: entry["sha256"] for entry in gsi_expected}
+    reviewed = gsi_geom["districts"]
+    if (
+        gsi_geom.get("classification") != (
+            "observed_original_GSI13_polygon_and_source_class_evidence_NOT_topology_valid_or_siting"
+        )
+        or len(reviewed) != 13
+        or gsi_geom["source_feature_count"] != 39
+        or gsi_geom["source_invalid_feature_count"] != 39
+        or gsi_geom["original_crs"] != "EPSG:32643"
+        or any(
+            entry["source_zip_sha256"] != expected_hashes.get(entry["district"])
+            or entry["feature_count"] != 3
+            or entry["invalid_polygon_count"] != 3
+            or entry["source_raw_class_feature_counts"] != {
+                "High": 1, "Moderate": 1, "Low": 1,
+            }
+            or entry["original_crs"] != "EPSG:32643"
+            for entry in reviewed
+        )
+        or gsi_geom["raw_invalid_geometries_accepted_as_model_ready"] is not False
+        or gsi_geom["eligible_land_sq_km"] is not None
+        or gsi_geom["potential_mw"] is not None
+    ):
+        raise ValueError("GSI original geometry/source class audit identity mismatch")
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
@@ -268,13 +299,15 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         STATUS_BLOCKED,
         f"{n_layers} catalogued GIS layers; {staged} beyond acquisition-only status; "
         f"{len(products)} NRSC LULC product routes and three forest/DEM/hazard "
-        f"workstreams reviewed; {acquired_gsi} downloaded GSI ZIPs and one "
+        f"workstreams reviewed; {acquired_gsi} downloaded GSI ZIPs with 39/39 "
+        "original ring-self-intersecting MultiPolygons across 13 districts, "
+        "three raw susceptibility classes per district, and one "
         "public Copernicus GLO-90 DSM tile have original-file hashes recorded "
         "from a workflow artifact. Archive components/TIFF structure pass "
         "preliminary QA, but polygon geometry, GSI hazard classes, notified "
         "forest/wetland boundaries, a statewide height mosaic and legal "
         "constraints are NOT established; no site-eligible km2 or MW ceiling.",
-        "docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md",
+        "docs/GSI_2022_GEOMETRY_VALIDATION.md",
     )
     return {
         "sldc_accounting_integrity": accounting,
