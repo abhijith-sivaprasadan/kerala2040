@@ -95,13 +95,22 @@ def compare_feature(geometry: Any, district: str, cls: str, source_sha: str,
     for left, right in combinations(METHODS, 2):
         a, b = raw[left]["polygonal"], raw[right]["polygonal"]
         difference = float(a.symmetric_difference(b).area)
-        union = float(a.union(b).area)
+        # Avoid a second costly union overlay; exact set identity for valid polygons.
+        union_area = (float(a.area) + float(b.area) + difference) / 2
+        coordinates = shapely.get_num_coordinates(a) + shapely.get_num_coordinates(b)
+        # Full Hausdorff is quadratic in edge count on large district polygons.
+        hausdorff = (
+            float(a.boundary.hausdorff_distance(b.boundary))
+            if coordinates <= 2000 else None
+        )
         comparisons[f"{left}_vs_{right}"] = {
             "symmetric_difference_m2": difference,
-            "symmetric_difference_fraction_of_union": safe_div(difference, union),
+            "symmetric_difference_fraction_of_union": safe_div(difference, union_area),
             "area_change_m2": float(a.area - b.area),
-            "hausdorff_distance_m_source_crs": float(a.boundary.hausdorff_distance(b.boundary)),
-            "topologically_equal": bool(a.equals(b)),
+            "hausdorff_distance_m_source_crs": hausdorff,
+            "hausdorff_skipped_large_geometry": coordinates > 2000,
+            "coordinates_for_hausdorff": coordinates,
+            "topologically_equal_at_1e_minus_6_m2_tolerance": difference <= 1e-6,
         }
     entry = {
         "district": district,
@@ -155,6 +164,7 @@ def compare_archives(root: Path, raw_dir: Path, output: Path) -> dict[str, Any]:
     try:
         for source in sources:
             district = source["district"]
+            print(f"repair-comparison district={district} begin", flush=True)
             dest = raw_dir / f"{district}.zip"
             if not dest.is_file() or sha256(dest) != source["sha256"]:
                 download(session, source["source_url"], dest, source["sha256"])
@@ -181,6 +191,7 @@ def compare_archives(root: Path, raw_dir: Path, output: Path) -> dict[str, Any]:
                 district_rows = []
                 for index, row in frame.iterrows():
                     cls = str(row["Susceptibi"])
+                    print(f"  class={cls} begin", flush=True)
                     measured, variants = compare_feature(
                         row.geometry, district, cls, source["sha256"], int(index),
                     )
@@ -198,6 +209,7 @@ def compare_archives(root: Path, raw_dir: Path, output: Path) -> dict[str, Any]:
                     method: float(unary_union(list(classes.values())).area)
                     for method, classes in by_method.items()
                 }
+                print(f"repair-comparison district={district} complete", flush=True)
                 district_records.append({
                     "district": district,
                     "source_archive_sha256": source["sha256"],
