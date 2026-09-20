@@ -57,7 +57,16 @@ async function main(){
         failed.push(response.status()+" "+response.url());
     });
     await page.goto(base,{waitUntil:"domcontentloaded"});
-    await page.locator("#headlineMetrics .number-card").first().waitFor();
+    try{await page.locator("#headlineMetrics .number-card").first().waitFor({timeout:10000})}
+    catch(e){
+      const report={errors,failed,url:page.url(),title:await page.title(),
+        ready:await page.evaluate(()=>document.readyState),
+        metrics:await page.locator("#headlineMetrics").innerText().catch(()=>"(not found)"),
+        scripts:await page.locator("script[src]").evaluateAll(es=>es.map(e=>e.src))};
+      console.error("PAGE_BOOT_DIAGNOSTIC",JSON.stringify(report));
+      await page.screenshot({path:path.join(artifactDir,"failed-boot.png"),fullPage:true});
+      throw e;
+    }
     check(await page.locator("#headlineMetrics .number-card").count()===4,
       "All four observed-electricity metrics must render");
     const metrics=await page.locator("#headlineMetrics").innerText();
