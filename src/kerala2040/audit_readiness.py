@@ -18,6 +18,7 @@ ERA5 = "public/era5-daily-manifest.json"
 TECH = "configs/techno_economics.yaml"
 GIS = "configs/gis_inputs.yaml"
 FINDINGS = "configs/audit_findings.yaml"
+HYDRO_TOPOLOGY = "configs/hydro_topology_evidence_2024_25.yaml"
 GENERATORS = "configs/generator_reconciliation_2024_25.yaml"
 PROJECTS = "public/kseb-projects.json"
 
@@ -153,6 +154,15 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         "are not reconciled.",
         "docs/GENERATOR_REGISTER_FY2024_25_RECONCILIATION.md",
     )
+    hydro = _yaml(root, HYDRO_TOPOLOGY)
+    if hydro.get("classification") != (
+        "partial_official_hydro_topology_not_dispatch_constraints"
+    ):
+        raise ValueError("Hydro topology cannot claim validated dispatch constraints")
+    hydro_count = len(hydro["observed_reservoirs"])
+    hydro_edges = len(hydro["documented_links"])
+    if not hydro_count or not hydro_edges:
+        raise ValueError("Hydro mapping must identify sourced nodes and links")
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
@@ -185,9 +195,13 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         "generator_assets": generator_check,
         "hydro_physics": _check(
             STATUS_BLOCKED,
-            "Daily observed reservoir and hydro evidence does not establish verified "
-            "cascade topology, head, releases/spill or operational energy constraints.",
-            "docs/OBSERVED_DAILY_PYPSA.md",
+            f"{hydro_count} SLDC reservoir names mapped by selected official dam "
+            f"descriptions across {hydro_edges} qualitative links, alongside 354 "
+            "observed SLDC days. No complete hydrological network, independently "
+            "reconciled water balance, release/spill routing, head curves or "
+            "operative environmental/rule-curve constraints. Source MU is not "
+            "an independent dispatchable reservoir Store.",
+            "docs/HYDRO_RESERVOIR_OPERATIONS_AUDIT.md",
         ),
         "grid_transfer": _check(
             STATUS_BLOCKED,
