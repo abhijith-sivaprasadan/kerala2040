@@ -38,6 +38,7 @@ def test_readiness_preserves_historical_evidence_and_blocks_2040_claims():
     assert "39 EPSG:32643 MultiPolygons" in report["checks"]["gis_model_ready"]["detail"]
     assert "ring self-intersection" in report["checks"]["gis_model_ready"]["detail"]
     assert "14 original Copernicus GLO90" in report["checks"]["gis_model_ready"]["detail"]
+    assert "0 of the" in report["checks"]["gis_model_ready"]["detail"]
     assert report["checks"]["grid_transfer"]["status"] == STATUS_BLOCKED
     assert "6500 MW" in report["checks"]["grid_transfer"]["detail"]
     assert report["checks"]["hydro_physics"]["status"] == STATUS_BLOCKED
@@ -72,6 +73,7 @@ def test_source_qa_tampering_fails_closed(tmp_path):
         "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json",
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
+        "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -108,6 +110,7 @@ def test_unknown_gate_is_rejected_instead_of_counted_ready(tmp_path):
         "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json",
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
+        "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -139,6 +142,7 @@ def test_generator_register_official_source_crosscheck_fails_closed(tmp_path):
         "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json",
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
+        "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -171,6 +175,7 @@ def test_transfer_gate_rejects_import_limit_promotion(tmp_path):
         "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json",
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
+        "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -203,6 +208,7 @@ def test_lulc_register_cannot_self_certify_ecological_capacity(tmp_path):
         "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json",
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
+        "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -235,6 +241,7 @@ def test_three_gis_workstreams_cannot_invent_a_ceiling(tmp_path):
         "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json",
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
+        "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
