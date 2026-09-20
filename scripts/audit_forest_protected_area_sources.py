@@ -34,7 +34,7 @@ HEADERS = {
 }
 VECTOR_EXT = (".geojson", ".json", ".gpkg", ".shp", ".kml", ".kmz", ".gdb", ".zip")
 DOCUMENT_EXT = (".pdf", ".doc", ".docx")
-PAGE_HINT = re.compile(r"(reserve|territorial|wildlife|sanctuary|national.?park|tiger)", re.I)
+PAGE_HINT = re.compile(r"(reserve|territorial|wildlife|sanctuary|national.?park|tiger)", re.IGNORECASE)
 
 
 def _get(session: requests.Session, url: str) -> requests.Response:
@@ -85,8 +85,8 @@ def _extract_pa_counts(text: str) -> dict[str, int | None]:
         "tiger_reserves": r"\b2\s+tiger\s+reserves?\b",
         "community_reserves": r"\b1\s+community\s+reserve\b",
     }
-    return {key: (int(re.search(r"\d+", re.search(pat, text, re.I).group()).group())
-                  if re.search(pat, text, re.I) else None)
+    return {key: (int(re.search(r"\d+", re.search(pat, text, re.IGNORECASE).group()).group())
+                  if re.search(pat, text, re.IGNORECASE) else None)
             for key, pat in patterns.items()}
 
 
@@ -121,7 +121,7 @@ def run(output: Path) -> dict:
                         all_file_links[row["url"]] = {
                             **row, "kind": kind, "discovered_from": response.url,
                         }
-            except Exception as exc:  # source failure is evidence, not a pass
+            except requests.RequestException as exc:  # source failure is evidence, not a pass
                 failures.append({"url": url, "error": f"{type(exc).__name__}: {exc}"})
 
         # Official site author archive exposes reserve/division pages not linked
@@ -130,7 +130,7 @@ def run(output: Path) -> dict:
             url = AUTHOR_PAGE.format(page=page)
             try:
                 response = _get(session, url)
-            except Exception as exc:
+            except requests.RequestException as exc:
                 failures.append({"url": url, "error": f"{type(exc).__name__}: {exc}"})
                 continue
             for row in _anchors(response):
@@ -155,7 +155,7 @@ def run(output: Path) -> dict:
                         all_file_links[row["url"]] = {
                             **row, "kind": kind, "discovered_from": response.url,
                         }
-            except Exception as exc:
+            except requests.RequestException as exc:
                 meta["error"] = f"{type(exc).__name__}: {exc}"
 
         pa_counts = {}
