@@ -76,8 +76,10 @@ def test_daily_interface_energy_cannot_hide_missing_or_corrupted_day(tmp_path):
     path.write_text("\n".join(lines[:-1]) + "\n")
     with pytest.raises(ValueError, match="count"):
         audit_transfer_evidence(root)
-    lines[-1] = lines[-1].replace("official_observed_reference", "corrupt")
-    # Missing total and duplicate source-day checks are separate from classifications.
-    path.write_text("\n".join(lines) + "\n")
-    with pytest.raises(ValueError, match="count"):
+    original = (ROOT / "data/external/sldc_fy2024_25/import_interface_daily.csv").read_text().splitlines()
+    fields = original[1].split(",")
+    fields[2] = str(float(fields[2]) + 2.0)
+    original[1] = ",".join(fields)
+    path.write_text("\n".join(original) + "\n")
+    with pytest.raises(ValueError, match="residual"):
         audit_transfer_evidence(root)
