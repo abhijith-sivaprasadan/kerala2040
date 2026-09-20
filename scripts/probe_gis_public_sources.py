@@ -84,50 +84,60 @@ def probe(output: Path, download_dir: Path, *, max_mb: int = 65) -> dict:
             response = session.get(KSDMA, timeout=(15, 60))
             response.raise_for_status()
             soup = BeautifulSoup(response.text, "html.parser")
+            district_names = {
+                "Thiruvananthapuram", "Kollam", "Pathanamthitta",
+                "Kottayam", "Idukki", "Ernakulam", "Thrissur",
+                "Palakkad", "Malappuram", "Kozhikode", "Wayanad",
+                "Kannur", "Kasaragod",
+            }
             candidates = []
-            all_links = []
             for link in soup.find_all("a", href=True):
                 target = urljoin(response.url, link["href"])
                 u = urlparse(target)
                 label = " ".join(link.get_text(" ", strip=True).split())
-                if any(v in (label + " " + target).lower() for v in (
-                    "idukki", "thiruvananthapuram", "landslide", "gsi", "shapefile", ".zip"
-                )):
-                    all_links.append({"label": label, "url": target})
-                if u.scheme != "https" or u.hostname != "sdma.kerala.gov.in":
-                    continue
-                nearby = " ".join(
-                    (link.parent.parent.get_text(" ", strip=True) if link.parent.parent else "")
-                    .lower().split()
-                )
-                if u.path.lower().endswith(".zip") and (
-                    "landslide" in target.lower()
-                    or "landslide" in nearby
-                    or "gsi" in nearby
+                if (
+                    label in district_names
+                    and u.scheme == "https"
+                    and u.hostname == "sdma.kerala.gov.in"
+                    and u.path.startswith("/wp-content/uploads/2025/08/")
+                    and u.path.lower().endswith(".zip")
                 ):
-                    candidates.append({"label": link.get_text(" ", strip=True), "url": target})
-            candidates = list({row["url"]: row for row in candidates}.values())
+                    candidates.append({"district": label, "url": target})
+            candidates = list({row["district"]: row for row in candidates}.values())
             result["ksdma_gsi_2022"] = {
-                "status": "public_website_archive_candidates_not_validated_district_coverage",
+                "status": "official_page_zip_links_identified_not_yet_validated_geometry",
                 "source_url": KSDMA,
-                "candidate_archives": candidates[:80],
-                "relevant_anchor_preview": all_links[:80],
+                "candidate_archives": candidates,
                 "candidate_count": len(candidates),
+                "all_13_published_district_links_identified": (
+                    {r["district"] for r in candidates} == district_names
+                ),
+                "pilot_downloads": [],
+                "pilot_structural_qa_count": 0,
                 "warning": (
-                    "Automated link context may include other landslide vintages. "
-                    "Do not equate candidate count with verified GSI2022 districts."
+                    "13 download links are not 13 verified hazard polygons; "
+                    "actual CRS, GSI class legend, spatial coverage and source "
+                    "publication/rights need full ZIP inspection."
                 ),
             }
-            if candidates:
-                chosen = candidates[0]
-                filename = urlparse(chosen["url"]).path.split("/")[-1]
-                if filename and all(x not in filename for x in ("/", "\\", "..")):
-                    path = download_dir / "ksdma" / filename
-                    downloaded = _download(session, chosen["url"], path, max_mb)
-                    result["ksdma_gsi_2022"]["pilot"] = {
-                        **downloaded, "zip_qa": check_shapefile_zip(path),
-                        "gsi_2022_provenance_confirmed": False,
-                    }
+            for candidate in candidates:
+                filename = urlparse(candidate["url"]).path.split("/")[-1]
+                path = download_dir / "ksdma" / filename
+                try:
+                    download = _download(session, candidate["url"], path, max_mb)
+                    archive = check_shapefile_zip(path)
+                    result["ksdma_gsi_2022"]["pilot_downloads"].append({
+                        "district": candidate["district"], **download,
+                        "zip_qa": archive, "polygon_geometry_validated": False,
+                    })
+                    result["ksdma_gsi_2022"]["pilot_structural_qa_count"] += 1
+                except Exception as exc:  # noqa: BLE001 - each failed archive retained
+                    result["ksdma_gsi_2022"]["pilot_downloads"].append({
+                        "district": candidate["district"],
+                        "url": candidate["url"],
+                        "status": "download_or_zip_qa_failed",
+                        "error": f"{type(exc).__name__}: {exc}",
+                    })
         except Exception as exc:  # noqa: BLE001 - probe failure recorded, no false pass
             result["ksdma_gsi_2022"]["error"] = f"{type(exc).__name__}: {exc}"
             result["ksdma_gsi_2022"]["status"] = "probe_failed_or_partial_NOT_verified_GSI2022"
