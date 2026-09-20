@@ -58,3 +58,12 @@ The field-note, land, research and audit views then update together through
 a pinned build. Do not manually change a card to green after obtaining a ZIP
 or running a model. The reader should always be able to distinguish what was
 measured, what was audited, what is provisional and what remains unknown.
+
+## Illustrated visual layer (September 2026)
+
+- Original chapter SVGs: Ghats hydropower, wetlands/paddy/egret, tiled rooftop solar and grid, and material circularity. A same-origin SVG sprite supplies semantic icons. They illustrate concepts, never source GIS or measured physical energy flows.
+- The favicon combines monsoon sun, coconut frond and backwater waves; its authored SVG also generates a 180x180 PNG touch icon.
+- The separately authored 1200x630 social composition is rasterised as a genuine PNG in CI/Pages. Absolute Open Graph/Twitter metadata references the PNG. Build tests inspect its actual binary dimensions; SVG-only previews are inadequate.
+- The small bottom-corner welcome card is dismissible, session-scoped and auto-dismisses. It never blocks the interface, focuses itself, changes body overflow, or delays evidence loading. Deep links and reduced-motion visitors skip it.
+- Editorial movement is gentle sun/rain, chapter-art appearance and an explicitly conceptual current between research themes. It is disabled for prefers-reduced-motion; without IntersectionObserver the content remains fully visible.
+- CairoSVG is a build-time-only dependency of research CI and pinned Pages. Public visitors do not run an image converter or retrieve remote art. No artwork or social thumbnail changes the scientific release classification.

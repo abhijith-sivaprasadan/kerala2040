@@ -8,8 +8,22 @@
   <meta property="og:title" content="Kerala2040 — കേരളത്തിന്റെ ഊർജഭാവി">
   <meta property="og:description" content="Our land. Our energy future. An independent Kerala energy-system research project.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kerala2040.github.io/">
+  <meta property="og:site_name" content="Kerala2040">
+  <meta property="og:image" content="https://kerala2040.github.io/assets/kerala2040-share.png">
+  <meta property="og:image:secure_url" content="https://kerala2040.github.io/assets/kerala2040-share.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Kerala2040: the Western Ghats, backwaters, palm and vallam beside the words Our land. Our energy future.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Kerala2040 — Our land. Our energy future.">
+  <meta name="twitter:description" content="Independent energy-system research into Kerala’s electricity, ecology and resilient futures.">
+  <meta name="twitter:image" content="https://kerala2040.github.io/assets/kerala2040-share.png">
   <link rel="canonical" href="https://kerala2040.github.io/">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/kerala2040-touch.png">
+  <meta name="color-scheme" content="light dark">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +35,16 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <noscript><div class="no-js">This interactive edition requires JavaScript. <a href="data/site-data.json">Read the published evidence bundle</a> or <a href="https://github.com/abhijith-sivaprasadan/kerala2040">inspect the research source</a>.</div></noscript>
+  <aside id="welcomeCard" class="welcome-card" aria-label="Welcome to Kerala2040" hidden>
+    <img src="assets/mark.svg" alt="" width="45" height="45">
+    <div class="welcome-copy">
+      <span class="welcome-kicker">WELCOME / സ്വാഗതം</span>
+      <strong>Kerala2040</strong>
+      <small>Our land. Our energy future.</small>
+      <span class="welcome-line" aria-hidden="true"></span>
+    </div>
+    <button type="button" id="welcomeDismiss" class="welcome-dismiss" aria-label="Dismiss welcome">×</button>
+  </aside>
   <div class="topline" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
   <header class="site-header">
     <div class="header-inner">
@@ -97,6 +121,35 @@
         </div>
       </section>
 
+      <section class="system-story" aria-labelledby="systemStoryTitle">
+        <div class="section-wrap system-story-wrap">
+          <div class="section-eyebrow light"><span class="number">01½</span> ONE CONNECTED SYSTEM / പരസ്പരബന്ധം</div>
+          <div class="system-story-head">
+            <h2 id="systemStoryTitle">Electricity does not<br>exist <em>in isolation.</em></h2>
+            <p>Kerala2040 examines these relationships together, not as separate wishlists. This is a conceptual illustration—not a mapped network or measured energy-flow diagram.</p>
+          </div>
+          <div class="system-illustration" role="group" aria-label="Conceptual research relationships between hydropower, imported electricity, land and homes, and circular industry">
+            <div class="system-current" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div class="system-node">
+              <svg aria-hidden="true" focusable="false"><use href="assets/icons.svg#water"></use></svg>
+              <span class="system-node-index">01 / വെള്ളം</span><strong>Monsoon &amp; hydro</strong><small>Water is seasonal flexibility.</small>
+            </div>
+            <div class="system-node">
+              <svg aria-hidden="true" focusable="false"><use href="assets/icons.svg#electric"></use></svg>
+              <span class="system-node-index">02 / വൈദ്യുതി</span><strong>Grid &amp; imports</strong><small>Interconnection is an asset.</small>
+            </div>
+            <div class="system-node">
+              <svg aria-hidden="true" focusable="false"><use href="assets/icons.svg#leaf"></use></svg>
+              <span class="system-node-index">03 / ഭൂമി</span><strong>Land &amp; ecology</strong><small>Resources have real limits.</small>
+            </div>
+            <div class="system-node">
+              <svg aria-hidden="true" focusable="false"><use href="assets/icons.svg#cycle"></use></svg>
+              <span class="system-node-index">04 / തൊഴിൽ</span><strong>Industry &amp; value</strong><small>Material flows also matter.</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="current-strip" aria-labelledby="snapshotTitle">
         <div class="section-wrap"><div class="section-title-line"><div><div class="section-eyebrow light"><span class="number">02</span> THE STARTING POINT / ഇപ്പോൾ</div><h2 id="snapshotTitle">What the data says <em>today.</em></h2></div><p>One audited historical window. No interpolated missing days. No 2040 predictions disguised as observations.</p></div>
           <div id="headlineMetrics" class="numbers-grid" aria-live="polite">Loading the observed series…</div>
@@ -108,10 +161,10 @@
         <div class="section-eyebrow"><span class="number">03</span> THE JOURNEY / മുന്നോട്ട്</div>
         <div class="section-title-line"><h2 id="journeyTitle" class="display-title">From today's system<br>to <em>possible futures.</em></h2><p>Explore the project in an order that follows the research—not an arbitrary set of dashboards.</p></div>
         <div class="chapter-grid">
-          <button class="chapter chapter-electric" data-route="electricity" type="button"><span class="chapter-no">CHAPTER 01 / വൈദ്യുതി</span><span class="chapter-glyph" aria-hidden="true">≈</span><h3>Understand the electricity we use.</h3><p>What Kerala consumes, generates locally, imports and stores—and where the records have gaps.</p><span class="chapter-link">Explore observations ↗</span></button>
-          <button class="chapter chapter-land" data-route="atlas" type="button"><span class="chapter-no">CHAPTER 02 / ഭൂമി</span><span class="chapter-glyph" aria-hidden="true">⌁</span><h3>Respect the land and water.</h3><p>Forests, wetlands, slopes and hazards shape what can—and cannot—be built.</p><span class="chapter-link">Explore ecological evidence ↗</span></button>
-          <button class="chapter chapter-system" data-route="pathways" type="button"><span class="chapter-no">CHAPTER 03 / ഭാവി</span><span class="chapter-glyph" aria-hidden="true">✳</span><h3>Test different ways forward.</h3><p>Compare the questions behind local generation, storage, interstate trade and resilience.</p><span class="chapter-link">Explore pathways ↗</span></button>
-          <button class="chapter chapter-value" data-route="industry" type="button"><span class="chapter-no">CHAPTER 04 / തൊഴിൽ</span><span class="chapter-glyph" aria-hidden="true">↺</span><h3>Keep more value in Kerala.</h3><p>What industrial materials, heat and energy could be recovered—and at what cost?</p><span class="chapter-link">Explore industry ↗</span></button>
+          <button class="chapter chapter-electric" data-route="electricity" type="button"><span class="chapter-no">CHAPTER 01 / വൈദ്യുതി</span><span class="chapter-picture" aria-hidden="true"><img src="assets/chapter-electric.svg" width="360" height="220" alt="" loading="lazy" decoding="async"></span><h3>Understand the electricity we use.</h3><p>What Kerala consumes, generates locally, imports and stores—and where the records have gaps.</p><span class="chapter-link">Explore observations ↗</span></button>
+          <button class="chapter chapter-land" data-route="atlas" type="button"><span class="chapter-no">CHAPTER 02 / ഭൂമി</span><span class="chapter-picture" aria-hidden="true"><img src="assets/chapter-land.svg" width="360" height="220" alt="" loading="lazy" decoding="async"></span><h3>Respect the land and water.</h3><p>Forests, wetlands, slopes and hazards shape what can—and cannot—be built.</p><span class="chapter-link">Explore ecological evidence ↗</span></button>
+          <button class="chapter chapter-system" data-route="pathways" type="button"><span class="chapter-no">CHAPTER 03 / ഭാവി</span><span class="chapter-picture" aria-hidden="true"><img src="assets/chapter-pathways.svg" width="360" height="220" alt="" loading="lazy" decoding="async"></span><h3>Test different ways forward.</h3><p>Compare the questions behind local generation, storage, interstate trade and resilience.</p><span class="chapter-link">Explore pathways ↗</span></button>
+          <button class="chapter chapter-value" data-route="industry" type="button"><span class="chapter-no">CHAPTER 04 / തൊഴിൽ</span><span class="chapter-picture" aria-hidden="true"><img src="assets/chapter-industry.svg" width="360" height="220" alt="" loading="lazy" decoding="async"></span><h3>Keep more value in Kerala.</h3><p>What industrial materials, heat and energy could be recovered—and at what cost?</p><span class="chapter-link">Explore industry ↗</span></button>
         </div>
       </section>
 

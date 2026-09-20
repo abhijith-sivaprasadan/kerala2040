@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">Kerala2040 — Our land. Our energy future.</title>
+<desc id="desc">Editorial social-sharing artwork: forest-green and kasavu gold, Western Ghats, backwaters, a coconut palm and vallam; independent research into Kerala's energy future.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#123b2e"/><stop offset="1" stop-color="#0c2927"/></linearGradient>
+  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#347d82"/><stop offset="1" stop-color="#164e60"/></linearGradient>
+  <clipPath id="landscape"><rect x="580" y="0" width="620" height="630"/></clipPath>
+</defs>
+<rect width="1200" height="630" fill="url(#bg)"/>
+<rect width="1200" height="9" fill="#d8b66f"/>
+<rect y="9" width="1200" height="4" fill="#9e543a"/>
+<g opacity=".16" fill="none" stroke="#c6d5bb"><circle cx="978" cy="183" r="115"/><circle cx="978" cy="183" r="156"/><circle cx="978" cy="183" r="199"/></g>
+<g clip-path="url(#landscape)">
+  <circle cx="985" cy="179" r="103" fill="#e1b86d"/>
+  <circle cx="985" cy="179" r="81" fill="#edcd88" opacity=".4"/>
+  <path d="M530 336 635 243l64 37 105-136 94 82 97-113 109 151 126-80v446H530Z" fill="#70947e"/>
+  <path d="m550 426 110-116 86 48 93-128 96 122 91-80 174 93v265H550Z" fill="#376950"/>
+  <path d="M520 468q163-67 309-22t371-26v210H520" fill="#8c9a69"/>
+  <path d="m520 504 210 38m-211-11 177 38m259-51 251-44m-190 76 190-38" stroke="#c6b877" stroke-width="6" opacity=".7"/>
+  <path d="M530 513q135-42 261 0t409-32v149H530Z" fill="url(#water)"/>
+  <path d="M515 559q146-37 285 1t400-23M515 595q146-36 285 1t400-23" stroke="#a6cebe" stroke-width="4" fill="none" opacity=".7"/>
+  <g stroke="#123b2f" stroke-width="9" stroke-linecap="round" fill="none"><path d="M1097 529q-2-142-40-227m85 211q-12-115 7-168"/></g>
+  <g fill="#164333">
+    <path d="M1057 302q-100-94-176-50 81 0 176 50Z"/>
+    <path d="M1057 302q-48-117-11-151 3 93 11 151Z"/>
+    <path d="M1057 302q104-111 142-56-93 15-142 56Z"/>
+    <path d="M1057 302q103-7 155 69-88-22-155-69Z"/>
+    <path d="M1057 302q-66 8-112 83 69-34 112-83Z"/>
+    <path d="M1149 345q-62-75-119-40 69 2 119 40Z"/>
+    <path d="M1149 345q3-69 43-72-17 45-43 72Z"/>
+  </g>
+  <path d="M750 552q77-20 202-6l-31 23H799Z" fill="#a96b42"/>
+  <path d="m832 549 3-94m0 3q57 21 67 76h-67Z" stroke="#764d34" stroke-width="4" fill="#f2e3b9"/>
+</g>
+<path d="M0 535h683q-38-28-66-65H0Z" fill="#123b2e"/>
+<g fill="#edcb83"><rect x="74" y="58" width="50" height="3"/><rect x="137" y="58" width="14" height="3"/></g>
+<text x="74" y="100" font-family="DejaVu Sans, sans-serif" font-size="17" letter-spacing="3" fill="#e5dcbf">INDEPENDENT ENERGY RESEARCH  /  KERALA</text>
+<text x="67" y="245" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="104" letter-spacing="-4" fill="#fff5db">KERALA</text>
+<text x="67" y="355" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="115" letter-spacing="-4" fill="#e9c578">2040</text>
+<path d="M75 389h471" stroke="#bba66c" stroke-width="2"/>
+<text x="74" y="436" font-family="DejaVu Sans, sans-serif" font-size="30" fill="#fff3d5">Our land. Our energy future.</text>
+<text x="74" y="480" font-family="DejaVu Sans, sans-serif" font-size="19" fill="#d1e2ce">Electricity · Ecology · Resilience · Evidence</text>
+<path d="M75 560h388" stroke="#84a694" stroke-width="1"/>
+<text x="75" y="594" font-family="DejaVu Sans, sans-serif" font-size="16" letter-spacing="2" fill="#e8d5a0">KERALA2040.GITHUB.IO</text>
+<g transform="translate(1117 544)">
+  <circle cx="0" cy="0" r="25" fill="#e7c477"/>
+  <path d="M-19 8q13-8 25 0t25 0M-19 17q13-8 25 0t25 0" stroke="#194738" stroke-width="3" fill="none"/>
+</g>
+</svg>
