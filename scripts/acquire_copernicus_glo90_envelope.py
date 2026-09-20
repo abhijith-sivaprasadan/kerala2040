@@ -194,7 +194,8 @@ def run(output: Path, tile_dir: Path, mosaic_path: Path, *,
     mosaic = {"status": "not_created_no_source_tiles"}
     if available:
         sources = [rasterio.open(available[lat, lon])
-                   for lat in LATITUDES for lon in LONGITUDES]
+                   for lat in LATITUDES for lon in LONGITUDES
+                   if (lat, lon) in available]
         try:
             arrays, transform = merge(sources, method="first", nodata=np.nan)
             # Source has no nodata declaration; this mosaic is a DSM diagnostic,
