@@ -1,0 +1,58 @@
+name: Probe official Kerala boundary and Copernicus DSM tile gaps
+
+on:
+  pull_request:
+    paths:
+      - "scripts/audit_official_kerala_boundary_dem.py"
+      - "tests/test_official_kerala_boundary_dem.py"
+      - "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
+      - ".github/workflows/kerala-official-boundary.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/audit_official_kerala_boundary_dem.py"
+      - ".github/workflows/kerala-official-boundary.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-and-intersections:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: src:scripts:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install bounded geospatial source probe
+        run: pip install "requests>=2.32,<3" "shapely>=2.1,<3" "pyproj>=3.7,<4" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Lint and synthetic boundary QA
+        run: |
+          ruff check scripts/audit_official_kerala_boundary_dem.py tests/test_official_kerala_boundary_dem.py
+          pytest -q tests/test_official_kerala_boundary_dem.py
+      - name: Discover original government source and intersect missing GLO90 footprints
+        run: python scripts/audit_official_kerala_boundary_dem.py
+      - name: Enforce scientific gate regardless of source access
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("results/gis/official_boundary_dem_source_intersections.json").read_text())
+          assert a["missing_dem_envelope_tiles"]==6
+          assert a["ecological_capacity_ceiling_ready"] is False
+          assert a["pixel_level_kerala_dsm_completeness_verified"] is False
+          assert a["capacity_ceiling_mw"] is None
+          assert a["eligible_area_sq_km"] is None
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: official-Kerala-boundary-probe-NOT-capacity-eligibility
+          retention-days: 45
+          path: |
+            results/gis/official_boundary_dem_source_intersections.json
+            results/gis/nwic_original/**
