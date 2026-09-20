@@ -255,3 +255,85 @@ def test_kerala_social_thumbnail_touch_icon_and_vector_art_are_packaged(tmp_path
     assert not (tmp_path / "assets/experience.css").exists()
     assert not (tmp_path / "assets/workbench.css").exists()
     assert not (tmp_path / "assets/app.js").exists()
+
+
+def test_built_site_has_no_broken_internal_static_references_or_routes(tmp_path):
+    from html.parser import HTMLParser
+    from urllib.parse import urlsplit, unquote
+
+    site.build_site(ROOT, tmp_path)
+
+    class Collector(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.refs = []
+            self.ids = []
+            self.routes = []
+            self.views = []
+
+        def handle_starttag(self, tag, attrs):
+            values = dict(attrs)
+            if "id" in values:
+                self.ids.append(values["id"])
+            if "data-route" in values:
+                self.routes.append(values["data-route"])
+            if "data-view" in values:
+                self.views.append(values["data-view"])
+            for attr in ("href", "src"):
+                value = values.get(attr)
+                if value:
+                    self.refs.append((tag, attr, value))
+
+    html = (tmp_path / "index.html").read_text(encoding="utf-8")
+    parser = Collector()
+    parser.feed(html)
+
+    assert len(parser.ids) == len(set(parser.ids)), "Duplicate HTML ids break JS targeting"
+    assert set(parser.routes) <= set(parser.views), "Every data-route must target a real view"
+    assert set(parser.views) == {
+        "overview", "electricity", "pathways", "atlas",
+        "industry", "workbench", "audit", "data",
+    }
+
+    missing = []
+    for tag, attr, raw in parser.refs:
+        parts = urlsplit(raw)
+        if parts.scheme in {"http", "https", "mailto", "data", "blob"}:
+            continue
+        if raw.startswith("#") or raw.startswith("//"):
+            continue
+        local = unquote(parts.path)
+        if not local:
+            continue
+        candidate = (tmp_path / local).resolve()
+        if tmp_path.resolve() not in candidate.parents and candidate != tmp_path.resolve():
+            missing.append((tag, attr, raw, "escapes build root"))
+        elif not candidate.exists():
+            missing.append((tag, attr, raw, str(candidate.relative_to(tmp_path))))
+    assert not missing, f"Broken local HTML references: {missing}"
+
+    manifest = json.loads((tmp_path / "manifest.webmanifest").read_text(encoding="utf-8"))
+    for icon in manifest["icons"]:
+        icon_path = tmp_path / icon["src"]
+        assert icon_path.exists(), f"Missing manifest icon: {icon['src']}"
+
+    css_files = list((tmp_path / "assets").glob("kerala.*.css"))
+    js_files = list((tmp_path / "assets").glob("app.*.js"))
+    assert len(css_files) == 1
+    assert len(js_files) == 1
+    assert css_files[0].name in html
+    assert js_files[0].name in html
+
+    forbidden = ("experience.css", "workbench.css", "platform.css", "styles.css")
+    assert not any((tmp_path / "assets" / name).exists() for name in forbidden)
+
+
+def test_source_js_static_id_targets_exist_or_are_explicitly_dynamic():
+    import re
+
+    html = (ROOT / "docs/index.html").read_text(encoding="utf-8")
+    js = (ROOT / "docs/assets/app.js").read_text(encoding="utf-8")
+    ids = set(re.findall(r'id="([^"]+)"', html))
+    static_targets = set(re.findall(r'\$\("#([^"]+)"\)', js))
+    dynamic_targets = {"downloadSpecification"}
+    assert static_targets - ids == dynamic_targets
