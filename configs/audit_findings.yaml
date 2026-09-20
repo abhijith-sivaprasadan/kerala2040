@@ -21,6 +21,8 @@ sources:
   project_qa: data/external/sldc_fy2024_25/qa_report.json
   era5_manifest: public/era5-daily-manifest.json
   gis_catalogue: configs/gis_inputs.yaml
+  lulc_native_acquisition: configs/lulc_native_acquisition_2024_25.yaml
+  lulc_source_review: docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md
   economics_registry: configs/techno_economics.yaml
 
 findings:
@@ -79,8 +81,15 @@ findings:
   - id: recent_lulc_georeferenced
     priority: P0
     check: gis_model_ready
-    acquisition: Recent source-vintage-labelled Bhuvan/NRSC Kerala LULC raster and class descriptions.
-    evidence: configs/gis_inputs.yaml
+    acquisition: >-
+      Bhuvan displays an FY2024-25 national LULC250K map option, while the
+      accessible Bhuvan Store data-for-download list stops at 2022-23 and
+      ISRO describes a signed institutional MoU for native LULC250K data.
+      No original Kerala class-coded raster, exact legend, CRS, source hash,
+      permission or statewide geometry has been secured. Pursue authorised
+      native data and finer district SISDP 10K where available; WMS imagery
+      cannot be counted as categorical raster or legal siting.
+    evidence: docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md
   - id: elevation_dem
     priority: P1
     check: gis_model_ready
