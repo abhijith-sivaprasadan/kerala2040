@@ -18,9 +18,7 @@ from typing import Any
 import geopandas as gpd
 import pandas as pd
 import requests
-from shapely import make_valid
 from shapely.geometry import box
-from shapely.ops import unary_union
 from shapely.validation import explain_validity
 
 ACQ = Path("data/evidence/gis/official_gis_public_acquisition_2026_09_20.json")
@@ -87,21 +85,6 @@ def candidate_class_fields(frame: gpd.GeoDataFrame) -> dict[str, list[Any]]:
     return result
 
 
-def _polygonal_only(geometry):
-    """Extract polygonal pieces from make_valid without mutating source evidence."""
-    if geometry is None or geometry.is_empty:
-        return geometry
-    if geometry.geom_type in {"Polygon", "MultiPolygon"}:
-        return geometry
-    if geometry.geom_type == "GeometryCollection":
-        parts = [
-            part for part in geometry.geoms
-            if part.geom_type in {"Polygon", "MultiPolygon"} and not part.is_empty
-        ]
-        return unary_union(parts) if parts else geometry
-    return geometry
-
-
 def validate_archive(
     district: str,
     archive: Path,
@@ -151,30 +134,6 @@ def validate_archive(
         positive_area = projected.geometry.area > 0
         if not bool(positive_area.any()):
             raise ValueError(f"{district}: no positive-area polygons")
-        repaired = projected.copy()
-        repaired.geometry = repaired.geometry.map(
-            lambda value: _polygonal_only(make_valid(value)) if value is not None else None
-        )
-        repaired_valid = repaired.geometry.is_valid.fillna(False)
-        repaired_polygonal = repaired.geometry.geom_type.isin(["Polygon", "MultiPolygon"])
-        repair_success = bool((repaired_valid & repaired_polygonal).all())
-        raw_area = projected.geometry.area
-        repaired_area = repaired.geometry.area
-        area_delta = repaired_area - raw_area
-        area_delta_ratio = area_delta / raw_area.replace(0, float("nan"))
-        class_field = "Susceptibi" if "Susceptibi" in projected.columns else None
-        pairwise_repaired_overlap_m2: dict[str, float] = {}
-        if class_field and repair_success:
-            rows = list(
-                repaired[[class_field, repaired.geometry.name]].itertuples(
-                    index=False, name=None
-                )
-            )
-            for i, (class_a, geom_a) in enumerate(rows):
-                for class_b, geom_b in rows[i + 1:]:
-                    pairwise_repaired_overlap_m2[
-                        f"{class_a}|{class_b}"
-                    ] = float(geom_a.intersection(geom_b).area)
         non_geom = frame.drop(columns=frame.geometry.name)
         duplicate_attribute_rows = int(non_geom.duplicated().sum())
         exact_duplicate_geometries = int(
@@ -195,12 +154,6 @@ def validate_archive(
             "invalid_geometry_count": invalid_count,
             "all_non_null_geometries_valid": invalid_count == 0,
             "validity_reason_examples": validity_reasons,
-            "make_valid_polygonal_repair_success": repair_success,
-            "make_valid_area_delta_m2_by_feature": [float(x) for x in area_delta],
-            "make_valid_area_delta_ratio_by_feature": [
-                None if pd.isna(x) else float(x) for x in area_delta_ratio
-            ],
-            "pairwise_repaired_class_overlap_m2": pairwise_repaired_overlap_m2,
             "bounds_original": bounds_original,
             "bounds_wgs84": bounds_wgs84,
             "overlaps_kerala_approximate_envelope": overlaps_kerala_envelope,
@@ -253,12 +206,6 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
         for field in common_fields
         if any(field in row["candidate_low_cardinality_fields"] for row in records)
     }
-    combined = gpd.GeoDataFrame(
-        pd.concat(merged, ignore_index=True),
-        crs=merged[0].crs,
-    )
-    gpkg.parent.mkdir(parents=True, exist_ok=True)
-    combined.to_file(gpkg, layer="gsi_2022_landslide_susceptibility", driver="GPKG")
     result = {
         "classification": (
             "decoded_official_GSI_2022_district_geometries_and_attributes_"
@@ -282,14 +229,11 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
         "common_attribute_fields": common_fields,
         "candidate_common_class_fields": class_candidates,
         "per_district": records,
-        "merged_derivative": {
-            "path": str(gpkg),
-            "layer": "gsi_2022_landslide_susceptibility",
-            "target_crs": combined.crs.to_string(),
-            "feature_count": len(combined),
-            "sha256": sha256(gpkg),
-            "source_geometry_repaired": False,
-        },
+        "merged_derivative_written": False,
+        "merged_derivative_reason": (
+            "All 39 source features fail OGC validity; no merged analytical "
+            "GeoPackage is emitted until a documented geometry-repair policy exists."
+        ),
         "susceptibility_field": "Susceptibi",
         "susceptibility_classes": ["High", "Low", "Moderate"],
         "susceptibility_semantics_verified": (
@@ -302,9 +246,6 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
         ),
         "raw_source_geometries_all_valid": all(
             row["invalid_geometry_count"] == 0 for row in records
-        ),
-        "make_valid_repair_possible_for_all_features": all(
-            row["make_valid_polygonal_repair_success"] for row in records
         ),
         "repaired_geometry_admitted_for_model_use": False,
         "district_boundary_completeness_verified": False,
@@ -328,17 +269,12 @@ def main() -> int:
         default=Path("results/gis/gsi_2022_geometry_validation.json"),
     )
     parser.add_argument(
-        "--gpkg",
-        type=Path,
-        default=Path("results/gis/gsi_2022_landslide_susceptibility.gpkg"),
-    )
-    parser.add_argument(
         "--raw-dir",
         type=Path,
         default=Path("results/gis/gsi_2022_original_zips"),
     )
     args = parser.parse_args()
-    report = run(args.root, args.output, args.gpkg, args.raw_dir)
+    report = run(args.root, args.output, Path("unused.gpkg"), args.raw_dir)
     print(json.dumps(report, indent=2, allow_nan=False))
     return 0
 
