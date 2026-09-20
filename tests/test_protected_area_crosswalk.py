@@ -10,7 +10,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from crosswalk_kerala_protected_areas import norm  # noqa: E402
+from crosswalk_kerala_protected_areas import norm
 
 
 def test_official_register_has_25_core_designations_and_no_capacity_claim():
