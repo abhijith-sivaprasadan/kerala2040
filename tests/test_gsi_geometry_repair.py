@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from shapely import make_valid
 from shapely.geometry import GeometryCollection, LineString, MultiPolygon, Polygon
 
 from kerala2040.gsi_repair import compare_feature, parts, polygonal
@@ -20,8 +21,6 @@ def test_polygonal_drops_non_areal_make_valid_debris():
 
 def test_two_repairs_of_self_intersection_are_compared_not_assumed_equal():
     source = Polygon([(0, 0), (2, 2), (0, 2), (2, 0), (0, 0)])
-    from shapely import make_valid
-
     mv = polygonal(make_valid(source))
     b0 = polygonal(source.buffer(0))
     result = compare_feature(source, mv, b0)
@@ -29,4 +28,6 @@ def test_two_repairs_of_self_intersection_are_compared_not_assumed_equal():
     assert result["buffer0_valid"]
     assert result["make_valid_parts"] >= 1
     assert result["buffer0_parts"] >= 1
-    assert result["repair_relative_area_disagreement"] >= 0\n    assert result["repair_centroid_shift_m"] >= 0\n    assert result["repair_bounds_max_abs_delta_m"] >= 0
+    assert result["repair_relative_area_disagreement"] >= 0
+    assert result["repair_centroid_shift_m"] >= 0
+    assert result["repair_bounds_max_abs_delta_m"] >= 0
