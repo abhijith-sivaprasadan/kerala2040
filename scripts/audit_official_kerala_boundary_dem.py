@@ -254,6 +254,18 @@ def main() -> int:
     parser.add_argument("--raw-dir", type=Path, default=Path("results/gis/nwic_original"))
     args = parser.parse_args()
     r = inspect(args.root, args.output, args.raw_dir)
+    if r["downloaded_official_boundary"]:
+        print("BOUNDARY_MANIFEST_COMPACT=" + json.dumps({
+            key: r[key] for key in (
+                "reviewed_at_utc", "original_source_url", "original_sha256",
+                "original_bytes", "feature_collection_count", "source_crs",
+                "boundary_analysis_crs", "kerala_source_properties",
+                "kerala_bounds_wgs84",
+                "kerala_polygon_area_sq_km_approx_NOT_land_eligibility",
+                "missing_source_tile_intersection_with_official_kerala",
+                "source_tile_footprint_intersections",
+            )
+        }, separators=(",", ":"), allow_nan=False), flush=True)
     print(json.dumps({
         "classification": r["classification"],
         "downloaded_official_boundary": r["downloaded_official_boundary"],
