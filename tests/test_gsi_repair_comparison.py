@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from shapely.geometry import Polygon
 
 from scripts.compare_gsi_2022_repairs import (
