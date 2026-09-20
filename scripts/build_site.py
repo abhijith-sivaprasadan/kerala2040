@@ -175,6 +175,29 @@ def build_site(root: Path, output: Path) -> None:
         if stale.is_file():
             stale.unlink()
     shutil.copy2(root / "docs/assets/mark.svg", assets / "mark.svg")
+    # Curated vector chapter artwork, not legacy chart libraries or GIS files.
+    artwork = ("icons.svg", "chapter-electric.svg", "chapter-land.svg",
+               "chapter-pathways.svg", "chapter-industry.svg")
+    for name in artwork:
+        shutil.copy2(root / "docs/assets" / name, assets / name)
+    # Social providers require a real PNG, not an SVG thumbnail or a browser
+    # screenshot. Rasterise the authored local vector artwork deterministically.
+    # The PNG and iOS touch icon are generated as build outputs, not source
+    # evidence or external-network downloads.
+    import cairosvg
+
+    share = assets / "kerala2040-share.png"
+    cairosvg.svg2png(
+        bytestring=(root / "docs/assets/social-card.svg").read_bytes(),
+        write_to=str(share), output_width=1200, output_height=630,
+    )
+    cairosvg.svg2png(
+        bytestring=(root / "docs/assets/mark.svg").read_bytes(),
+        write_to=str(assets / "kerala2040-touch.png"),
+        output_width=180, output_height=180,
+    )
+    if share.read_bytes()[:8] != b"\\x89PNG\\r\\n\\x1a\\n":
+        raise ValueError("The social thumbnail did not render as a PNG")
     # Immutable filenames prevent a new HTML page from running an old cached app.
     html = (output / "index.html").read_text(encoding="utf-8")
     for name in ("app.js", "kerala.css"):
