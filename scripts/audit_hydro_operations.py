@@ -6,8 +6,7 @@ import argparse
 import csv
 import json
 import re
-from collections import Counter, defaultdict
-from datetime import date
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -203,7 +202,7 @@ def audit_hydro_evidence(root: Path) -> dict[str, Any]:
     return {
         "classification": "verified_retained_daily_rows_and_partial_official_topology_NOT_hydro_dispatch_model",
         "source_archive_sha256": qa["source_archive_sha256"],
-        "source_evidence": [QA for QA in (ROOT_QA, RESERVOIRS, STATIONS, DAILY, TOPOLOGY)],
+        "source_evidence": [ROOT_QA, RESERVOIRS, STATIONS, DAILY, TOPOLOGY],
         "observed_dates": len(observed),
         "expected_dates": qa["expected_days"],
         "missing_dates": sorted(missing),
