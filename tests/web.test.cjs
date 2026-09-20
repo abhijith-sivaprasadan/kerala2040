@@ -187,3 +187,71 @@ test("all eight research pages render against one real observed-data snapshot",(
   assert.match(elements["#auditGates"].innerHTML,/NOT PASSED/);
   assert.match(elements["#downloadGrid"].innerHTML,/site-data\.json/);
 });
+
+
+test("first-visit welcome is small, dismissible and session-scoped without blocking content",()=>{
+  const storage=new Map();
+  const callbacks=new Map();let next=1;
+  const card={hidden:true,classList:{
+    classes:new Set(),add(name){this.classes.add(name)},
+    remove(name){this.classes.delete(name)}
+  }};
+  const c=context({
+    location:{hash:""},sessionStorage:{
+      getItem:key=>storage.get(key),setItem:(key,value)=>storage.set(key,value)
+    },
+    window:{addEventListener:()=>{},matchMedia:()=>({matches:false})},
+    document:{querySelector:selector=>selector==="#welcomeCard"?card:null,
+      querySelectorAll:()=>[]},
+    setTimeout:cb=>{const id=next++;callbacks.set(id,cb);return id},
+    clearTimeout:id=>callbacks.delete(id)
+  });
+  assert.equal(vm.runInContext("showWelcome()",c),true);
+  assert.equal(card.hidden,false);
+  assert.equal(storage.get("kerala2040-welcomed"),"1");
+  assert.equal(callbacks.size,1);
+  assert.equal(vm.runInContext("showWelcome()",c),false);
+  vm.runInContext("dismissWelcome()",c);
+  assert.equal(callbacks.size,1); // only short dismissal timer survives
+  [...callbacks.values()][0]();
+  assert.equal(card.hidden,true);
+  assert.equal(vm.runInContext("showWelcome()",c),false);
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  assert.match(html,/id="welcomeCard"[^>]+hidden/);
+  assert.match(html,/id="welcomeDismiss"/);
+  assert.doesNotMatch(html,/aria-modal|role="dialog"/);
+  const css=fs.readFileSync(path.join(root,"docs/assets/kerala.css"),"utf8");
+  assert.match(css,/\.welcome-card\{position:fixed/);
+  assert.doesNotMatch(css,/body\.splash-open\s*\{\s*overflow:\s*hidden/);
+});
+test("reduced-motion and direct deep links bypass the welcome entirely",()=>{
+  for(const [hash,reduced] of [["",true],["#atlas",false]]){
+    const card={hidden:true,classList:{add:()=>{},remove:()=>{}}};
+    const c=context({
+      location:{hash},
+      window:{addEventListener:()=>{},matchMedia:()=>({matches:reduced})},
+      document:{querySelector:key=>key==="#welcomeCard"?card:null,
+        querySelectorAll:()=>[]}
+    });
+    assert.equal(vm.runInContext("showWelcome()",c),false);
+    assert.equal(card.hidden,true);
+  }
+});
+test("custom illustration, icons and social thumbnail are source authored, not model results",()=>{
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  assert.match(html,/og:image:width" content="1200"/);
+  assert.match(html,/og:image:height" content="630"/);
+  assert.match(html,/twitter:card" content="summary_large_image"/);
+  assert.match(html,/assets\/kerala2040-share\.png/);
+  for(const icon of ["electric","water","leaf","cycle"]){
+    assert.ok(html.includes("assets/icons.svg#"+icon));
+  }
+  for(const chapter of ["electric","land","pathways","industry"]){
+    assert.ok(html.includes("assets/chapter-"+chapter+".svg"));
+  }
+  assert.match(html,/conceptual illustration—not a mapped network/);
+  assert.match(html,/not a GIS map or legal boundary/);
+  const css=fs.readFileSync(path.join(root,"docs/assets/kerala.css"),"utf8");
+  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+  assert.match(css,/\.system-story\.is-visible \.system-current span/);
+});
