@@ -1,5 +1,43 @@
 # Kerala 2040 — research-first experience
 
+## September 2026 evidence-first interface
+
+The site is an investigative workspace, not a promotional homepage. Its central
+interaction is **research question → audited milestone → unresolved claim →
+source trail → next verifiable step**. Primary routes are Start here, Observed
+system, Research ledger, 2040 questions, Spatial evidence, Circular industry,
+Decision gates and Data library; these retain the existing deep-link route IDs.
+
+The landing page separates the FY2024–25 *observation bundle* timestamp and
+original evidence-build commit from the newer *research QA* date and the actual
+checked-out website-source commit. The site builder gets that revision from its
+own Git checkout, never from the website deployment repository's GITHUB_SHA.
+An unknown research revision is explicitly reported, never silently assumed.
+
+The decision desk reuses the generated research ledger, with a user-selectable
+finding, current evidence, limitations, next acquisition and restricted source
+links. The spatial pipeline scans five distinct GIS boundaries—terrain, LULC,
+landslide, protected areas and wetlands—without conflating download success,
+QA geometry or point data with statutory boundaries and land/MW admission.
+Detailed records are available in the workbench and audit routes, alongside
+observed electricity tables and public download contracts. We do not calculate
+a completion percentage, show a successful workflow as a scientific PASS,
+invent a 2040 optimum or present a green map of allegedly buildable land.
+
+Visual treatment: typographic research-journal masthead, high-contrast native
+light/dark surfaces, dark-forest observation panel, two-clock provenance strip,
+tactile selectable question rail, grouped evidence/limitation panels and
+responsive five-stage GIS cards. Preserve visible status text and direct source
+links independent of colour. Animated transitions stop under reduced-motion.
+Core controls are native buttons, sources and raw text escaped before insertion,
+and all interactive feature fallbacks retain textual information. Version every
+local stylesheet and script in the static site build.
+
+Publishing remains pinned to an immutable research commit by the separate
+website repository. Research source changes are not automatically public, and
+this interface release does not alter the v1.0.1 scientific model designation.
+
+
 The public site is a research workbench, not a brochure or completed 2040
 forecast. Its decision path is Acquire → Validate → Constrain → Publish.
 Navigation connects observed electricity, the research-workstream ledger,
