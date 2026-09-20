@@ -218,3 +218,40 @@ def test_kerala_coded_site_packages_fresh_app_and_distinct_audit_clocks(tmp_path
 
 def test_source_revision_refuses_unrelated_parent_git_checkout(tmp_path):
     assert site.source_revision(tmp_path) is None
+
+
+def test_kerala_social_thumbnail_touch_icon_and_vector_art_are_packaged(tmp_path):
+    import struct
+    from xml.etree import ElementTree as ET
+
+    site.build_site(ROOT, tmp_path)
+    html = (tmp_path / "index.html").read_text(encoding="utf-8")
+    assert 'property="og:image"' in html
+    assert 'content="https://kerala2040.github.io/assets/kerala2040-share.png"' in html
+    assert 'name="twitter:card" content="summary_large_image"' in html
+    assert 'id="welcomeCard"' in html and 'id="welcomeDismiss"' in html
+    assert 'class="welcome-card"' in html and 'aria-modal="true"' not in html
+    assert 'id="systemStoryTitle"' in html
+    assert 'not a mapped network or measured energy-flow diagram' in html
+    assert 'lang="ml"' in html
+    for name in (
+        "icons.svg", "mark.svg", "chapter-electric.svg", "chapter-land.svg",
+        "chapter-pathways.svg", "chapter-industry.svg",
+    ):
+        vector = tmp_path / "assets" / name
+        assert vector.is_file() and vector.stat().st_size > 100
+        assert ET.parse(vector).getroot().tag.endswith("svg")
+        assert name in html or name == "mark.svg"
+    share = tmp_path / "assets/kerala2040-share.png"
+    touch = tmp_path / "assets/kerala2040-touch.png"
+    for product, size in ((share, (1200, 630)), (touch, (180, 180))):
+        data = product.read_bytes()
+        assert len(data) > 5000 and data[:8] == bytes.fromhex("89504e470d0a1a0a")
+        assert data[12:16] == b"IHDR"
+        assert struct.unpack(">II", data[16:24]) == size
+    assert "assets/kerala2040-touch.png" in (
+        tmp_path / "manifest.webmanifest"
+    ).read_text(encoding="utf-8")
+    assert not (tmp_path / "assets/experience.css").exists()
+    assert not (tmp_path / "assets/workbench.css").exists()
+    assert not (tmp_path / "assets/app.js").exists()
