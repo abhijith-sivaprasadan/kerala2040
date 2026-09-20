@@ -56,6 +56,14 @@ workstreams:
       - reserved_forest_current_notification_boundaries
       - protected_areas_national_parks_wildlife_sanctuaries_community_reserves
       - eco_sensitive_zones_final_vs_draft_with_notification_dates
+    source_audit_evidence: data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json
+    source_audit_run: https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35524180566
+    official_pages_verified_http_200: 4
+    official_download_links_discovered: 47
+    official_zip_candidates: 9
+    direct_nonzip_machine_readable_vectors: 0
+    verified_geometry_archives: 0
+    zip_access_result: eight_HTTP_403_one_HTTP_404
     data_request: >-
       Current machine-readable reserve-forest and protected-area polygons with
       source notification/gazette identifiers, effective dates, legal category,
