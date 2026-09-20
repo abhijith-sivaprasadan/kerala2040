@@ -1,0 +1,190 @@
+{
+  "classification": "hash_verified_NWIC_published_Kerala_state_polygon_and_missing_GLO90_tile_intersections_NOT_pixel_coverage_or_legal_mask",
+  "validation_run": "https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35517474497",
+  "source_page": "https://nwdp.nwic.gov.in/dataset/state-boundary",
+  "source_resource_page": "https://nwdp.nwic.gov.in/dataset/state-boundary/resource/f039e721-132c-4a24-9e5e-07af03064b4d",
+  "dem_envelope_manifest": "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
+  "reviewed_at_utc": "2026-09-20T14:46:07+00:00",
+  "original_source_url": "https://nwdp.nwic.gov.in/dataset/dd960900-34cc-4486-a95c-83200d2f2c7b/resource/f039e721-132c-4a24-9e5e-07af03064b4d/download/state_nwic_geojson.zip",
+  "original_sha256": "a932ea29e7afd0fea1e1068f3beeeadb760e6b2baae9783f5822bbefd4224ebd",
+  "original_bytes": 20809092,
+  "feature_collection_count": 36,
+  "source_crs": "EPSG:7755 / India NSF LCC",
+  "boundary_analysis_crs": "EPSG:4326",
+  "kerala_source_properties": {
+    "id": 17,
+    "objectid": 17,
+    "state": "KL",
+    "stcode": "32",
+    "shape_length": 1837935.1020288093,
+    "shape_area": 39482535183.982445,
+    "ds_name": " Administrative Boundary",
+    "src_agency": "Survey of India (SOI)",
+    "state_name": "Kerala"
+  },
+  "kerala_bounds_wgs84": [
+    74.86433401590513,
+    8.292707436852217,
+    77.41224235944739,
+    12.795602379977375
+  ],
+  "kerala_polygon_area_sq_km_approx_NOT_land_eligibility": 38878.93897177378,
+  "missing_source_tile_intersection_with_official_kerala": {
+    "count": 0,
+    "tiles": [],
+    "approximate_km2": 0
+  },
+  "source_tile_footprint_intersections": [
+    {
+      "latitude": 8,
+      "longitude": 74,
+      "source_status": "tile_not_published_http_404",
+      "boundary_intersection_km2_approx": 0,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 8,
+      "longitude": 75,
+      "source_status": "tile_not_published_http_404",
+      "boundary_intersection_km2_approx": 0,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 8,
+      "longitude": 76,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 1960.5031882140909,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 8,
+      "longitude": 77,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 1784.9236711379892,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 9,
+      "longitude": 74,
+      "source_status": "tile_not_published_http_404",
+      "boundary_intersection_km2_approx": 0,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 9,
+      "longitude": 75,
+      "source_status": "tile_not_published_http_404",
+      "boundary_intersection_km2_approx": 0,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 9,
+      "longitude": 76,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 7960.534669916096,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 9,
+      "longitude": 77,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 3213.1488071299505,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 10,
+      "longitude": 74,
+      "source_status": "tile_not_published_http_404",
+      "boundary_intersection_km2_approx": 0,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 10,
+      "longitude": 75,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 398.70541078207606,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 10,
+      "longitude": 76,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 9648.543694287162,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 10,
+      "longitude": 77,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 961.6130881957037,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 11,
+      "longitude": 74,
+      "source_status": "tile_not_published_http_404",
+      "boundary_intersection_km2_approx": 0,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 11,
+      "longitude": 75,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 4542.065969423158,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 11,
+      "longitude": 76,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 4954.414490583457,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 11,
+      "longitude": 77,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 0,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 12,
+      "longitude": 74,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 278.41043028190984,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 12,
+      "longitude": 75,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 3176.0755728800264,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 12,
+      "longitude": 76,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 0,
+      "boundary_intersects_missing_tile": false
+    },
+    {
+      "latitude": 12,
+      "longitude": 77,
+      "source_status": "original_tif_downloaded",
+      "boundary_intersection_km2_approx": 0,
+      "boundary_intersects_missing_tile": false
+    }
+  ],
+  "metadata_discrepancy": "NWIC dataset page lists GSI producer, original Kerala feature src_agency names Survey of India; original survey/boundary equivalence not independently adjudicated",
+  "original_source_file_committed_to_git": false,
+  "original_source_file_preserved_in_short_retention_workflow_artifact": true,
+  "source_redistibution_licence_review_pending": true,
+  "missing_tile_intersections_verified_for_this_boundary_version_only": true,
+  "kerala_state_pixel_completeness_verified": false,
+  "forest_or_protected_area_notifications_verified": false,
+  "land_or_water_mask_verified": false,
+  "legal_exclusion_applied": false,
+  "eligible_area_sq_km": null,
+  "capacity_ceiling_mw": null
+}
