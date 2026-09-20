@@ -1,0 +1,84 @@
+name: Crosswalk Kerala protected areas with complete WDPA ID checks
+
+on:
+  pull_request:
+    paths:
+      - "configs/kerala_protected_area_crosswalk_2026.yaml"
+      - "scripts/crosswalk_kerala_protected_areas.py"
+      - "tests/test_protected_area_crosswalk.py"
+      - ".github/workflows/protected-area-crosswalk.yml"
+  push:
+    branches:
+      - main
+      - audit/wdpa-crosswalk-diagnostic-20260920
+    paths:
+      - "configs/kerala_protected_area_crosswalk_2026.yaml"
+      - "scripts/crosswalk_kerala_protected_areas.py"
+      - "tests/test_protected_area_crosswalk.py"
+      - ".github/workflows/protected-area-crosswalk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  secondary-crosswalk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: src:scripts:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install scoped GIS dependencies
+        run: |
+          pip install "shapely>=2,<3" "pyproj>=3.7,<4" "requests>=2.32,<3" "pyyaml>=6,<7" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Lint and tests
+        run: |
+          ruff check scripts/crosswalk_kerala_protected_areas.py tests/test_protected_area_crosswalk.py
+          pytest -q tests/test_protected_area_crosswalk.py
+      - name: Query both WDPA layers and reconcile server IDs and counts
+        run: python scripts/crosswalk_kerala_protected_areas.py
+      - name: Require research-only evidence and no false success
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("results/gis/kerala_protected_area_crosswalk.json").read_text())
+          assert a["official_core_designations_expected"] == 25
+          assert len(a["source_layers"]) == 2
+          assert all(layer["all_ids_reconciled"] for layer in a["source_layers"])
+          assert all(layer["server_spatial_count"] == layer["retrieved_object_id_count"]
+                     for layer in a["source_layers"])
+          assert a["point_records_converted_to_polygons"] is False
+          assert a["secondary_geometry_can_support_provisional_screening"] is False
+          assert a["secondary_geometry_can_replace_KFD_statutory_boundaries"] is False
+          assert a["legal_notification_geometry_linkage_verified"] is False
+          assert a["eligible_area_sq_km"] is None
+          assert a["capacity_ceiling_mw"] is None
+          PY
+      - name: Print compact comparison for audit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("results/gis/kerala_protected_area_crosswalk.json").read_text())
+          print(json.dumps({
+            "layers": a["source_layers"],
+            "polygon_names": a["envelope_polygon_names"],
+            "point_names": a["envelope_point_names"],
+            "unique_matches": a["official_designations_uniquely_matched"],
+            "unresolved": a["official_designations_unresolved"],
+            "screening_ready": a["secondary_geometry_can_support_provisional_screening"]
+          }, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wdpa-kerala-crosswalk-research-only-NOT-statutory
+          path: |
+            results/gis/kerala_protected_area_crosswalk.json
+            results/gis/wdpa_raw/**
+          retention-days: 30

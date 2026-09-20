@@ -1,0 +1,51 @@
+version: 1
+classification: kerala_forest_department_protected_area_register_for_spatial_crosswalk_not_boundary_source
+reviewed_date: "2026-09-20"
+primary_register:
+  source: Kerala Forest and Wildlife Department (KFD) / Kerala State Planning Board Economic Review 2025, Appendix 3.6.6
+  url: https://forest.kerala.gov.in/en/preserving-natures-heritage/
+  note: KFD list is the name/category register; area_km2 takes the newer dated Economic Review 2025 figures where differing. Neither is surveyed statutory geometry.
+  area_update_source: https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume%202%20Eng%20final.pdf
+  area_update_page: Appendix 3.6.6; printed page 130; PDF page 153
+secondary_geometry:
+  source: UNEP-WCMC and IUCN Protected Planet / WDPA
+  polygon_service: https://data-gis.unep-wcmc.org/server/rest/services/ProtectedSites/The_World_Database_of_Protected_Areas/FeatureServer/1
+  point_service: https://data-gis.unep-wcmc.org/server/rest/services/ProtectedSites/The_World_Database_of_Protected_Areas/FeatureServer/0
+  note: IDs, counts, and point/polygon geometries require separate retrieval; no point buffer or statutory interpretation.
+  release_context: "2026-08 service copyright at review; current live retrieval must record its own date"
+  role: secondary_spatial_reference_not_statutory_boundary
+protected_areas:
+  - {name: Eravikulam National Park, type: National Park, area_km2: 97.000, aliases: [Eravikulam]}
+  - {name: Periyar National Park, type: National Park, area_km2: 350.000, aliases: [Periyar National Park]}
+  - {name: Silent Valley National Park, type: National Park, area_km2: 89.520, prior_kfd_area_km2: 237.520, aliases: [Silent Valley]}
+  - {name: Anamudi Shola National Park, type: National Park, area_km2: 7.500, aliases: [Anamudi Shola, Anamudi]}
+  - {name: Mathikettan Shola National Park, type: National Park, area_km2: 12.817, aliases: [Mathikettan Shola, Mathikettan]}
+  - {name: Pambadum Shola National Park, type: National Park, area_km2: 1.318, aliases: [Pambadum Shola, Pampadum Shola]}
+  - {name: Periyar Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 777.000, aliases: [Periyar]}
+  - {name: Neyyar Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 128.000, aliases: [Neyyar]}
+  - {name: Peechi - Vazhani Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 125.000, aliases: [Peechi-Vazhani, Peechi Vazhani]}
+  - {name: Parambikulam Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 285.000, aliases: [Parambikulam]}
+  - {name: Wayanad Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 344.479, prior_kfd_area_km2: 344.440, aliases: [Wayanad]}
+  - {name: Idukki Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 105.364, prior_kfd_area_km2: 70.000, aliases: [Idukki]}
+  - {name: Peppara Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 53.000, aliases: [Peppara]}
+  - {name: Thattekkad Bird Sanctuary, type: Wildlife Sanctuary, area_km2: 25.000, aliases: [Thattekkad, Thattekad]}
+  - {name: Shendurney Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 172.403, prior_kfd_area_km2: 171.000, aliases: [Shendurney, Shenduruny]}
+  - {name: Chinnar Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 90.440, aliases: [Chinnar]}
+  - {name: Chimmony Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 114.600, prior_kfd_area_km2: 85.000, aliases: [Chimmony]}
+  - {name: Aralam Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 55.000, aliases: [Aralam]}
+  - {name: Mangalavanam Bird Sanctuary, type: Wildlife Sanctuary, area_km2: 0.027, aliases: [Mangalavanam]}
+  - {name: Kurinjimala Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 32.000, aliases: [Kurinjimala, Kurinjimala Sanctuary]}
+  - {name: Choolannur Peafowl Sanctuary, type: Wildlife Sanctuary, area_km2: 3.420, aliases: [Choolannur Peafowl, Choolannur]}
+  - {name: Malabar Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 74.215, aliases: [Malabar]}
+  - {name: Kottiyoor Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 30.380, aliases: [Kottiyoor, Kottiyur]}
+  - {name: Karimpuzha Wildlife Sanctuary, type: Wildlife Sanctuary, area_km2: 227.970, aliases: [Karimpuzha]}
+  - {name: Kadalundi - Vallikunnu Community Reserve, type: Community Reserve, area_km2: 1.538, prior_kfd_area_km2: 1.500, aliases: [Kadalundi-Vallikunnu, Kadalundi Vallikunnu, Kadalundi]}
+overlapping_designations:
+  - {name: Periyar Tiger Reserve, area_km2: 925.675, prior_kfd_area_km2: 925.000}
+  - {name: Parambikulam Tiger Reserve, area_km2: 643.660}
+model_use:
+  protected_area_secondary_geometry_ready: false
+  statutory_boundary_verified: false
+  reserve_forest_boundary_verified: false
+  protected_area_union_sq_km: null
+  ecological_capacity_ceiling_ready: false
