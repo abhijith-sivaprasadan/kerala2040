@@ -1,13 +1,34 @@
-# Kerala 2040 — chart interaction reference
+# Kerala 2040 — research-first experience
 
-Reference: https://www.iea.org/, inspected 18 September 2026 through Firecrawl branding extraction and a live browser screenshot. This applies to the existing GitHub Pages site.
+The public site is a research workbench, not a brochure or completed 2040
+forecast. Its decision path is Acquire → Validate → Constrain → Publish.
+Navigation connects observed electricity, the research-workstream ledger,
+GIS source status, scenario specifications, detailed audit gates and downloads.
 
-User clarification: retain the existing Kerala green palette, typography, homepage layout and God's Own Country identity. IEA is a reference for data presentation, chart types and animation only. Do not apply its white/blue editorial redesign.
+Keep Kerala green, the wordmark, Inter and IBM Plex Mono; use off-white and
+forest-green surfaces, amber for provisional status and brick for missing
+critical evidence. A dark-forest theme is composed separately. No artificial
+completion rings or scores. Green source acquisition is not green model
+readiness. Every research card carries completed work, unresolved blocker,
+specific next action, source evidence and a functioning navigation route.
 
-Retain Inter/Arial and the Kerala wordmark. Present measured observations, historical exports, proxy reconstruction and external benchmarks with distinct labels. Animate chart updates briefly, respect reduced motion, provide readable hover comparisons and controls for temporal scope. Do not reuse third-party logos, editorial copy or photography.
+The public research ledger is generated from committed QA and the same
+scientific audit used by the publication gates. Raw GIS archives and
+development-only synthetic hourly series stay outside public Pages builds.
+The atlas is illustrative: verified source pixel coverage is not bare-earth
+terrain, candidate polygon repair is not legal validation, and no eligible
+land/MW can be inferred from acquisition milestones.
 
-Existing tokens in docs/assets/platform.css remain authoritative: green #22634f, forest #153d31, warm neutral #fafbf7 and amber #ad7025. Keep responsive layouts and accessible keyboard controls.
+Publication uses the separate website repository's SOURCE_COMMIT, which
+pins one immutable 40-hex research commit. Pushing the research main branch
+alone does not update the public site. Advance the pointer after the exact
+commit passes CI, site packaging, source ledger assertions and release gates.
+A UI update is not a new scientific model release or a re-tag of v1.0.1.
 
-Keep real evidence dates, measured/proxy distinctions and functional navigation, source search, downloads, scenario controls and the statewide atlas. Feature cards navigate to actual research views. No invented news, reports, simulations, events or account forms. Tables and download links remain usable when optional chart or map libraries fail.
+Accessible behaviour: responsive layout, actual source search and stage
+filters, keyboard-operable navigation, visibly distinct status text, reduced
+motion, escaped source text and domain-restricted evidence URLs. Preserve
+source tables/downloads when optional chart or map libraries fail.
 
-Collection artifacts: `.firecrawl/iea-branding.json`; `.firecrawl/iea-screenshot.png` contains markdown rather than image bytes because that CLI capture did not return a local screenshot. Visual reference was verified in the live browser instead.
+Earlier IEA references apply to information visualisation and chart behaviour,
+not imported branding, editorial language, charts, photographs or data rights.
