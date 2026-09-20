@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from shapely.geometry import GeometryCollection, LineString, MultiPolygon, Polygon
 
-from scripts.compare_gsi_2022_geometry_repairs import compare_feature, parts, polygonal
+from kerala2040.gsi_repair import compare_feature, parts, polygonal
 
 
 def test_polygonal_drops_non_areal_make_valid_debris():
