@@ -85,9 +85,15 @@ def probe(output: Path, download_dir: Path, *, max_mb: int = 65) -> dict:
             response.raise_for_status()
             soup = BeautifulSoup(response.text, "html.parser")
             candidates = []
+            all_links = []
             for link in soup.find_all("a", href=True):
                 target = urljoin(response.url, link["href"])
                 u = urlparse(target)
+                label = " ".join(link.get_text(" ", strip=True).split())
+                if any(v in (label + " " + target).lower() for v in (
+                    "idukki", "thiruvananthapuram", "landslide", "gsi", "shapefile", ".zip"
+                )):
+                    all_links.append({"label": label, "url": target})
                 if u.scheme != "https" or u.hostname != "sdma.kerala.gov.in":
                     continue
                 nearby = " ".join(
@@ -105,6 +111,7 @@ def probe(output: Path, download_dir: Path, *, max_mb: int = 65) -> dict:
                 "status": "public_website_archive_candidates_not_validated_district_coverage",
                 "source_url": KSDMA,
                 "candidate_archives": candidates[:80],
+                "relevant_anchor_preview": all_links[:80],
                 "candidate_count": len(candidates),
                 "warning": (
                     "Automated link context may include other landslide vintages. "
