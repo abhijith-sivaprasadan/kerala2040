@@ -1,0 +1,59 @@
+name: Crosswalk Kerala protected areas
+
+on:
+  pull_request:
+    paths:
+      - "configs/kerala_protected_area_crosswalk_2026.yaml"
+      - "scripts/crosswalk_kerala_protected_areas.py"
+      - "tests/test_protected_area_crosswalk.py"
+      - ".github/workflows/protected-area-crosswalk.yml"
+  push:
+    branches: [main]
+    paths:
+      - "configs/kerala_protected_area_crosswalk_2026.yaml"
+      - "scripts/crosswalk_kerala_protected_areas.py"
+      - ".github/workflows/protected-area-crosswalk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  crosswalk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: src:scripts:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install scoped GIS dependencies
+        run: pip install "geopandas>=1,<2" "pyogrio>=0.10,<1" "shapely>=2,<3" "pyproj>=3.7,<4" "requests>=2.32,<3" "pandas>=2.2,<3" "pyyaml>=6,<7" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Lint and tests
+        run: |
+          ruff check scripts/crosswalk_kerala_protected_areas.py tests/test_protected_area_crosswalk.py
+          pytest -q tests/test_protected_area_crosswalk.py
+      - name: Query current WDPA polygons and crosswalk KFD register
+        run: python scripts/crosswalk_kerala_protected_areas.py
+      - name: Enforce secondary-only evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("results/gis/kerala_protected_area_crosswalk.json").read_text())
+          assert a["official_core_designations_expected"] == 25
+          assert a["secondary_geometry_can_replace_KFD_statutory_boundaries"] is False
+          assert a["reserve_forest_geometry_acquired"] is False
+          assert a["legal_notification_geometry_linkage_verified"] is False
+          assert a["eligible_area_sq_km"] is None
+          assert a["capacity_ceiling_mw"] is None
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kerala-protected-area-secondary-crosswalk-NOT-statutory-boundary
+          path: |
+            results/gis/kerala_protected_area_crosswalk.json
+            results/gis/wdpa_kerala_envelope_raw.geojson
+          retention-days: 90
