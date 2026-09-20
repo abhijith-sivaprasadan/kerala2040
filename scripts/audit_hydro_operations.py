@@ -2,6 +2,5 @@
 
 from kerala2040.hydro_operations import main
 
-
 if __name__ == "__main__":
     raise SystemExit(main())
