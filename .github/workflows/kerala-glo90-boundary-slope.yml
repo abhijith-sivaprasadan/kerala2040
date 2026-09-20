@@ -1,0 +1,65 @@
+name: Build Kerala boundary GLO90 DSM and descriptive slope QA
+
+on:
+  pull_request:
+    paths:
+      - "scripts/build_kerala_glo90_boundary_dsm.py"
+      - "tests/test_kerala_glo90_boundary_dsm.py"
+      - "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
+      - "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json"
+      - "data/evidence/gis/kerala_glo90_boundary_slope_qa_2026_09_20.json"
+      - ".github/workflows/kerala-glo90-boundary-slope.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/build_kerala_glo90_boundary_dsm.py"
+      - "data/evidence/gis/kerala_glo90_boundary_slope_qa_2026_09_20.json"
+      - ".github/workflows/kerala-glo90-boundary-slope.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  boundary-dsm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      PYTHONPATH: src:scripts:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install geospatial QA stack
+        run: pip install "rasterio>=1.4,<2" "numpy>=2,<3" "requests>=2.32,<3" "pyproj>=3.7,<4" "shapely>=2,<3" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Lint and unit tests
+        run: |
+          ruff check scripts/build_kerala_glo90_boundary_dsm.py tests/test_kerala_glo90_boundary_dsm.py
+          pytest -q tests/test_kerala_glo90_boundary_dsm.py
+      - name: Reacquire hash-verified originals and build boundary DSM/slope
+        run: python scripts/build_kerala_glo90_boundary_dsm.py
+      - name: Enforce descriptive-only scientific boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("results/gis/kerala_glo90_boundary_slope_qa.json").read_text())
+          assert a["source_original_tiles"] == 14
+          assert a["source_original_tile_hashes_reverified"] is True
+          assert a["source_is_bare_earth_dtm"] is False
+          assert a["native_grid_boundary_clip"]["all_boundary_pixel_centres_have_source_height"] is True
+          assert a["native_grid_boundary_clip"]["pixel_center_coverage_fraction"] == 1.0
+          assert a["descriptive_slope"]["technology_threshold_selected"] is False
+          assert a["descriptive_slope"]["land_eligibility_interpretation"] is False
+          assert a["ecological_capacity_ceiling_ready"] is False
+          assert a["capacity_ceiling_mw"] is None
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Kerala-GLO90-boundary-DSM-and-slope-DESCRIPTIVE-NOT-ELIGIBILITY
+          retention-days: 90
+          path: |
+            results/gis/kerala_glo90_boundary_slope_qa.json
+            results/gis/kerala_glo90_boundary/**
