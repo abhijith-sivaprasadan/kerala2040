@@ -72,6 +72,15 @@ async function main(){
     const metrics=await page.locator("#headlineMetrics").innerText();
     check(metrics.includes("354")&&metrics.includes("11"),"Do not fabricate missing dates");
     check(await page.locator(".system-node").count()===4,"Four connected-system chapters");
+    check(await page.locator("html").evaluate(e=>e.classList.contains("motion-ready")),
+      "Animations never activated in ordinary browser preferences");
+    const sunAnimation=await page.locator(".scene-sun").evaluate(e=>getComputedStyle(e).animationName);
+    check(sunAnimation.includes("monsoon-glow"),"Hero animation is not running: "+sunAnimation);
+    await page.locator(".system-story").scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>document.querySelector(".system-story")?.classList.contains("is-visible"));
+    const currentAnimation=await page.locator(".system-current span").first().evaluate(e=>getComputedStyle(e).animationName);
+    check(currentAnimation.includes("current-flow"),"Illustrated energy current is not animated: "+currentAnimation);
+    console.log("PASS ANIMATION: hero sun, observer reveal and system current");
     await visible(page.locator("#welcomeCard"),"First-visit welcome");
     check(await page.locator("#main").isVisible(),"Splash cannot block content");
     await page.locator("#welcomeDismiss").click();
@@ -158,6 +167,7 @@ async function main(){
       check(await page.locator('[data-theme-choice="'+theme+'"]').getAttribute("aria-pressed")==="true",
         "Selected theme not accessible");
     }
+    await route("overview");
     await page.reload({waitUntil:"domcontentloaded"});
     await page.locator("#headlineMetrics .number-card").first().waitFor();
     check(await page.locator("html").getAttribute("data-theme")==="kasavu",
