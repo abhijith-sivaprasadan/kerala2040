@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<symbol id="electric" viewBox="0 0 40 40"><path d="m23 3-14 19h12l-4 15 15-21H20z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+<symbol id="water" viewBox="0 0 40 40"><path d="M20 3C14 12 8 18 8 25a12 12 0 0 0 24 0C32 18 26 12 20 3Z" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M12 26c3-2 5-2 8 0s5 2 8 0" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="leaf" viewBox="0 0 40 40"><path d="M34 6C9 5 5 17 8 27c5 12 24 9 26-21ZM7 35Q17 23 29 15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></symbol>
+<symbol id="sun" viewBox="0 0 40 40"><circle cx="20" cy="20" r="8" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M20 2v7m0 22v7M2 20h7m22 0h7M7 7l5 5m16 16 5 5M33 7l-5 5M12 28l-5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></symbol>
+<symbol id="cycle" viewBox="0 0 40 40"><path d="M32 12a14 14 0 0 0-23-1L4 16m0-9v9h9m-5 12a14 14 0 0 0 23 1l5-5m0 9v-9h-9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="sources" viewBox="0 0 40 40"><path d="M12 4h14l7 7v25H12zM26 4v8h7M17 19h11m-11 6h11m-11 6h8M7 11H4v25h5" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/></symbol>
+<symbol id="shield" viewBox="0 0 40 40"><path d="M20 3 34 9v10q-1 11-14 18Q7 30 6 19V9zM13 20l5 5 9-11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></symbol>
+<symbol id="layers" viewBox="0 0 40 40"><path d="m20 4 16 10-16 10L4 14zM5 21l15 10 15-10M5 28l15 9 15-9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></symbol>
+<symbol id="arrow" viewBox="0 0 40 40"><path d="M6 20h27M22 9l11 11-11 11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="spark" viewBox="0 0 40 40"><path d="M20 3 24 16l13 4-13 4-4 13-4-13L3 20l13-4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+</svg>
