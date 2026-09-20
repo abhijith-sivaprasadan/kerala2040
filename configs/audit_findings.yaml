@@ -112,13 +112,19 @@ findings:
     priority: P0
     check: gis_model_ready
     acquisition: >-
-      Kerala Forest Department reports digitised reserve/protected-area
-      boundaries. A live official-site probe verified four source pages,
-      47 download links and nine ZIP candidates; eight ZIPs returned HTTP
-      403 and one returned HTTP 404, with no direct non-ZIP machine-readable
-      vector and no notification-linked geometry acquired. Request official
-      GPKG/shapefiles, legal categories, gazette IDs, effective dates, CRS,
-      revisions, boundary survey basis and redistribution permission.
+      KFD reports digitised reserve/protected-area boundaries. The official
+      source probe found nine ZIP candidates: eight HTTP 403, one HTTP 404;
+      no verified statutory vector archive was acquired. A separate bounded
+      WDPA spatial query retrieved all server-reported envelope IDs (four
+      polygon and four point features), but zero polygons uniquely matched
+      the 25 KFD core designations; point records are not legal boundaries.
+      The KFD tabular areas were also reconciled with the newer government
+      Economic Review 2025; Silent Valley National Park is 89.52 sq km,
+      rather than the previous 237.52 sq km wildlife-division figure.
+      WDPA remains secondary and unavailable for even provisional spatial
+      screening. Obtain original notification-linked KFD polygons with
+      dates, legal category, original CRS, revision, survey basis and reuse
+      permission before exclusions, eligible area or capacity.
     evidence: data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json
   - id: wetland_waterbody_landslide
     priority: P0
