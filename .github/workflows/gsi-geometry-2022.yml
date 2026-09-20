@@ -26,7 +26,7 @@ permissions:
 jobs:
   original-archive-geometry-qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       PYTHONPATH: src:.
     steps:
@@ -43,7 +43,9 @@ jobs:
       - name: Redownload and decode 13 ORIGINAL GSI district archives
         run: python scripts/validate_gsi_2022_geometry.py --download
       - name: Diagnose original ring self-intersections without replacing originals
-        run: python scripts/assess_gsi_2022_repairs.py
+        run: >-
+          python scripts/assess_gsi_2022_repairs.py
+          --provisional-gpkg results/gis/gsi_2022_topology_REPAIRED_NOT_OFFICIAL.gpkg
       - name: Confirm no statewide or legal eligibility claim
         run: |
           python - <<'PY'
@@ -67,5 +69,6 @@ jobs:
           path: |
             results/gis/gsi_2022_geometry_audit.json
             results/gis/gsi_2022_repair_review.json
+            results/gis/gsi_2022_topology_REPAIRED_NOT_OFFICIAL.gpkg
             results/gis/pilot_raw/ksdma/*.zip
           retention-days: 30
