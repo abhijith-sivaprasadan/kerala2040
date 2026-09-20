@@ -1,577 +1,145 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="kasavu">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#153d31" />
-  <meta name="description" content="Kerala 2040: trace measured electricity, source QA, ecological constraints and scientific release gates." />
-  <meta property="og:title" content="Kerala 2040 — Energy research workbench" />
-  <meta property="og:description" content="Measured evidence, geospatial audits and the scientific gates for Kerala’s 2040 pathways." />
-  <meta property="og:type" content="website" />
-  <link rel="canonical" href="https://kerala2040.github.io/" />
-  <title>Kerala 2040 — Energy Data & Modelling</title>
-  <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-  <link rel="stylesheet" href="assets/styles.css" />
-  <link rel="stylesheet" href="assets/platform.css" />
-  <link rel="stylesheet" href="assets/workbench.css" />
-  <link rel="stylesheet" href="assets/experience.css" />
-  <script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#174537">
+  <meta name="description" content="Kerala2040 is independent research into Kerala's electricity, resilient energy choices, ecological limits and a feasible 2040 future. Explore observed evidence and what remains unknown.">
+  <meta property="og:title" content="Kerala2040 — കേരളത്തിന്റെ ഊർജഭാവി">
+  <meta property="og:description" content="Our land. Our energy future. An independent Kerala energy-system research project.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://kerala2040.github.io/">
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Manjari:wght@400;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/kerala.css">
   <script defer src="assets/app.js"></script>
+  <title>Kerala2040 — Our land. Our energy future.</title>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-  <noscript><p class="shell">Enable JavaScript to explore the dashboard. <a href="data/site-data.json">Download the evidence snapshot</a>.</p></noscript>
-  <div class="utility">
-    <div class="shell utility-inner">
-      <div>KERALA 2040 <span class="utility-separator">/</span> INDEPENDENT RESEARCH</div>
-      <div class="utility-links">
-        <span id="evidenceDate">Evidence through 2026 · model horizon 2040</span>
-        <a href="https://github.com/abhijith-sivaprasadan/kerala2040" target="_blank" rel="noopener">GitHub</a>
-        <button id="themeToggle" class="utility-button" type="button" aria-label="Toggle colour theme">Theme</button>
-      </div>
-    </div>
-  </div>
-
-  <header class="masthead">
-    <div class="shell masthead-main">
-      <a class="brand" href="#overview" data-route="overview" aria-label="Kerala 2040 home">
-        <img src="assets/mark.svg" alt="" />
-        <div class="brand-copy">
-          <strong>Kerala 2040</strong>
-          <span>Evidence → analysis → decisions</span>
-        </div>
+  <noscript><div class="no-js">This interactive edition requires JavaScript. <a href="data/site-data.json">Read the published evidence bundle</a> or <a href="https://github.com/abhijith-sivaprasadan/kerala2040">inspect the research source</a>.</div></noscript>
+  <div class="topline" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="wordmark" href="#overview" data-route="overview" aria-label="Kerala2040 home">
+        <span class="wordmark-symbol" aria-hidden="true">ക</span>
+        <span class="wordmark-type"><strong>kerala<span>2040</span></strong><small>കേരളത്തിന്റെ ഊർജഭാവി</small></span>
       </a>
-      <div class="masthead-tools">
-        <button class="search-link" data-route="data">Evidence library <span aria-hidden="true">↗</span></button>
+      <nav class="main-nav" aria-label="Explore the research">
+        <button type="button" class="active" data-route="overview">The project</button>
+        <button type="button" data-route="electricity">Kerala today</button>
+        <button type="button" data-route="pathways">2040 choices</button>
+        <button type="button" data-route="atlas">Land &amp; ecology</button>
+        <button type="button" data-route="industry">Industry</button>
+        <button type="button" data-route="workbench">Research</button>
+        <button type="button" data-route="data">The sources</button>
+        <button type="button" data-route="audit" class="nav-audit">What's missing <span aria-hidden="true">↗</span></button>
+      </nav>
+      <div class="theme-switch" role="group" aria-label="Visual theme">
+        <button type="button" data-theme-choice="kasavu" aria-pressed="true" title="Kasavu · ivory, brass and forest"><span class="swatch kasavu"></span><span>Kasavu</span></button>
+        <button type="button" data-theme-choice="monsoon" aria-pressed="false" title="Monsoon · deep backwater blues"><span class="swatch monsoon"></span><span>Monsoon</span></button>
+        <button type="button" data-theme-choice="laterite" aria-pressed="false" title="Laterite · red earth and palm"><span class="swatch laterite"></span><span>Laterite</span></button>
       </div>
+      <button type="button" class="mobile-menu-button" id="menuToggle" aria-controls="mobileNav" aria-expanded="false">Explore <span aria-hidden="true">☰</span></button>
     </div>
-    <nav class="primary-nav" aria-label="Primary navigation">
-      <div class="shell nav-inner">
-        <button data-route="overview" class="nav-link active">Start here</button>
-        <button data-route="electricity" class="nav-link">Observed system</button>
-        <button data-route="workbench" class="nav-link">Research ledger</button>
-        <button data-route="pathways" class="nav-link">2040 questions</button>
-        <button data-route="atlas" class="nav-link">Spatial evidence</button>
-        <button data-route="industry" class="nav-link">Circular industry</button>
-        <button data-route="audit" class="nav-link">Decision gates</button>
-        <button data-route="data" class="nav-link">Data library</button>
-      </div>
+    <nav id="mobileNav" class="mobile-nav" aria-label="Mobile research navigation" hidden>
+      <button type="button" data-route="overview">The project</button>
+      <button type="button" data-route="electricity">Kerala today</button>
+      <button type="button" data-route="pathways">2040 choices</button>
+      <button type="button" data-route="atlas">Land &amp; ecology</button>
+      <button type="button" data-route="industry">Industry</button>
+      <button type="button" data-route="workbench">Research</button>
+      <button type="button" data-route="data">The sources</button>
+      <button type="button" data-route="audit">What's missing</button>
     </nav>
   </header>
 
   <main id="main">
-    <section class="view active" data-view="overview">
-      <section class="home-hero shell research-hero experience-hero" aria-labelledby="homeTitle">
-        <div class="home-hero-copy">
-          <div class="hero-kicker"><span class="hero-kicker-square" aria-hidden="true"></span> OPEN RESEARCH / KERALA / 2040</div>
-          <div class="section-label hero-edition">FIELD NOTES № 01 · ELECTRICITY, LAND AND SYSTEMS</div>
-          <h1 id="homeTitle">An energy future<br>you can <em>interrogate.</em></h1>
-          <p>Kerala2040 is an evidence-led research workspace. See the measured system, inspect what the source actually supports, and follow each unsolved question to the data needed to answer it.</p>
-          <div class="hero-actions">
-            <button class="button primary" data-route="workbench">Investigate the research <span aria-hidden="true">↗</span></button>
-            <button class="button secondary" data-route="electricity">Start with observations →</button>
+    <section class="view active" data-view="overview" aria-labelledby="homeTitle">
+      <div class="hero scene">
+        <div class="scene-sun" aria-hidden="true"></div><div class="scene-rain" aria-hidden="true"></div>
+        <svg class="scene-landscape" viewBox="0 0 960 580" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+          <path d="M0 300 95 243 165 272 253 190 339 232 430 112 535 195 625 90 740 198 840 122 960 211V580H0Z" fill="var(--hill-far)"/>
+          <path d="M0 363 118 311 195 345 301 254 385 303 481 212 572 278 701 195 790 284 960 219V580H0Z" fill="var(--hill-near)"/>
+          <path d="M0 415Q160 366 300 429T650 395T960 398V580H0Z" fill="var(--paddy)"/>
+          <path d="M0 472Q200 440 342 476T650 458T960 441V580H0Z" fill="var(--water)"/>
+          <path d="M0 492Q180 466 348 502T655 481T960 462M0 526Q196 494 353 535T660 509T960 489" stroke="var(--water-line)" stroke-width="3" opacity=".7"/>
+          <path d="m0 435 270 42M0 460l233 38m492-20 240-30" stroke="var(--paddy-line)" stroke-width="3" opacity=".6"/>
+          <g stroke="var(--palm)" stroke-width="6" stroke-linecap="round">
+            <path d="M825 475Q828 366 791 274M874 469Q875 389 896 319"/>
+            <path d="M792 274q-49-44-99-25m99 25q-5-65-48-87m48 87q36-60 87-59m-87 59q65-16 115 16m-115-16q-50 14-77 63m77-63q44 24 54 74"/>
+            <path d="M896 319q-41-36-72-18m72 18q8-49-27-75m27 75q36-43 77-31m-77 31q41 9 63 43"/>
+          </g>
+          <path d="M560 485q81-17 174 0l-21 19H589z" fill="var(--boat)"/>
+          <path d="m633 485-1-62m0 4q33 17 47 48h-47z" stroke="var(--boat)" stroke-width="3" fill="var(--sail)"/>
+        </svg>
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <span class="micro overline"><span class="symbol-star">✳</span> AN INDEPENDENT ENERGY RESEARCH PROJECT · KERALA</span>
+            <p class="hero-malayalam" lang="ml">നമ്മുടെ നാട്. നമ്മുടെ ഊർജഭാവി.</p>
+            <h1 id="homeTitle">A stronger<br><em>energy future</em><br>for Kerala.</h1>
+            <p class="hero-description">Kerala depends on electricity arriving from outside the state, on water stored in its hills, and on land that cannot simply be built over. <strong>What mix of energy, storage, trade and industry can make the state more resilient by 2040—without sacrificing the places that make it Kerala?</strong></p>
+            <div class="hero-actions"><button type="button" class="button button-cream" data-route="electricity">Start with Kerala today <span aria-hidden="true">↗</span></button><button type="button" class="button button-outline" data-route="pathways">The 2040 question <span aria-hidden="true">→</span></button></div>
+            <div class="hero-foot"><span>01 / 08</span><span>Observed FY2024–25 → Research horizon 2040</span><span id="dataOrigin">Loading dated evidence…</span></div>
           </div>
-          <div class="hero-meta"><span class="hero-meta-dot" aria-hidden="true"></span><span id="dataOrigin" class="data-origin">Loading publication and evidence identities…</span></div>
-          <p class="hero-source-note">Historical reference: FY2024–25 · Planning horizon: 2040. Published external scenarios are not project forecasts.</p>
         </div>
-        <aside class="hero-stat evidence-hero" aria-label="Observed electricity and research status">
-          <span class="hero-stat-label">THE SYSTEM / VERIFIED OBSERVATIONS</span>
-          <p class="hero-context">Net electricity imports as a share of consumption on available FY2024–25 SLDC days</p>
-          <div class="hero-stat-value"><span id="heroDemandNumber">—</span><small>%</small></div>
-          <div class="hero-evidence-divider" aria-hidden="true"></div>
-          <div class="hero-evidence-rows">
-            <div><span>Observation window</span><strong id="heroCoverage">Checking available report days…</strong></div>
-            <div><span>2040 optimisation</span><strong>Not yet released</strong></div>
-          </div>
-          <button class="text-link" data-route="electricity">Trace the observed balance ↗</button>
-        </aside>
-      </section>
-      <section class="shell evidence-snapshot" id="evidenceSnapshot" aria-live="polite" aria-label="Two dated evidence identities">
-        <div class="snapshot-pending">Checking research and observation dates…</div>
-      </section>
+      </div>
+      <div class="kasavu-border" aria-hidden="true"></div>
 
-      <section class="stat-band">
-        <div id="headlineMetrics" class="shell headline-grid" aria-live="polite"></div>
-      </section>
-      <section class="shell research-notice" id="researchReadiness" aria-live="polite"></section>
-      <section class="shell research-path" aria-label="How this research works">
-        <div class="research-path-head"><span class="section-label">HOW TO READ THE PROJECT</span><strong>From source to defensible result</strong></div>
-        <div class="research-path-grid"><div><span>01</span><strong>Acquire</strong><small>Who published it, and when?</small></div>
-          <div><span>02</span><strong>Validate</strong><small>Coverage, units, hashes, geometry.</small></div>
-          <div><span>03</span><strong>Constrain</strong><small>Ecology, grid, water and finance.</small></div>
-          <div><span>04</span><strong>Publish</strong><small>Only after scientific gates pass.</small></div></div>
-      </section>
-      <section class="shell audit-overview" aria-labelledby="auditOverviewTitle">
-        <div><div class="section-label">EVIDENCE AUDIT · SCIENTIFIC RELEASE GATES</div>
-          <h2 id="auditOverviewTitle">What can the research support today?</h2>
-          <p id="auditOverviewText">Checking the published audit…</p></div>
-        <button class="button secondary" data-route="audit">Explore research readiness →</button>
-      </section>
-
-      <section class="shell decision-desk" aria-labelledby="decisionDeskTitle">
-        <div class="decision-intro">
-          <div><div class="section-label">THE RESEARCH DESK · CLAIM → LIMIT → SOURCE</div>
-            <h2 id="decisionDeskTitle">Choose a question.<br><em>Follow the evidence.</em></h2>
-            <p>Every finding has a dated source, a measured or audited milestone, an unresolved limit and a route to the next decision. No progress scores or fabricated capacity figures.</p></div>
-          <button class="section-link" data-route="audit">See all publication gates ↗</button>
-        </div>
-        <div class="decision-desk-layout">
-          <div id="decisionTopics" class="decision-topics" role="group" aria-label="Choose a research question"></div>
-          <article id="decisionDetail" class="decision-detail" aria-live="polite">
-            <p class="decision-placeholder">Loading the source-traced research ledger…</p>
-          </article>
+      <section class="intro section-wrap" aria-labelledby="whatTitle">
+        <div class="section-eyebrow"><span class="number">01</span> THE IDEA / ആശയം</div>
+        <div class="intro-grid">
+          <div><h2 id="whatTitle" class="display-title">This is not a forecast.<br><em>It is a way to ask better questions.</em></h2></div>
+          <div class="intro-body"><p>Kerala2040 is an open, independent research project building a reproducible picture of the state’s energy system—and testing what could change by 2040. It connects electricity demand and imports with hydropower, renewable resources, land, ecological protection, industrial value and public finance.</p><p><strong>Energy resilience is not zero imports.</strong> The goal is to understand what Kerala should be able to control, what it can sensibly trade, where infrastructure can actually go and how choices hold up in a difficult monsoon or dry year.</p><div class="inline-links"><button data-route="workbench" type="button">Explore the actual research ↗</button><button data-route="audit" type="button">What is not proven yet ↗</button></div></div>
         </div>
       </section>
 
-      <section class="shell home-section home-ledger">
-        <div class="section-heading"><div><div class="section-label">LATEST RESEARCH · SOURCE-TRACED</div><h2>Where the work stands</h2></div>
-          <button class="section-link" data-route="workbench">Every workstream →</button></div>
-        <p class="section-deck">Research milestones, not completed siting approvals or 2040 forecasts. Select a workstream to inspect the evidence and remaining gate.</p>
-        <div id="homeResearchLedger" class="research-card-grid" aria-live="polite"><p>Loading audited research milestones…</p></div>
-      </section>
-      <section class="shell home-section">
-        <div class="section-heading">
-          <div>
-            <div class="section-label">DATA AND STATISTICS</div>
-            <h2>Explore by research question</h2>
-          </div>
-          <button class="section-link" data-route="data">View all sources</button>
-        </div>
-        <div class="service-grid">
-          <button class="service-card" data-route="electricity">
-            <span class="service-index">01</span>
-            <div><h3>Electricity</h3><p>Demand, generation, imports, hydro and system balance.</p></div>
-            <span class="service-arrow">→</span>
-          </button>
-          <button class="service-card" data-route="pathways">
-            <span class="service-index">02</span>
-            <div><h3>2040 pathways</h3><p>External benchmarks versus unsolved research scenarios.</p></div>
-            <span class="service-arrow">→</span>
-          </button>
-          <button class="service-card" data-route="atlas">
-            <span class="service-index">03</span>
-            <div><h3>GIS evidence &amp; atlas</h3><p>Boundary, terrain and hazard QA before siting.</p></div>
-            <span class="service-arrow">→</span>
-          </button>
-          <button class="service-card" data-route="data">
-            <span class="service-index">04</span>
-            <div><h3>Sources and downloads</h3><p>Source origins, evidence classes, dates and public files.</p></div>
-            <span class="service-arrow">→</span>
-          </button>
+      <section class="current-strip" aria-labelledby="snapshotTitle">
+        <div class="section-wrap"><div class="section-title-line"><div><div class="section-eyebrow light"><span class="number">02</span> THE STARTING POINT / ഇപ്പോൾ</div><h2 id="snapshotTitle">What the data says <em>today.</em></h2></div><p>One audited historical window. No interpolated missing days. No 2040 predictions disguised as observations.</p></div>
+          <div id="headlineMetrics" class="numbers-grid" aria-live="polite">Loading the observed series…</div>
+          <div class="snapshot-foot"><span id="heroCoverage">Checking observation coverage…</span><button type="button" data-route="electricity">Read the electricity story →</button></div>
         </div>
       </section>
 
-      <section class="home-section section-tint">
-        <div class="shell">
-          <div class="section-heading chart-heading">
-            <div>
-              <div class="section-label">FEATURED DATA</div>
-              <h2>Kerala energy outlook</h2>
-            </div>
-            <div class="tab-bar" id="overviewMetricTabs">
-              <button data-metric="demand" class="active">Demand</button>
-              <button data-metric="capacity">Capacity</button>
-              <button data-metric="evidence">Evidence</button>
-            </div>
-          </div>
-          <div class="feature-analysis">
-            <article class="chart-main">
-              <div id="overviewChart" class="chart xl"></div>
-              <div id="overviewChartNote" class="chart-note"></div>
-            </article>
-            <aside id="overviewInsight" class="analysis-side"></aside>
-          </div>
+      <section class="journey section-wrap" aria-labelledby="journeyTitle">
+        <div class="section-eyebrow"><span class="number">03</span> THE JOURNEY / മുന്നോട്ട്</div>
+        <div class="section-title-line"><h2 id="journeyTitle" class="display-title">From today's system<br>to <em>possible futures.</em></h2><p>Explore the project in an order that follows the research—not an arbitrary set of dashboards.</p></div>
+        <div class="chapter-grid">
+          <button class="chapter chapter-electric" data-route="electricity" type="button"><span class="chapter-no">CHAPTER 01 / വൈദ്യുതി</span><span class="chapter-glyph" aria-hidden="true">≈</span><h3>Understand the electricity we use.</h3><p>What Kerala consumes, generates locally, imports and stores—and where the records have gaps.</p><span class="chapter-link">Explore observations ↗</span></button>
+          <button class="chapter chapter-land" data-route="atlas" type="button"><span class="chapter-no">CHAPTER 02 / ഭൂമി</span><span class="chapter-glyph" aria-hidden="true">⌁</span><h3>Respect the land and water.</h3><p>Forests, wetlands, slopes and hazards shape what can—and cannot—be built.</p><span class="chapter-link">Explore ecological evidence ↗</span></button>
+          <button class="chapter chapter-system" data-route="pathways" type="button"><span class="chapter-no">CHAPTER 03 / ഭാവി</span><span class="chapter-glyph" aria-hidden="true">✳</span><h3>Test different ways forward.</h3><p>Compare the questions behind local generation, storage, interstate trade and resilience.</p><span class="chapter-link">Explore pathways ↗</span></button>
+          <button class="chapter chapter-value" data-route="industry" type="button"><span class="chapter-no">CHAPTER 04 / തൊഴിൽ</span><span class="chapter-glyph" aria-hidden="true">↺</span><h3>Keep more value in Kerala.</h3><p>What industrial materials, heat and energy could be recovered—and at what cost?</p><span class="chapter-link">Explore industry ↗</span></button>
         </div>
       </section>
 
-      <section class="shell home-section">
-        <div class="section-heading">
-          <div>
-            <div class="section-label">LATEST REFERENCE STUDIES</div>
-            <h2>Published outlooks used as benchmarks</h2>
-          </div>
-        </div>
-        <div class="reference-list">
-          <a class="reference-row" href="https://cstep.in/publication/kerala-energy-transition-roadmap-2040/" target="_blank" rel="noopener">
-            <div class="reference-date">2024</div>
-            <div><h3>Kerala Energy Transition Roadmap 2040</h3><p>Center for Study of Science, Technology and Policy (CSTEP)</p></div>
-            <span>Report ↗</span>
-          </a>
-          <a class="reference-row" href="https://climatechange.envt.kerala.gov.in/wp-content/uploads/2026/06/Carbon-Neutral-Kerala-by-2050-Report.pdf" target="_blank" rel="noopener">
-            <div class="reference-date">2026</div>
-            <div><h3>Carbon Neutral Kerala by 2050</h3><p>Directorate of Environment and Climate Change, Government of Kerala / Vasudha Foundation</p></div>
-            <span>Report ↗</span>
-          </a>
-          <button class="reference-row" data-route="data">
-            <div class="reference-date">DATA</div>
-            <div><h3>Kerala 2040 evidence registry</h3><p>Observed evidence and published external benchmarks, with sources and dates.</p></div>
-            <span>Open →</span>
-          </button>
-        </div>
-      </section>
+      <section class="manifesto" aria-labelledby="manifestoTitle"><div class="manifesto-pattern" aria-hidden="true"></div><div class="section-wrap manifesto-inner"><span class="section-eyebrow light"><span class="number">04</span> OUR RULE / നിലപാട്</span><h2 id="manifestoTitle">No number without a source.<br>No megawatt without a place.<br><em>No future without its limits.</em></h2><p>Imported power is not the same as a failure of self-reliance. A solar resource is not automatically buildable. A repaired polygon is not a legal boundary. A scenario is not a forecast. The research keeps those distinctions visible.</p><button type="button" class="button button-cream" data-route="audit">See the scientific release gates ↗</button></div></section>
 
-      <section class="home-section evidence-section">
-        <div class="shell">
-          <div class="section-heading">
-            <div>
-              <div class="section-label">EVIDENCE PIPELINE</div>
-              <h2>Current data coverage</h2>
-            </div>
-          </div>
-          <div id="evidenceFeed" class="evidence-feed"></div>
-        </div>
-      </section>
+      <section class="fieldnotes section-wrap" aria-labelledby="fieldTitle"><div class="section-title-line"><div><div class="section-eyebrow"><span class="number">05</span> FIELD NOTES / ഗവേഷണം</div><h2 id="fieldTitle" class="display-title">The work, <em>as it stands.</em></h2></div><button type="button" class="text-button" data-route="workbench">All research records ↗</button></div><p class="section-lead">Specific evidence milestones are useful. They are not a percentage of a finished 2040 model.</p><div id="homeResearchLedger" class="notes-list" aria-live="polite">Loading the audited research ledger…</div></section>
+
+      <section class="closing-cta"><div class="section-wrap closing-grid"><div><p lang="ml" class="malayalam-xl">നാളെയുടെ കേരളം</p><h2>Explore the evidence.<br><em>Question the future.</em></h2></div><div><p>The methods, published datasets, assumptions, gaps and code are open for inspection. Kerala2040 is not an official government or utility forecast.</p><button class="button button-dark" type="button" data-route="data">Open the evidence library ↗</button><button class="text-button" type="button" data-route="workbench">Read the research log →</button></div></div></section>
     </section>
 
-    <section class="view" data-view="workbench">
-      <div class="page-mast shell"><div><div class="section-label">RESEARCH WORKBENCH · THE EVIDENCE CHAIN</div>
-        <h1>From evidence to answers.</h1>
-        <p>What is measured, acquired, QA-checked or still blocked? A verified source is not automatically a validated planning conclusion.</p></div>
-        <span class="status-label neutral" id="workbenchReviewed">Checking reviewed evidence…</span></div>
-      <div class="shell page-content workbench-page">
-        <section class="workbench-brief" aria-label="Research and release overview">
-          <div id="workbenchSummary" aria-live="polite">Loading research ledger…</div>
-          <p id="workbenchCaution" class="workbench-caution">Preparing source-linked research status.</p>
-        </section>
-        <section class="data-module workbench-board" aria-labelledby="workbenchBoardTitle">
-          <div class="module-head"><div><div class="section-label">WORKSTREAMS · SOURCE AND GATE</div><h2 id="workbenchBoardTitle">What is actually usable?</h2></div>
-            <a class="button secondary" href="data/research-ledger.json" download>Download ledger ↓</a></div>
-          <div class="workbench-controls">
-            <label for="workbenchSearch">Find a workstream<input id="workbenchSearch" type="search" placeholder="Electricity, forest, terrain, wetland…" /></label>
-            <label for="workbenchPhase">Evidence stage<select id="workbenchPhase">
-              <option value="all">All stages</option><option value="validated_source">Source coverage verified</option>
-              <option value="partial">Partial / under review</option><option value="blocked">Missing critical evidence</option>
-            </select></label>
-          </div>
-          <p id="workbenchCount" class="audit-provenance" aria-live="polite"></p>
-          <div id="workbenchCards" class="research-card-grid"></div>
-        </section>
-        <section class="data-module" aria-labelledby="workbenchGatesTitle">
-          <div class="module-head"><div><div class="section-label">DECISION BOUNDARY</div><h2 id="workbenchGatesTitle">What cannot yet be concluded</h2></div></div>
-          <div id="workbenchGates" class="workbench-gates"></div>
-          <div class="workbench-next"><div><div class="section-label">CONTINUE THE RESEARCH</div>
-            <h3>Follow the missing evidence, not a completion percentage.</h3>
-            <p>Open the audit for source-specific requirements, or the atlas for the difference between available geometry and legal exclusions.</p></div>
-            <div><button class="button primary" data-route="audit">Inspect the audit →</button>
-              <button class="button secondary" data-route="atlas">Explore GIS status</button></div>
-          </div>
-        </section>
-      </div>
+    <section class="view" data-view="electricity" aria-labelledby="electricTitle"><div class="page-head"><div class="section-wrap"><div class="section-eyebrow light"><span class="number">01</span> വൈദ്യുതി / OBSERVED ELECTRICITY</div><h1 id="electricTitle">How Kerala <em>keeps the lights on.</em></h1><p>Start with recorded daily electricity consumption, in-state generation, net imports and hydropower. Different statistics have different boundaries; missing days remain missing.</p></div></div>
+      <div class="section-wrap page-content"><div id="electricitySummary" class="chapter-summary"></div><section class="content-panel" aria-labelledby="balanceTitle"><div class="panel-header"><div><div class="section-eyebrow">OBSERVED-DAY SERIES</div><h2 id="balanceTitle">Follow the daily balance.</h2></div><div class="field-controls"><label for="energyMetric">Series<select id="energyMetric"><option value="consumption_mu">Consumption</option><option value="net_import_interface_mu">Net imports</option><option value="internal_generation_mu">In-state generation</option><option value="hydel_total_mu">Hydro generation</option></select></label><label for="energyMonth">Period<select id="energyMonth"><option value="all">All available days</option></select></label></div></div><div id="energyChart" class="energy-chart" role="img" aria-label="Observed daily electricity balance trend"></div><p id="energyChartCaption" class="caption"></p><details class="data-details"><summary>Inspect exact observed records</summary><div id="energyTable" class="table-scroll"></div></details><div class="panel-actions"><button type="button" id="downloadObserved" class="button button-dark">Download displayed observations ↓</button><a href="data/sldc-station-evidence.json">Station-level evidence JSON ↗</a></div></section>
+      <section class="story-split"><div><div class="section-eyebrow">THE INTERPRETATION</div><h2 class="display-title">Dependence is a <em>system question.</em></h2></div><div><p>Daily energy imports, transfer capacity and contracted power are not interchangeable. The project separates these quantities before examining storage, hydro flexibility, demand management or new generation.</p><p>One year of observations is not enough to establish an hourly dispatch model. Read the missing-date and interval-data limits before using these numbers for planning.</p><button data-route="audit" type="button" class="text-button">See what historical evidence is missing →</button></div></section><div id="electricityResearch" class="research-inline"></div></div>
     </section>
 
-    <section class="view" data-view="electricity">
-      <div class="page-mast shell">
-        <div>
-          <div class="section-label">DATA AND STATISTICS</div>
-          <h1>Electricity</h1>
-          <p>Measured Kerala system balance where available, with published planning benchmarks kept clearly separate.</p>
-        </div>
-        <div id="electricityStatus" class="status-label">Checking measured series…</div>
-      </div>
+    <section class="view" data-view="pathways" aria-labelledby="pathwayTitle"><div class="page-head page-head-warm"><div class="section-wrap"><div class="section-eyebrow light"><span class="number">03</span> ഭാവി / THE 2040 QUESTION</div><h1 id="pathwayTitle">Not one answer.<br><em>A set of choices worth testing.</em></h1><p>Energy sovereignty means resilience and options while staying interconnected with India—not autarky. These are proposed research pathways, not solved results.</p></div></div><div class="section-wrap page-content"><div id="pathwayGate" class="decision-banner"></div><section class="content-panel"><div class="section-eyebrow">THE EXPERIMENTS</div><h2>Which assumptions change the answer?</h2><p class="section-lead">Select a scenario specification to see what it asks the future model to test. Nothing here is an optimised capacity mix or investment advice.</p><div class="pathway-layout"><div id="scenarioList" class="option-list" role="group" aria-label="Scenario specification"></div><div id="scenarioDetail" class="scenario-detail"></div></div></section><section class="content-panel"><div class="section-eyebrow">EXTERNAL REFERENCE STUDIES</div><h2>Published studies are points of comparison.</h2><p>Different authors, model boundaries and electrification assumptions produce different demand numbers. They are not blended into a Kerala2040 forecast.</p><div id="referenceStudies" class="reference-grid"></div></section><div class="story-split"><h2 class="display-title">A credible result must survive <em>stress.</em></h2><p>Dry years, monsoon extremes, extreme demand, import constraints, financing exposure and land restrictions can change what is feasible. The scientific gates remain open until measured chronology, source-linked costs, grid and hydro constraints and ecological screening are sufficient.</p></div></div></section>
 
-      <div class="subnav">
-        <div class="shell subnav-inner">
-          <a href="#electricity">Observed balance</a><a href="data/daily-balance.json">Daily data ↓</a><a href="data/monthly-balance.json">Monthly data ↓</a>
-        </div>
-      </div>
+    <section class="view" data-view="atlas" aria-labelledby="atlasTitle"><div class="page-head page-head-forest"><div class="section-wrap"><div class="section-eyebrow light"><span class="number">02</span> ഭൂമി / LAND, WATER AND ECOLOGY</div><h1 id="atlasTitle">The landscape is<br><em>part of the energy system.</em></h1><p>The Ghats, forests, wetlands, rivers, settlements and disaster exposure set real limits. A map may show a resource without proving that anyone can build on it.</p></div></div><div class="section-wrap page-content"><section class="land-intro"><div class="land-art" aria-hidden="true"><span class="land-art-sun"></span><span class="land-art-range"></span><span class="land-art-water"></span><span class="land-art-palm">❧</span></div><div><div class="section-eyebrow">THE SITING QUESTION</div><h2>Where could energy infrastructure go <em>without crossing the wrong lines?</em></h2><p>The illustration is a cultural landscape, <strong>not a GIS map or legal boundary.</strong> The five source layers below report actual acquisition and verification status.</p></div></section><div class="section-title-line"><div><div class="section-eyebrow">SOURCE → QA → ADMISSION</div><h2 class="display-title">What we know about <em>the land.</em></h2></div><p>Tap each layer to inspect what was acquired, what is missing and the documentary trail.</p></div><div id="spatialPipeline" class="land-records" aria-live="polite"></div><div class="decision-banner blocked"><strong>No buildable-land or MW estimate has been established.</strong><p>Legal polygons, native land-cover classes, source-adjudicated hazard geometries and technology-specific screening still have to pass independent checks.</p><button type="button" data-route="audit" class="text-button">See the admission gates →</button></div></div></section>
 
-      <div class="shell page-content">
-        <div id="electricityKpis" class="kpi-row"></div>
-        <section class="data-module" aria-labelledby="researchHeading">
-          <div class="section-label">RESEARCH OUTPUTS</div><h2 id="researchHeading">From source data to modelling</h2>
-          <p>Completed historical products, published benchmarks and remaining model gates.</p>
-          <div id="researchProgress"></div>
-          <a href="data/research-results.json">Download research outputs and source metadata ↓</a>
-        </section>
+    <section class="view" data-view="industry" aria-labelledby="industryTitle"><div class="page-head page-head-clay"><div class="section-wrap"><div class="section-eyebrow light"><span class="number">04</span> തൊഴിൽ / CIRCULAR INDUSTRY</div><h1 id="industryTitle">Keep more value<br><em>in the material.</em></h1><p>Kerala’s energy future also concerns process heat, water, chemicals, waste, products and work—not only megawatts.</p></div></div><div class="section-wrap page-content"><div class="story-split"><h2 class="display-title">A resource is only recovered <em>when the balance closes.</em></h2><p>Starting with KMML and other documented industrial cases, the project separates operational evidence from proposed recovery routes. No recovery tonnes, economic returns or avoided emissions are invented for facilities lacking measured flows.</p></div><div id="industryCases" class="industry-cases"></div><div class="decision-banner"><strong>Industrial research rule</strong><p>Source the process origin, quantities, composition, recovery route, use rights and economics before asserting an industrial benefit.</p></div></div></section>
 
-        <section class="data-module" aria-labelledby="sldcDetailHeading">
-          <div class="module-head">
-            <div><div class="section-label">NEW · FY2024–25 OFFICIAL SLDC DAILY REPORTS</div><h2 id="sldcDetailHeading">Hydro stations, import interfaces &amp; reservoirs</h2></div>
-            <span class="source-label">354 / 365 observed days</span>
-          </div>
-          <p>Derived from the five publicly reported SLDC sections per observed date. Station and interface figures sum <strong>reported daily energy, not hourly dispatch or MW transfer capacity</strong>. Blank source cells remain unknown; the 11 unreported days are excluded rather than interpolated.</p>
-          <label>Evidence view
-            <select id="sldcDetailMetric" aria-label="SLDC detailed evidence view">
-              <option value="stations">Station-reported generation</option>
-              <option value="interfaces">Imports by reported interface</option>
-              <option value="months">Monthly hydro and imports</option>
-              <option value="reservoirs">Reservoir storage ranges</option>
-            </select>
-          </label>
-          <div id="sldcDetailChart" class="chart xl" aria-label="Observed SLDC historical results"></div>
-          <p id="sldcDetailNote" class="chart-note"></p>
-          <p><a href="data/sldc-station-evidence.json">View evidence summary and provenance ↓</a> · <a href="data/sldc-processed-evidence.zip">Download all five processed CSV tables, QA report and processor ↓</a></p>
-          <details class="data-table"><summary>Source coverage and scientific limitations</summary><div id="sldcDetailLimitations"></div></details>
-        </section>
+    <section class="view" data-view="workbench" aria-labelledby="workTitle"><div class="page-head page-head-paper"><div class="section-wrap"><div class="section-eyebrow"><span class="number">05</span> ഗവേഷണം / RESEARCH LOG</div><h1 id="workTitle">Show the work.<br><em>And what the work cannot prove.</em></h1><p>Eleven independently scoped research streams, with audited accomplishments, limits, next verifiable steps and underlying source records.</p></div></div><div class="section-wrap page-content"><div id="workbenchSummary" class="chapter-summary"></div><div class="field-controls research-controls"><label for="workbenchSearch">Search the research<input id="workbenchSearch" type="search" placeholder="Hydro, forest, landslide, grid…"></label><label for="workbenchPhase">Evidence stage<select id="workbenchPhase"><option value="all">All stages</option><option value="validated_source">Source QA verified</option><option value="partial">Partial</option><option value="blocked">Blocked</option></select></label></div><p id="workbenchCount" class="caption" aria-live="polite"></p><div id="workbenchCards" class="research-list"></div><div class="decision-banner"><strong>This ledger measures research evidence, not progress toward an approved 2040 plan.</strong><button type="button" data-route="audit" class="text-button">Inspect release requirements →</button></div></div></section>
 
-        <section class="data-module">
-          <div class="module-head">
-            <div><div class="section-label">SYSTEM BALANCE</div><h2 id="electricityChartTitle">Electricity explorer</h2></div>
-            <select id="electricityMetric" aria-label="Electricity chart metric">
-              <option value="daily">Daily balance</option>
-              <option value="monthly">Monthly balance</option>
-              <option value="duration">Import dependence</option>
-              <option value="hydro_seasons">Hydro and imports · observed seasons</option>
-              <option value="cstep_demand">CSTEP demand pathway · external benchmark</option>
-              <option value="india_mix">India average day · Energy Project</option>
-              <option value="india_price">India market price · Energy Project</option>
-              <option value="kseb_capacity">KSEB capacity history</option>
-              <option value="kseb_energy">KSEB generation &amp; purchases</option>
-              <option value="kseb_loss">KSEB T&amp;D loss history</option>
-              <option value="kseb_network">KSEB network growth</option>
-              <option value="reference">2040 planning reference</option>
-            </select>
-          </div>
-          <div class="chart-controls" id="electricityControls">
-            <label>Period <select id="electricityPeriod" aria-label="Electricity chart period"><option value="all">Full available period</option></select></label>
-            <label id="chartUnitControl" hidden>Display <select id="chartUnit" aria-label="National generation units"><option value="power">Power (GW)</option><option value="share">Generation share (%)</option></select></label>
-            <button type="button" id="downloadChartData" class="button secondary">Download chart data ↓</button>
-            <button type="button" id="downloadChartImage" class="button secondary">Save chart image ↓</button>
-          </div>
-          <div id="electricityChart" class="chart xl"></div>
-          <div id="electricityChartNote" class="chart-note"></div>
-          <details class="data-table"><summary>View chart values</summary><div id="chartValues"></div></details>
-          <details class="data-table"><summary>Inspect the observations and missing dates</summary><div id="dailyTable"></div></details>
-        </section>
+    <section class="view" data-view="audit" aria-labelledby="auditTitle"><div class="page-head page-head-clay"><div class="section-wrap"><div class="section-eyebrow light"><span class="number">06</span> പരിശോധന / SCIENTIFIC RELEASE GATES</div><h1 id="auditTitle">What still needs<br><em>to be true?</em></h1><p>Software passing CI is not scientific readiness. These checks explain what has been verified, what remains unresolved and which claims the project will not publish yet.</p></div></div><div class="section-wrap page-content"><div id="auditSummary" class="chapter-summary"></div><section class="content-panel"><div class="section-eyebrow">DECISIONS</div><h2>Release gates, not completion scores.</h2><div id="auditGates" class="gate-list"></div></section><section class="content-panel"><div class="panel-header"><div><div class="section-eyebrow">OPEN QUESTIONS</div><h2>The evidence still needed.</h2></div><div class="field-controls"><label for="auditSearch">Find a gap<input id="auditSearch" type="search" placeholder="Forest, hourly, cost…"></label><label for="auditPriority">Priority<select id="auditPriority"><option value="all">All</option><option value="P0">Essential · P0</option><option value="P1">P1</option><option value="P2">P2</option></select></label></div></div><p id="auditCount" class="caption" aria-live="polite"></p><div id="auditFindings" class="finding-list"></div></section><p id="auditProvenance" class="caption"></p></div></section>
 
-        <div class="module-grid">
-          <section class="data-module">
-            <div class="module-head">
-              <div><div class="section-label">CAPACITY</div><h3>Installed capacity · 31 March 2025</h3></div>
-              <span class="source-label">Kerala Economic Review 2025</span>
-            </div>
-            <p class="chart-note"><strong>4,412.14 MW statewide</strong> · Kerala Economic Review 2025 / KSEBL, as at 31 March 2025. KSEBL-owned capacity alone is 2,409.8 MW. This is a dated official reference, not a live September 2026 total. <a href="https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume1%20Eng%20final.pdf#page=594" target="_blank" rel="noopener">Source, printed pp. 569–571 ↗</a></p>
-            <p class="chart-note">The user-supplied KSEB historical export reports 4,412.09 MW for FY2024–25 (0.05 MW lower). Published technology components total 4,412.15 MW (0.01 MW above the report total). Source figures are retained without silently adjusting them.</p>
-            <div id="capacityChart" class="chart lg"></div>
-          </section>
-          <section class="data-module">
-            <div class="module-head"><div><div class="section-label">DATA QUALITY</div><h3>Evidence status</h3></div></div>
-            <div id="electricityEvidence" class="evidence-list"></div>
-          </section>
-        </div>
-        <section class="data-module"><div class="section-label">ACCOUNTING BOUNDARIES</div><h2>Reconcile before forecasting.</h2><div id="reconciliation"></div></section>
-        <section class="data-module"><div class="section-label">BEYOND ELECTRICITY</div><h2>Fuel, infrastructure and fiscal context</h2><div id="fuelEvidence"></div></section>
-      </div>
-    </section>
-
-    <section class="view" data-view="pathways">
-      <div class="page-mast shell">
-        <div>
-          <div class="section-label">SCENARIOS AND MODELS</div>
-          <h1>2040 pathways</h1>
-          <p>Compare external studies and prepare scenario specifications. The optimisation model is not yet calibrated; this page does not produce forecasts.</p>
-        </div>
-        <div class="status-label neutral">Model horizon · 2040</div>
-      </div>
-
-      <div class="shell page-content">
-        <section class="data-module">
-          <div class="module-head">
-            <div><div class="section-label">PUBLISHED OUTLOOKS</div><h2>Electricity demand in 2040</h2></div>
-            <span class="source-label">CSTEP 2024 · Kerala CN50 2026</span>
-          </div>
-          <div class="module-grid chart-copy-grid">
-            <div id="pathwayReferenceChart" class="chart xl"></div>
-            <div id="referenceNarrative" class="reference-narrative"></div>
-          </div>
-        </section>
-
-        <section class="scenario-section">
-          <div class="section-heading">
-            <div><div class="section-label">KERALA 2040 MODEL</div><h2>Scenario explorer</h2></div>
-          </div>
-          <div class="scenario-workbench">
-            <div id="scenarioRail" class="scenario-rail" aria-label="Scenario selection"></div>
-            <article class="scenario-detail">
-              <div class="scenario-top">
-                <div><span id="scenarioCode" class="scenario-code"></span><h2 id="scenarioName"></h2></div>
-                <span id="scenarioType" class="source-label"></span>
-              </div>
-              <p id="scenarioDescription" class="scenario-description"></p>
-              <div class="scenario-body">
-                <div id="scenarioInputChart" class="chart lg"></div>
-                <div id="scenarioDimensions" class="scenario-dimensions"></div>
-              </div>
-              <div class="stress-zone">
-                <div class="section-label">STRESS TESTS</div>
-                <p>Select stresses for the specification. Selecting a stress does not run a simulation.</p>
-                <div id="stressTests" class="chip-grid"></div>
-                <div id="stressSelection" aria-live="polite"></div>
-                <button id="downloadSpecification" class="button primary" type="button">Download scenario specification ↓</button>
-              </div>
-            </article>
-          </div>
-        </section>
-      </div>
-    </section>
-
-    <section class="view" data-view="atlas">
-      <div class="page-mast shell">
-        <div>
-          <div class="section-label">ENERGY ATLAS</div>
-          <h1>Kerala energy atlas</h1>
-          <p>The research covers all of Kerala, across all 14 districts. The markers are illustrative research locations; they do not define the model boundary or represent a complete grid inventory.</p>
-        </div>
-        <div class="status-label neutral">Source atlas · no validated exclusion map</div>
-      </div>
-      <section class="shell spatial-status" aria-labelledby="spatialStatusTitle">
-        <div class="section-heading"><div><div class="section-label">SPATIAL RESEARCH · SOURCE TO ADMISSION</div>
-          <h2 id="spatialStatusTitle">Five layers. Five different evidence boundaries.</h2></div>
-          <button class="section-link" data-route="audit">Inspect release gates ↗</button></div>
-        <p class="section-deck">A bounded download, valid pixel or repaired candidate does not become buildable land. Inspect the evidence stage separately for each GIS workstream.</p>
-        <div id="spatialPipeline" class="spatial-pipeline" aria-live="polite">Loading official-source audit…</div>
-      </section>
-      <section class="shell atlas-evidence-panel" aria-labelledby="atlasLedgerTitle">
-        <div class="section-heading"><div><div class="section-label">SPATIAL DATA · ADMISSION STATUS</div><h2 id="atlasLedgerTitle">GIS evidence before siting</h2></div>
-          <button class="section-link" data-route="workbench">Full research ledger →</button></div>
-        <p class="section-deck">Source QA and geometry completeness are not statutory boundaries. Nothing on this page identifies buildable land, a MW ceiling or a verified legal exclusion.</p>
-        <div id="atlasResearchLedger" class="research-card-grid"></div>
-      </section>
-      <div class="shell atlas-page">
-        <div id="statewideScope" class="research-notice"></div>
-        <div class="map-toolbar">
-          <div id="mapFilters" class="filter-chips"></div>
-          <span id="mapCount"></span>
-        </div>
-        <div class="atlas-grid">
-          <div id="map" class="map"></div>
-          <aside class="map-sidebar">
-            <div class="section-label">RESEARCH LOCATION</div>
-            <div id="mapDetail"></div>
-            <div id="mapNodeList" class="map-node-list"></div>
-          </aside>
-        </div>
-      </div>
-      <div class="shell"><section class="data-module"><div class="section-label">ECOLOGY AND HAZARDS</div><h2>Constraints to bring into the model</h2><p>Catalogue references only. These datasets have not yet been overlaid on the screening map or converted into buildable capacity.</p><div id="ecologyEvidence"></div></section></div>
-    </section>
-
-    <section class="view" data-view="industry">
-      <div class="page-mast shell">
-        <div>
-          <div class="section-label">CIRCULAR INDUSTRY</div>
-          <h1>Industrial material flows</h1>
-          <p>Track material, energy and financial flows together, with prevention and reuse ahead of recovery.</p>
-        </div>
-        <div class="status-label neutral">MFA + techno-economics</div>
-      </div>
-      <div class="shell page-content">
-        <section class="flow-band">
-          <div><span>1</span><strong>Input</strong><small>material · power · heat · water</small></div>
-          <i>→</i>
-          <div><span>2</span><strong>Process</strong><small>conversion · separation · treatment</small></div>
-          <i>→</i>
-          <div><span>3</span><strong>By-product</strong><small>mass · chemistry · hazard</small></div>
-          <i>→</i>
-          <div><span>4</span><strong>Recovery</strong><small>reuse · material · chemical · energy</small></div>
-          <i>→</i>
-          <div><span>5</span><strong>Value</strong><small>revenue + avoided cost − recovery cost</small></div>
-        </section>
-
-        <section>
-          <div class="section-heading">
-            <div><div class="section-label">CASE STUDIES</div><h2>Industrial metabolism</h2></div>
-            <div id="industryTabs" class="tab-bar"></div>
-          </div>
-          <div id="industryCase" class="industry-case"></div>
-        </section>
-      </div>
-    </section>
-
-    <section class="view" data-view="audit">
-      <div class="page-mast shell">
-        <div><div class="section-label">SCIENTIFIC TRANSPARENCY · EVIDENCE AUDIT</div>
-          <h1>Research readiness</h1>
-          <p>The documented data gaps, independently checked source evidence and requirements before Kerala 2040 can publish validated planning results.</p></div>
-        <span class="status-label neutral">Evidence-based · not a forecast</span>
-      </div>
-      <div class="shell page-content">
-        <section class="audit-intro data-module" aria-labelledby="auditSummaryTitle">
-          <div class="section-label">CURRENT SOURCE EVIDENCE</div>
-          <h2 id="auditSummaryTitle">Scientific readiness, not software completion</h2>
-          <p>Passed daily accounting only verifies available daily observations. Reconstructed hourly screening, source catalogues and a successful optimisation run cannot certify the missing underlying data or physical constraints.</p>
-          <div id="auditSummary" class="audit-summary" aria-live="polite">Loading verified audit evidence…</div>
-          <p id="auditProvenance" class="audit-provenance"></p>
-        </section>
-        <section class="data-module" aria-labelledby="auditGatesTitle">
-          <div class="module-head"><div><div class="section-label">PUBLICATION REQUIREMENTS</div><h2 id="auditGatesTitle">Scientific release gates</h2></div></div>
-          <p>A gate passes only when every required underlying check is verified. The 2040 model remains an explicitly provisional research sensitivity.</p>
-          <div id="auditGates" class="audit-gates"></div>
-        </section>
-        <section class="data-module" aria-labelledby="auditFindingsTitle">
-          <div class="module-head"><div><div class="section-label">AUDIT REGISTER</div><h2 id="auditFindingsTitle">Outstanding source acquisitions</h2></div></div>
-          <div class="audit-filters">
-            <label for="auditSearch">Find a source or workstream<input id="auditSearch" type="search" placeholder="Search acquisition, evidence or identifier" /></label>
-            <label for="auditPriority">Priority<select id="auditPriority"><option value="all">All priorities</option><option value="P0">P0 — essential</option><option value="P1">P1 — supporting</option><option value="P2">P2 — industrial case</option></select></label>
-            <label for="auditStatus">Evidence status<select id="auditStatus"><option value="all">All statuses</option><option value="verified_in_committed_evidence">Verified</option><option value="partial_or_provisional">Partial</option><option value="blocked_missing_verified_evidence">Blocked</option></select></label>
-          </div>
-          <p id="auditResultCount" class="audit-provenance" aria-live="polite"></p>
-          <div id="auditFindings" class="audit-findings"></div>
-        </section>
-        <section class="method-note audit-method" aria-labelledby="auditMethodTitle">
-          <div><div class="section-label">TRACEABILITY</div><h2 id="auditMethodTitle">What this audit does — and does not — establish</h2></div>
-          <p>The checks inspect the research repository’s committed evidence. They cannot establish what is held in private utility records, local unpublished archives, or external workflow artifacts. Missing here means not validated within this published research snapshot, not that the information does not exist.</p>
-          <p><a href="data/audit-readiness.json" download>Download the machine-readable audit ↓</a> · <a href="https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/docs/AUDIT_RELEASE_GATES.md" target="_blank" rel="noopener">Audit methodology and closure requirements ↗</a></p>
-        </section>
-      </div>
-    </section>
-
-    <section class="view" data-view="data">
-      <div class="page-mast shell">
-        <div>
-          <div class="section-label">SOURCES AND DATASETS</div>
-          <h1>Data centre</h1>
-          <p>Sources, evidence classes, machine-readable outputs and known data gaps.</p>
-        </div>
-        <div id="bundleTime" class="status-label neutral">Loading bundle…</div>
-      </div>
-      <div class="shell page-content">
-        <section class="data-summary"><div id="dataSummary"></div></section>
-        <div class="data-toolbar">
-          <input id="sourceSearch" type="search" aria-label="Search sources and datasets" placeholder="Search sources and datasets" />
-          <div class="evidence-key">
-            <span><i class="dot measured"></i>Measured</span>
-            <span><i class="dot derived"></i>Derived</span>
-            <span><i class="dot gap"></i>Gap</span>
-          </div>
-        </div>
-        <section>
-          <div class="section-heading"><div><div class="section-label">SOURCE REGISTRY</div><h2>Connected evidence</h2></div></div>
-          <div id="sourceRegistry" class="source-grid"></div>
-        </section>
-        <section>
-          <div class="section-heading"><div><div class="section-label">DOWNLOADS</div><h2>Machine-readable outputs</h2></div></div>
-          <div id="downloadGrid" class="download-grid"></div>
-        </section>
-        <section class="method-note">
-          <div><div class="section-label">METHOD</div><h2>Evidence classes remain explicit.</h2></div>
-          <p>Measured observations, published assumptions, reconstructed proxies and scenario choices are not treated as interchangeable. Missing hourly Kerala load is not silently represented as measured data.</p>
-        </section>
-      </div>
-    </section>
+    <section class="view" data-view="data" aria-labelledby="dataTitle"><div class="page-head page-head-forest"><div class="section-wrap"><div class="section-eyebrow light"><span class="number">07</span> രേഖകൾ / EVIDENCE LIBRARY</div><h1 id="dataTitle">Follow every claim<br><em>back to the source.</em></h1><p>Official observations, source registries, published comparison studies and reproducible research files. A link in a catalogue is not proof that the data has been acquired or admitted.</p></div></div><div class="section-wrap page-content"><div id="evidenceSnapshot" class="provenance-strip"></div><div id="dataSummary" class="chapter-summary"></div><div class="content-panel"><div class="panel-header"><div><div class="section-eyebrow">FIND EVIDENCE</div><h2>Sources &amp; research files</h2></div><label class="field-controls" for="sourceSearch">Search<input id="sourceSearch" type="search" placeholder="SLDC, KFD, PDF, GeoTIFF…"></label></div><div id="sourceRegistry" class="source-list"></div><h3 class="subsection-title">Public downloads</h3><div id="downloadGrid" class="download-list"></div></div><div class="decision-banner"><strong>Research snapshot ≠ observation snapshot.</strong><p>The website pins a specific research revision but retains the separately dated observed dataset. Scientific availability is determined by the audit, not the day the page was deployed.</p></div></div></section>
   </main>
 
-  <footer class="site-footer">
-    <div class="shell footer-main">
-      <div>
-        <strong>Kerala 2040</strong>
-        <p>An independent, source-traced energy research workspace.</p><p id="footerResearchIdentity" class="footer-identity">Research source and observation archive are separately identified.</p>
-      </div>
-      <div class="footer-links">
-        <button data-route="electricity">Electricity</button>
-        <button data-route="workbench">Research workbench</button>
-        <button data-route="pathways">Scenarios</button>
-        <button data-route="atlas">Atlas</button>
-        <button data-route="audit">Release gates</button>
-        <button data-route="data">Sources</button>
-      </div>
-    </div>
-    <div class="shell footer-bottom">Not an official Government of Kerala, KSEBL or regulatory publication.</div>
-  </footer>
+  <footer class="footer"><div class="section-wrap footer-grid"><div><span class="footer-mark" lang="ml">ക</span><strong>Kerala2040</strong><p lang="ml">നമ്മുടെ നാട്. നമ്മുടെ ഊർജഭാവി.</p><p>Independent energy-systems research. Not an official Government of Kerala, KSEBL or regulatory publication.</p></div><div><strong>EXPLORE</strong><button data-route="electricity">Observed electricity</button><button data-route="pathways">2040 questions</button><button data-route="atlas">Land and water</button><button data-route="industry">Circular industry</button></div><div><strong>VERIFY</strong><button data-route="workbench">Research log</button><button data-route="audit">Scientific release gates</button><button data-route="data">Source library</button><a href="https://github.com/abhijith-sivaprasadan/kerala2040" target="_blank" rel="noopener noreferrer">Open-source repository ↗</a></div></div><div class="section-wrap footer-bottom"><span>KERALA / INDIA · STUDY HORIZON 2040</span><span id="footerResearchIdentity">Loading pinned source revision…</span><span>Made to be questioned, not merely believed.</span></div></footer>
 </body>
 </html>
