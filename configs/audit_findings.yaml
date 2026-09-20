@@ -96,14 +96,17 @@ findings:
     priority: P1
     check: gis_model_ready
     acquisition: >-
-      Fourteen real Copernicus GLO-90 GeoTIFFs and a partial DSM mosaic have
-      recorded source hashes. A downloaded 36-feature NWIC state-boundary
-      GeoJSON explicitly uses EPSG:7755; reprojection finds zero intersections
-      between its Kerala polygon and the six unpublished DSM tile footprints.
-      This is only source tile-footprint coverage, not pixelwise valid-height,
-      coastal mask, vertical-datum or DSM/DTM validation. Still obtain
-      independently reconciled official boundary precision, per-technology
-      slope criteria and forest/wetland legal exclusions before siting.
+      Fourteen SHA256-verified Copernicus GLO-90 originals and an NWIC
+      Kerala state polygon (original EPSG:7755) have now been reacquired.
+      None of six unavailable envelope tiles intersects the NWIC polygon.
+      Native-source-grid finite heights pass for all 4,624,362 pixel centres
+      inside this exact boundary version; after bilinear reprojection to
+      EPSG:32643 at 90 m, 2,596 boundary pixel centres remain non-finite.
+      Descriptive DSM surface slope was generated for 4,779,307 finite pixels
+      (median approximately 4.98 degrees), without a siting threshold.
+      This does not certify bare-earth DTM, subpixel coastlines, hydrological
+      catchments, surveyed boundary precision or technology suitability.
+      Forest/wetland legal exclusions and eligible land/MW remain blocked.
     evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   - id: forest_protected_areas
     priority: P0
@@ -121,16 +124,19 @@ findings:
     priority: P0
     check: gis_model_ready
     acquisition: >-
-      Request SWAK current wetland inventory, final-notification polygons,
-      draft outlines, waterbodies and influence zones separately. All 13
-      KSDMA-hosted GSI 2022 district ZIPs are now hash-verified and decoded:
-      39 EPSG:32643 MultiPolygons, three per district, with source field
-      Susceptibi = Low/Moderate/High. All 39 fail OGC validity through ring
-      self-intersection, so no merged hazard overlay is admitted until a
-      documented geometry-repair/topology policy is validated. Alappuzha is
-      absent from the published package set and is not inferred hazard-free.
-      Do not use superseded NCESS or turn susceptibility into an automatic
-      legal exclusion.
+      SWAK/DoECC/WIAMS official-route probing is now reproducible; its
+      latest initial live run reached two of four pages and found ten
+      unverified document/page candidates, zero machine-readable vector
+      candidates. Request final notified wetland and zone-of-influence
+      polygons, draft outlines and waterbody inventory separately with
+      gazette identity and source CRS; none has been admitted. All 13
+      KSDMA-hosted GSI 2022 district ZIPs are hash-verified and decoded:
+      39 EPSG:32643 MultiPolygons with source class Low/Moderate/High.
+      All 39 originals fail OGC ring-self-intersection validity. A
+      three-method repair comparison completed, but valid candidate
+      boundaries do not establish ground truth or model admission.
+      Alappuzha remains absent, not hazard-free. Superseded NCESS and
+      susceptibility classes are not automatic legal exclusions.
     evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   - id: niwe_wind_resource
     priority: P1
