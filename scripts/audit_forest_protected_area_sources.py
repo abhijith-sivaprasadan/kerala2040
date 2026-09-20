@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import re
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -141,10 +142,27 @@ def run(output: Path) -> dict:
                         "label": row["label"], "discovered_from": response.url
                     }
 
-        # Visit only official reserve/protected-area candidate pages discovered above.
-        for url, meta in list(discovered_pages.items())[:160]:
+        # Visit only official reserve/protected-area candidate pages. Use bounded
+        # concurrency because the department site is page-oriented and can be slow.
+        targets = list(discovered_pages.items())[:120]
+
+        def fetch_candidate(url: str) -> tuple[str, requests.Response | None, str | None]:
             try:
-                response = _get(session, url)
+                response = requests.get(url, timeout=(10, 35), headers=HEADERS)
+                response.raise_for_status()
+                return url, response, None
+            except requests.RequestException as exc:
+                return url, None, f"{type(exc).__name__}: {exc}"
+
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            futures = [pool.submit(fetch_candidate, url) for url, _ in targets]
+            for future in as_completed(futures):
+                url, response, error = future.result()
+                meta = discovered_pages[url]
+                if error is not None:
+                    meta["error"] = error
+                    continue
+                assert response is not None
                 meta.update({
                     "http_status": response.status_code,
                     "sha256_of_html_response": _page_sha(response),
@@ -155,8 +173,6 @@ def run(output: Path) -> dict:
                         all_file_links[row["url"]] = {
                             **row, "kind": kind, "discovered_from": response.url,
                         }
-            except requests.RequestException as exc:
-                meta["error"] = f"{type(exc).__name__}: {exc}"
 
         pa_counts = {}
         if "protected_area_network" in official_pages:
