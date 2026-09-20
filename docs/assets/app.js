@@ -477,7 +477,9 @@ function renderSources(){
       (url?'<a target="_blank" rel="noopener noreferrer" href="'+esc(url)+'">Open original source ↗</a>':"")+
       '</article>';
   }).join("")||'<p>No sources match that query.</p>';
-  const downloads=Object.entries(files).map(([key,name])=>[plain(key),name]);
+  const downloads=[["Published evidence manifest","site-data.json"],
+    ["Publication metadata","metadata.json"],
+    ...Object.entries(files).map(([key,name])=>[plain(key),name])];
   if(s.metadata.files.sldc_station_evidence)downloads.push(["Processed observed-day CSV archive","sldc-processed-evidence.zip"]);
   $("#downloadGrid").innerHTML=downloads.filter(([key,name])=>
     !q||(key+" "+name).toLowerCase().includes(q)).map(([key,name])=>
