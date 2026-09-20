@@ -170,7 +170,7 @@ def run(root: Path, output: Path, raw: Path) -> dict:
         "raw_geojson_sha256": sha256(raw),
         "raw_geojson_bytes": raw.stat().st_size,
         "wdpa_features_returned_in_envelope": len(frame),
-        "wdpa_names_returned": sorted(set(str(x) for x in frame["name_eng"].dropna())),
+        "wdpa_names_returned": sorted({str(x) for x in frame["name_eng"].dropna()}),
         "official_core_designations_expected": len(primary),
         "official_designations_uniquely_matched": len(matches),
         "official_designations_unresolved": unmatched,
