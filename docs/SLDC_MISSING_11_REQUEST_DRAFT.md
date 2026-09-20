@@ -36,6 +36,12 @@ Regards,
 [Email / contact details]  
 [Actual send date]
 
+## Recheck — 20 September 2026
+
+The [independent repeat retrieval run](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35539424582) reattempted exactly the eleven dates from the committed source QA. Its structured, fail-closed check confirmed **0 generation candidates, 11 not recovered, previously authenticated 2024-08-13 control confirmed, 354/365 source days unchanged, and the full-year scientific gate still open**. The per-date endpoint/status/date checks and source-response hashes are retained in the time-limited Actions artifact. This result verifies access through the public historical form on the attempt date; it does **not** prove the missing agency records do not exist or justify substituting another day's values.
+
+The **next external-data action** is the targeted request below for the original as-issued, notification/version-labelled five-section daily reports, followed separately by the authenticated hourly/15-minute state-load and interchange chronologies. Do not send this draft with placeholder personal details or claim a government/academic endorsement without authorization.
+
 ## Retrieval evidence and editorial limits
 
 - [Live retry workflow run 35469025134](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35469025134): all 11 targeted generation-date lookups unverified; 2024-08-13 known-observed control confirmed by independent comparison to `daily_balance.csv`. The workflow artifact is a **retrieval-attempt report, NOT observed data**.
