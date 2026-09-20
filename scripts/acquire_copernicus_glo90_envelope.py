@@ -254,6 +254,14 @@ def run(output: Path, tile_dir: Path, mosaic_path: Path, *,
         "capacity_ceiling_mw": None,
     }
     output.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
+    print("SOURCE_MANIFEST_COMPACT=" + json.dumps({
+        "run_utc": result["run_utc"],
+        "tiles": [{k: row.get(k) for k in (
+            "latitude", "longitude", "url", "status", "bytes", "sha256"
+        )} for row in records],
+        "mosaic": mosaic,
+        "adjacent_seam_checks": len(seams),
+    }, separators=(",", ":"), allow_nan=False), flush=True)
     print(json.dumps({
         "classification": result["classification"],
         "acquired": len(available), "requested": len(records),
