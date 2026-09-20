@@ -2,6 +2,9 @@ version: 1
 classification: source_scoped_three_workstream_gis_review_not_validated_geometry
 review_date: "2026-09-20"
 geography: Kerala
+official_public_acquisition_manifest: data/evidence/gis/official_gis_public_acquisition_2026_09_20.json
+public_acquisition_workflow: https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35504312456
+raw_artifacts_uncommitted: true
 source_registry:
   kerala_forest:
     organisation: Kerala Forest and Wildlife Department
@@ -88,6 +91,8 @@ workstreams:
         validated_kerala_tiles: 0
     expected_raw_path: data/external/gis/terrain
     original_file_sha256: null
+    downloaded_glo90_pilot_tiles_in_workflow: 1
+    source_pilot_sha256: cab81d17d0f6b42c5083f2bf61206b78c607ba59da0663e2677cfebe7f21dd79
     geospatial_mosaic_coverage_verified: false
     source_vertical_datum_verified: false
     ecological_slope_threshold_verified: false
@@ -125,6 +130,7 @@ workstreams:
     expected_raw_path: data/external/gis/ksdma/landslide
     original_file_sha256: null
     observed_verified_gsi_districts: 0
+    source_original_zips_downloaded_and_structurally_checked_in_artifact: 13
     wetland_geometries_verified: 0
     current_notified_wetland_geometries_verified: 0
     final_notifications_mapped: false
