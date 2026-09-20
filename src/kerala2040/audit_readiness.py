@@ -19,6 +19,7 @@ TECH = "configs/techno_economics.yaml"
 GIS = "configs/gis_inputs.yaml"
 FINDINGS = "configs/audit_findings.yaml"
 HYDRO_TOPOLOGY = "configs/hydro_topology_evidence_2024_25.yaml"
+TRANSFER = "configs/grid_transfer_contract_evidence_2024_25.yaml"
 GENERATORS = "configs/generator_reconciliation_2024_25.yaml"
 PROJECTS = "public/kseb-projects.json"
 
@@ -163,6 +164,31 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
     hydro_edges = len(hydro["documented_links"])
     if not hydro_count or not hydro_edges:
         raise ValueError("Hydro mapping must identify sourced nodes and links")
+    transfer = _yaml(root, TRANSFER)
+    if transfer.get("classification") != (
+        "partial_public_transfer_and_procurement_evidence_not_model_constraints"
+    ):
+        raise ValueError("Grid transfer evidence may not claim a validated ATC series")
+    if transfer["model_use"].get("status") != STATUS_BLOCKED or any(
+        transfer["model_use"].get(k) is not False
+        for k in (
+            "can_apply_snapshot_as_full_year_import_limit",
+            "can_use_daily_import_mu_as_interface_mw",
+            "can_sum_contract_nameplates_as_import_atc",
+            "can_treat_exchange_price_as_delivered_cost",
+        )
+    ):
+        raise ValueError("Grid transfer source cannot certify model constraints")
+    snapshots = transfer["transfer_snapshots"]
+    for snapshot in snapshots:
+        if snapshot.get("atc_derivation") == "ttc_minus_stated_reliability_margin":
+            if abs(
+                float(snapshot["ttc_mw"]) - float(snapshot["reliability_margin_mw"])
+                - float(snapshot["atc_mw"])
+            ) > 0.001:
+                raise ValueError("Grid transfer snapshot ATC/margin is inconsistent")
+    if transfer["unresolved_constraints"]["full_fy2024_25_dated_import_atc_mw"] is not None:
+        raise ValueError("Unverified FY transfer capacity inserted in source catalogue")
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
@@ -205,9 +231,13 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         ),
         "grid_transfer": _check(
             STATUS_BLOCKED,
-            "Observed imported energy and illustrative 6500 MW screening bound are "
-            "not verified transfer capability, procurement contracts or cost series.",
-            "configs/pypsa_screening_example.yaml",
+            f"354 observed days with eight grouped SLDC daily energy interface rows "
+            f"and {len(snapshots)} dated reported transfer snapshots. January TTC "
+            "and reliability margin and March reported capability are not a "
+            "revision-controlled FY ATC/TTC profile. Contract deliverability, "
+            "banking obligations, actual schedules and landed costs unresolved. "
+            "Illustrative 6500 MW screening bound is NOT Kerala import capability.",
+            "docs/GRID_TRANSFER_CONTRACTS_FY2024_25_AUDIT.md",
         ),
         "gis_model_ready": gis_check,
         "era5_complete": weather,
