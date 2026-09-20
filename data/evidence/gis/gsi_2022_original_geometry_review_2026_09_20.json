@@ -320,8 +320,9 @@
   "official_boundary_or_full_state_coverage_verified": false,
   "alappuzha": "not_in_source_pack_not_low_risk",
   "raw_invalid_geometries_accepted_as_model_ready": false,
-  "source_class_legend_harmonization_verified": true,
   "legal_exclusion_established": false,
   "eligible_land_sq_km": null,
-  "potential_mw": null
+  "potential_mw": null,
+  "source_raw_class_values_consistent_across_13_zips": true,
+  "independently_published_legend_verified": false
 }
