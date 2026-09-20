@@ -90,14 +90,16 @@ layers:
     expected_format: source_height_cog_or_cartodem_tiles_with_vertical_datum
     raw_path: data/external/gis/terrain
     role: slope_terrain_input_not_legal_eligibility
-    acquisition_status: partial_public_dsm_envelope_mosaic_not_state_boundary_verified
+    acquisition_status: official_kerala_boundary_footprint_check_no_pixel_or_slope_QA
     original_tile_acquisition_evidence: data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json
     original_tile_qa_run: https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35515526369
+    original_nwic_boundary_source_evidence: data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json
     note: >-
-      Authenticated 14 original Copernicus GLO90 tiles, six 404s over broad
-      envelope and a source-provenance partial DSM mosaic with NaN gaps were
-      acquired; true Kerala boundary coverage, vertical datum, land/sea mask,
-      bare-earth heights and technology-specific slope eligibility UNVERIFIED.
+      Fourteen hashed Copernicus GLO90 originals and a partial DSM mosaic
+      are acquired. An original NWIC state polygon in EPSG:7755 was reprojected;
+      none of six unpublished envelope-tile footprints intersects Kerala,
+      but pixelwise source masks, vertical datum, coastline, bare-earth terrain,
+      boundary precision and tech-specific slope eligibility are unverified.
       CartoDEM still requires Bhuvan access; no siting capacity asserted.
   bhuvan_waterbodies:
     source: State Wetland Authority Kerala / NRSC ISRO
