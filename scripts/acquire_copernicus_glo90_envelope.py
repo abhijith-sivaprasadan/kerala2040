@@ -191,8 +191,8 @@ def run(output: Path, tile_dir: Path, mosaic_path: Path, *,
                     "direction": axis,
                     **measure_seam(path, available[neighbor], axis),
                 })
-    mosaic = {"status": "not_created_coverage_or_alignment_unverified"}
-    if len(available) == len(LATITUDES) * len(LONGITUDES):
+    mosaic = {"status": "not_created_no_source_tiles"}
+    if available:
         sources = [rasterio.open(available[lat, lon])
                    for lat in LATITUDES for lon in LONGITUDES]
         try:
@@ -210,7 +210,7 @@ def run(output: Path, tile_dir: Path, mosaic_path: Path, *,
             with rasterio.open(mosaic_path, "w", **profile) as dest:
                 dest.write(arrays[0].astype("float32"), 1)
             mosaic = {
-                "status": "complete_envelope_grid_mosaic_NOT_statewide_GIS_suitability",
+                "status": "partial_public_tile_mosaic_with_unknown_uncovered_cells_NOT_Kerala_mask",
                 "sha256": sha256(mosaic_path),
                 "bytes": mosaic_path.stat().st_size,
                 "width": arrays.shape[2], "height": arrays.shape[1],
@@ -220,6 +220,11 @@ def run(output: Path, tile_dir: Path, mosaic_path: Path, *,
                     arrays.shape[1], arrays.shape[2], transform,
                 )),
                 "source_tiles": len(available),
+                "requested_envelope_tiles": len(records),
+                "404_or_failed_envelope_tiles": len(records) - len(available),
+                "source_uncovered_output_pixels": int(np.count_nonzero(np.isnan(arrays[0]))),
+                "source_zero_height_pixels_NOT_land_water_indicator": int(np.count_nonzero(arrays[0] == 0)),
+                "complete_rectangular_envelope_source_coverage": len(available) == len(records),
                 "vertical_datum_independently_verified": False,
                 "kerala_official_boundary_clip_verified": False,
             }
