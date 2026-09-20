@@ -203,6 +203,21 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
             ],
         },
         {
+            "id": "industry", "title": "Circular industry & KMML",
+            "phase": "blocked", "label": "Measured process boundary required",
+            "metric": "KMML",
+            "unit": "selected case; no validated numerical recovery result",
+            "summary": "Recovery proposals need chemistry, measured mass/energy flows, costs and offtake.",
+            "completed": "Primary industrial case and the measurement requirements identified.",
+            "blocked": "No validated residue throughput, yields, heat, water or financing boundary.",
+            "action": "Acquire metered data and close mass, energy and cost balances.",
+            "route": "industry",
+            "evidence": [
+                {"label": "KMML case plan", "href": ROOT + "docs/KMML_CASE_PLAN.md"},
+                {"label": "Release-gate rules", "href": ROOT + "docs/AUDIT_RELEASE_GATES.md"},
+            ],
+        },
+        {
             "id": "modelling", "title": "2040 model & reliability",
             "phase": "blocked", "label": "Release gate not passed",
             "metric": "Not calibrated",
