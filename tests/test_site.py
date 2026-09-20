@@ -39,7 +39,9 @@ def test_rejects_mixed_snapshots(tmp_path):
 def test_packaged_site_has_every_advertised_download(tmp_path):
     site.build_site(ROOT, tmp_path)
     data = site.validate_bundle(tmp_path / "data")
-    assert (tmp_path / "assets/app.js").exists()
+    assert not (tmp_path / "assets/app.js").exists()
+    assert not (tmp_path / "assets/workbench.css").exists()
+    assert not (tmp_path / "assets/experience.css").exists()
     html = (tmp_path / "index.html").read_text(encoding="utf-8")
     assert 'src="assets/app.js"' not in html
     assert any(p.name in html for p in (tmp_path / "assets").glob("app.*.js"))
@@ -160,8 +162,8 @@ def test_packaged_research_workbench_uses_same_audited_snapshot(tmp_path):
     assert 'data-view="workbench"' in html
     assert 'data-route="workbench"' in html
     assert 'href="data/research-ledger.json"' in html
-    assert 'href="assets/workbench.css"' not in html
-    assert any(x.name in html for x in (tmp_path / "assets").glob("workbench.*.css"))
+    assert 'href="assets/kerala.css"' not in html
+    assert any(x.name in html for x in (tmp_path / "assets").glob("kerala.*.css"))
 
 
 def test_packaged_workbench_rejects_forged_gis_admission(tmp_path):
@@ -188,15 +190,20 @@ def test_packaged_workbench_rejects_cross_snapshot_findings(tmp_path):
         site.validate_bundle(tmp_path / "data")
 
 
-def test_evidence_first_site_packages_new_experience_and_dual_clock(tmp_path):
+def test_kerala_coded_site_packages_fresh_app_and_distinct_audit_clocks(tmp_path):
     site.build_site(ROOT, tmp_path)
     html = (tmp_path / "index.html").read_text(encoding="utf-8")
-    assert 'id="decisionDeskTitle"' in html
-    assert 'id="decisionTopics"' in html
+    assert 'lang="ml"' in html and "കേരളത്തിന്റെ ഊർജഭാവി" in html
+    assert 'id="homeTitle"' in html and "A stronger" in html
     assert 'id="spatialPipeline"' in html
-    assert 'id="evidenceSnapshot"' in html
-    assert 'href="assets/experience.css"' not in html
-    assert any(x.name in html for x in (tmp_path / "assets").glob("experience.*.css"))
+    assert 'id="headlineMetrics"' in html
+    assert 'data-view="workbench"' in html
+    assert 'data-view="audit"' in html
+    assert 'data-view="pathways"' in html
+    assert 'href="assets/kerala.css"' not in html
+    assert 'src="assets/app.js"' not in html
+    assert any(x.name in html for x in (tmp_path / "assets").glob("kerala.*.css"))
+    assert not any(x.name in html for x in (tmp_path / "assets").glob("experience.*.css"))
     payload = site.validate_bundle(tmp_path / "data")
     assert payload["research_ledger"]["eligible_area_sq_km"] is None
     assert payload["research_ledger"]["potential_mw"] is None

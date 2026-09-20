@@ -168,10 +168,16 @@ def build_site(root: Path, output: Path) -> None:
     output.mkdir(parents=True, exist_ok=True)
     for name in ("index.html", "manifest.webmanifest", "robots.txt"):
         shutil.copy2(root / "docs" / name, output / name)
-    shutil.copytree(root / "docs/assets", output / "assets", dirs_exist_ok=True)
+    assets = output / "assets"
+    assets.mkdir(exist_ok=True)
+    # No old chart-framework, Leaflet or unused CSS is shipped with the redesign.
+    for stale in assets.iterdir():
+        if stale.is_file():
+            stale.unlink()
+    shutil.copy2(root / "docs/assets/mark.svg", assets / "mark.svg")
     # Immutable filenames prevent a new HTML page from running an old cached app.
     html = (output / "index.html").read_text(encoding="utf-8")
-    for name in ("app.js", "styles.css", "platform.css", "workbench.css", "experience.css"):
+    for name in ("app.js", "kerala.css"):
         asset = root / "docs/assets" / name
         digest = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
         versioned = f"{asset.stem}.{digest}{asset.suffix}"
