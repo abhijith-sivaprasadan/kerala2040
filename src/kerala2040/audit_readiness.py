@@ -272,8 +272,11 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         "decoded as 39 EPSG:32643 MultiPolygons with verified source classes "
         "Low/Moderate/High, but every source feature fails OGC validity through "
         "ring self-intersection and no repaired/merged overlay is admitted. "
-        "Notified forest/wetland boundaries and a statewide height mosaic remain "
-        "absent; no site-eligible km2 or MW ceiling.",
+        "14 original Copernicus GLO90 source tiles and a partial DSM mosaic "
+        "have separate SHA provenance; 6 envelope tiles returned 404 and "
+        "unknown uncovered pixels are retained. Official Kerala boundary, "
+        "verified terrain height datum, wetland/forest legal boundaries and "
+        "tech-specific slope criteria remain absent; no eligible km2 or MW.",
         "docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md",
     )
     return {
