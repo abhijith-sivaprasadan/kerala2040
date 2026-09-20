@@ -23,6 +23,8 @@ sources:
   gis_catalogue: configs/gis_inputs.yaml
   lulc_native_acquisition: configs/lulc_native_acquisition_2024_25.yaml
   lulc_source_review: docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md
+  three_gis_source_review: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
+  three_gis_workstreams: configs/gis_forest_dem_wetlands_hazards_2026.yaml
   economics_registry: configs/techno_economics.yaml
 
 findings:
@@ -93,18 +95,32 @@ findings:
   - id: elevation_dem
     priority: P1
     check: gis_model_ready
-    acquisition: Georeferenced DEM, CRS and resolution suitable for screening.
-    evidence: configs/gis_inputs.yaml
+    acquisition: >-
+      Official CartoDEM requires Bhuvan login/tile metadata. Public Copernicus
+      GLO-30/GLO-90 COGs provide DSM, not bare-earth terrain. Obtain and hash
+      real Kerala tiles, verify CRS, nodata, vertical reference and full mosaic
+      seam/coverage before computing technology-specific slope constraints.
+    evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   - id: forest_protected_areas
     priority: P0
     check: gis_model_ready
-    acquisition: Authoritative current forest/protected-area geometries and applicable notifications.
-    evidence: configs/gis_inputs.yaml
+    acquisition: >-
+      Kerala Forest Department reports digitised reserve/protected-area
+      boundaries, not a publicly acquired current notified source vector.
+      Request official GPKG/shapefiles, legal categories, gazette IDs,
+      effective dates, CRS, revisions and redistribution permission.
+    evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   - id: wetland_waterbody_landslide
     priority: P0
     check: gis_model_ready
-    acquisition: Authoritative georeferenced wetlands, waterbodies and landslide constraints; preserve legal status.
-    evidence: configs/gis_inputs.yaml
+    acquisition: >-
+      Request SWAK current wetland inventory, final-notification polygons,
+      draft outlines, waterbodies and influence zones separately. KSDMA
+      lists 13 GSI 2022 district landslide shapefile downloads, not an
+      authenticated 14-district mosaic; acquire ZIPs and validate actual
+      geospatial classes, CRS, vintage, missing coverage and source licence.
+      Do not use superseded NCESS map or turn hazards into automatic legal bans.
+    evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   - id: niwe_wind_resource
     priority: P1
     check: gis_model_ready
