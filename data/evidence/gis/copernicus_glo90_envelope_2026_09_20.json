@@ -1,0 +1,206 @@
+{
+  "classification": "downloaded_public_Copernicus_GLO90_DSM_partial_envelope_not_eligible_terrain",
+  "source_run": "https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35515526369",
+  "run_utc": "2026-09-20T14:08:09+00:00",
+  "source": "https://copernicus-dem-90m.s3.amazonaws.com/",
+  "requested_envelope_tiles": 20,
+  "actual_original_tiles_acquired": 14,
+  "unpublished_http404_envelope_tiles": 6,
+  "original_tiles_and_hashes": [
+    {
+      "latitude": 8,
+      "longitude": 74,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N08_00_E074_00_DEM/Copernicus_DSM_COG_30_N08_00_E074_00_DEM.tif",
+      "status": "tile_not_published_http_404",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "latitude": 8,
+      "longitude": 75,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N08_00_E075_00_DEM/Copernicus_DSM_COG_30_N08_00_E075_00_DEM.tif",
+      "status": "tile_not_published_http_404",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "latitude": 8,
+      "longitude": 76,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N08_00_E076_00_DEM/Copernicus_DSM_COG_30_N08_00_E076_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 1041179,
+      "sha256": "a0f83c888ac11fc14c5c02e2104359a85ccf957ac6707243a8c1afe254260493"
+    },
+    {
+      "latitude": 8,
+      "longitude": 77,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N08_00_E077_00_DEM/Copernicus_DSM_COG_30_N08_00_E077_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 4508288,
+      "sha256": "762aeee7c800aabc04809279aacd6ee2ebafce28a5c82be6c3f02f310615e8da"
+    },
+    {
+      "latitude": 9,
+      "longitude": 74,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N09_00_E074_00_DEM/Copernicus_DSM_COG_30_N09_00_E074_00_DEM.tif",
+      "status": "tile_not_published_http_404",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "latitude": 9,
+      "longitude": 75,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N09_00_E075_00_DEM/Copernicus_DSM_COG_30_N09_00_E075_00_DEM.tif",
+      "status": "tile_not_published_http_404",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "latitude": 9,
+      "longitude": 76,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N09_00_E076_00_DEM/Copernicus_DSM_COG_30_N09_00_E076_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 4031096,
+      "sha256": "cab81d17d0f6b42c5083f2bf61206b78c607ba59da0663e2677cfebe7f21dd79"
+    },
+    {
+      "latitude": 9,
+      "longitude": 77,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N09_00_E077_00_DEM/Copernicus_DSM_COG_30_N09_00_E077_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 5263969,
+      "sha256": "dc787ef66259504d935e948454f884fc16023f674417b06d767e431692d7aec3"
+    },
+    {
+      "latitude": 10,
+      "longitude": 74,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N10_00_E074_00_DEM/Copernicus_DSM_COG_30_N10_00_E074_00_DEM.tif",
+      "status": "tile_not_published_http_404",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "latitude": 10,
+      "longitude": 75,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N10_00_E075_00_DEM/Copernicus_DSM_COG_30_N10_00_E075_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 281087,
+      "sha256": "3f4d66ac02ff7bd770c54b27f165be75119101dcf9f8ff7600b85b6d3bc6ef98"
+    },
+    {
+      "latitude": 10,
+      "longitude": 76,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N10_00_E076_00_DEM/Copernicus_DSM_COG_30_N10_00_E076_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 5426124,
+      "sha256": "b9ccb10eeb2d9ba661cef9435065e7a223b1ea3933ac41666035b80e7cc8eb33"
+    },
+    {
+      "latitude": 10,
+      "longitude": 77,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N10_00_E077_00_DEM/Copernicus_DSM_COG_30_N10_00_E077_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 5145449,
+      "sha256": "f75baefc1908212b9747ad98866f5fde13a6d3d219f2286594560ef151072c07"
+    },
+    {
+      "latitude": 11,
+      "longitude": 74,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N11_00_E074_00_DEM/Copernicus_DSM_COG_30_N11_00_E074_00_DEM.tif",
+      "status": "tile_not_published_http_404",
+      "bytes": null,
+      "sha256": null
+    },
+    {
+      "latitude": 11,
+      "longitude": 75,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N11_00_E075_00_DEM/Copernicus_DSM_COG_30_N11_00_E075_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 2416583,
+      "sha256": "3be68557bd01862d99c73a7ba204b8b4ecd810b58eb58a7ebe0c33cf5274d79f"
+    },
+    {
+      "latitude": 11,
+      "longitude": 76,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N11_00_E076_00_DEM/Copernicus_DSM_COG_30_N11_00_E076_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 5362066,
+      "sha256": "29e2ed85e089bc2ca416174813f0b899bf2d4cc947162d26cfb40b015f6c3eb4"
+    },
+    {
+      "latitude": 11,
+      "longitude": 77,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N11_00_E077_00_DEM/Copernicus_DSM_COG_30_N11_00_E077_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 5142012,
+      "sha256": "9eb5af227f9c505bc521399a679a0e08e53e1e3dc2a3266776a674c68a2a1a49"
+    },
+    {
+      "latitude": 12,
+      "longitude": 74,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N12_00_E074_00_DEM/Copernicus_DSM_COG_30_N12_00_E074_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 474129,
+      "sha256": "a099093efe959331b53856e8ea1a409b578cc02c51ee7fed21c42bfa2e82ef1c"
+    },
+    {
+      "latitude": 12,
+      "longitude": 75,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N12_00_E075_00_DEM/Copernicus_DSM_COG_30_N12_00_E075_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 5457727,
+      "sha256": "6ded126365684913ff0b25603255fb7e0e86a11370c10680ab9b49e9fc82fc12"
+    },
+    {
+      "latitude": 12,
+      "longitude": 76,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N12_00_E076_00_DEM/Copernicus_DSM_COG_30_N12_00_E076_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 4759903,
+      "sha256": "58ead37c5e6e31a5ebdcd0214c0dad57dd0b867bba3291bbd88b0a8db28ed3fd"
+    },
+    {
+      "latitude": 12,
+      "longitude": 77,
+      "url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N12_00_E077_00_DEM/Copernicus_DSM_COG_30_N12_00_E077_00_DEM.tif",
+      "status": "original_tif_downloaded",
+      "bytes": 5089916,
+      "sha256": "541f828fdc0e7608cb33727f6934ae01331995ffbdd46b810114cd2ec37022ba"
+    }
+  ],
+  "mosaic": {
+    "status": "partial_public_tile_mosaic_with_unknown_uncovered_cells_NOT_Kerala_mask",
+    "sha256": "8049845b1927c6e643e9701f8d30d6fe505c6af45d398917c16a3f7d17bfd203",
+    "bytes": 39755665,
+    "width": 4800,
+    "height": 6000,
+    "crs": "EPSG:4326",
+    "nodata_derived_not_original": "NaN",
+    "bounds_wgs84": [
+      73.99958333333333,
+      8.000416666666666,
+      77.99958333333333,
+      13.000416666666666
+    ],
+    "source_tiles": 14,
+    "requested_envelope_tiles": 20,
+    "404_or_failed_envelope_tiles": 6,
+    "source_uncovered_output_pixels": 8640000,
+    "source_zero_height_pixels_NOT_land_water_indicator": 5845687,
+    "complete_rectangular_envelope_source_coverage": false,
+    "vertical_datum_independently_verified": false,
+    "kerala_official_boundary_clip_verified": false
+  },
+  "adjacent_seam_checks": 19,
+  "original_source_tifs_and_mosaic_committed_to_git": false,
+  "original_files_in_temporary_github_actions_artifact": true,
+  "official_kerala_boundary_coverage_verified": false,
+  "source_dsm_not_bare_earth_dtm": true,
+  "independently_validated_vertical_datum": false,
+  "uncovered_pixels_not_assumed_safe_land": true,
+  "source_zero_height_not_land_water_indicator": true,
+  "technology_specific_slope_rules_verified": false,
+  "ecological_capacity_ceiling_ready": false,
+  "eligible_area_sq_km": null,
+  "capacity_ceiling_mw": null
+}
