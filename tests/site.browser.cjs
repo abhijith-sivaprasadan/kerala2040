@@ -28,8 +28,24 @@ async function run(){
         failures.push("Asset/request failed: "+request.url()+" "+request.failure()?.errorText);
     });
     await page.goto(base,{waitUntil:"domcontentloaded"});
-    await page.waitForFunction(()=>document.querySelector("#headlineMetrics")
-      ?.textContent.includes("73.8%"),{timeout:30000});
+    try{
+      await page.waitForFunction(()=>document.querySelector("#headlineMetrics")
+        ?.textContent.includes("73.8%"),null,{timeout:14000});
+    }catch(error){
+      console.error("STARTUP_DIAGNOSTIC",JSON.stringify({
+        failures,
+        page:await page.evaluate(()=>({
+          title:document.title,
+          metrics:document.querySelector("#headlineMetrics")?.textContent,
+          origin:document.querySelector("#dataOrigin")?.textContent,
+          script:[...document.scripts].map(x=>x.src),
+          css:[...document.querySelectorAll('link[rel="stylesheet"]')].map(x=>x.href),
+          state:document.readyState,
+        })),
+      }));
+      await page.screenshot({path:path.join(out,"00-startup-failure.png"),fullPage:true});
+      throw error;
+    }
     await page.locator("#headlineMetrics .number-card").first().waitFor();
     assert.match(await page.title(),/Kerala2040/);
     assert.match(await page.locator("#heroCoverage").innerText(),/354 \/ 365/);
