@@ -1,0 +1,27 @@
+name: Diagnose WDPA Kerala coverage
+on:
+  push:
+    branches: [audit/wdpa-crosswalk-diagnostic-20260920]
+    paths:
+      - "scripts/diagnose_wdpa_kerala.py"
+      - ".github/workflows/diagnose-wdpa-kerala.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install "requests>=2.32,<3"
+      - run: python scripts/diagnose_wdpa_kerala.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wdpa-diagnostic-NOT-a-boundary
+          path: results/gis/wdpa_source_diagnostic.json
+          retention-days: 30
