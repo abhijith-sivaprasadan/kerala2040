@@ -108,8 +108,8 @@ def compare_feature(geometry: Any, district: str, cls: str, source_sha: str,
             "symmetric_difference_fraction_of_union": safe_div(difference, union_area),
             "area_change_m2": float(a.area - b.area),
             "hausdorff_distance_m_source_crs": hausdorff,
-            "hausdorff_skipped_large_geometry": coordinates > 2000,
-            "coordinates_for_hausdorff": coordinates,
+            "hausdorff_skipped_large_geometry": bool(coordinates > 2000),
+            "coordinates_for_hausdorff": int(coordinates),
             "topologically_equal_at_1e_minus_6_m2_tolerance": difference <= 1e-6,
         }
     entry = {
