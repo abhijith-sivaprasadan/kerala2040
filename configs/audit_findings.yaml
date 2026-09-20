@@ -96,13 +96,14 @@ findings:
     priority: P1
     check: gis_model_ready
     acquisition: >-
-      Original source acquisition verified 14 Copernicus GLO-90 GeoTIFFs
-      over an approximate Kerala bounding rectangle; six requested offshore/
-      uncertain tiles returned 404. A partial DSM mosaic preserves 8,640,000
-      unknown uncovered cells and has 19 neighboring-tile diagnostics, not an
-      official-state coverage pass. Obtain legal Kerala boundary mask, independently
-      verify source height datum and DSM/DTM distinction, and calibrate
-      per-technology slope screening before any siting/eligible-area inference.
+      Fourteen real Copernicus GLO-90 GeoTIFFs and a partial DSM mosaic have
+      recorded source hashes. A downloaded 36-feature NWIC state-boundary
+      GeoJSON explicitly uses EPSG:7755; reprojection finds zero intersections
+      between its Kerala polygon and the six unpublished DSM tile footprints.
+      This is only source tile-footprint coverage, not pixelwise valid-height,
+      coastal mask, vertical-datum or DSM/DTM validation. Still obtain
+      independently reconciled official boundary precision, per-technology
+      slope criteria and forest/wetland legal exclusions before siting.
     evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   - id: forest_protected_areas
     priority: P0
