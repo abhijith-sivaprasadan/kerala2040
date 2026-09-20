@@ -54,6 +54,9 @@ test("missing numeric data is never converted into a measured zero",()=>{
 });
 test("required evidence is fetched from one published manifest and verified",async()=>{
   const site=read("site-data.json");
+  // The research audit and ledger are generated at package time, not committed in public/.
+  site.metadata.files.audit_readiness="audit-readiness.json";
+  site.metadata.files.research_ledger="research-ledger.json";
   const files=site.metadata.files;
   const data={
     "site-data.json":site,
