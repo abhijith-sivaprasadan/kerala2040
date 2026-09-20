@@ -1,0 +1,112 @@
+{
+  "classification": "official_Kerala_Forest_source_audit_NO_authoritative_machine_readable_geometry_acquired",
+  "validation_run": "https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35524180566",
+  "reviewed_at_utc": "2026-09-20T16:55:24+00:00",
+  "official_department": "Kerala Forest and Wildlife Department",
+  "official_pages": {
+    "protected_area_network": {
+      "url": "https://forest.kerala.gov.in/en/preserving-natures-heritage/",
+      "http_status": 200,
+      "sha256_of_html_response": "8e064804c96ff9190534fc0995c6ce39cd1d1352034385fadd464f1e9d6f1c74"
+    },
+    "wildlife_sanctuaries": {
+      "url": "https://forest.kerala.gov.in/en/wildlife-sanctuaries/",
+      "http_status": 200,
+      "sha256_of_html_response": "cb38608d87275284cb6bc51aec17c8acbe4156697badf70e05e76ab388f4f3c7"
+    },
+    "management_plans": {
+      "url": "https://forest.kerala.gov.in/en/management-plans/",
+      "http_status": 200,
+      "sha256_of_html_response": "f6c48fe5539a236f092af8593aa514a8b67bc012b632f756f6211ef4141c6baa"
+    },
+    "reserve_notification_category": {
+      "url": "https://forest.kerala.gov.in/category/reserve-notification-ml/",
+      "http_status": 200,
+      "sha256_of_html_response": "1a2e35b0fe305388ca98a9d927c9dc1ae48f9831c9c456830edcc614b44c7fdc"
+    }
+  },
+  "department_gis_report": "https://forest.kerala.gov.in/images/abc/AR_Book_2022.pdf",
+  "ksdi": "https://eitd.kerala.gov.in/en/kerala-state-spatial-data-infrastructure/",
+  "candidate_pages_discovered": 16,
+  "official_download_links_discovered": 47,
+  "official_zip_candidates": 9,
+  "direct_nonzip_machine_readable_vector_candidates": 0,
+  "verified_geometry_archives": 0,
+  "zip_candidates": [
+    {
+      "label": "Aaralam Wildlife Sanctuary",
+      "url": "https://forest.kerala.gov.in/images/abc/aralam.zip",
+      "status": "HTTP_403"
+    },
+    {
+      "label": "Chimmony Wildlife Sanctuary",
+      "url": "https://forest.kerala.gov.in/images/abc/chimmony.zip",
+      "status": "HTTP_403"
+    },
+    {
+      "label": "Chulannur Wildlife Sanctuary",
+      "url": "https://forest.kerala.gov.in/images/abc/chulannur.zip",
+      "status": "HTTP_403"
+    },
+    {
+      "label": "Idukki Wildlife Sanctuary",
+      "url": "https://forest.kerala.gov.in/images/abc/idukki.zip",
+      "status": "HTTP_403"
+    },
+    {
+      "label": "Peechi Wildlife Sanctuary",
+      "url": "https://forest.kerala.gov.in/images/abc/peechi.zip",
+      "status": "HTTP_403"
+    },
+    {
+      "label": "Silent Valley National Park",
+      "url": "https://forest.kerala.gov.in/images/abc/svnp.zip",
+      "status": "HTTP_403"
+    },
+    {
+      "label": "Thattekkad Wildlife Sanctuary",
+      "url": "https://forest.kerala.gov.in/images/abc/thatekkad.zip",
+      "status": "HTTP_403"
+    },
+    {
+      "label": "Wayanad Wildlife Sanctuary",
+      "url": "https://forest.kerala.gov.in/images/abc/wayanad.zip",
+      "status": "HTTP_403"
+    },
+    {
+      "label": "Tiger Conservation Plan of Periyar Tiger Reserve",
+      "url": "https://forest.kerala.gov.in/images/managementplan/tcp_0310.zip",
+      "status": "HTTP_404"
+    }
+  ],
+  "public_authoritative_forest_polygon_verified": false,
+  "public_authoritative_protected_area_polygon_verified": false,
+  "notification_to_polygon_linkage_verified": false,
+  "current_revision_date_for_statewide_geometry_verified": false,
+  "redistribution_licence_for_statewide_geometry_verified": false,
+  "forest_cover_treated_as_legal_forest": false,
+  "pdf_or_rendered_map_digitised_as_geometry": false,
+  "external_non_custodian_geometry_admitted": false,
+  "legal_exclusion_overlay_ready": false,
+  "eligible_area_sq_km": null,
+  "capacity_ceiling_mw": null,
+  "required_request": {
+    "layers": [
+      "Reserve Forest",
+      "Proposed Reserve",
+      "Vested Forest",
+      "EFL",
+      "Protected Areas by legal category",
+      "final Eco-Sensitive Zones separately"
+    ],
+    "metadata": [
+      "gazette_or_notification_id",
+      "effective_date",
+      "legal_category",
+      "original_crs",
+      "revision_date",
+      "boundary_accuracy_or_survey_basis",
+      "licence_or_research_and_public_derivative_permission"
+    ]
+  }
+}
