@@ -22,6 +22,7 @@ GIS = "configs/gis_inputs.yaml"
 LULC = "configs/lulc_native_acquisition_2024_25.yaml"
 GIS_3 = "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
 BOUNDARY_QA = "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json"
+FOREST_QA = "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json"
 FINDINGS = "configs/audit_findings.yaml"
 HYDRO_TOPOLOGY = "configs/hydro_topology_evidence_2024_25.yaml"
 TRANSFER = "configs/grid_transfer_contract_evidence_2024_25.yaml"
@@ -280,6 +281,29 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         or boundary["capacity_ceiling_mw"] is not None
     ):
         raise ValueError("NWIC source cannot self-certify pixelwise terrain/eligibility")
+    forest = _json(root, FOREST_QA)
+    if forest.get("classification") != (
+        "official_Kerala_Forest_source_audit_NO_authoritative_machine_readable_geometry_acquired"
+    ):
+        raise ValueError("Forest/protected-area source audit classification mismatch")
+    zip_candidates = forest["zip_candidates"]
+    if (
+        forest["candidate_pages_discovered"] != 16
+        or forest["official_download_links_discovered"] != 47
+        or forest["official_zip_candidates"] != 9
+        or forest["direct_nonzip_machine_readable_vector_candidates"] != 0
+        or forest["verified_geometry_archives"] != 0
+        or len(zip_candidates) != 9
+        or sum(row["status"] == "HTTP_403" for row in zip_candidates) != 8
+        or sum(row["status"] == "HTTP_404" for row in zip_candidates) != 1
+        or forest["public_authoritative_forest_polygon_verified"] is not False
+        or forest["public_authoritative_protected_area_polygon_verified"] is not False
+        or forest["notification_to_polygon_linkage_verified"] is not False
+        or forest["legal_exclusion_overlay_ready"] is not False
+        or forest["eligible_area_sq_km"] is not None
+        or forest["capacity_ceiling_mw"] is not None
+    ):
+        raise ValueError("Forest source discovery cannot certify legal GIS geometry")
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
@@ -287,6 +311,7 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
             "not_downloaded_native_data_requires_approved_route",
             "official_download_listed_but_not_committed_verified",
             "official_internal_gis_reported_geometry_not_secured",
+            "official_internal_gis_reported_geometry_not_secured_public_zip_candidates_blocked",
             "source_routes_verified_statewide_raster_not_committed",
             "draft_notified_legal_distinction_original_geometry_not_secured",
             "authoritative_geometry_not_yet_secured",
@@ -307,8 +332,12 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         "separate SHA provenance. A 36-feature NWIC state-boundary GeoJSON "
         "declares EPSG:7755; reprojected Kerala polygon intersects 0 of the "
         "6 unpublished source tile footprints. This is NOT pixel-level coverage, "
-        "verified vertical datum, wetland/forest legal boundaries or "
-        "tech-specific slope eligibility; no site-eligible km2 or MW.",
+        "verified vertical datum or wetland/forest legal boundaries. "
+        f"Forest Department probing found {forest['official_download_links_discovered']} "
+        f"official download links and {forest['official_zip_candidates']} ZIP candidates, "
+        "but eight returned HTTP 403 and one HTTP 404; no machine-readable "
+        "forest/protected-area geometry was verified. No tech-specific slope "
+        "eligibility, site-eligible km2 or MW.",
         "docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md",
     )
     return {
