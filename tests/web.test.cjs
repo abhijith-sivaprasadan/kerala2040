@@ -149,3 +149,41 @@ test("GIS workstream is not a point-to-polygon or eligible capacity publication"
   assert.match(html,/not a GIS map or legal boundary/);
   assert.match(html,/No buildable-land or MW estimate has been established/);
 });
+
+test("all eight research pages render against one real observed-data snapshot",()=>{
+  const elements={};
+  function el(selector){
+    return elements[selector] ||= {
+      innerHTML:"",textContent:"",value:"",
+      addEventListener:()=>{},setAttribute:()=>{},classList:{toggle:()=>{}}
+    };
+  }
+  const c=context({document:{querySelector:el,querySelectorAll:()=>[],
+    getElementById:()=>null}});
+  const observed=read("site-data.json");
+  observed.metadata.research_source_commit="06b09f984357b834149dd54d6e8e9cfccce4c599";
+  c.observed=observed;
+  c.days=read("daily-balance.json");
+  c.check=audit();
+  c.science=ledger();
+  c.science.workstreams=[
+    {id:"electricity",title:"Electricity",phase:"partial",
+      metric:"354 / 365",unit:"report days",summary:"Observed subset",
+      completed:"QA",blocked:"11 missing",action:"Request original reports",
+      route:"electricity",evidence:[]},
+    {id:"forest",title:"Forest",phase:"blocked",
+      metric:"0 / 25",unit:"polygon matches",summary:"WDPA is not a legal map",
+      completed:"Source QA",blocked:"No gazette geometry",
+      action:"Request statutory polygons",route:"atlas",evidence:[]}
+  ];
+  vm.runInContext("state.site=observed;state.daily=days;state.audit=check;state.ledger=science;renderAll()",c);
+  assert.match(elements["#headlineMetrics"].innerHTML,/73\.8%/);
+  assert.match(elements["#energyChart"].innerHTML,/<svg/);
+  assert.match(elements["#energyChartCaption"].textContent,/11 unverified days/);
+  assert.match(elements["#spatialPipeline"].innerHTML,/No gazette geometry/);
+  assert.match(elements["#scenarioDetail"].innerHTML,/Not a prediction/);
+  assert.match(elements["#industryCases"].innerHTML,/Kerala Minerals and Metals Limited/);
+  assert.match(elements["#workbenchCards"].innerHTML,/354 \/ 365/);
+  assert.match(elements["#auditGates"].innerHTML,/NOT PASSED/);
+  assert.match(elements["#downloadGrid"].innerHTML,/site-data\.json/);
+});
