@@ -99,8 +99,11 @@ def run(root: Path, output: Path, raw: Path) -> dict:
     frame = gpd.GeoDataFrame.from_features(fc["features"], crs="EPSG:4326")
     if frame.empty:
         raise ValueError("No WDPA polygon features returned for Kerala envelope")
-    if "iso3" not in frame or not (frame["iso3"] == "IND").all():
-        raise ValueError("WDPA query contains non-India polygons")
+    if "iso3" not in frame or "prnt_iso3" not in frame:
+        raise ValueError("WDPA country fields missing")
+    india_mask = frame["iso3"].fillna("").str.contains("IND") | frame["prnt_iso3"].fillna("").str.contains("IND")
+    if not india_mask.all():
+        raise ValueError("WDPA query contains polygons not associated with India")
     if frame.geometry.isna().any() or frame.geometry.is_empty.any():
         raise ValueError("WDPA returned null/empty polygon")
     if not set(frame.geometry.geom_type) <= {"Polygon", "MultiPolygon"}:
@@ -167,6 +170,7 @@ def run(root: Path, output: Path, raw: Path) -> dict:
         "raw_geojson_sha256": sha256(raw),
         "raw_geojson_bytes": raw.stat().st_size,
         "wdpa_features_returned_in_envelope": len(frame),
+        "wdpa_names_returned": sorted(set(str(x) for x in frame["name_eng"].dropna())),
         "official_core_designations_expected": len(primary),
         "official_designations_uniquely_matched": len(matches),
         "official_designations_unresolved": unmatched,
@@ -188,6 +192,7 @@ def run(root: Path, output: Path, raw: Path) -> dict:
     output.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     print(json.dumps({
         "wdpa_features_returned": len(frame),
+        "wdpa_names_preview": sorted(set(str(x) for x in frame["name_eng"].dropna()))[:40],
         "official_expected": len(primary),
         "unique_matches": len(matches),
         "unresolved": len(unmatched),
