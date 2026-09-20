@@ -34,6 +34,7 @@ def test_readiness_preserves_historical_evidence_and_blocks_2040_claims():
     assert report["checks"]["era5_complete"]["status"] == STATUS_PARTIAL
     assert "4 NRSC LULC product routes" in report["checks"]["gis_model_ready"]["detail"]
     assert report["checks"]["gis_model_ready"]["status"] == STATUS_BLOCKED
+    assert "eight returned HTTP 403 and one HTTP 404" in report["checks"]["gis_model_ready"]["detail"]
     assert "three forest/DEM/hazard" in report["checks"]["gis_model_ready"]["detail"]
     assert "39 EPSG:32643 MultiPolygons" in report["checks"]["gis_model_ready"]["detail"]
     assert "ring self-intersection" in report["checks"]["gis_model_ready"]["detail"]
@@ -74,6 +75,7 @@ def test_source_qa_tampering_fails_closed(tmp_path):
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
         "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
+        "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -111,6 +113,7 @@ def test_unknown_gate_is_rejected_instead_of_counted_ready(tmp_path):
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
         "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
+        "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -143,6 +146,7 @@ def test_generator_register_official_source_crosscheck_fails_closed(tmp_path):
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
         "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
+        "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -176,6 +180,7 @@ def test_transfer_gate_rejects_import_limit_promotion(tmp_path):
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
         "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
+        "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -209,6 +214,7 @@ def test_lulc_register_cannot_self_certify_ecological_capacity(tmp_path):
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
         "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
+        "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -242,6 +248,7 @@ def test_three_gis_workstreams_cannot_invent_a_ceiling(tmp_path):
         "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
         "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
         "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
+        "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json",
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
@@ -258,4 +265,38 @@ def test_three_gis_workstreams_cannot_invent_a_ceiling(tmp_path):
     data["model_use"]["potential_mw"] = 12500
     path.write_text(yaml.safe_dump(data))
     with pytest.raises(ValueError, match="cannot invent eligibility"):
+        build_audit(tmp_path)
+
+
+def test_forest_source_audit_cannot_self_certify_legal_geometry(tmp_path):
+    import json
+
+    inputs = (
+        "data/external/sldc_fy2024_25/qa_report.json",
+        "public/era5-daily-manifest.json",
+        "configs/techno_economics.yaml",
+        "configs/gis_inputs.yaml",
+        "configs/lulc_native_acquisition_2024_25.yaml",
+        "configs/gis_forest_dem_wetlands_hazards_2026.yaml",
+        "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json",
+        "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json",
+        "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
+        "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
+        "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json",
+        "configs/audit_findings.yaml",
+        "configs/observed_2024_25.yaml",
+        "configs/generator_reconciliation_2024_25.yaml",
+        "configs/hydro_topology_evidence_2024_25.yaml",
+        "configs/grid_transfer_contract_evidence_2024_25.yaml",
+        "public/kseb-projects.json",
+    )
+    for file in inputs:
+        target = tmp_path / file
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / file, target)
+    path = tmp_path / "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json"
+    data = json.loads(path.read_text())
+    data["legal_exclusion_overlay_ready"] = True
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="cannot certify legal GIS geometry"):
         build_audit(tmp_path)
