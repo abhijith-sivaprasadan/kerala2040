@@ -269,6 +269,11 @@ def run(
                 f"features={result.get('feature_count', 'NA')} "
                 f"CRS={result.get('original_crs', 'NA')} "
                 f"fields={result.get('source_category_candidate_fields', [])} "
+                f"types={result.get('geometry_types', {})} "
+                f"invalid={result.get('invalid_geometries', 'NA')} "
+                f"reasons={result.get('sample_invalid_geometry_reasons', {})} "
+                f"classes={result.get('source_raw_category_profiles', [])} "
+                f"bbox={result.get('source_extent_wgs84', [])} "
                 f"error={result.get('error', '')}",
                 flush=True,
             )
