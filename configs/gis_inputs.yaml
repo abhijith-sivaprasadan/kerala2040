@@ -44,11 +44,13 @@ layers:
     expected_format: gsi_2022_district_shapefile_zip_plus_class_legend
     raw_path: data/external/gis/ksdma/landslide
     role: susceptibility_penalty_or_avoidance_not_universal_statutory_exclusion
-    acquisition_status: official_download_listed_but_not_committed_verified
+    acquisition_status: official_13_archives_decoded_geometry_invalid
     note: >-
-      KSDMA lists 13 GSI 2022 district shapefile links, excluding Alappuzha;
-      do not infer hazard-free missing coverage. Old NCESS map superseded.
-      The source list does not establish downloaded ZIPs or GIS validity.
+      All 13 GSI 2022 original ZIPs have hashes and opened; each district has
+      High/Moderate/Low MultiPolygons in EPSG:32643 (39 original features).
+      All 39 original features have ring self-intersections; no silent repair,
+      legal exclusion or eligible area. Alappuzha lacks a source package.
+      Superseded NCESS cannot be silently substituted.
   kerala_forest_protected_areas:
     source: Kerala Forest and Wildlife Department
     landing_page: https://forest.kerala.gov.in/
