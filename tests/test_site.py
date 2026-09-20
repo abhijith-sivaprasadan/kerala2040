@@ -186,3 +186,28 @@ def test_packaged_workbench_rejects_cross_snapshot_findings(tmp_path):
     manifest.write_text(json.dumps(payload))
     with pytest.raises(ValueError, match="audited finding counts disagree"):
         site.validate_bundle(tmp_path / "data")
+
+
+def test_evidence_first_site_packages_new_experience_and_dual_clock(tmp_path):
+    site.build_site(ROOT, tmp_path)
+    html = (tmp_path / "index.html").read_text(encoding="utf-8")
+    assert 'id="decisionDeskTitle"' in html
+    assert 'id="decisionTopics"' in html
+    assert 'id="spatialPipeline"' in html
+    assert 'id="evidenceSnapshot"' in html
+    assert 'href="assets/experience.css"' not in html
+    assert any(x.name in html for x in (tmp_path / "assets").glob("experience.*.css"))
+    payload = site.validate_bundle(tmp_path / "data")
+    assert payload["research_ledger"]["eligible_area_sq_km"] is None
+    assert payload["research_ledger"]["potential_mw"] is None
+    assert payload["metadata"]["research_source_commit"] == site.source_revision(ROOT)
+    assert payload["metadata"]["generated_at_utc"] == json.loads(
+        (ROOT / "public/metadata.json").read_text(encoding="utf-8")
+    )["generated_at_utc"]
+    assert payload["research_ledger"]["reviewed_date"] != payload["metadata"][
+        "generated_at_utc"
+    ][:10]
+
+
+def test_source_revision_refuses_unrelated_parent_git_checkout(tmp_path):
+    assert site.source_revision(tmp_path) is None

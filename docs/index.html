@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="assets/styles.css" />
   <link rel="stylesheet" href="assets/platform.css" />
   <link rel="stylesheet" href="assets/workbench.css" />
+  <link rel="stylesheet" href="assets/experience.css" />
   <script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script defer src="assets/app.js"></script>
@@ -47,44 +48,52 @@
         </div>
       </a>
       <div class="masthead-tools">
-        <button class="search-link" data-route="data">Search evidence ↗</button>
+        <button class="search-link" data-route="data">Evidence library <span aria-hidden="true">↗</span></button>
       </div>
     </div>
     <nav class="primary-nav" aria-label="Primary navigation">
       <div class="shell nav-inner">
-        <button data-route="overview" class="nav-link active">Overview</button>
-        <button data-route="electricity" class="nav-link">Electricity</button>
-        <button data-route="workbench" class="nav-link">Research workbench</button>
-        <button data-route="pathways" class="nav-link">2040 pathways</button>
-        <button data-route="atlas" class="nav-link">GIS &amp; atlas</button>
+        <button data-route="overview" class="nav-link active">Start here</button>
+        <button data-route="electricity" class="nav-link">Observed system</button>
+        <button data-route="workbench" class="nav-link">Research ledger</button>
+        <button data-route="pathways" class="nav-link">2040 questions</button>
+        <button data-route="atlas" class="nav-link">Spatial evidence</button>
         <button data-route="industry" class="nav-link">Circular industry</button>
-        <button data-route="audit" class="nav-link">Release gates</button>
-        <button data-route="data" class="nav-link">Sources &amp; downloads</button>
+        <button data-route="audit" class="nav-link">Decision gates</button>
+        <button data-route="data" class="nav-link">Data library</button>
       </div>
     </nav>
   </header>
 
   <main id="main">
     <section class="view active" data-view="overview">
-      <section class="home-hero shell research-hero">
+      <section class="home-hero shell research-hero experience-hero" aria-labelledby="homeTitle">
         <div class="home-hero-copy">
-          <div class="section-label">KERALA · OBSERVED FY2024–25 · RESEARCH HORIZON 2040</div>
-          <h1>Understand the energy.<br><em>Inspect the evidence.</em><br>Test the future.</h1>
-          <p>An open, statewide research workbench that keeps measured history, source validation, ecological constraints and scenario ideas distinct. Follow the claim back to its source.</p>
+          <div class="hero-kicker"><span class="hero-kicker-square" aria-hidden="true"></span> OPEN RESEARCH / KERALA / 2040</div>
+          <div class="section-label hero-edition">FIELD NOTES № 01 · ELECTRICITY, LAND AND SYSTEMS</div>
+          <h1 id="homeTitle">An energy future<br>you can <em>interrogate.</em></h1>
+          <p>Kerala2040 is an evidence-led research workspace. See the measured system, inspect what the source actually supports, and follow each unsolved question to the data needed to answer it.</p>
           <div class="hero-actions">
-            <button class="button primary" data-route="workbench">Open research workbench →</button>
-            <button class="button secondary" data-route="electricity">Explore observed electricity</button>
+            <button class="button primary" data-route="workbench">Investigate the research <span aria-hidden="true">↗</span></button>
+            <button class="button secondary" data-route="electricity">Start with observations →</button>
           </div>
-          <div class="hero-meta"><span class="hero-meta-dot" aria-hidden="true"></span><span id="dataOrigin" class="data-origin">Loading published research snapshot…</span></div>
+          <div class="hero-meta"><span class="hero-meta-dot" aria-hidden="true"></span><span id="dataOrigin" class="data-origin">Loading publication and evidence identities…</span></div>
+          <p class="hero-source-note">Historical reference: FY2024–25 · Planning horizon: 2040. Published external scenarios are not project forecasts.</p>
         </div>
-        <aside class="hero-stat" aria-label="Observed import dependence">
-          <div class="hero-stat-label">01 / OBSERVED ELECTRICITY</div>
-          <p class="hero-context">Net imports / consumption · <strong>available FY2024–25 SLDC days</strong></p>
+        <aside class="hero-stat evidence-hero" aria-label="Observed electricity and research status">
+          <span class="hero-stat-label">THE SYSTEM / VERIFIED OBSERVATIONS</span>
+          <p class="hero-context">Net electricity imports as a share of consumption on available FY2024–25 SLDC days</p>
           <div class="hero-stat-value"><span id="heroDemandNumber">—</span><small>%</small></div>
-          <div class="energy-motif" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-          <p id="heroCoverage">Loading dated SLDC observations…</p>
-          <button class="text-link" data-route="electricity">Inspect the observed balance →</button>
+          <div class="hero-evidence-divider" aria-hidden="true"></div>
+          <div class="hero-evidence-rows">
+            <div><span>Observation window</span><strong id="heroCoverage">Checking available report days…</strong></div>
+            <div><span>2040 optimisation</span><strong>Not yet released</strong></div>
+          </div>
+          <button class="text-link" data-route="electricity">Trace the observed balance ↗</button>
         </aside>
+      </section>
+      <section class="shell evidence-snapshot" id="evidenceSnapshot" aria-live="polite" aria-label="Two dated evidence identities">
+        <div class="snapshot-pending">Checking research and observation dates…</div>
       </section>
 
       <section class="stat-band">
@@ -103,6 +112,21 @@
           <h2 id="auditOverviewTitle">What can the research support today?</h2>
           <p id="auditOverviewText">Checking the published audit…</p></div>
         <button class="button secondary" data-route="audit">Explore research readiness →</button>
+      </section>
+
+      <section class="shell decision-desk" aria-labelledby="decisionDeskTitle">
+        <div class="decision-intro">
+          <div><div class="section-label">THE RESEARCH DESK · CLAIM → LIMIT → SOURCE</div>
+            <h2 id="decisionDeskTitle">Choose a question.<br><em>Follow the evidence.</em></h2>
+            <p>Every finding has a dated source, a measured or audited milestone, an unresolved limit and a route to the next decision. No progress scores or fabricated capacity figures.</p></div>
+          <button class="section-link" data-route="audit">See all publication gates ↗</button>
+        </div>
+        <div class="decision-desk-layout">
+          <div id="decisionTopics" class="decision-topics" role="group" aria-label="Choose a research question"></div>
+          <article id="decisionDetail" class="decision-detail" aria-live="polite">
+            <p class="decision-placeholder">Loading the source-traced research ledger…</p>
+          </article>
+        </div>
       </section>
 
       <section class="shell home-section home-ledger">
@@ -396,6 +420,13 @@
         </div>
         <div class="status-label neutral">Source atlas · no validated exclusion map</div>
       </div>
+      <section class="shell spatial-status" aria-labelledby="spatialStatusTitle">
+        <div class="section-heading"><div><div class="section-label">SPATIAL RESEARCH · SOURCE TO ADMISSION</div>
+          <h2 id="spatialStatusTitle">Five layers. Five different evidence boundaries.</h2></div>
+          <button class="section-link" data-route="audit">Inspect release gates ↗</button></div>
+        <p class="section-deck">A bounded download, valid pixel or repaired candidate does not become buildable land. Inspect the evidence stage separately for each GIS workstream.</p>
+        <div id="spatialPipeline" class="spatial-pipeline" aria-live="polite">Loading official-source audit…</div>
+      </section>
       <section class="shell atlas-evidence-panel" aria-labelledby="atlasLedgerTitle">
         <div class="section-heading"><div><div class="section-label">SPATIAL DATA · ADMISSION STATUS</div><h2 id="atlasLedgerTitle">GIS evidence before siting</h2></div>
           <button class="section-link" data-route="workbench">Full research ledger →</button></div>
@@ -529,7 +560,7 @@
     <div class="shell footer-main">
       <div>
         <strong>Kerala 2040</strong>
-        <p>Independent energy data and modelling platform.</p>
+        <p>An independent, source-traced energy research workspace.</p><p id="footerResearchIdentity" class="footer-identity">Research source and observation archive are separately identified.</p>
       </div>
       <div class="footer-links">
         <button data-route="electricity">Electricity</button>

@@ -109,3 +109,56 @@ test('workbench stage labels never equate source QA with siting approval',()=>{
   assert.match(vm.runInContext("researchPhaseLabel('blocked')",c),/Missing critical evidence/);
   assert.equal(vm.runInContext("researchEvidenceURL('https://not-the-project.example/test')",c),'');
 });
+
+test('decision desk derives from audited fields, escapes text and rejects unsafe URLs',()=>{
+  const c=context();
+  const item={
+    id:'forest',title:'Forests <script>alert(1)</script>',
+    summary:'No <img src=x onerror=alert(1)> boundary',phase:'blocked',
+    metric:'0 / 25',unit:'matched secondary polygons',
+    completed:'KFD source audit',blocked:'notification polygons missing',
+    action:'Request notification-linked data',route:'atlas',
+    evidence:[{label:'BAD',href:'javascript:alert(1)'},{label:'Official audit',
+      href:'https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/docs/WDPA_KFD_PROTECTED_AREA_CROSSWALK_AUDIT.md'}]
+  };
+  c.item=item;
+  const html=vm.runInContext('decisionDetailHTML(item)',c);
+  assert.ok(!html.includes('<script>'));
+  assert.ok(!html.includes('<img'));
+  assert.ok(!html.includes('javascript:'));
+  assert.match(html,/0 \/ 25/);
+  assert.match(html,/notification polygons missing/);
+  assert.match(html,/Request notification-linked data/);
+  assert.match(html,/Official audit/);
+  assert.match(html,/data-route="atlas"/);
+});
+test('published research revision is not confused with old observation archive',()=>{
+  const elements={
+    '#evidenceSnapshot':{innerHTML:'',textContent:''},
+    '#footerResearchIdentity':{textContent:''}
+  };
+  const c=context({document:{querySelector:q=>elements[q]||null}});
+  vm.runInContext(
+    "state.data={metadata:{generated_at_utc:'2026-09-19T23:36:48+00:00',"+
+    "git_sha:'d6ad73403985ed2982d8a5ccb6d47dae5ddd8a54',"+
+    "research_source_commit:'2e35600b6e1a676127b4641380e5f7a2076248a0'}};"+
+    "state.audit={classification:'repository_evidence_audit_not_external_source_validation'};"+
+    "state.researchLedger={classification:'dated_repository_research_progress_NOT_geospatial_or_model_readiness',"+
+    "reviewed_date:'2026-09-20',release_gates:{a:{passed:false},b:{passed:true}}};"+
+    "renderEvidenceSnapshot()",c);
+  assert.match(elements['#evidenceSnapshot'].innerHTML,/2026-09-19/);
+  assert.match(elements['#evidenceSnapshot'].innerHTML,/2026-09-20/);
+  assert.match(elements['#evidenceSnapshot'].innerHTML,/1 \/ 2/);
+  assert.match(elements['#evidenceSnapshot'].innerHTML,/2e35600b6e/);
+  assert.match(elements['#footerResearchIdentity'].textContent,/d6ad734039/);
+});
+test('spatial pipeline never uses GIS progress as a siting or capacity claim',()=>{
+  const c=context();
+  assert.match(vm.runInContext('decisionRow({phase:"validated_source",metric:"4,624,362",unit:"finite pixels"})',c),/4,624,362/);
+  assert.match(vm.runInContext('decisionRow({phase:"blocked",metric:"0 \/ 25",unit:"crosswalk polygons"})',c),/0 \/ 25/);
+  assert.equal(vm.runInContext("researchEvidenceURL('javascript:alert(1)')",c),'');
+  const html=fs.readFileSync(path.join(root,'docs/index.html'),'utf8');
+  assert.match(html,/id="spatialPipeline"/);
+  assert.match(html,/id="decisionTopics"/);
+  assert.match(html,/id="evidenceSnapshot"/);
+});

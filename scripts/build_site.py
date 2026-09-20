@@ -7,7 +7,9 @@ import copy
 import hashlib
 import json
 import math
+import re
 import shutil
+import subprocess
 from datetime import datetime, timedelta
 from itertools import pairwise
 from pathlib import Path
@@ -136,6 +138,28 @@ def live_manifest(source: dict) -> dict:
     return site
 
 
+def source_revision(root: Path) -> str | None:
+    """Attest the exact checked-out research commit, not the stale data-build SHA.
+
+    A gitless copy can build, but its website explicitly says that the source
+    revision is not recorded. Never use GITHUB_SHA: deploy runs in another repo.
+    """
+    try:
+        top = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "--show-toplevel"],
+            check=True, capture_output=True, text=True, timeout=5,
+        ).stdout.strip()
+        if Path(top).resolve() != root:
+            return None
+        sha = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "--verify", "HEAD"],
+            check=True, capture_output=True, text=True, timeout=5,
+        ).stdout.strip()
+        return sha if re.fullmatch(r"[a-f0-9]{40}", sha) else None
+    except (FileNotFoundError, OSError, subprocess.SubprocessError):
+        return None
+
+
 def build_site(root: Path, output: Path) -> None:
     root, output = root.resolve(), output.resolve()
     if output == root or output == root / "docs" or output == root / "public":
@@ -147,7 +171,7 @@ def build_site(root: Path, output: Path) -> None:
     shutil.copytree(root / "docs/assets", output / "assets", dirs_exist_ok=True)
     # Immutable filenames prevent a new HTML page from running an old cached app.
     html = (output / "index.html").read_text(encoding="utf-8")
-    for name in ("app.js", "styles.css", "platform.css", "workbench.css"):
+    for name in ("app.js", "styles.css", "platform.css", "workbench.css", "experience.css"):
         asset = root / "docs/assets" / name
         digest = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
         versioned = f"{asset.stem}.{digest}{asset.suffix}"
@@ -155,6 +179,8 @@ def build_site(root: Path, output: Path) -> None:
         html = html.replace(f"assets/{name}", f"assets/{versioned}")
     (output / "index.html").write_text(html, encoding="utf-8")
     site = live_manifest(source)
+    # Observation data may predate research QA: publish both clocks separately.
+    site["metadata"]["research_source_commit"] = source_revision(root)
     # The expanded station-level report is an optional, user-acquired public evidence
     # layer; future config-only bundle rebuilds cannot silently remove its provenance.
     station_path = root / "public" / "sldc-station-evidence.json"
