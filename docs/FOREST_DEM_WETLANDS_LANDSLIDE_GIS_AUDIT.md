@@ -1,0 +1,37 @@
+# Kerala 2040 — forest, DEM, wetlands/waterbodies and landslide GIS evidence
+
+**Reviewed 20 September 2026.** Three workstreams tracked in a single [source-scoped registry](../configs/gis_forest_dem_wetlands_hazards_2026.yaml). This review verifies where datasets are held or advertised; **no authoritative statewide forest geometry, height mosaic, final wetland polygon, or GSI district shapefile has been admitted as committed model data**. An online map, publication, list of protected areas, archive ZIP, WMS style or synthetic fixture is not automatically a georeferenced, licensed, topologically sound constraint.
+
+## 1. Forest and protected areas — P0
+
+Kerala Forest Department's [departmental reporting](https://forest.kerala.gov.in/images/abc/AR_Book_2022.pdf) states that reserve-forest and protected-area GIS boundary layers were generated and made available to its field officers via its geoportal. The [State Spatial Data Infrastructure](https://eitd.kerala.gov.in/en/kerala-state-spatial-data-infrastructure/) is a cross-department discovery/sharing route. Neither document confirms a current official **public machine-readable, notification-linked polygon download or a redistribution licence for this project**. The [Forest Department](https://forest.kerala.gov.in/) and KSDI are the custodial requests, not an unrelated crowdsourced park polygon.
+
+**Request, not sent:** current reserve-forest, protected-area (national parks, sanctuaries, community/conservation reserves) and separately notified eco-sensitive-zone polygons for Kerala in GPKG/GeoJSON or complete shapefiles, with named gazette notification, category, effective date, original CRS, geometrical precision/known gaps, last revision and permission for research processing and public derivatives. Keep private/restricted geometry out of the public repository. Compare the vector set with notifications and official tabular protected-area references only **after** the original data are received. “Forest cover” from remote sensing is not equivalent to the legally recorded forest boundary; do not merge the two into a fictitious exclusion mask. Draft/proposed and final legal boundaries are separate.
+
+## 2. Elevation and slope — P1
+
+[NRSC CartoDEM tile-download instructions](https://bhuvan-app3.nrsc.gov.in/data/download/help/source/html/steps_to_download_data.htm) describe CartoDEM 1-arcsecond original tiles through a Bhuvan login, tile selection and metadata; access and complete Kerala coverage have **not** been demonstrated in the committed research repository. An independent public option is [Copernicus DEM GLO-30 Public/GLO-90](https://registry.opendata.aws/copernicus-dem/) with [original COG tile conventions](https://copernicus-dem-30m.s3.amazonaws.com/readme.html); the latter is a **digital surface model (DSM)**, not guaranteed bare-earth DTM. GLO-30 is subject to tile public-release coverage and GLO-90 can be lower resolution. Treat the 2021 release as a product release, not a FY2024–25 landscape observation.
+
+**Acquisition choice:** compare authenticated CartoDEM versus a Copernicus public tile; retain acquisition time, complete original filename/URL, SHA256, CRS, nodata, horizontal dimensions/units, vertical reference and tile-mask coverage. A single tile sampled within Kerala demonstrates a working acquisition path but cannot certify full Kerala coverage. Include off-state catchments for hydro as required; do not crop a watershed to a state boundary when analysing inflow. Only compute provisional slope on a continuous mosaic after seam/gap tests and datum/DSM caveats; don't invent a uniform disqualifying slope for rooftop, ground solar, wind and transmission.
+
+## 3. Wetlands, waterbodies and landslide hazards — P0
+
+The [State Wetland Authority Kerala](https://envt.kerala.gov.in/state-wetland-authority-kerala-swak/) is the notification/inventory custodian. Its [draft brief documents](https://www.swak.kerala.gov.in/index.php/wetland-notification-in-kerala/draft-brief-documents-of-wetlands) and [WIAMS login portal](https://wiams.kerala.gov.in/) are **not final notification geometries or downloadable authoritative vectors**. The [ISRO/SAC Kerala wetland atlas](https://vedas.sac.gov.in/en/National_Wetland_Inventory_and_Assessment_%28NWIA%29_Atlas.html) is a contextual report, not a current 2024–25 licensed polygon file. Ask SWAK for wetland inventory, waterbody extent, exact notification references and zones of influence as *separate* layers; distinguish Ramsar designation, notified legal protection, draft briefs and water area. The large water area of a reservoir is not automatically eligible for floating PV: ecological, reservoir-operation and transmission constraints also apply.
+
+[KSDMA's official hazard catalogue](https://sdma.kerala.gov.in/hazard-maps/) explicitly lists **13 GSI (2022) district landslide shapefile links**: Thiruvananthapuram, Kollam, Pathanamthitta, Kottayam, Idukki, Ernakulam, Thrissur, Palakkad, Malappuram, Kozhikode, Wayanad, Kannur and Kasaragod. It says the GSI product replaces the older NCESS susceptibility reference. **Alappuzha is absent from the published link list; do not code that as hazard-free or falsely assert 14/14 published district packages.** Obtain the ZIPs, record the real per-district file hashes and archive members, check complete SHP/SHX/DBF/PRJ families, geometries, CRS, attribute class legend, district identity and coverage. A shapefile archive containing the four components alone can still be corrupt or incorrectly labelled. Keep low/moderate/high susceptibility categories, dates and hazard versus legal-exclusion status separate. Severe hazard can be a technical siting penalty or avoidance criterion; it is not a universal legal prohibition unless supported by applicable rules.
+
+## Executable audit and real-data admission
+
+```bash
+PYTHONPATH=src python scripts/audit_gis_three_workstreams.py
+# Only when original authentic samples have been acquired:
+PYTHONPATH=src python scripts/audit_gis_three_workstreams.py \
+  --dem-sample data/external/gis/terrain/<original-source-name>.tif \
+  --gsi-zip-sample data/external/gis/ksdma/landslide/<original-source-name>.zip
+```
+
+The executable validates source IDs and URL schemes, scope, true 13-district published list, and rejects self-declared file SHA, verified geometry, eligible km² or MW. Optional sample checks inventory a genuine raster's CRS/size/valid pixels and a ZIP's complete shapefile members and hashes. Their output is deliberately classified as **file structure only**, not verified source authenticity, spatial coverage, notification boundary, legal decision or statewide ecological ceiling. Regression tests use synthetic TIFF and ZIP; **they must never be counted as acquired Kerala evidence**. An author-signed dataset manifest with independently acquired original files plus spatial and legal QA is needed to progress the gates.
+
+For each constraint, preserve source custodian, actual vintage, effective legal status, original datum/CRS, licence, SHA and non-overlapping classes, then overlay by technology in a suitable projected CRS and report **unknown** where a layer is absent or ambiguous. Do not publish a numerical renewable eligible-area or MW ceiling until this is done.
+
+**No agency request was sent during this change. No existing scientific release is modified.**
