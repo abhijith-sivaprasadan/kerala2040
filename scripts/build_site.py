@@ -171,7 +171,7 @@ def build_site(root: Path, output: Path) -> None:
     shutil.copytree(root / "docs/assets", output / "assets", dirs_exist_ok=True)
     # Immutable filenames prevent a new HTML page from running an old cached app.
     html = (output / "index.html").read_text(encoding="utf-8")
-    for name in ("app.js", "styles.css", "platform.css", "workbench.css", "experience.css"):
+    for name in ("app.js", "kerala.css"):
         asset = root / "docs/assets" / name
         digest = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
         versioned = f"{asset.stem}.{digest}{asset.suffix}"
