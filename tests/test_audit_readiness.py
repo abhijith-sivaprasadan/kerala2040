@@ -32,6 +32,8 @@ def test_readiness_preserves_historical_evidence_and_blocks_2040_claims():
     assert "2024-08-12" in report["checks"]["sldc_daily_coverage"]["detail"]
     assert report["checks"]["measured_interval"]["status"] == STATUS_BLOCKED
     assert report["checks"]["era5_complete"]["status"] == STATUS_PARTIAL
+    assert report["checks"]["grid_transfer"]["status"] == STATUS_BLOCKED
+    assert "6500 MW" in report["checks"]["grid_transfer"]["detail"]
     assert report["checks"]["hydro_physics"]["status"] == STATUS_BLOCKED
     assert "9 qualitative links" in report["checks"]["hydro_physics"]["detail"]
     assert report["checks"]["generator_assets"]["status"] == STATUS_PARTIAL
@@ -63,6 +65,7 @@ def test_source_qa_tampering_fails_closed(tmp_path):
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
         "configs/hydro_topology_evidence_2024_25.yaml",
+        "configs/grid_transfer_contract_evidence_2024_25.yaml",
         "public/kseb-projects.json",
     ):
         target = tmp_path / file
@@ -93,6 +96,7 @@ def test_unknown_gate_is_rejected_instead_of_counted_ready(tmp_path):
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
         "configs/hydro_topology_evidence_2024_25.yaml",
+        "configs/grid_transfer_contract_evidence_2024_25.yaml",
         "public/kseb-projects.json",
     ):
         target = tmp_path / file
@@ -118,6 +122,7 @@ def test_generator_register_official_source_crosscheck_fails_closed(tmp_path):
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
         "configs/hydro_topology_evidence_2024_25.yaml",
+        "configs/grid_transfer_contract_evidence_2024_25.yaml",
         "public/kseb-projects.json",
     )
     for file in inputs:
@@ -129,4 +134,31 @@ def test_generator_register_official_source_crosscheck_fails_closed(tmp_path):
     source["official_commissioned_during_fy"][0]["units"][0]["capacity_mw"] = 15
     path.write_text(yaml.safe_dump(source))
     with pytest.raises(ValueError, match="unit MW differ"):
+        build_audit(tmp_path)
+
+
+def test_transfer_gate_rejects_import_limit_promotion(tmp_path):
+    import yaml
+
+    inputs = (
+        "data/external/sldc_fy2024_25/qa_report.json",
+        "public/era5-daily-manifest.json",
+        "configs/techno_economics.yaml",
+        "configs/gis_inputs.yaml",
+        "configs/audit_findings.yaml",
+        "configs/observed_2024_25.yaml",
+        "configs/generator_reconciliation_2024_25.yaml",
+        "configs/hydro_topology_evidence_2024_25.yaml",
+        "configs/grid_transfer_contract_evidence_2024_25.yaml",
+        "public/kseb-projects.json",
+    )
+    for file in inputs:
+        target = tmp_path / file
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / file, target)
+    path = tmp_path / "configs/grid_transfer_contract_evidence_2024_25.yaml"
+    evidence = yaml.safe_load(path.read_text())
+    evidence["model_use"]["can_apply_snapshot_as_full_year_import_limit"] = True
+    path.write_text(yaml.safe_dump(evidence))
+    with pytest.raises(ValueError, match="cannot certify model constraints"):
         build_audit(tmp_path)
