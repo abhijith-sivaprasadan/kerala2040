@@ -106,6 +106,6 @@ def test_small_synthetic_height_raster_not_statewide_or_bare_earth(tmp_path):
     assert result["valid_pixels_in_this_file"] == 16
     assert not result["statewide_coverage_verified"]
     assert not result["slope_threshold_validated"]
-    assert result["is_digital_surface_model"]
+    assert result["surface_type"] == "not_established_by_raster_structure"
     with pytest.raises(ValueError, match="not an original TIFF"):
         check_raster(tmp_path / "rendered.png")
