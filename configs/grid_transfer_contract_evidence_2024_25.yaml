@@ -1,0 +1,104 @@
+version: 1
+classification: partial_public_transfer_and_procurement_evidence_not_model_constraints
+period: FY2024-25
+timezone: Asia/Kolkata
+source_review_date: "2026-09-20"
+sources:
+  kerala_sldc_daily:
+    publisher: Kerala State Load Despatch Centre
+    url: https://sldckerala.com/index.php?id=1
+    committed: data/external/sldc_fy2024_25/import_interface_daily.csv
+    scope: "Eight grouped daily import-interface energy rows for 354 dated observations, not interval MW."
+  kerala_economic_review_2025:
+    publisher: Kerala State Planning Board
+    url: https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume1%20Eng%20final.pdf
+    scope: "KSEBL annual energy-source table; separate import, export and power-purchase boundaries."
+  srpc_kerala_meeting_2025_01_15:
+    publisher: Southern Regional Power Committee
+    url: https://www.srpc.kar.nic.in/website/2024/meetings/communication/rnkerala150125.pdf
+    locator: "Record Notes, Special Meeting with Kerala on 15 January 2025; section B, item xxiii"
+    scope: "Point-in-time TTC and reliability margin; studies subject to power-flow and N-1 contingency."
+  ksebl_annual_report_fy2024_25:
+    publisher: Kerala State Electricity Board Ltd
+    third_party_access_url: https://www.scribd.com/document/1022839813/14th-Annual-Report-2024-25-1770108815259021875
+    access_note: "KSEBL-authored annual report found via third-party copy; archive a first-party original before promoting to authoritative dispatch input."
+    locator: "System Operation / Power System Engineering, and Power Procurement During 2024-25"
+    scope: "Retrospective reported import capability increase and purchase/swap categories, not all revised ATC notices."
+
+transfer_snapshots:
+  - date: "2025-01-15"
+    scope: Kerala_state_aggregate_import
+    report_label: "TTC 4350 MW and Reliability Margin 90 MW"
+    ttc_mw: 4350
+    reliability_margin_mw: 90
+    atc_mw: 4260
+    atc_derivation: ttc_minus_stated_reliability_margin
+    source_ids: [srpc_kerala_meeting_2025_01_15]
+    caveat: "A January snapshot; not demonstrated to apply from FY start to March end."
+  - date: "2025-03-01"
+    scope: Kerala_state_aggregate_import
+    report_label: "KSEBL retrospective description of increased power import capability"
+    reported_import_capability_mw: 4455
+    from_reported_import_capability_mw: 4260
+    ttc_mw: null
+    atc_mw: null
+    source_ids: [ksebl_annual_report_fy2024_25]
+    caveat: >-
+      KSEBL says enhanced around 200 MW from 1 March 2025; detailed effective
+      ATC/TTC notice, duration, revisions, conditions and directional validity
+      are not committed. 4455 is NOT an hourly certified ATC series.
+unresolved_constraints:
+  full_fy2024_25_dated_import_atc_mw: null
+  full_fy2024_25_dated_export_atc_mw: null
+  full_fy2024_25_dated_ttc_mw: null
+  hourly_or_blockwise_transfer_availability: null
+  n_minus_1_contingencies_by_period: null
+  station_level_bottleneck_and_hvdc_power_order: null
+  import_export_sign_and_metering_boundary_reconciled: false
+  revised_official_atc_ttc_notice_archive: false
+  schedulable_contract_register_2024_25: false
+  delivery_profiles_and_rights_by_contract: false
+  landed_cost_rupees_per_mwh_by_contract: false
+
+annual_source_accounting_reference:
+  observed_days_only_net_import_mu: 22635.0183
+  observed_days: 354
+  all_year_ksebl_gross_import_mu: 25790.95
+  all_year_ksebl_export_mu: 1789.65
+  all_year_ksebl_total_power_purchase_mu: 26286.30
+  note: >-
+    Official annual gross import, exports, total power purchase and observed
+    SLDC daily net import have different date coverage and/or accounting
+    boundaries. Do not difference/average them into missing days, interval
+    net drawal, assured procurement, transmission limits or prices.
+
+procurement_examples:
+  - reference: "SECI 500 MW solar with storage power-sale arrangement"
+    source_ids: [ksebl_annual_report_fy2024_25]
+    agreement_date: "2024-09-12"
+    named_capacity_mw: 500
+    expected_cod_year: 2026
+    fy2024_25_deliverable_mw: null
+    classification: future_project_commitment_not_fy2024_25_available_supply
+    note: "Agreement capacity, project commissioning and delivered FY24-25 energy are different."
+  - reference: "West Kallada floating solar"
+    source_ids: [ksebl_annual_report_fy2024_25]
+    agreement_date: "2025-04-08"
+    named_capacity_mw: 50
+    fy2024_25_deliverable_mw: null
+    classification: signed_after_fy2024_25_not_historical_supply
+    note: "Do not count a post-31 March agreement against FY2024-25 procurement."
+  - reference: "DEEP / SWAP / power-exchange transactions"
+    source_ids: [ksebl_annual_report_fy2024_25]
+    agreement_date: null
+    named_capacity_mw: null
+    fy2024_25_deliverable_mw: null
+    classification: category_reported_contract_level_metered_schedule_missing
+    note: "Swap imports and exports have return obligations; gross volumes are not free uncontracted power."
+model_use:
+  status: blocked_missing_verified_evidence
+  can_apply_snapshot_as_full_year_import_limit: false
+  can_use_daily_import_mu_as_interface_mw: false
+  can_sum_contract_nameplates_as_import_atc: false
+  can_treat_exchange_price_as_delivered_cost: false
+  existing_screening_6500_mw: scenario_assumption_not_kerala_atc
