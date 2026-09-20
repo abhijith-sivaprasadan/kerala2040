@@ -15,6 +15,7 @@ import yaml
 REGISTRY = "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
 ACQUISITION = "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json"
 GSI_VALIDATION = "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+DEM_ENVELOPE = "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
 EXPECTED = {"forest_protected_areas", "elevation_dem", "wetlands_waterbodies_landslide"}
 
 
@@ -215,11 +216,51 @@ def audit_gis(root: Path) -> dict[str, Any]:
         or acquired["capacity_ceiling_mw"] is not None
     ):
         raise ValueError("Source acquisition cannot create legal area or capacity")
+    dem_envelope = json.loads((root / DEM_ENVELOPE).read_text(encoding="utf-8"))
+    if dem_envelope.get("classification") != (
+        "downloaded_public_Copernicus_GLO90_DSM_partial_envelope_not_eligible_terrain"
+    ):
+        raise ValueError("DEM source acquisition cannot self-certify model terrain")
+    tile_rows = dem_envelope["original_tiles_and_hashes"]
+    acquired_tiles = [row for row in tile_rows if row["status"] == "original_tif_downloaded"]
+    absent_tiles = [row for row in tile_rows if row["status"] == "tile_not_published_http_404"]
+    if (
+        dem_envelope["requested_envelope_tiles"] != 20
+        or len(tile_rows) != 20
+        or len(acquired_tiles) != 14
+        or len(absent_tiles) != 6
+        or len({(row["latitude"], row["longitude"]) for row in tile_rows}) != 20
+        or not all(row["url"].startswith(
+            "https://copernicus-dem-90m.s3.amazonaws.com/"
+        ) and len(row["sha256"]) == 64 and row["bytes"] > 0
+            for row in acquired_tiles)
+        or dem_envelope["adjacent_seam_checks"] != 19
+    ):
+        raise ValueError("DEM source tile hashes or envelope scope inconsistent")
+    mosaic = dem_envelope["mosaic"]
+    if (
+        mosaic["status"] != (
+            "partial_public_tile_mosaic_with_unknown_uncovered_cells_NOT_Kerala_mask"
+        )
+        or mosaic["source_tiles"] != 14
+        or mosaic["404_or_failed_envelope_tiles"] != 6
+        or mosaic["source_uncovered_output_pixels"] <= 0
+        or mosaic["complete_rectangular_envelope_source_coverage"] is not False
+        or len(mosaic["sha256"]) != 64
+        or mosaic["crs"] != "EPSG:4326"
+        or dem_envelope["official_kerala_boundary_coverage_verified"] is not False
+        or dem_envelope["source_dsm_not_bare_earth_dtm"] is not True
+        or dem_envelope["ecological_capacity_ceiling_ready"] is not False
+        or dem_envelope["eligible_area_sq_km"] is not None
+        or dem_envelope["capacity_ceiling_mw"] is not None
+    ):
+        raise ValueError("DEM mosaic cannot establish Kerala terrain or eligibility")
     return {
         "classification": "verified_official_source_routes_not_acquired_model_ready_geometry",
         "registry": REGISTRY,
         "acquisition_manifest": ACQUISITION,
         "gsi_geometry_validation": GSI_VALIDATION,
+        "dem_envelope_acquisition": DEM_ENVELOPE,
         "workstreams": {
             "forest_protected_areas": {
                 "official_boundary_layers_reported": True,
@@ -231,6 +272,10 @@ def audit_gis(root: Path) -> dict[str, Any]:
                 "public_copernicus_dsm_route_documented": True,
                 "statewide_dem_raster_verified_in_committed_repo": False,
                 "glo90_sample_tile_retrieved_in_workflow_artifact": True,
+                "glo90_original_tiles_retrieved": len(acquired_tiles),
+                "glo90_unpublished_offshore_or_unknown_tiles": len(absent_tiles),
+                "glo90_partial_mosaic_sha256": mosaic["sha256"],
+                "glo90_partial_mosaic_source_uncovered_pixels": mosaic["source_uncovered_output_pixels"],
                 "glo90_sample_original_sha256": pilot["sha256"],
                 "dsm_is_not_bare_earth": True,
             },
