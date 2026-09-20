@@ -110,10 +110,13 @@ findings:
     check: gis_model_ready
     acquisition: >-
       Kerala Forest Department reports digitised reserve/protected-area
-      boundaries, not a publicly acquired current notified source vector.
-      Request official GPKG/shapefiles, legal categories, gazette IDs,
-      effective dates, CRS, revisions and redistribution permission.
-    evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
+      boundaries. A live official-site probe verified four source pages,
+      47 download links and nine ZIP candidates; eight ZIPs returned HTTP
+      403 and one returned HTTP 404, with no direct non-ZIP machine-readable
+      vector and no notification-linked geometry acquired. Request official
+      GPKG/shapefiles, legal categories, gazette IDs, effective dates, CRS,
+      revisions, boundary survey basis and redistribution permission.
+    evidence: data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json
   - id: wetland_waterbody_landslide
     priority: P0
     check: gis_model_ready
