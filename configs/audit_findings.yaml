@@ -14,6 +14,8 @@ sources:
   interval_electricity_review: docs/INTERVAL_ELECTRICITY_SOURCE_REVIEW.md
   generator_register_review: docs/GENERATOR_REGISTER_FY2024_25_RECONCILIATION.md
   generator_unit_crosschecks: configs/generator_reconciliation_2024_25.yaml
+  hydro_topology_evidence: configs/hydro_topology_evidence_2024_25.yaml
+  hydro_operations_audit: docs/HYDRO_RESERVOIR_OPERATIONS_AUDIT.md
   project_qa: data/external/sldc_fy2024_25/qa_report.json
   era5_manifest: public/era5-daily-manifest.json
   gis_catalogue: configs/gis_inputs.yaml
@@ -53,8 +55,14 @@ findings:
   - id: reservoir_operations
     priority: P0
     check: hydro_physics
-    acquisition: Plant-reservoir cascade topology, inflow, release, spill, head, storage and environmental flow rules.
-    evidence: docs/OBSERVED_DAILY_PYPSA.md
+    acquisition: >-
+      Independently document and check selected Idukki, Pamba-Kakki-Sabarigiri-Kakkad,
+      and Sholayar-Poringalkuthu qualitative water links against KSEBL dam records.
+      SLDC has 16 reservoir rows per 354 observed days, but not a reconciled
+      full network or usable water balance. Obtain measured catchment inflows,
+      releases, spill, head/efficiency, rule curves and environmental flows
+      before connecting storage or passing the hydro-physics release gate.
+    evidence: docs/HYDRO_RESERVOIR_OPERATIONS_AUDIT.md
   - id: interstate_transfer_and_contracts
     priority: P0
     check: grid_transfer

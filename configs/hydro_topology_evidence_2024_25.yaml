@@ -1,0 +1,86 @@
+version: 1
+classification: partial_official_hydro_topology_not_dispatch_constraints
+period: FY2024-25
+snapshot_coverage: 354_of_365_observed_SLDC_dates
+units: {stored_water: mcm, reported_generation_equivalent: MU, power: MW}
+rules:
+  - "Nodes/links are qualitative source-evidenced relationships, NOT calibrated water-flow constraints."
+  - "An upstream reservoir and a downstream reservoir may use the same water; never sum reservoir MU as independent stores."
+  - "Repeated dam names belonging to one reservoir complex never produce additional storage."
+  - "An SLDC 'gross' or 'station' generation capability is a reported indicator, not MW nameplate, actual generation or a verified PyPSA energy bound."
+  - "Source daily inflow 'in MU' is an electrical-energy-equivalent label, not observed water volume in mcm or an independently routable catchment flow."
+  - "No connected Store/StorageUnit, head conversion, release/spill routing or cascade constraints until independently sourced operations are reconciled."
+sources:
+  sldc_reservoir:
+    url: https://sldckerala.com/index.php?id=7
+    retained_evidence: data/external/sldc_fy2024_25/reservoir_daily.csv
+  sldc_generation:
+    url: https://sldckerala.com/index.php?id=1
+    retained_evidence: data/external/sldc_fy2024_25/hydro_station_daily.csv
+  kseb_idukki:
+    url: https://dams.kseb.in/?p=108
+    statement: "Idukki/Cheruthoni/Kulamavu one reservoir to Moolamattom underground powerhouse."
+  kseb_pamba:
+    url: https://dams.kseb.in/?p=122
+    statement: "Pamba reservoir feeds Kakki via interconnecting tunnel; water conveys to Sabarigiri at Moozhiyar."
+  kseb_kakki:
+    url: https://dams.kseb.in/?p=118
+    statement: "Kakki and Anathode form common reservoir; spillway at Anathode."
+  kseb_kakkad:
+    url: https://dams.kseb.in/?p=190
+    statement: "Sabarigiri tailrace contributes to Moozhiyar; Moozhiyar/Veluthode diversion feeds Kakkad."
+  kseb_sholayar:
+    url: https://dams.kseb.in/?p=132
+    statement: "Three Sholayar dams form a single reservoir; its water feeds Sholayar powerhouse."
+  kseb_poringal:
+    url: https://dams.kseb.in/?p=129
+    statement: "Sholayar tailwater contributes to Poringalkuthu reservoir; Poringalkuthu and left-bank extension share this water."
+
+observed_reservoirs:
+  IDUKKI: {source_ids: [sldc_reservoir, kseb_idukki], source_station_labels: [Idukki], storage_complex: idukki, correspondence: reservoir_to_powerhouse}
+  PAMBA: {source_ids: [sldc_reservoir, kseb_pamba], source_station_labels: [Sabarigiri], storage_complex: pamba, correspondence: upstream_contributor_not_independent_powerhouse}
+  KAKKI: {source_ids: [sldc_reservoir, kseb_pamba, kseb_kakki], source_station_labels: [Sabarigiri], storage_complex: kakki_anathode, correspondence: shared_downstream_reservoir}
+  SHOLAYAR: {source_ids: [sldc_reservoir, kseb_sholayar], source_station_labels: [Sholayar], storage_complex: sholayar, correspondence: reservoir_to_powerhouse}
+  PORINGAL: {source_ids: [sldc_reservoir, kseb_poringal], source_station_labels: ["Poringalkuthu, PLBE"], storage_complex: poringalkuthu, correspondence: shared_reservoir_for_grouped_station_row}
+  KAKKAD: {source_ids: [sldc_reservoir, kseb_kakkad], source_station_labels: [Kakkad], storage_complex: moozhiyar_diversion, correspondence: downstream_diversion_not_independent_upstream_water}
+
+storage_complexes:
+  idukki:
+    structures: [Idukki, Cheruthoni, Kulamavu]
+    unique_waterbody: true
+    source_ids: [kseb_idukki]
+  kakki_anathode:
+    structures: [Kakki, Anathode]
+    unique_waterbody: true
+    source_ids: [kseb_kakki]
+  sholayar:
+    structures: [Sholayar_main, Sholayar_flanking, Sholayar_saddle]
+    unique_waterbody: true
+    source_ids: [kseb_sholayar]
+
+documented_links:
+  - {from: PAMBA, to: KAKKI, relation: interconnecting_tunnel_transfer, source_ids: [kseb_pamba]}
+  - {from: KAKKI, to: Sabarigiri, relation: powerhouse_supply, source_ids: [kseb_pamba, kseb_kakki]}
+  - {from: IDUKKI, to: Idukki, relation: powerhouse_supply, source_ids: [kseb_idukki]}
+  - {from: SHOLAYAR, to: Sholayar, relation: powerhouse_supply, source_ids: [kseb_sholayar]}
+  - {from: Sholayar, to: PORINGAL, relation: upstream_tailwater_contribution, source_ids: [kseb_poringal]}
+  - {from: PORINGAL, to: "Poringalkuthu, PLBE", relation: grouped_powerhouses_supply, source_ids: [kseb_poringal]}
+  - {from: Sabarigiri, to: Moozhiyar, relation: tailrace_contribution, source_ids: [kseb_kakkad]}
+  - {from: Moozhiyar, to: KAKKAD, relation: diversion_and_local_catchment, source_ids: [kseb_kakkad]}
+  - {from: KAKKAD, to: Kakkad, relation: powerhouse_supply, source_ids: [kseb_kakkad]}
+
+non_observed_nodes:
+  Moozhiyar:
+    node_type: intermediate_diversion
+    source_ids: [kseb_kakkad]
+    explanation: "Not an independent reservoir row in the retained 16-name SLDC storage table."
+
+missing_physical_inputs:
+  - full_reservoir_to_powerhouse_station_and_unit_topology
+  - time_stamped_water_inflows_mcm_or_m3_per_s_by_catchment
+  - measured_turbine_release_and_spill_mcm_or_m3_per_s
+  - head_storage_tailwater_and_efficiency_curves
+  - daily_or_subdaily_environmental_and_downstream_releases
+  - operative_FY2024_25_rule_curves_flood_controls_and_maintenance
+  - evaporation_withdrawals_inter_basin_diversions_and_terminal_storage
+  - verified_storage_boundary_and_shared_water_double_count_reconciliation
