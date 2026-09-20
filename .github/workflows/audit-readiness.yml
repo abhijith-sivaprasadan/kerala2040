@@ -9,6 +9,7 @@ on:
       - "configs/generator_reconciliation_2024_25.yaml"
       - "configs/hydro_topology_evidence_2024_25.yaml"
       - "scripts/audit_hydro_operations.py"
+      - "src/kerala2040/hydro_operations.py"
       - "tests/test_hydro_operations.py"
       - "public/kseb-projects.json"
       - "configs/observed_2024_25.yaml"
