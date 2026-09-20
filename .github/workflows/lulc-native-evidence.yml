@@ -1,0 +1,61 @@
+name: Audit NRSC Kerala LULC native source and class legend
+
+on:
+  pull_request:
+    paths:
+      - "configs/lulc_native_acquisition_2024_25.yaml"
+      - "configs/gis_inputs.yaml"
+      - "src/kerala2040/lulc_evidence.py"
+      - "scripts/audit_lulc_native.py"
+      - "tests/test_lulc_evidence.py"
+      - ".github/workflows/lulc-native-evidence.yml"
+  push:
+    branches: [main]
+    paths:
+      - "configs/lulc_native_acquisition_2024_25.yaml"
+      - "configs/gis_inputs.yaml"
+      - "src/kerala2040/lulc_evidence.py"
+      - "scripts/audit_lulc_native.py"
+      - ".github/workflows/lulc-native-evidence.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-native-lulc-admission:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: src:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install narrow raster QA dependencies
+        run: pip install "pyyaml>=6,<7" "pytest>=8,<9" "ruff>=0.7,<1" "rasterio>=1.4,<2" "numpy>=2,<3"
+      - name: Source gate, fixture tests and live committed-evidence manifest
+        run: |
+          ruff check src/kerala2040/lulc_evidence.py scripts/audit_lulc_native.py tests/test_lulc_evidence.py
+          pytest -q tests/test_lulc_evidence.py
+          python scripts/audit_lulc_native.py
+      - name: Reject any claimed ecological eligibility from source discovery
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a = json.loads(Path("results/gis/lulc_source_audit.json").read_text())
+          assert a["products_catalogued"] == 4
+          assert a["native_rasters_with_local_source_qa"] == 0
+          assert a["statewide_native_lulc_verified"] is False
+          assert a["ecological_exclusion_ready"] is False
+          assert a["siting_eligible_area_sq_km"] is None
+          assert a["capacity_ceiling_mw"] is None
+          assert a["audit_gate_closed"] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nrsc-lulc-discovery-NO-ORIGINAL-RASTER-NO-CAPACITY-CEILING
+          path: results/gis/lulc_source_audit.json
+          retention-days: 90
