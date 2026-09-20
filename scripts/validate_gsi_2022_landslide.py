@@ -10,7 +10,6 @@ import argparse
 import hashlib
 import json
 import math
-import shutil
 import tempfile
 import zipfile
 from pathlib import Path
@@ -139,7 +138,7 @@ def validate_archive(
             "district": district,
             "source_zip_sha256": sha256(archive),
             "source_crs": frame.crs.to_string(),
-            "feature_count": int(len(frame)),
+            "feature_count": len(frame),
             "geometry_types": original_types,
             "null_geometry_count": null_count,
             "empty_geometry_count": empty_count,
@@ -230,7 +229,7 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
             "path": str(gpkg),
             "layer": "gsi_2022_landslide_susceptibility",
             "target_crs": combined.crs.to_string(),
-            "feature_count": int(len(combined)),
+            "feature_count": len(combined),
             "sha256": sha256(gpkg),
             "source_geometry_repaired": False,
         },
