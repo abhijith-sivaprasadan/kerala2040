@@ -36,7 +36,7 @@ jobs:
         run: pip install "pyyaml>=6,<7" "pytest>=8,<9" "ruff>=0.7,<1"
       - name: Validate physical-source boundaries and regression tests
         run: |
-          ruff check scripts/audit_hydro_operations.py tests/test_hydro_operations.py
+          ruff check src/kerala2040/hydro_operations.py scripts/audit_hydro_operations.py tests/test_hydro_operations.py
           pytest -q tests/test_hydro_operations.py
           python scripts/audit_hydro_operations.py
       - name: Keep operational calibration explicitly blocked
