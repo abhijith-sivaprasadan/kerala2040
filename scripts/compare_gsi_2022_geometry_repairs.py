@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import math
 import tempfile
 import zipfile
 from pathlib import Path
@@ -20,7 +19,6 @@ import pandas as pd
 import requests
 from shapely import make_valid
 from shapely.geometry import GeometryCollection, MultiPolygon, Polygon
-from shapely.ops import unary_union
 
 ACQ = Path("data/evidence/gis/official_gis_public_acquisition_2026_09_20.json")
 SOURCE_QA = Path("data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json")
@@ -138,7 +136,7 @@ def aggregate_class(frame: gpd.GeoDataFrame) -> list[dict[str, Any]]:
     for cls, part in frame.groupby("Susceptibi", dropna=False):
         rows.append({
             "susceptibility": None if pd.isna(cls) else str(cls),
-            "features": int(len(part)),
+            "features": len(part),
             "make_valid_area_km2": float(part.geometry.area.sum() / 1e6),
         })
     return sorted(rows, key=lambda x: str(x["susceptibility"]))
