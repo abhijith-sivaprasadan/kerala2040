@@ -142,3 +142,47 @@ def test_expanded_sldc_archive_is_published_without_synthetic_hourly_telemetry(t
     assert published["metadata"]["files"]["sldc_station_evidence"] == "sldc-station-evidence.json"
     assert (tmp_path / "data/sldc-processed-evidence.zip").exists()
     assert not list((tmp_path / "data").glob("*proxy*"))
+
+def test_packaged_research_workbench_uses_same_audited_snapshot(tmp_path):
+    site.build_site(ROOT, tmp_path)
+    payload = site.validate_bundle(tmp_path / "data")
+    ledger_name = payload["metadata"]["files"]["research_ledger"]
+    assert ledger_name == "research-ledger.json"
+    ledger = json.loads((tmp_path / "data" / ledger_name).read_text())
+    audit = json.loads((tmp_path / "data/audit-readiness.json").read_text())
+    assert payload["research_ledger"] == ledger
+    assert ledger["audit_open_findings"] == audit["open_findings"]
+    assert len(ledger["workstreams"]) == 6
+    assert ledger["eligible_area_sq_km"] is None
+    assert ledger["potential_mw"] is None
+    assert ledger["release_gates"]["techno_economic_2040"]["passed"] is False
+    html = (tmp_path / "index.html").read_text()
+    assert 'data-view="workbench"' in html
+    assert 'data-route="workbench"' in html
+    assert 'href="data/research-ledger.json"' in html
+    assert 'href="assets/workbench.css"' not in html
+    assert any(x.name in html for x in (tmp_path / "assets").glob("workbench.*.css"))
+
+
+def test_packaged_workbench_rejects_forged_gis_admission(tmp_path):
+    site.build_site(ROOT, tmp_path)
+    path = tmp_path / "data/research-ledger.json"
+    ledger = json.loads(path.read_text())
+    ledger["potential_mw"] = 999
+    path.write_text(json.dumps(ledger))
+    with pytest.raises(ValueError, match="ledger and site manifest disagree"):
+        site.validate_bundle(tmp_path / "data")
+
+
+def test_packaged_workbench_rejects_cross_snapshot_findings(tmp_path):
+    site.build_site(ROOT, tmp_path)
+    path = tmp_path / "data/research-ledger.json"
+    ledger = json.loads(path.read_text())
+    ledger["audit_open_findings"] = 0
+    manifest = tmp_path / "data/site-data.json"
+    payload = json.loads(manifest.read_text())
+    payload["research_ledger"] = ledger
+    path.write_text(json.dumps(ledger))
+    manifest.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="audited finding counts disagree"):
+        site.validate_bundle(tmp_path / "data")
