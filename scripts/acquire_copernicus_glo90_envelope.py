@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import math
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -105,8 +104,8 @@ def inspect_tile(path: Path, latitude: int, longitude: int) -> dict:
             "source_nodata_metadata": dataset.nodata,
             "has_source_mask": bool(np.ma.getmaskarray(data).any()),
             "bounds_wgs84": [west, south, east, north],
-            "finite_sample_count": int(len(finite_values)),
-            "nonfinite_sample_count": int(len(values) - len(finite_values)),
+            "finite_sample_count": len(finite_values),
+            "nonfinite_sample_count": len(values) - len(finite_values),
             "min_sample_source_height_units": float(finite_values.min()),
             "max_sample_source_height_units": float(finite_values.max()),
             "zero_sample_count_ambiguous_sea_or_terrain": int(
@@ -129,7 +128,7 @@ def measure_seam(a: Path, b: Path, axis: str) -> dict:
         finite = np.isfinite(x) & np.isfinite(y)
         values = np.abs(x[finite] - y[finite])
         return {
-            "adjacent_finite_pairs": int(len(values)),
+            "adjacent_finite_pairs": len(values),
             "absolute_height_step_median_source_units": (
                 float(np.median(values)) if len(values) else None
             ),
@@ -172,7 +171,7 @@ def run(output: Path, tile_dir: Path, mosaic_path: Path, *,
                         row = {"latitude": lat, "longitude": lon, **downloaded,
                                "structure_qa": inspect_tile(target, lat, lon)}
                         available[(lat, lon)] = target
-                except Exception as exc:
+                except Exception as exc:  # noqa: BLE001 - keep every failed source tile as audit evidence
                     row = {"latitude": lat, "longitude": lon, "url": url,
                            "status": "tile_download_or_qa_failed",
                            "error": f"{type(exc).__name__}: {exc}"}
