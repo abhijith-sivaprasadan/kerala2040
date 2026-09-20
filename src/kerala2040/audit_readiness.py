@@ -13,6 +13,8 @@ from typing import Any
 
 import yaml
 
+from kerala2040.gis_three_workstreams import audit_gis
+
 QA = "data/external/sldc_fy2024_25/qa_report.json"
 ERA5 = "public/era5-daily-manifest.json"
 TECH = "configs/techno_economics.yaml"
@@ -243,6 +245,10 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
     )
     if gsi_count != 13:
         raise ValueError("Published GSI 2022 source list must preserve district scope")
+    gis_public = audit_gis(root)
+    acquired_gsi = gis_public["workstreams"]["wetlands_waterbodies_landslide"][
+        "gsi_original_zips_downloaded_to_workflow_artifact"
+    ]
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
@@ -262,11 +268,12 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         STATUS_BLOCKED,
         f"{n_layers} catalogued GIS layers; {staged} beyond acquisition-only status; "
         f"{len(products)} NRSC LULC product routes and three forest/DEM/hazard "
-        f"workstreams reviewed; KSDMA advertises {gsi_count} GSI 2022 district "
-        "downloads but original geometry is unverified in committed evidence. "
-        "Forest notifications, statewide DEM mosaic and final SWAK wetland "
-        "polygons remain absent. No authenticated statewide mask, technical "
-        "eligibility overlay, legal status or MW ceiling QA is evidenced here.",
+        f"workstreams reviewed; {acquired_gsi} downloaded GSI ZIPs and one "
+        "public Copernicus GLO-90 DSM tile have original-file hashes recorded "
+        "from a workflow artifact. Archive components/TIFF structure pass "
+        "preliminary QA, but polygon geometry, GSI hazard classes, notified "
+        "forest/wetland boundaries, a statewide height mosaic and legal "
+        "constraints are NOT established; no site-eligible km2 or MW ceiling.",
         "docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md",
     )
     return {
