@@ -152,7 +152,7 @@ def test_packaged_research_workbench_uses_same_audited_snapshot(tmp_path):
     audit = json.loads((tmp_path / "data/audit-readiness.json").read_text())
     assert payload["research_ledger"] == ledger
     assert ledger["audit_open_findings"] == audit["open_findings"]
-    assert len(ledger["workstreams"]) == 6
+    assert len(ledger["workstreams"]) == 11
     assert ledger["eligible_area_sq_km"] is None
     assert ledger["potential_mw"] is None
     assert ledger["release_gates"]["techno_economic_2040"]["passed"] is False
