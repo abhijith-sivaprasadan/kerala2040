@@ -118,7 +118,7 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
             for idx, geom in enumerate(source.geometry):
                 if geom is None or geom.is_empty:
                     raise ValueError(f"{district} feature {idx}: empty source geometry")
-                mv = polygonal(make_valid(geom))
+                mv = polygonal(make_valid(geom, method="structure", keep_collapsed=True))
                 b0 = polygonal(geom.buffer(0))
                 metrics = compare_feature(geom, mv, b0)
                 if metrics["make_valid_empty"] or not metrics["make_valid_valid"]:
@@ -184,11 +184,11 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
         "source_archives": 13,
         "source_features": 39,
         "source_crs": TARGET_CRS,
-        "repair_methods_compared": ["shapely.make_valid_polygonal_only", "shapely.buffer_0_polygonal_only"],
-        "selected_derivative_method": "shapely.make_valid_polygonal_only",
+        "repair_methods_compared": ["shapely.make_valid_structure_polygonal_only", "shapely.buffer_0_polygonal_only"],
+        "selected_derivative_method": "shapely.make_valid_structure_polygonal_only",
         "selection_reason": (
-            "make_valid is an explicit OGC-oriented validity repair and preserves all polygonal "
-            "parts. buffer(0) is retained only as an independent sensitivity comparison."
+            "GEOS make_valid structure mode repairs rings from shell/hole structure while preserving "
+            "polygonal output. buffer(0) is retained only as an independent sensitivity comparison."
         ),
         "all_make_valid_features_valid": True,
         "all_buffer0_features_valid": True,
