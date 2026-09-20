@@ -125,6 +125,7 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
                     raise ValueError(f"{district} feature {idx}: make_valid did not yield valid areal geometry")
                 if metrics["buffer0_empty"] or not metrics["buffer0_valid"]:
                     raise ValueError(f"{district} feature {idx}: buffer(0) did not yield valid areal geometry")
+                print(f"repair {district} feature {idx}", flush=True)
                 feature_rows.append({
                     "district": district,
                     "source_index": int(idx),
@@ -146,9 +147,12 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
     if set(merged["Susceptibi"]) != {"Low", "Moderate", "High"}:
         raise ValueError("susceptibility classes changed during repair")
 
-    feature_disagreements = [r["repair_symmetric_difference_over_union"] for r in feature_rows]
-    max_disagreement = max(feature_disagreements)
-    mean_disagreement = sum(feature_disagreements) / len(feature_disagreements)
+    area_disagreements = [r["repair_relative_area_disagreement"] for r in feature_rows]
+    centroid_shifts = [r["repair_centroid_shift_m"] for r in feature_rows]
+    bounds_deltas = [r["repair_bounds_max_abs_delta_m"] for r in feature_rows]
+    part_differences = [abs(r["part_count_difference"]) for r in feature_rows]
+    max_area_disagreement = max(area_disagreements)
+    mean_area_disagreement = sum(area_disagreements) / len(area_disagreements)
     mv_src_ratios = [r["make_valid_vs_source_area_ratio"] for r in feature_rows if r["make_valid_vs_source_area_ratio"] is not None]
     b0_src_ratios = [r["buffer0_vs_source_area_ratio"] for r in feature_rows if r["buffer0_vs_source_area_ratio"] is not None]
 
@@ -190,8 +194,12 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
         "all_buffer0_features_valid": True,
         "all_39_features_retained": True,
         "susceptibility_classes_preserved": ["High", "Low", "Moderate"],
-        "max_repair_method_symmetric_difference_over_union": max_disagreement,
-        "mean_repair_method_symmetric_difference_over_union": mean_disagreement,
+        "max_repair_method_relative_area_disagreement": max_area_disagreement,
+        "mean_repair_method_relative_area_disagreement": mean_area_disagreement,
+        "max_repair_method_centroid_shift_m": max(centroid_shifts),
+        "max_repair_method_bounds_delta_m": max(bounds_deltas),
+        "features_with_different_part_counts": sum(value > 0 for value in part_differences),
+        "max_absolute_part_count_difference": max(part_differences),
         "make_valid_vs_invalid_source_area_ratio_min": min(mv_src_ratios),
         "make_valid_vs_invalid_source_area_ratio_max": max(mv_src_ratios),
         "buffer0_vs_invalid_source_area_ratio_min": min(b0_src_ratios),
