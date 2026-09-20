@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#ffffff" />
-  <meta name="description" content="Kerala 2040 is an independent energy data and modelling platform for Kerala." />
-  <meta property="og:title" content="Kerala 2040 — Energy Data & Modelling" />
-  <meta property="og:description" content="Electricity, hydro, imports, resources and 2040 pathways for Kerala." />
+  <meta name="theme-color" content="#153d31" />
+  <meta name="description" content="Kerala 2040: trace measured electricity, source QA, ecological constraints and scientific release gates." />
+  <meta property="og:title" content="Kerala 2040 — Energy research workbench" />
+  <meta property="og:description" content="Measured evidence, geospatial audits and the scientific gates for Kerala’s 2040 pathways." />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://kerala2040.github.io/" />
   <title>Kerala 2040 — Energy Data & Modelling</title>
@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <link rel="stylesheet" href="assets/styles.css" />
   <link rel="stylesheet" href="assets/platform.css" />
+  <link rel="stylesheet" href="assets/workbench.css" />
   <script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script defer src="assets/app.js"></script>
@@ -27,7 +28,7 @@
   <noscript><p class="shell">Enable JavaScript to explore the dashboard. <a href="data/site-data.json">Download the evidence snapshot</a>.</p></noscript>
   <div class="utility">
     <div class="shell utility-inner">
-      <div>Independent research platform</div>
+      <div>KERALA 2040 <span class="utility-separator">/</span> INDEPENDENT RESEARCH</div>
       <div class="utility-links">
         <span id="evidenceDate">Evidence through 2026 · model horizon 2040</span>
         <a href="https://github.com/abhijith-sivaprasadan/kerala2040" target="_blank" rel="noopener">GitHub</a>
@@ -42,45 +43,47 @@
         <img src="assets/mark.svg" alt="" />
         <div class="brand-copy">
           <strong>Kerala 2040</strong>
-          <span>Energy Data &amp; Modelling</span>
+          <span>Evidence → analysis → decisions</span>
         </div>
       </a>
       <div class="masthead-tools">
-        <button class="search-link" data-route="data">Search data and sources</button>
+        <button class="search-link" data-route="data">Search evidence ↗</button>
       </div>
     </div>
     <nav class="primary-nav" aria-label="Primary navigation">
       <div class="shell nav-inner">
         <button data-route="overview" class="nav-link active">Overview</button>
-        <button data-route="electricity" class="nav-link">Data &amp; statistics</button>
-        <button data-route="pathways" class="nav-link">Scenarios &amp; models</button>
-        <button data-route="atlas" class="nav-link">Energy atlas</button>
+        <button data-route="electricity" class="nav-link">Electricity</button>
+        <button data-route="workbench" class="nav-link">Research workbench</button>
+        <button data-route="pathways" class="nav-link">2040 pathways</button>
+        <button data-route="atlas" class="nav-link">GIS &amp; atlas</button>
         <button data-route="industry" class="nav-link">Circular industry</button>
-        <button data-route="audit" class="nav-link">Research readiness</button>
-        <button data-route="data" class="nav-link">Sources</button>
+        <button data-route="audit" class="nav-link">Release gates</button>
+        <button data-route="data" class="nav-link">Sources &amp; downloads</button>
       </div>
     </nav>
   </header>
 
   <main id="main">
     <section class="view active" data-view="overview">
-      <section class="home-hero shell">
+      <section class="home-hero shell research-hero">
         <div class="home-hero-copy">
-          <div class="section-label">AN OPEN RESEARCH PROJECT · CET 2026</div>
-          <h1>Kerala's energy.<br><em>A clearer picture.</em><br>A more resilient future.</h1>
-          <p>Follow the electricity, understand the dependencies, and build an evidence-based path to 2040. Start with what we know today.</p>
+          <div class="section-label">KERALA · OBSERVED FY2024–25 · RESEARCH HORIZON 2040</div>
+          <h1>Understand the energy.<br><em>Inspect the evidence.</em><br>Test the future.</h1>
+          <p>An open, statewide research workbench that keeps measured history, source validation, ecological constraints and scenario ideas distinct. Follow the claim back to its source.</p>
           <div class="hero-actions">
-            <button class="button primary" data-route="electricity">Explore data</button>
-            <button class="button secondary" data-route="pathways">Explore scenarios</button>
+            <button class="button primary" data-route="workbench">Open research workbench →</button>
+            <button class="button secondary" data-route="electricity">Explore observed electricity</button>
           </div>
-          <div id="dataOrigin" class="data-origin">Loading research bundle…</div>
+          <div class="hero-meta"><span class="hero-meta-dot" aria-hidden="true"></span><span id="dataOrigin" class="data-origin">Loading published research snapshot…</span></div>
         </div>
-        <aside class="hero-stat">
-          <div class="hero-stat-label">NET IMPORTS / OBSERVED CONSUMPTION</div>
+        <aside class="hero-stat" aria-label="Observed import dependence">
+          <div class="hero-stat-label">01 / OBSERVED ELECTRICITY</div>
+          <p class="hero-context">Net imports / consumption · <strong>available FY2024–25 SLDC days</strong></p>
           <div class="hero-stat-value"><span id="heroDemandNumber">—</span><small>%</small></div>
-          <div class="energy-motif" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="energy-motif" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
           <p id="heroCoverage">Loading dated SLDC observations…</p>
-          <button class="text-link" data-route="electricity">Understand the energy balance →</button>
+          <button class="text-link" data-route="electricity">Inspect the observed balance →</button>
         </aside>
       </section>
 
@@ -88,6 +91,13 @@
         <div id="headlineMetrics" class="shell headline-grid" aria-live="polite"></div>
       </section>
       <section class="shell research-notice" id="researchReadiness" aria-live="polite"></section>
+      <section class="shell research-path" aria-label="How this research works">
+        <div class="research-path-head"><span class="section-label">HOW TO READ THE PROJECT</span><strong>From source to defensible result</strong></div>
+        <div class="research-path-grid"><div><span>01</span><strong>Acquire</strong><small>Who published it, and when?</small></div>
+          <div><span>02</span><strong>Validate</strong><small>Coverage, units, hashes, geometry.</small></div>
+          <div><span>03</span><strong>Constrain</strong><small>Ecology, grid, water and finance.</small></div>
+          <div><span>04</span><strong>Publish</strong><small>Only after scientific gates pass.</small></div></div>
+      </section>
       <section class="shell audit-overview" aria-labelledby="auditOverviewTitle">
         <div><div class="section-label">EVIDENCE AUDIT · SCIENTIFIC RELEASE GATES</div>
           <h2 id="auditOverviewTitle">What can the research support today?</h2>
@@ -95,11 +105,17 @@
         <button class="button secondary" data-route="audit">Explore research readiness →</button>
       </section>
 
+      <section class="shell home-section home-ledger">
+        <div class="section-heading"><div><div class="section-label">LATEST RESEARCH · SOURCE-TRACED</div><h2>Where the work stands</h2></div>
+          <button class="section-link" data-route="workbench">Every workstream →</button></div>
+        <p class="section-deck">Research milestones, not completed siting approvals or 2040 forecasts. Select a workstream to inspect the evidence and remaining gate.</p>
+        <div id="homeResearchLedger" class="research-card-grid" aria-live="polite"><p>Loading audited research milestones…</p></div>
+      </section>
       <section class="shell home-section">
         <div class="section-heading">
           <div>
             <div class="section-label">DATA AND STATISTICS</div>
-            <h2>Explore the Kerala energy system</h2>
+            <h2>Explore by research question</h2>
           </div>
           <button class="section-link" data-route="data">View all sources</button>
         </div>
@@ -111,17 +127,17 @@
           </button>
           <button class="service-card" data-route="pathways">
             <span class="service-index">02</span>
-            <div><h3>Scenario explorer</h3><p>Published outlooks and Kerala 2040 scenario designs.</p></div>
+            <div><h3>2040 pathways</h3><p>External benchmarks versus unsolved research scenarios.</p></div>
             <span class="service-arrow">→</span>
           </button>
           <button class="service-card" data-route="atlas">
             <span class="service-index">03</span>
-            <div><h3>Energy atlas</h3><p>Hydro, grid, industry and renewable-resource screening.</p></div>
+            <div><h3>GIS evidence &amp; atlas</h3><p>Boundary, terrain and hazard QA before siting.</p></div>
             <span class="service-arrow">→</span>
           </button>
           <button class="service-card" data-route="data">
             <span class="service-index">04</span>
-            <div><h3>Datasets and sources</h3><p>Source registry, evidence classes and machine-readable outputs.</p></div>
+            <div><h3>Sources and downloads</h3><p>Source origins, evidence classes, dates and public files.</p></div>
             <span class="service-arrow">→</span>
           </button>
         </div>
@@ -187,6 +203,42 @@
           <div id="evidenceFeed" class="evidence-feed"></div>
         </div>
       </section>
+    </section>
+
+    <section class="view" data-view="workbench">
+      <div class="page-mast shell"><div><div class="section-label">RESEARCH WORKBENCH · THE EVIDENCE CHAIN</div>
+        <h1>From evidence to answers.</h1>
+        <p>What is measured, acquired, QA-checked or still blocked? A verified source is not automatically a validated planning conclusion.</p></div>
+        <span class="status-label neutral" id="workbenchReviewed">Checking reviewed evidence…</span></div>
+      <div class="shell page-content workbench-page">
+        <section class="workbench-brief" aria-label="Research and release overview">
+          <div id="workbenchSummary" aria-live="polite">Loading research ledger…</div>
+          <p id="workbenchCaution" class="workbench-caution">Preparing source-linked research status.</p>
+        </section>
+        <section class="data-module workbench-board" aria-labelledby="workbenchBoardTitle">
+          <div class="module-head"><div><div class="section-label">WORKSTREAMS · SOURCE AND GATE</div><h2 id="workbenchBoardTitle">What is actually usable?</h2></div>
+            <a class="button secondary" href="data/research-ledger.json" download>Download ledger ↓</a></div>
+          <div class="workbench-controls">
+            <label for="workbenchSearch">Find a workstream<input id="workbenchSearch" type="search" placeholder="Electricity, forest, terrain, wetland…" /></label>
+            <label for="workbenchPhase">Evidence stage<select id="workbenchPhase">
+              <option value="all">All stages</option><option value="validated_source">Source coverage verified</option>
+              <option value="partial">Partial / under review</option><option value="blocked">Missing critical evidence</option>
+            </select></label>
+          </div>
+          <p id="workbenchCount" class="audit-provenance" aria-live="polite"></p>
+          <div id="workbenchCards" class="research-card-grid"></div>
+        </section>
+        <section class="data-module" aria-labelledby="workbenchGatesTitle">
+          <div class="module-head"><div><div class="section-label">DECISION BOUNDARY</div><h2 id="workbenchGatesTitle">What cannot yet be concluded</h2></div></div>
+          <div id="workbenchGates" class="workbench-gates"></div>
+          <div class="workbench-next"><div><div class="section-label">CONTINUE THE RESEARCH</div>
+            <h3>Follow the missing evidence, not a completion percentage.</h3>
+            <p>Open the audit for source-specific requirements, or the atlas for the difference between available geometry and legal exclusions.</p></div>
+            <div><button class="button primary" data-route="audit">Inspect the audit →</button>
+              <button class="button secondary" data-route="atlas">Explore GIS status</button></div>
+          </div>
+        </section>
+      </div>
     </section>
 
     <section class="view" data-view="electricity">
@@ -342,8 +394,14 @@
           <h1>Kerala energy atlas</h1>
           <p>The research covers all of Kerala, across all 14 districts. The markers are illustrative research locations; they do not define the model boundary or represent a complete grid inventory.</p>
         </div>
-        <div class="status-label neutral">Screening layer · v1</div>
+        <div class="status-label neutral">Source atlas · no validated exclusion map</div>
       </div>
+      <section class="shell atlas-evidence-panel" aria-labelledby="atlasLedgerTitle">
+        <div class="section-heading"><div><div class="section-label">SPATIAL DATA · ADMISSION STATUS</div><h2 id="atlasLedgerTitle">GIS evidence before siting</h2></div>
+          <button class="section-link" data-route="workbench">Full research ledger →</button></div>
+        <p class="section-deck">Source QA and geometry completeness are not statutory boundaries. Nothing on this page identifies buildable land, a MW ceiling or a verified legal exclusion.</p>
+        <div id="atlasResearchLedger" class="research-card-grid"></div>
+      </section>
       <div class="shell atlas-page">
         <div id="statewideScope" class="research-notice"></div>
         <div class="map-toolbar">
@@ -474,10 +532,11 @@
         <p>Independent energy data and modelling platform.</p>
       </div>
       <div class="footer-links">
-        <button data-route="electricity">Data &amp; statistics</button>
+        <button data-route="electricity">Electricity</button>
+        <button data-route="workbench">Research workbench</button>
         <button data-route="pathways">Scenarios</button>
         <button data-route="atlas">Atlas</button>
-        <button data-route="audit">Readiness</button>
+        <button data-route="audit">Release gates</button>
         <button data-route="data">Sources</button>
       </div>
     </div>

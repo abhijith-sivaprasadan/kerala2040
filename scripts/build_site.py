@@ -13,6 +13,7 @@ from itertools import pairwise
 from pathlib import Path
 
 from kerala2040.audit_readiness import build_audit
+from kerala2040.research_ledger import build_ledger
 
 
 def validate_bundle(public: Path) -> dict:
@@ -66,6 +67,25 @@ def validate_bundle(public: Path) -> dict:
         for gate in audit.get("release_gates", {}).values():
             if gate.get("passed") and gate.get("blocking_checks"):
                 raise ValueError("An audit release gate is both passed and blocked")
+    if "research_ledger" in files:
+        ledger = read(files["research_ledger"])
+        if ledger != site.get("research_ledger"):
+            raise ValueError("Research ledger and site manifest disagree")
+        if ledger.get("classification") != (
+            "dated_repository_research_progress_NOT_geospatial_or_model_readiness"
+        ):
+            raise ValueError("Research ledger must retain provenance classification")
+        if (ledger.get("ecological_capacity_ceiling_ready") is not False
+                or ledger.get("eligible_area_sq_km") is not None
+                or ledger.get("potential_mw") is not None
+                or ledger["release_gates"]["ecological_capacity_ceiling"]["passed"]
+                or ledger["release_gates"]["techno_economic_2040"]["passed"]):
+            raise ValueError("Research ledger cannot promote GIS or 2040 model readiness")
+        if "audit_readiness" in files:
+            audit = read(files["audit_readiness"])
+            if (ledger["audit_finding_count"] != audit["finding_count"]
+                    or ledger["audit_open_findings"] != audit["open_findings"]):
+                raise ValueError("Research ledger and audited finding counts disagree")
     if "research_results" in files:
         research = read(files["research_results"])
         if research != site.get("research_results"):
@@ -127,7 +147,7 @@ def build_site(root: Path, output: Path) -> None:
     shutil.copytree(root / "docs/assets", output / "assets", dirs_exist_ok=True)
     # Immutable filenames prevent a new HTML page from running an old cached app.
     html = (output / "index.html").read_text(encoding="utf-8")
-    for name in ("app.js", "styles.css", "platform.css"):
+    for name in ("app.js", "styles.css", "platform.css", "workbench.css"):
         asset = root / "docs/assets" / name
         digest = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
         versioned = f"{asset.stem}.{digest}{asset.suffix}"
@@ -182,6 +202,14 @@ def build_site(root: Path, output: Path) -> None:
     site["metadata"]["files"]["audit_readiness"] = "audit-readiness.json"
     (data_dir / "audit-readiness.json").write_text(
         json.dumps(audit, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    # Build a public progress ledger from the same committed QA as release gates.
+    # Never publish a result inferred from an ephemeral Actions artifact alone.
+    ledger = build_ledger(root, audit)
+    site["metadata"]["files"]["research_ledger"] = "research-ledger.json"
+    site["research_ledger"] = ledger
+    (data_dir / "research-ledger.json").write_text(
+        json.dumps(ledger, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"

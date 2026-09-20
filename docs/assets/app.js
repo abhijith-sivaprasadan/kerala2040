@@ -19,6 +19,7 @@ const state = {
   nationalContext: null,
   sldcStationEvidence: null,
   audit: null,
+  researchLedger: null,
   nationalContext: null,
   chartRows: [],
   chartColumns: [],
@@ -68,6 +69,7 @@ async function loadPlatformData() {
   ]);
   state.sldcStationEvidence = files.sldc_station_evidence ? await fetchJSON(`${RAW}${files.sldc_station_evidence}`) : null;
   state.audit = files.audit_readiness ? await fetchJSON(`${RAW}${files.audit_readiness}`, true) : null;
+  state.researchLedger = files.research_ledger ? await fetchJSON(`${RAW}${files.research_ledger}`, true) : null;
 }
 
 function refs() {
@@ -661,14 +663,14 @@ function bindRouteButtons(root=document) {
 }
 
 function navigate(route) {
-  const valid=['overview','electricity','pathways','atlas','industry','audit','data'];
+  const valid=['overview','electricity','workbench','pathways','atlas','industry','audit','data'];
   const target=valid.includes(route)?route:'overview';
   if(location.hash!==`#${target}`) history.pushState(null,'',`#${target}`);
   showView(target);
 }
 
 function showView(route) {
-  if (!['overview','electricity','pathways','atlas','industry','audit','data'].includes(route)) route='overview';
+  if (!['overview','electricity','workbench','pathways','atlas','industry','audit','data'].includes(route)) route='overview';
   qsa('.view').forEach(v=>v.classList.toggle('active',v.dataset.view===route));
   qsa('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.route===route));
   qsa('.nav-link').forEach(b=>b.setAttribute('aria-current',b.dataset.route===route?'page':'false'));
@@ -698,6 +700,8 @@ function bindInteractions() {
   for(const selector of ['#auditSearch','#auditPriority','#auditStatus']) {
     qs(selector)?.addEventListener(selector==='#auditSearch'?'input':'change',renderAuditFindings);
   }
+  qs('#workbenchSearch')?.addEventListener('input',renderWorkbench);
+  qs('#workbenchPhase')?.addEventListener('change',renderWorkbench);
   window.addEventListener('popstate',()=>showView(location.hash.slice(1)||'overview'));
   window.addEventListener('hashchange',()=>showView(location.hash.slice(1)||'overview'));
 }
@@ -808,10 +812,106 @@ function renderAudit() {
   renderAuditFindings();
 }
 
+// Read-only workbench: a data acquisition milestone is never a siting approval.
+const researchPhaseLabel = phase => ({
+  validated_source: 'Source coverage verified · model gate open',
+  partial: 'Partial / under review',
+  blocked: 'Missing critical evidence'
+}[phase] || 'Status unverified');
+
+function researchEvidenceURL(value) {
+  const url = String(value || '');
+  return url.startsWith(REPO + '/blob/main/') ||
+    /^https:\/\/github\.com\/abhijith-sivaprasadan\/kerala2040\/actions\/runs\/\d+$/.test(url) ?
+    url : '';
+}
+
+function researchLedgerCardHTML(item, compact = false) {
+  const links = (item.evidence || []).map(entry => {
+    const url = researchEvidenceURL(entry.href);
+    return url ? '<a target="_blank" rel="noopener" href="' + esc(url) + '">' +
+      esc(entry.label) + ' ↗</a>' : '';
+  }).filter(Boolean).join('');
+  return '<article class="research-card phase-' +
+    (['validated_source','partial','blocked'].includes(item.phase) ? item.phase : 'blocked') + '">' +
+    '<div class="research-card-top"><span class="research-id">' + esc(item.id) +
+    '</span><span class="research-phase">' + esc(researchPhaseLabel(item.phase)) + '</span></div>' +
+    '<h3>' + esc(item.title) + '</h3>' +
+    '<p class="research-desc">' + esc(item.summary) + '</p>' +
+    '<div class="research-measure"><strong>' + esc(item.metric) +
+    '</strong><span>' + esc(item.unit) + '</span></div>' +
+    (compact ? '' : '<div class="research-evidence-pair">' +
+      '<div><span class="mini-label">WHAT IS DONE</span><p>' + esc(item.completed) + '</p></div>' +
+      '<div><span class="mini-label">WHAT BLOCKS USE</span><p>' + esc(item.blocked) + '</p></div>' +
+      '</div><p class="research-next"><b>Next / </b>' + esc(item.action) + '</p>') +
+    '<div class="research-links">' + links +
+    '<button type="button" data-route="' +
+    (['atlas','electricity','pathways','industry','audit','data','workbench'].includes(item.route) ?
+      item.route : 'workbench') + '">Explore topic →</button></div></article>';
+}
+
+function renderWorkbench() {
+  const l = state.researchLedger;
+  const board = qs('#workbenchCards');
+  const home = qs('#homeResearchLedger');
+  const atlas = qs('#atlasResearchLedger');
+  if (!l || l.classification !==
+    'dated_repository_research_progress_NOT_geospatial_or_model_readiness') {
+    const note = 'This published snapshot has no verified research ledger. Use the source audit; no new readiness is implied.';
+    [board,home,atlas].forEach(el=>{if(el)el.textContent=note});
+    const caution = qs('#workbenchCaution');if(caution)caution.textContent=note;
+    return;
+  }
+  const rows = l.workstreams || [];
+  const search = (qs('#workbenchSearch')?.value || '').toLowerCase().trim();
+  const phase = qs('#workbenchPhase')?.value || 'all';
+  const filtered = rows.filter(item=>
+    (phase==='all' || item.phase===phase) &&
+    (!search || [item.title,item.id,item.summary,item.completed,item.blocked,
+      item.action].join(' ').toLowerCase().includes(search)));
+  if(board) {
+    board.innerHTML=filtered.length ? filtered.map(x=>researchLedgerCardHTML(x)).join('') :
+      '<p class="audit-empty">No workstream matches. Clear search or change the stage.</p>';
+    bindRouteButtons(board);
+  }
+  if(home) {
+    home.innerHTML=rows.filter(x=>['electricity','boundary','landslide','forest','wetlands','modelling'].includes(x.id)).map(x=>researchLedgerCardHTML(x,true)).join('');
+    bindRouteButtons(home);
+  }
+  if(atlas) {
+    atlas.innerHTML=rows.filter(x=>['boundary','landslide','forest','wetlands','lulc'].includes(x.id))
+      .map(x=>researchLedgerCardHTML(x,true)).join('');
+    bindRouteButtons(atlas);
+  }
+  const count=qs('#workbenchCount');
+  if(count)count.textContent=filtered.length+' of '+rows.length+
+    ' source-linked workstreams · no artificial completion score.';
+  const reviewed=qs('#workbenchReviewed');
+  if(reviewed)reviewed.textContent='Research audit · '+l.reviewed_date;
+  const caution=qs('#workbenchCaution');
+  if(caution)caution.textContent=l.caution;
+  const summary=qs('#workbenchSummary');
+  const gates=Object.entries(l.release_gates||{});
+  if(summary)summary.innerHTML=[
+    [rows.length,'Tracked workstreams'],
+    [l.audit_open_findings,'Open source findings'],
+    [gates.filter(([,v])=>v.passed).length + ' / ' + gates.length,'Scoped gates passed']
+  ].map(([value,label])=>'<div><strong>'+esc(value)+'</strong><span>'+
+    esc(label)+'</span></div>').join('');
+  const gateBox=qs('#workbenchGates');
+  if(gateBox)gateBox.innerHTML=gates.map(([key,gate])=>
+    '<article class="research-gate"><span class="research-phase '+(gate.passed?'phase-ok':'phase-no')+
+    '">'+(gate.passed?'SCOPED PASS':'NOT PASSED')+'</span><h3>'+
+    esc(key.replaceAll('_',' '))+'</h3><p>'+
+    esc(gate.passed?'All checks required for this specific limited gate pass; not a full-system result.' :
+      'Still requires: '+(gate.blocking_checks||[]).join(', '))+'</p></article>').join('');
+}
+
 function renderAll() {
   
   renderPlatformMeta();renderHeadline();renderOverview();renderEvidenceFeed();renderElectricity();renderSldcDeepDive();renderPathwayReferences();renderScenarioLab();renderIndustry();renderDataCentre();
   renderConnectedEvidence();
+  renderWorkbench();
   renderResearchProgress();
   renderAudit();
   if (!window.Plotly) qsa('.chart:not(#scenarioInputChart)').forEach(el=>el.innerHTML='<p class="model-gate">Charts could not load. Use the data tables and downloads below.</p>');
