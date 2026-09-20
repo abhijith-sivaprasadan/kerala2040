@@ -131,6 +131,11 @@ workstreams:
     original_file_sha256: null
     observed_verified_gsi_districts: 0
     source_original_zips_downloaded_and_structurally_checked_in_artifact: 13
+    source_polygon_geometry_review: data/evidence/gis/gsi_2022_original_geometry_review_2026_09_20.json
+    original_geometries_decoded_districts: 13
+    original_invalid_multipolygon_features: 39
+    raw_class_field: Susceptibi
+    raw_values_observed_per_district: [High, Moderate, Low]
     wetland_geometries_verified: 0
     current_notified_wetland_geometries_verified: 0
     final_notifications_mapped: false
