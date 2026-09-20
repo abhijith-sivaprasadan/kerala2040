@@ -52,11 +52,23 @@ layers:
     acquisition_status: authoritative_geometry_not_yet_secured
   bhuvan_lulc:
     source: NRSC/ISRO Bhuvan
-    landing_page: https://bhuvan.nrsc.gov.in/
-    expected_format: raster_or_ogc_service
+    landing_page: https://bhuvan-app1.nrsc.gov.in/2dresources/bhuvanstore2.php
+    official_2024_25_visual_layer: https://bhuvan-app1.nrsc.gov.in/moef/
+    native_acquisition_policy: https://www.isro.gov.in/SpaceBasedEarthObservationServices.html
+    acquisition_register: configs/lulc_native_acquisition_2024_25.yaml
+    report: docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md
+    desired_vintage: "2024-25"
+    desired_scale_denominator: 250000
+    expected_format: native_class_coded_geotiff_or_vector_plus_original_legend
     raw_path: data/external/gis/bhuvan/lulc
-    role: land_use_constraint
-    acquisition_status: not_downloaded
+    role: historical_land_use_context_not_legal_exclusion
+    acquisition_status: not_downloaded_native_data_requires_approved_route
+    note: >-
+      2024-25 appears in the Bhuvan map selector; a native Kerala dataset,
+      class legend, CRS and licence have NOT been acquired. Store's download
+      table lists LULC250K through 2022-23. WMS visual pixels are not class IDs;
+      ISRO describes native 250K data requests via a signed institutional MoU.
+      SISDP 10K district availability requires separate confirmation.
   bhuvan_dem:
     source: NRSC/ISRO Bhuvan
     landing_page: https://bhuvan.nrsc.gov.in/
