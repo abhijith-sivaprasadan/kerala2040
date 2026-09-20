@@ -16,7 +16,7 @@ def test_workbench_ledger_is_a_fail_closed_index():
     assert ledger["classification"] == (
         "dated_repository_research_progress_NOT_geospatial_or_model_readiness"
     )
-    assert len(ledger["workstreams"]) == 6
+    assert len(ledger["workstreams"]) == 11
     assert ledger["ecological_capacity_ceiling_ready"] is False
     assert ledger["eligible_area_sq_km"] is None
     assert ledger["potential_mw"] is None
@@ -24,8 +24,8 @@ def test_workbench_ledger_is_a_fail_closed_index():
     assert ledger["release_gates"]["techno_economic_2040"]["passed"] is False
     assert ledger["audit_open_findings"] == ledger["audit_finding_count"]
     ids = {row["id"] for row in ledger["workstreams"]}
-    assert ids == {"electricity", "boundary", "landslide", "forest", "wetlands",
-                   "modelling"}
+    assert ids == {"electricity", "generators", "hydro", "grid", "lulc",
+                   "boundary", "landslide", "forest", "wetlands", "industry", "modelling"}
     assert all(row["evidence"] and row["blocked"] for row in ledger["workstreams"])
 
 
