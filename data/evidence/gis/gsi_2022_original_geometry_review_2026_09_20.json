@@ -1,0 +1,327 @@
+{
+  "classification": "observed_original_GSI13_polygon_and_source_class_evidence_NOT_topology_valid_or_siting",
+  "inspection_run_url": "https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35505867854",
+  "source_archive_manifest": "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json",
+  "date": "2026-09-20",
+  "source_archives_hash_matched": 13,
+  "source_archives_decoded": 13,
+  "source_feature_count": 39,
+  "source_invalid_feature_count": 39,
+  "original_crs": "EPSG:32643",
+  "raw_field": "Susceptibi",
+  "raw_classes": [
+    "High",
+    "Moderate",
+    "Low"
+  ],
+  "source_invalidity": "Ring Self-intersection in each source MultiPolygon",
+  "districts": [
+    {
+      "district": "Thiruvananthapuram",
+      "source_zip_sha256": "fc52f23d8a7c381842b22598baaa77bfdeb21b9542baf4cf64c1c3404ce3d3e7",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        77.00099897891788,
+        8.496931862563901,
+        77.28588871330317,
+        8.84498653755017
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Kollam",
+      "source_zip_sha256": "b652924f52c19d74fb87c6b662755c9291a6d6b394ee607eb56907ef71d3fbb8",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        76.80054016086062,
+        8.765637825871103,
+        77.26554009013478,
+        9.172675260976403
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Pathanamthitta",
+      "source_zip_sha256": "05d364f252b5c848142e1d2b5d548fb350760846dbf74b27f8eed0b1b5652a2d",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        76.71441351571403,
+        9.06979043946232,
+        77.28549289334585,
+        9.473100603871394
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Kottayam",
+      "source_zip_sha256": "08961414faa3cefd0f294a6953f2ea3494490569d12b340e2ad9572cce57574b",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        76.60727148632076,
+        9.4136493275566,
+        76.98854543407634,
+        9.856900339540697
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Idukki",
+      "source_zip_sha256": "51f6ddeef29910609ae019aaf9a125519a5e9b5f09a05c72d11fa9ed21d8c12c",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        76.62602549634326,
+        9.270434805622036,
+        77.41866288753306,
+        10.358654743022576
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Ernakulam",
+      "source_zip_sha256": "7bac333a4a2c26410582555dbf722157fa97df63fafa24b5a0bb8ef269935b20",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        76.40910640698408,
+        9.834528089637748,
+        76.92145790113315,
+        10.302723734295778
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Thrissur",
+      "source_zip_sha256": "1a894e394a31441d3ca318981e277e6fe4f453fb163b3155b3fb9473e5e94352",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        76.22283582936147,
+        10.250834486119517,
+        76.90484489349494,
+        10.699004636853934
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Palakkad",
+      "source_zip_sha256": "a9598154a7616611c4f39c13c8b0aac87a53501d52bda6fdff0992655e46a1e4",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        76.3398638680368,
+        10.33283212154409,
+        76.85498578026896,
+        11.239434134201163
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Malappuram",
+      "source_zip_sha256": "92567b0b233f7e89c3e11aac2c261e225ef2dfc16022aaa66f8865e8cb15d0e0",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        75.99930192158564,
+        11.080935238844669,
+        76.55087382177979,
+        11.528491291632568
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Kozhikode",
+      "source_zip_sha256": "7afa02ce8897fe59a6ee1d3465bda625acac69846da777592f3212be9946e312",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        75.67764394730955,
+        11.253244672888567,
+        76.14811166355601,
+        11.804814312627254
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Wayanad",
+      "source_zip_sha256": "e5da8e031c0523a8f98a1086f4c13ebaad76721cd2afd34e6a20b35556037e2f",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        75.77375359429776,
+        11.449365617872242,
+        76.44513392119306,
+        11.977121268263657
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Kannur",
+      "source_zip_sha256": "cf6c566d64c660d0b58edf1f5a51adbd178005521b915809997fc5737c23be7b",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        75.3179883247169,
+        11.771289039297667,
+        75.9412000588223,
+        12.299972011813281
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    },
+    {
+      "district": "Kasaragod",
+      "source_zip_sha256": "ba8232c108fda9f451b3e2a235c825deda419512e7e6a81b4b36f308e53e57dc",
+      "feature_count": 3,
+      "original_crs": "EPSG:32643",
+      "source_raw_susceptibility_field": "Susceptibi",
+      "source_raw_class_feature_counts": {
+        "High": 1,
+        "Moderate": 1,
+        "Low": 1
+      },
+      "polygon_type": "MultiPolygon",
+      "invalid_polygon_count": 3,
+      "invalidity_type": "Ring Self-intersection",
+      "bounds_wgs84": [
+        74.91437545226826,
+        12.266312900913158,
+        75.43329258806057,
+        12.794382638226557
+      ],
+      "all_features_read": true,
+      "geographic_coverage_vs_official_district_boundary_verified": false
+    }
+  ],
+  "source_archives_replaced": false,
+  "official_boundary_or_full_state_coverage_verified": false,
+  "alappuzha": "not_in_source_pack_not_low_risk",
+  "raw_invalid_geometries_accepted_as_model_ready": false,
+  "source_class_legend_harmonization_verified": true,
+  "legal_exclusion_established": false,
+  "eligible_land_sq_km": null,
+  "potential_mw": null
+}
