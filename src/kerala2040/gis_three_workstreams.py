@@ -13,6 +13,7 @@ from typing import Any
 import yaml
 
 REGISTRY = "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
+ACQUISITION = "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json"
 EXPECTED = {"forest_protected_areas", "elevation_dem", "wetlands_waterbodies_landslide"}
 
 
@@ -142,9 +143,54 @@ def audit_gis(root: Path) -> dict[str, Any]:
     for name in EXPECTED:
         if workstreams[name].get("original_file_sha256") is not None:
             raise ValueError("Claimed original GIS file without committed source QA")
+    acquired = json.loads((root / ACQUISITION).read_text(encoding="utf-8"))
+    if acquired.get("classification") != (
+        "verified_workflow_download_hashes_and_shapefile_archive_components_NOT_geospatial_or_legal_validation"
+    ):
+        raise ValueError("GIS acquisition manifest wrongly claims legal or spatial QA")
+    pilot = acquired["public_kerala_dsm_pilot"]
+    if (
+        len(pilot["sha256"]) != 64
+        or pilot["bytes"] <= 0
+        or pilot["original_crs"] != "EPSG:4326"
+        or not pilot["source_url"].startswith("https://copernicus-dem-90m.s3.amazonaws.com/")
+        or pilot["classification"] != "one_2021_GLO90_DSM_tile_not_Kerala_terrain_mosaic"
+    ):
+        raise ValueError("Public Copernicus pilot source identity inconsistent")
+    gsi = acquired["gsi_2022"]
+    archives = gsi["per_district"]
+    if (
+        gsi["published_district_links_retrieved"] != 13
+        or gsi["archives_with_shp_shx_dbf_prj"] != 13
+        or {item["district"] for item in archives} != set(districts)
+        or len(archives) != 13
+        or gsi["geometries_crs_and_classes_independently_validated"] is not False
+    ):
+        raise ValueError("GSI acquired archive count or limitations inconsistent")
+    if any(
+        len(item["sha256"]) != 64
+        or not item["source_url"].startswith(
+            "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/"
+        )
+        or not item["complete_shapefile_groups"]
+        or item["structural_status"] != (
+            "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+        )
+        for item in archives
+    ):
+        raise ValueError("GSI official archive hashes or structural status invalid")
+    if (
+        acquired["original_files_committed_to_repository"] is not False
+        or acquired["forest_official_boundary_geometries_acquired"] is not False
+        or acquired["swak_final_wetland_polygons_acquired"] is not False
+        or acquired["eligible_area_sq_km"] is not None
+        or acquired["capacity_ceiling_mw"] is not None
+    ):
+        raise ValueError("Source acquisition cannot create legal area or capacity")
     return {
         "classification": "verified_official_source_routes_not_acquired_model_ready_geometry",
         "registry": REGISTRY,
+        "acquisition_manifest": ACQUISITION,
         "workstreams": {
             "forest_protected_areas": {
                 "official_boundary_layers_reported": True,
@@ -155,10 +201,13 @@ def audit_gis(root: Path) -> dict[str, Any]:
                 "cartodem_login_route_documented": True,
                 "public_copernicus_dsm_route_documented": True,
                 "statewide_dem_raster_verified_in_committed_repo": False,
+                "glo90_sample_tile_retrieved_in_workflow_artifact": True,
+                "glo90_sample_original_sha256": pilot["sha256"],
                 "dsm_is_not_bare_earth": True,
             },
             "wetlands_waterbodies_landslide": {
                 "published_gsi_2022_district_download_labels": len(districts),
+                "gsi_original_zips_downloaded_to_workflow_artifact": len(archives),
                 "gsi_shapefile_bundles_verified_in_committed_repo": 0,
                 "notified_wetland_polygons_verified": 0,
                 "older_ncess_landslide_not_current_reference": True,
