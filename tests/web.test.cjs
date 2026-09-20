@@ -82,3 +82,30 @@ test('audit card rendering escapes source text and never turns a blocked gate gr
   assert.match(html,/Inspect source evidence/);
   assert.equal(vm.runInContext("state.audit.release_gates.techno_economic_2040.passed",c),false);
 });
+
+test('workbench card escapes source text and refuses arbitrary links',()=>{
+  const c=context();
+  const item={
+    id:'forest',title:'<img src=x onerror=alert(1)>',
+    summary:'<script>alert(1)</script>',phase:'validated_source',
+    metric:'0 / 25',unit:'matches',completed:'audited',blocked:'NO legal boundaries',
+    action:'request custodial GIS',route:'workbench',
+    evidence:[{label:'Injected',href:'javascript:alert(1)'},{label:'Real QA',
+      href:'https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/docs/AUDIT_RELEASE_GATES.md'}]
+  };
+  c.item=item;
+  const html=vm.runInContext('researchLedgerCardHTML(item)',c);
+  assert.ok(!html.includes('<script>'));
+  assert.ok(!html.includes('<img'));
+  assert.ok(!html.includes('javascript:'));
+  assert.match(html,/&lt;script&gt;/);
+  assert.match(html,/0 \/ 25/);
+  assert.match(html,/Source coverage verified · model gate open/);
+  assert.match(html,/Real QA/);
+});
+test('workbench stage labels never equate source QA with siting approval',()=>{
+  const c=context();
+  assert.match(vm.runInContext("researchPhaseLabel('validated_source')",c),/model gate open/);
+  assert.match(vm.runInContext("researchPhaseLabel('blocked')",c),/Missing critical evidence/);
+  assert.equal(vm.runInContext("researchEvidenceURL('https://not-the-project.example/test')",c),'');
+});
