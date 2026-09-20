@@ -205,6 +205,42 @@
       </section>
     </section>
 
+    <section class="view" data-view="workbench">
+      <div class="page-mast shell"><div><div class="section-label">RESEARCH WORKBENCH · THE EVIDENCE CHAIN</div>
+        <h1>From evidence to answers.</h1>
+        <p>What is measured, acquired, QA-checked or still blocked? A verified source is not automatically a validated planning conclusion.</p></div>
+        <span class="status-label neutral" id="workbenchReviewed">Checking reviewed evidence…</span></div>
+      <div class="shell page-content workbench-page">
+        <section class="workbench-brief" aria-label="Research and release overview">
+          <div id="workbenchSummary" aria-live="polite">Loading research ledger…</div>
+          <p id="workbenchCaution" class="workbench-caution">Preparing source-linked research status.</p>
+        </section>
+        <section class="data-module workbench-board" aria-labelledby="workbenchBoardTitle">
+          <div class="module-head"><div><div class="section-label">WORKSTREAMS · SOURCE AND GATE</div><h2 id="workbenchBoardTitle">What is actually usable?</h2></div>
+            <a class="button secondary" href="data/research-ledger.json" download>Download ledger ↓</a></div>
+          <div class="workbench-controls">
+            <label for="workbenchSearch">Find a workstream<input id="workbenchSearch" type="search" placeholder="Electricity, forest, terrain, wetland…" /></label>
+            <label for="workbenchPhase">Evidence stage<select id="workbenchPhase">
+              <option value="all">All stages</option><option value="validated_source">Source coverage verified</option>
+              <option value="partial">Partial / under review</option><option value="blocked">Missing critical evidence</option>
+            </select></label>
+          </div>
+          <p id="workbenchCount" class="audit-provenance" aria-live="polite"></p>
+          <div id="workbenchCards" class="research-card-grid"></div>
+        </section>
+        <section class="data-module" aria-labelledby="workbenchGatesTitle">
+          <div class="module-head"><div><div class="section-label">DECISION BOUNDARY</div><h2 id="workbenchGatesTitle">What cannot yet be concluded</h2></div></div>
+          <div id="workbenchGates" class="workbench-gates"></div>
+          <div class="workbench-next"><div><div class="section-label">CONTINUE THE RESEARCH</div>
+            <h3>Follow the missing evidence, not a completion percentage.</h3>
+            <p>Open the audit for source-specific requirements, or the atlas for the difference between available geometry and legal exclusions.</p></div>
+            <div><button class="button primary" data-route="audit">Inspect the audit →</button>
+              <button class="button secondary" data-route="atlas">Explore GIS status</button></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
     <section class="view" data-view="electricity">
       <div class="page-mast shell">
         <div>
@@ -358,8 +394,14 @@
           <h1>Kerala energy atlas</h1>
           <p>The research covers all of Kerala, across all 14 districts. The markers are illustrative research locations; they do not define the model boundary or represent a complete grid inventory.</p>
         </div>
-        <div class="status-label neutral">Screening layer · v1</div>
+        <div class="status-label neutral">Source atlas · no validated exclusion map</div>
       </div>
+      <section class="shell atlas-evidence-panel" aria-labelledby="atlasLedgerTitle">
+        <div class="section-heading"><div><div class="section-label">SPATIAL DATA · ADMISSION STATUS</div><h2 id="atlasLedgerTitle">GIS evidence before siting</h2></div>
+          <button class="section-link" data-route="workbench">Full research ledger →</button></div>
+        <p class="section-deck">Source QA and geometry completeness are not statutory boundaries. Nothing on this page identifies buildable land, a MW ceiling or a verified legal exclusion.</p>
+        <div id="atlasResearchLedger" class="research-card-grid"></div>
+      </section>
       <div class="shell atlas-page">
         <div id="statewideScope" class="research-notice"></div>
         <div class="map-toolbar">
@@ -490,10 +532,11 @@
         <p>Independent energy data and modelling platform.</p>
       </div>
       <div class="footer-links">
-        <button data-route="electricity">Data &amp; statistics</button>
+        <button data-route="electricity">Electricity</button>
+        <button data-route="workbench">Research workbench</button>
         <button data-route="pathways">Scenarios</button>
         <button data-route="atlas">Atlas</button>
-        <button data-route="audit">Readiness</button>
+        <button data-route="audit">Release gates</button>
         <button data-route="data">Sources</button>
       </div>
     </div>
