@@ -74,9 +74,12 @@ def _transfer_source_checks(evidence: dict[str, Any]) -> None:
         if contract["fy2024_25_deliverable_mw"] is not None:
             raise ValueError("No verified FY24-25 deliverable contract MW in evidence")
         signed = contract.get("agreement_date")
-        if signed and date.fromisoformat(signed) > date(2025, 3, 31):
-            if contract["classification"] != "signed_after_fy2024_25_not_historical_supply":
-                raise ValueError("Post-year agreement incorrectly counted as historical")
+        if (
+            signed
+            and date.fromisoformat(signed) > date(2025, 3, 31)
+            and contract["classification"] != "signed_after_fy2024_25_not_historical_supply"
+        ):
+            raise ValueError("Post-year agreement incorrectly counted as historical")
     unresolved = evidence["unresolved_constraints"]
     if any(
         value is not None for key, value in unresolved.items()
