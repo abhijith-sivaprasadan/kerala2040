@@ -11,14 +11,14 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import math
-import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
 import rasterio
 import requests
+from acquire_copernicus_glo90_envelope import inspect_tile, sha256
+from audit_official_kerala_boundary_dem import _kerala_feature, _parse_geojson
 from pyproj import Transformer
 from rasterio.features import geometry_mask
 from rasterio.merge import merge
@@ -26,9 +26,6 @@ from rasterio.transform import array_bounds
 from rasterio.warp import Resampling, calculate_default_transform, reproject
 from shapely.geometry import mapping
 from shapely.ops import transform as shapely_transform
-
-from acquire_copernicus_glo90_envelope import inspect_tile, sha256
-from audit_official_kerala_boundary_dem import _kerala_feature, _parse_geojson
 
 DEM_MANIFEST = Path("data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json")
 BOUNDARY_EVIDENCE = Path(
@@ -142,7 +139,6 @@ def _slope_from_projected_dsm(
         & valid[:-2, 1:-1]
         & valid[2:, 1:-1]
     )
-    center = data[1:-1, 1:-1]
     dzdx = (data[1:-1, 2:] - data[1:-1, :-2]) / (2 * resolution_m)
     dzdy = (data[2:, 1:-1] - data[:-2, 1:-1]) / (2 * resolution_m)
     gradient = np.sqrt(dzdx * dzdx + dzdy * dzdy)
