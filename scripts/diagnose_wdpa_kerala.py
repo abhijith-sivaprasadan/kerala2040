@@ -33,6 +33,20 @@ def probe(session, service, layer, where, spatial):
                 "where": where, "spatial": spatial, "service": service,
                 "layer": layer}
 
+def count_query(session, service, layer, spatial):
+    params = {"where": "1=1", "returnCountOnly": "true", "f": "json"}
+    if spatial:
+        params.update(geometry=ENVELOPE, geometryType="esriGeometryEnvelope",
+                      inSR="4326", spatialRel="esriSpatialRelIntersects")
+    response = session.get(f"{BASE}/{service}/{layer}/query",
+                           params=params, timeout=(15,90))
+    response.raise_for_status()
+    data = response.json()
+    return {"service":service, "layer":layer, "spatial":spatial,
+            "unfiltered_count":data.get("count"),
+            "error":data.get("error")}
+
+
 def main():
     s = requests.Session()
     s.headers["User-Agent"] = "Kerala2040Research/1.0"
@@ -44,6 +58,10 @@ def main():
                           "name_eng LIKE '%Wayanad%'"):
                 records.append(probe(s,service,layer,where,where in
                                      ("iso3='IND'","prnt_iso3='IND'")))
+    for service in ("MapServer", "FeatureServer"):
+        for layer in (0,1):
+            for spatial in (False,True):
+                records.append(count_query(s,service,layer,spatial))
     p = Path("results/gis/wdpa_source_diagnostic.json")
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(records,indent=2)+"\n")
