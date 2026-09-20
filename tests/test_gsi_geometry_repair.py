@@ -29,4 +29,4 @@ def test_two_repairs_of_self_intersection_are_compared_not_assumed_equal():
     assert result["buffer0_valid"]
     assert result["make_valid_parts"] >= 1
     assert result["buffer0_parts"] >= 1
-    assert result["repair_symmetric_difference_over_union"] >= 0
+    assert result["repair_relative_area_disagreement"] >= 0\n    assert result["repair_centroid_shift_m"] >= 0\n    assert result["repair_bounds_max_abs_delta_m"] >= 0
