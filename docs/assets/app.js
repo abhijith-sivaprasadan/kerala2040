@@ -30,7 +30,8 @@ const state = {
   map: null,
   markers: [],
   mapKind: 'all',
-  industryCase: 'kmml'
+  industryCase: 'kmml',
+  focusId: 'electricity'
 };
 
 async function fetchJSON(url, required = false) {
@@ -702,6 +703,13 @@ function bindInteractions() {
   }
   qs('#workbenchSearch')?.addEventListener('input',renderWorkbench);
   qs('#workbenchPhase')?.addEventListener('change',renderWorkbench);
+  qs('#decisionTopics')?.addEventListener('click',event=>{
+    const button=event.target.closest('[data-focus]');
+    if(!button)return;
+    state.focusId=button.dataset.focus;
+    renderDecisionDesk();
+    qs('#decisionTopics [aria-pressed="true"]')?.focus();
+  });
   window.addEventListener('popstate',()=>showView(location.hash.slice(1)||'overview'));
   window.addEventListener('hashchange',()=>showView(location.hash.slice(1)||'overview'));
 }
@@ -907,11 +915,152 @@ function renderWorkbench() {
       'Still requires: '+(gate.blocking_checks||[]).join(', '))+'</p></article>').join('');
 }
 
+// Dated research ledger and observation bundle are distinct publication identities.
+// These cards use the exact same audited ledger as the workbench and release gates.
+function renderEvidenceSnapshot() {
+  const box = qs('#evidenceSnapshot');
+  const footer = qs('#footerResearchIdentity');
+  if(!box)return;
+  const metadata = state.data?.metadata || {};
+  const ledger = state.researchLedger;
+  const audit = state.audit;
+  if(!ledger || !audit ||
+     ledger.classification !== 'dated_repository_research_progress_NOT_geospatial_or_model_readiness' ||
+     audit.classification !== 'repository_evidence_audit_not_external_source_validation') {
+    box.textContent = 'Dated research audit unavailable. No scientific readiness can be inferred.';
+    if(footer)footer.textContent = 'A validated research audit is unavailable in this publication.';
+    return;
+  }
+  const commit = /^[a-f0-9]{40}$/.test(metadata.research_source_commit || '') ?
+    metadata.research_source_commit : null;
+  const evidenceCommit = /^[a-f0-9]{40}$/.test(metadata.git_sha || '') ?
+    metadata.git_sha : null;
+  const revision = commit ? commit.slice(0,10) : 'Not recorded';
+  const published = metadata.generated_at_utc ?
+    metadata.generated_at_utc.slice(0,10) : 'Unknown';
+  const reviewed = ledger.reviewed_date || 'Unknown';
+  const passed = Object.values(ledger.release_gates || {}).filter(g => g.passed).length;
+  const gates = Object.keys(ledger.release_gates || {}).length;
+  const sourceLink = commit ?
+    '<a href="' + REPO + '/tree/' + commit + '" target="_blank" rel="noopener">Inspect this research revision ↗</a>' :
+    '<span>Repository commit unavailable in this build</span>';
+  box.innerHTML =
+    '<div class="snapshot-heading"><span class="section-label">PUBLICATION RECORD / TWO SEPARATE CLOCKS</span>'+
+    '<strong>Research date ≠ observation date</strong></div>'+
+    '<div class="snapshot-grid">'+
+    '<div class="snapshot-cell"><span>Research audit reviewed</span><strong>'+esc(reviewed)+'</strong>'+
+    '<small>Source/geometry QA, open findings and scientific gates</small></div>'+
+    '<div class="snapshot-cell"><span>Observed data snapshot</span><strong>'+esc(published)+'</strong>'+
+    '<small>Bundle publication date · FY2024–25 reference</small></div>'+
+    '<div class="snapshot-cell"><span>Scoped release gates</span><strong>'+esc(passed)+' / '+esc(gates)+'</strong>'+
+    '<small>Not a percent-complete score or a 2040 approval</small></div>'+
+    '<div class="snapshot-cell"><span>Research revision</span><strong class="revision-code">'+esc(revision)+'</strong>'+
+    '<small>'+sourceLink+'</small></div></div>';
+  if(footer)footer.textContent='Research audit '+reviewed+' · observation bundle '+
+    published+' · source revision '+revision+
+    (evidenceCommit ? ' · original evidence build '+evidenceCommit.slice(0,10) : '');
+}
+
+function decisionEvidenceLinks(item) {
+  return (item.evidence || []).map(entry => {
+    const url = researchEvidenceURL(entry.href);
+    return url ? '<a href="' + esc(url) +
+      '" target="_blank" rel="noopener">' + esc(entry.label) + ' ↗</a>' : '';
+  }).filter(Boolean).join('');
+}
+
+function decisionRow(item) {
+  const phase = ['validated_source','partial','blocked'].includes(item.phase) ?
+    item.phase : 'blocked';
+  return '<div class="decision-outcome phase-' + phase + '">' +
+    '<span class="decision-outcome-value">' + esc(item.metric) + '</span>' +
+    '<span class="decision-outcome-unit">' + esc(item.unit) + '</span></div>';
+}
+
+function decisionDetailHTML(item) {
+  const route = ['electricity','atlas','workbench','audit','data','pathways','industry'].includes(item.route) ?
+    item.route : 'workbench';
+  return '<div class="decision-detail-header"><span class="section-label">RESEARCH RECORD / '+
+    esc(item.id.toUpperCase())+'</span><span class="research-phase">'+
+    esc(researchPhaseLabel(item.phase))+'</span></div>'+
+    '<h3>'+esc(item.title)+'</h3><p class="decision-summary">'+esc(item.summary)+'</p>'+
+    decisionRow(item)+
+    '<div class="decision-compare"><div><span class="mini-label">ESTABLISHED BY THE EVIDENCE</span><p>'+
+    esc(item.completed)+'</p></div><div><span class="mini-label">NOT YET ESTABLISHED</span><p>'+
+    esc(item.blocked)+'</p></div></div>'+
+    '<div class="decision-action"><span class="mini-label">NEXT VERIFIABLE STEP</span><p>'+
+    esc(item.action)+'</p></div>'+
+    '<div class="decision-detail-footer"><div class="decision-evidence"><span class="mini-label">SOURCE TRAIL</span>'+
+    decisionEvidenceLinks(item)+'</div><button type="button" class="button primary" data-route="'+
+    route+'">Open research area →</button></div>';
+}
+
+function renderDecisionDesk() {
+  const topics = qs('#decisionTopics');
+  const detail = qs('#decisionDetail');
+  if(!topics || !detail)return;
+  const ledger = state.researchLedger;
+  if(!ledger || ledger.classification !==
+     'dated_repository_research_progress_NOT_geospatial_or_model_readiness') {
+    topics.textContent = '';
+    detail.textContent = 'The audited research ledger is unavailable in this snapshot.';
+    return;
+  }
+  const interests = ['electricity','boundary','landslide','forest','wetlands','modelling'];
+  const items = interests.map(id => ledger.workstreams.find(row => row.id === id)).filter(Boolean);
+  if(!items.length){detail.textContent='No source-traced research records have been packaged.';return;}
+  const selected = items.find(item => item.id === state.focusId) || items[0];
+  state.focusId = selected.id;
+  topics.innerHTML = items.map((item,i) =>
+    '<button type="button" class="decision-topic '+(selected.id===item.id?'selected':'')+
+    '" data-focus="'+esc(item.id)+'" aria-pressed="'+(selected.id===item.id)+'">'+
+    '<span class="decision-topic-index">'+String(i+1).padStart(2,'0')+'</span>'+
+    '<span class="decision-topic-copy"><strong>'+esc(item.title)+'</strong><small>'+
+    esc(item.unit)+'</small></span><span aria-hidden="true">↗</span></button>'
+  ).join('');
+  detail.innerHTML = decisionDetailHTML(selected);
+  bindRouteButtons(detail);
+}
+
+function renderSpatialPipeline() {
+  const box=qs('#spatialPipeline');
+  if(!box)return;
+  const ledger=state.researchLedger;
+  if(!ledger || ledger.classification !==
+     'dated_repository_research_progress_NOT_geospatial_or_model_readiness') {
+    box.textContent='Verified spatial source ledger unavailable. No siting claim can be made.';
+    return;
+  }
+  const ids=['boundary','lulc','landslide','forest','wetlands'];
+  const rows=ids.map(id=>ledger.workstreams.find(item=>item.id===id)).filter(Boolean);
+  box.innerHTML=rows.map((item,i)=>{
+    const label=researchPhaseLabel(item.phase);
+    const phase=['validated_source','partial','blocked'].includes(item.phase)?
+      item.phase:'blocked';
+    return '<article class="spatial-step phase-'+phase+'"><div class="spatial-step-top">'+
+      '<span class="spatial-index">'+String(i+1).padStart(2,'0')+'</span>'+
+      '<span class="spatial-stage">'+esc(label)+'</span></div>'+
+      '<h3>'+esc(item.title)+'</h3><div class="spatial-number">'+
+      esc(item.metric)+' <small>'+esc(item.unit)+'</small></div>'+
+      '<p>'+esc(item.summary)+'</p><details><summary>Source, missing evidence and next step</summary>'+
+      '<p><b>Established:</b> '+esc(item.completed)+'</p>'+
+      '<p><b>Not established:</b> '+esc(item.blocked)+'</p>'+
+      '<p><b>Next:</b> '+esc(item.action)+'</p>'+
+      '<div class="spatial-sources">'+decisionEvidenceLinks(item)+'</div></details></article>';
+  }).join('')+
+    '<div class="spatial-stop"><strong>Admission boundary</strong><p>None of these source records establishes legal exclusion geometry, eligible km², technology-specific siting, or a Kerala 2040 MW ceiling.</p>'+
+    '<button class="button secondary" data-route="audit">Inspect scientific gates →</button></div>';
+  bindRouteButtons(box);
+}
+
 function renderAll() {
   
   renderPlatformMeta();renderHeadline();renderOverview();renderEvidenceFeed();renderElectricity();renderSldcDeepDive();renderPathwayReferences();renderScenarioLab();renderIndustry();renderDataCentre();
   renderConnectedEvidence();
   renderWorkbench();
+  renderDecisionDesk();
+  renderSpatialPipeline();
+  renderEvidenceSnapshot();
   renderResearchProgress();
   renderAudit();
   if (!window.Plotly) qsa('.chart:not(#scenarioInputChart)').forEach(el=>el.innerHTML='<p class="model-gate">Charts could not load. Use the data tables and downloads below.</p>');
