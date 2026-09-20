@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from scripts.audit_hydro_operations import audit_hydro_evidence
+from kerala2040.hydro_operations import audit_hydro_evidence
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUTS = (
