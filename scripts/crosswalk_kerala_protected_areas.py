@@ -16,8 +16,6 @@ from pathlib import Path
 import geopandas as gpd
 import requests
 import yaml
-from pyproj import Transformer
-from shapely.ops import transform
 
 CONFIG = Path("configs/kerala_protected_area_crosswalk_2026.yaml")
 QUERY_URL = (
