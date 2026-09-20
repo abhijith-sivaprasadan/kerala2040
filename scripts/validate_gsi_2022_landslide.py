@@ -90,7 +90,7 @@ def validate_archive(
     archive: Path,
     expected_group: str,
     target_crs: str = "EPSG:32643",
-) -> tuple[dict[str, Any], gpd.GeoDataFrame]:
+) -> dict[str, Any]:
     with tempfile.TemporaryDirectory() as tmp:
         extracted = Path(tmp)
         safe_extract(archive, extracted)
@@ -166,12 +166,10 @@ def validate_archive(
             "source_geometry_repaired": False,
             "legal_exclusion_interpretation_applied": False,
         }
-        merged = projected.copy()
-        merged.insert(0, "source_district", district)
-        return record, merged
+        return record
 
 
-def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
+def run(root: Path, output: Path, raw_dir: Path) -> dict[str, Any]:
     source = json.loads((root / ACQ).read_text(encoding="utf-8"))
     entries = source["gsi_2022"]["per_district"]
     if len(entries) != 13:
@@ -181,7 +179,6 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
         {"User-Agent": "Kerala2040Research/1.0 (+https://github.com/abhijith-sivaprasadan/kerala2040)"}
     )
     records = []
-    merged = []
     try:
         for entry in entries:
             district = entry["district"]
@@ -189,9 +186,8 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
             dest = raw_dir / f"{district}.zip"
             download(session, url, dest, entry["sha256"])
             expected_group = entry["complete_shapefile_groups"][0]
-            record, frame = validate_archive(district, dest, expected_group)
+            record = validate_archive(district, dest, expected_group)
             records.append(record)
-            merged.append(frame)
     finally:
         session.close()
     fields_by_district = {
@@ -274,7 +270,7 @@ def main() -> int:
         default=Path("results/gis/gsi_2022_original_zips"),
     )
     args = parser.parse_args()
-    report = run(args.root, args.output, Path("unused.gpkg"), args.raw_dir)
+    report = run(args.root, args.output, args.raw_dir)
     print(json.dumps(report, indent=2, allow_nan=False))
     return 0
 
