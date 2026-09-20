@@ -84,7 +84,7 @@ def aggregate_class(frame: gpd.GeoDataFrame) -> list[dict[str, Any]]:
     return sorted(rows, key=lambda x: str(x["susceptibility"]))
 
 
-def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
+def run(\n    root: Path, output: Path, gpkg: Path, raw_dir: Path, district: str | None = None\n) -> dict[str, Any]:
     acquisition = json.loads((root / ACQ).read_text())
     prior = json.loads((root / SOURCE_QA).read_text())
     if (
@@ -95,9 +95,16 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
     ):
         raise ValueError("repair study requires the committed invalid-source QA baseline")
 
-    entries = acquisition["gsi_2022"]["per_district"]
-    if len(entries) != 13:
+    all_entries = acquisition["gsi_2022"]["per_district"]
+    if len(all_entries) != 13:
         raise ValueError("expected 13 source archives")
+    entries = (
+        [entry for entry in all_entries if entry["district"] == district]
+        if district
+        else all_entries
+    )
+    if not entries:
+        raise ValueError(f"unknown district filter: {district}")
 
     session = requests.Session()
     session.headers.update({"User-Agent": "Kerala2040Research/1.0"})
@@ -142,8 +149,11 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
         session.close()
 
     merged = gpd.GeoDataFrame(pd.concat(repaired_frames, ignore_index=True), crs=TARGET_CRS)
-    if len(merged) != 39 or not bool(merged.geometry.is_valid.all()):
-        raise ValueError("repaired derivative does not contain 39 valid features")
+    expected_features = 3 * len(entries)
+    if len(merged) != expected_features or not bool(merged.geometry.is_valid.all()):
+        raise ValueError(
+            f"repaired derivative does not contain {expected_features} valid features"
+        )
     if set(merged["Susceptibi"]) != {"Low", "Moderate", "High"}:
         raise ValueError("susceptibility classes changed during repair")
 
@@ -176,13 +186,14 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
         })
 
     gpkg.parent.mkdir(parents=True, exist_ok=True)
-    merged.to_file(gpkg, layer="gsi_2022_make_valid", driver="GPKG")
+    merged.to_file(gpkg, layer="gsi_2022_make_valid_structure", driver="GPKG")
     derivative_sha = sha256(gpkg)
     result = {
         "classification": "documented_make_valid_derivative_with_repair_sensitivity_NOT_legal_exclusion",
         "source_geometry_validation": str(SOURCE_QA),
-        "source_archives": 13,
-        "source_features": 39,
+        "source_archives": len(entries),
+        "source_features": len(merged),
+        "districts_processed": [entry["district"] for entry in entries],
         "source_crs": TARGET_CRS,
         "repair_methods_compared": ["shapely.make_valid_structure_polygonal_only", "shapely.buffer_0_polygonal_only"],
         "selected_derivative_method": "shapely.make_valid_structure_polygonal_only",
@@ -192,7 +203,7 @@ def run(root: Path, output: Path, gpkg: Path, raw_dir: Path) -> dict[str, Any]:
         ),
         "all_make_valid_features_valid": True,
         "all_buffer0_features_valid": True,
-        "all_39_features_retained": True,
+        "all_source_features_retained": len(merged) == expected_features,
         "susceptibility_classes_preserved": ["High", "Low", "Moderate"],
         "max_repair_method_relative_area_disagreement": max_area_disagreement,
         "mean_repair_method_relative_area_disagreement": mean_area_disagreement,
@@ -237,8 +248,9 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("results/gis/gsi_2022_repair_comparison.json"))
     parser.add_argument("--gpkg", type=Path, default=Path("results/gis/gsi_2022_repaired.gpkg"))
     parser.add_argument("--raw-dir", type=Path, default=Path("results/gis/gsi_2022_repair_zips"))
+    parser.add_argument("--district")
     args = parser.parse_args()
-    report = run(args.root, args.output, args.gpkg, args.raw_dir)
+    report = run(args.root, args.output, args.gpkg, args.raw_dir, args.district)
     print(json.dumps(report, indent=2, allow_nan=False))
     return 0
 
