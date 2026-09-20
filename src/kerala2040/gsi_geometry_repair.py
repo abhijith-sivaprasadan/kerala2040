@@ -8,17 +8,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import tempfile
+import zipfile
 from datetime import UTC, datetime
 from itertools import combinations
 from pathlib import Path
-import tempfile
-import zipfile
 
 import shapely
 from shapely.geometry import MultiPolygon, Polygon
 
-from kerala2040.gsi_2022_geometry import _extract_one, _read_manifest
 from kerala2040.gis_three_workstreams import check_shapefile_zip, sha256
+from kerala2040.gsi_2022_geometry import _extract_one, _read_manifest
 
 
 def _polygons(value) -> list[Polygon]:
