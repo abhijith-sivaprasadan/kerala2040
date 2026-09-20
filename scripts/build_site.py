@@ -196,7 +196,7 @@ def build_site(root: Path, output: Path) -> None:
         write_to=str(assets / "kerala2040-touch.png"),
         output_width=180, output_height=180,
     )
-    if share.read_bytes()[:8] != b"\\x89PNG\\r\\n\\x1a\\n":
+    if share.read_bytes()[:8] != bytes.fromhex("89504e470d0a1a0a"):
         raise ValueError("The social thumbnail did not render as a PNG")
     # Immutable filenames prevent a new HTML page from running an old cached app.
     html = (output / "index.html").read_text(encoding="utf-8")
