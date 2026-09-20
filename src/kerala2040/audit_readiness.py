@@ -17,6 +17,7 @@ QA = "data/external/sldc_fy2024_25/qa_report.json"
 ERA5 = "public/era5-daily-manifest.json"
 TECH = "configs/techno_economics.yaml"
 GIS = "configs/gis_inputs.yaml"
+LULC = "configs/lulc_native_acquisition_2024_25.yaml"
 FINDINGS = "configs/audit_findings.yaml"
 HYDRO_TOPOLOGY = "configs/hydro_topology_evidence_2024_25.yaml"
 TRANSFER = "configs/grid_transfer_contract_evidence_2024_25.yaml"
@@ -191,10 +192,35 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
             raise ValueError("Grid transfer snapshot ATC/margin is inconsistent")
     if transfer["unresolved_constraints"]["full_fy2024_25_dated_import_atc_mw"] is not None:
         raise ValueError("Unverified FY transfer capacity inserted in source catalogue")
+    lulc = _yaml(root, LULC)
+    if lulc.get("classification") != (
+        "official_lulc_discovery_no_native_kerala_raster_acquired"
+    ):
+        raise ValueError("LULC registry cannot claim a native raster acquisition")
+    products = lulc["products"]
+    if len({entry["id"] for entry in products}) != len(products):
+        raise ValueError("Duplicate NRSC LULC discovery product IDs")
+    preferred = [entry for entry in products if entry.get("preferred_reference")]
+    if len(preferred) != 1 or preferred[0]["reported_vintage"] != "2024-25":
+        raise ValueError("LULC target vintage/candidate is not source-qualified")
+    if preferred[0]["native_sha256"] is not None:
+        raise ValueError("Raw NRSC raster SHA claims source acquisition without inspection")
+    if any(lulc["model_use"][key] is not False for key in (
+        "native_kerala_lulc_acquired",
+        "native_kerala_lulc_validated",
+        "ecological_exclusion_ready",
+    )):
+        raise ValueError("LULC catalogue cannot certify real land eligibility")
+    if (
+        lulc["model_use"]["land_available_area_sq_km"] is not None
+        or lulc["model_use"]["generation_capacity_ceiling_mw"] is not None
+    ):
+        raise ValueError("LULC cannot contain unsupported capacity or eligible area")
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
             "not_downloaded", "not_downloaded_in_repository",
+            "not_downloaded_native_data_requires_approved_route",
             "authoritative_geometry_not_yet_secured",
             "current_authoritative_geometry_not_yet_secured",
             "download_form_required",
@@ -203,10 +229,12 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
     )
     gis_check = _check(
         STATUS_BLOCKED,
-        f"{n_layers} catalogued layers; {staged} marked beyond acquisition-only status "
-        "in the committed catalogue. No validated technology-specific eligibility "
-        "overlay, authoritative legal status and capacity-ceiling QA are evidenced here.",
-        GIS,
+        f"{n_layers} catalogued GIS layers; {staged} beyond acquisition-only status; "
+        f"{len(products)} NRSC LULC product routes reviewed. The 2024-25 map layer "
+        "is not a verified original Kerala raster or class legend. No authenticated "
+        "statewide mask, technology-specific eligibility overlay, authoritative "
+        "legal status or capacity-ceiling QA is evidenced here.",
+        "docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md",
     )
     return {
         "sldc_accounting_integrity": accounting,
