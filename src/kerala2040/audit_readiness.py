@@ -299,7 +299,7 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         f"{len(products)} NRSC LULC product routes and three forest/DEM/hazard "
         f"workstreams reviewed; {acquired_gsi} downloaded GSI ZIPs with 39/39 "
         "original ring-self-intersecting MultiPolygons across 13 districts, "
-        three source-raw High/Moderate/Low classes per district. The GLO-90 "
+        "three source-raw High/Moderate/Low classes per district. The GLO-90 "
         "DSM pilot has its original hash recorded. Archive/TIFF structure and "
         "actual original polygon decoding were checked, but invalid topology, notified "
         "forest/wetland boundaries, a statewide height mosaic and legal "
