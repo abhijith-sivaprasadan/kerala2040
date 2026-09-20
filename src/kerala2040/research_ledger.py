@@ -128,6 +128,21 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
             ],
         },
         {
+            "id": "lulc", "title": "Land use & land cover",
+            "phase": "blocked", "label": "Native class-coded raster not acquired",
+            "metric": "0",
+            "unit": "verified current native Kerala rasters",
+            "summary": "The FY2024–25 Bhuvan visual theme is not a native categorical layer or legal forest map.",
+            "completed": "NRSC/Bhuvan source paths, scale and exact legend requirements documented.",
+            "blocked": "No hash-verified native raster, full class legend, CRS, coverage QA or use rights.",
+            "action": "Acquire authorised original LULC and validate class codes before land screening.",
+            "route": "atlas",
+            "evidence": [
+                {"label": "NRSC LULC audit", "href": ROOT + "docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md"},
+                {"label": "LULC register", "href": ROOT + "configs/lulc_native_acquisition_2024_25.yaml"},
+            ],
+        },
+        {
             "id": "boundary", "title": "Kerala boundary & terrain",
             "phase": "validated_source", "label": "Native-grid source coverage verified",
             "metric": f'{terrain["nwic_kerala_native_grid_finite_boundary_pixel_centres"]:,}',
