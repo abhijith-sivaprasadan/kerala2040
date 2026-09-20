@@ -32,6 +32,10 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     terrain = gis["workstreams"]["elevation_dem"]
     hazard = gis["workstreams"]["wetlands_waterbodies_landslide"]
     wdpa = _yaml(root, "configs/kerala_protected_area_crosswalk_2026.yaml")
+    lulc = _yaml(root, "configs/lulc_native_acquisition_2024_25.yaml")
+    hydro = _yaml(root, "configs/hydro_topology_evidence_2024_25.yaml")
+    transfer = _yaml(root, "configs/grid_transfer_contract_evidence_2024_25.yaml")
+    generator = _yaml(root, "configs/generator_reconciliation_2024_25.yaml")
     qa = _json(root, "data/external/sldc_fy2024_25/qa_report.json")
     boundary = _json(
         root, "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json"
@@ -48,6 +52,11 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     assert forest_source["verified_geometry_archives"] == forest["verified_geometry_archives"] == 0
     assert forest["wdpa_unique_matches_to_25_kfd_designations"] == 0
     assert len(wdpa["protected_areas"]) == 25
+    assert lulc["model_use"]["native_kerala_lulc_acquired"] is False
+    assert transfer["model_use"]["can_apply_snapshot_as_full_year_import_limit"] is False
+    assert hydro["classification"] == "partial_official_hydro_topology_not_dispatch_constraints"
+    assert generator["release_gate"] == "partial_or_provisional"
+    assert not gates["kmml_case"]["passed"]
     assert hazard["gsi_total_source_features"] == hazard["gsi_invalid_source_features"] == 39
     assert hazard["wetland_geometries_verified"] == 0
     assert terrain["nwic_kerala_native_grid_dsm_pixel_centres_verified"] is True
