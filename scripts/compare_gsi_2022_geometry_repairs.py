@@ -18,7 +18,8 @@ import geopandas as gpd
 import pandas as pd
 import requests
 from shapely import make_valid
-from shapely.geometry import GeometryCollection, MultiPolygon, Polygon
+
+from kerala2040.gsi_repair import compare_feature, polygonal
 
 ACQ = Path("data/evidence/gis/official_gis_public_acquisition_2026_09_20.json")
 SOURCE_QA = Path("data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json")
@@ -57,65 +58,6 @@ def safe_extract(archive: Path, out: Path) -> None:
             if member.file_size > 500_000_000:
                 raise ValueError(f"oversized member: {member.filename}")
         zf.extractall(out)
-
-
-def polygonal(value):
-    """Keep only areal output from make_valid; never silently retain lines/points."""
-    if value is None or value.is_empty:
-        return MultiPolygon([])
-    if isinstance(value, Polygon):
-        return MultiPolygon([value])
-    if isinstance(value, MultiPolygon):
-        return value
-    if isinstance(value, GeometryCollection):
-        parts = []
-        for item in value.geoms:
-            if isinstance(item, Polygon):
-                parts.append(item)
-            elif isinstance(item, MultiPolygon):
-                parts.extend(item.geoms)
-        return MultiPolygon(parts)
-    return MultiPolygon([])
-
-
-def parts(value) -> int:
-    if value is None or value.is_empty:
-        return 0
-    if isinstance(value, Polygon):
-        return 1
-    if isinstance(value, MultiPolygon):
-        return len(value.geoms)
-    return 0
-
-
-def ratio(a: float, b: float) -> float | None:
-    return None if b == 0 else a / b
-
-
-def compare_feature(source, mv, b0) -> dict[str, Any]:
-    """Compare two repair algorithms; source area is diagnostic because source is invalid."""
-    src_area = float(source.area)
-    mv_area = float(mv.area)
-    b0_area = float(b0.area)
-    union = mv.union(b0)
-    symmetric = mv.symmetric_difference(b0)
-    union_area = float(union.area)
-    disagreement = 0.0 if union_area == 0 else float(symmetric.area) / union_area
-    return {
-        "source_computational_area_m2_invalid_geometry": src_area,
-        "make_valid_area_m2": mv_area,
-        "buffer0_area_m2": b0_area,
-        "make_valid_vs_source_area_ratio": ratio(mv_area, src_area),
-        "buffer0_vs_source_area_ratio": ratio(b0_area, src_area),
-        "make_valid_vs_buffer0_area_ratio": ratio(mv_area, b0_area),
-        "repair_symmetric_difference_over_union": disagreement,
-        "make_valid_parts": parts(mv),
-        "buffer0_parts": parts(b0),
-        "make_valid_valid": bool(mv.is_valid),
-        "buffer0_valid": bool(b0.is_valid),
-        "make_valid_empty": bool(mv.is_empty),
-        "buffer0_empty": bool(b0.is_empty),
-    }
 
 
 def read_frame(archive: Path, group: str) -> gpd.GeoDataFrame:
