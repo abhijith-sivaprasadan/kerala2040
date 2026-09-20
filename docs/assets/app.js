@@ -128,7 +128,7 @@ function setupMotion(){
       }
     });
   },{threshold:0.14});
-  $(".system-story, .chapter").forEach(element=>observer.observe(element));
+  $$(".system-story, .chapter").forEach(element=>observer.observe(element));
 }
 function go(route){
   const target=routeIds.includes(route)?route:"overview";
@@ -166,7 +166,7 @@ function chooseTheme(name){
 function bindInteractions(){
   bindRoutes();
   $("#welcomeDismiss")?.addEventListener("click",dismissWelcome);
-  $("[data-theme-choice]").forEach(button=>
+  $$("[data-theme-choice]").forEach(button=>
     button.addEventListener("click",()=>chooseTheme(button.dataset.themeChoice)));
   $("#menuToggle")?.addEventListener("click",()=>{
     const nav=$("#mobileNav"),button=$("#menuToggle");
