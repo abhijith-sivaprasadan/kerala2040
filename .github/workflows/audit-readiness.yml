@@ -6,6 +6,7 @@ on:
       - "configs/audit_findings.yaml"
       - "configs/gis_inputs.yaml"
       - "configs/techno_economics.yaml"
+      - "configs/grid_transfer_contract_evidence_2024_25.yaml"
       - "configs/generator_reconciliation_2024_25.yaml"
       - "configs/hydro_topology_evidence_2024_25.yaml"
       - "scripts/audit_hydro_operations.py"
