@@ -1,0 +1,201 @@
+/* Browser-level contract for the actual, built Kerala2040 publication.
+   Run: node tests/site.browser.cjs _site
+   Requires the optional CI-only Playwright package and Chromium. */
+"use strict";
+const assert=require("node:assert/strict");
+const fs=require("node:fs");
+const http=require("node:http");
+const os=require("node:os");
+const path=require("node:path");
+const {chromium}=require("playwright");
+const root=path.resolve(process.argv[2]||"_site");
+const mime={".html":"text/html; charset=utf-8",".js":"application/javascript; charset=utf-8",
+  ".css":"text/css; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",
+  ".json":"application/json",".webmanifest":"application/manifest+json",
+  ".zip":"application/zip",".txt":"text/plain; charset=utf-8"};
+const artifactDir=path.join(os.tmpdir(),"kerala2040-browser-qa");
+fs.mkdirSync(artifactDir,{recursive:true});
+function check(condition,message){assert.ok(condition,message)}
+function server(){
+  return http.createServer((req,res)=>{
+    try{
+      const u=new URL(req.url,"http://localhost"),decoded=decodeURIComponent(u.pathname);
+      const target=path.resolve(root,"."+ (decoded==="/"?"/index.html":decoded));
+      if(target!==root && !target.startsWith(root+path.sep)){
+        res.writeHead(403);res.end("Forbidden");return;
+      }
+      if(!fs.statSync(target).isFile())throw Error("not file");
+      const bytes=fs.readFileSync(target);
+      res.writeHead(200,{"Content-Type":mime[path.extname(target)]||"application/octet-stream",
+        "Content-Length":bytes.length,"Cache-Control":"no-store",
+        "X-Content-Type-Options":"nosniff"});
+      if(req.method!=="HEAD")res.end(bytes);else res.end();
+    }catch{
+      res.writeHead(404,{"Content-Type":"text/plain"});res.end("Not found");
+    }
+  });
+}
+async function visible(locator,why){
+  await locator.waitFor({state:"visible",timeout:20000});
+  check(await locator.isVisible(),why);
+}
+async function main(){
+  check(fs.existsSync(path.join(root,"index.html")),"Packaged site missing; build first");
+  const httpd=server();await new Promise(resolve=>httpd.listen(0,"127.0.0.1",resolve));
+  const address=httpd.address(),base="http://127.0.0.1:"+address.port+"/";
+  let browser;
+  try{
+    browser=await chromium.launch({headless:true});
+    const ctx=await browser.newContext({viewport:{width:1440,height:900},
+      acceptDownloads:true,serviceWorkers:"block"});
+    const page=await ctx.newPage();
+    page.setDefaultTimeout(20000);
+    const errors=[],failed=[];
+    page.on("pageerror",e=>errors.push(String(e)));
+    page.on("response",response=>{
+      if(response.url().startsWith(base)&&response.status()>=400)
+        failed.push(response.status()+" "+response.url());
+    });
+    await page.goto(base,{waitUntil:"domcontentloaded"});
+    await page.locator("#headlineMetrics .number-card").first().waitFor();
+    check(await page.locator("#headlineMetrics .number-card").count()===4,
+      "All four observed-electricity metrics must render");
+    const metrics=await page.locator("#headlineMetrics").innerText();
+    check(metrics.includes("354")&&metrics.includes("11"),"Do not fabricate missing dates");
+    check(await page.locator(".system-node").count()===4,"Four connected-system chapters");
+    await visible(page.locator("#welcomeCard"),"First-visit welcome");
+    check(await page.locator("#main").isVisible(),"Splash cannot block content");
+    await page.locator("#welcomeDismiss").click();
+    await page.locator("#welcomeCard").waitFor({state:"hidden"});
+    await page.screenshot({path:path.join(artifactDir,"homepage-desktop.png"),fullPage:true});
+    console.log("PASS home: 4 metrics, 354/365, 11 gaps; welcome dismisses; editorial system visible");
+
+    const expected=process.env.KERALA_RESEARCH_SHA;
+    const snapshot=await (await page.request.get(base+"data/site-data.json")).json();
+    if(expected)check(snapshot.metadata.research_source_commit===expected,
+      "Web content is not pinned to expected research commit");
+    check(snapshot.baseline.rows===354&&snapshot.baseline.missing_days_count===11,
+      "Observed-day safety contract changed");
+
+    async function route(name){
+      await page.locator('.main-nav button[data-route="'+name+'"]').click();
+      await visible(page.locator('.view.active[data-view="'+name+'"]'),"Route "+name);
+      check(new URL(page.url()).hash==="#"+name,"Incorrect hash route "+name);
+    }
+    await route("electricity");
+    await visible(page.locator("#energyChart svg"),"Daily observed electricity chart");
+    check((await page.locator("#energyChartCaption").innerText()).includes("11 unverified"),
+      "Chart obscures gaps");
+    await page.locator("#energyMetric").selectOption("net_import_interface_mu");
+    await visible(page.locator("#energyChart svg"),"Filtered energy series");
+    const months=await page.locator("#energyMonth option").count();
+    check(months>=12,"Historical month filter missing");
+    await page.locator("#energyMonth").selectOption({index:1});
+    const csvPromise=page.waitForEvent("download");
+    await page.locator("#downloadObserved").click();
+    const csv=await csvPromise;
+    check(csv.suggestedFilename().endsWith(".csv"),"CSV download not triggered");
+    console.log("PASS electricity: chart, gaps, metric and month filters, CSV download");
+
+    await route("pathways");
+    check(await page.locator("#scenarioList button").count()>=4,
+      "Scenario choices missing");
+    await page.locator("#scenarioList button").nth(1).click();
+    check((await page.locator("#scenarioDetail").innerText()).includes("Not a prediction"),
+      "Unsolved scenario must be labelled");
+    const scenarioPromise=page.waitForEvent("download");
+    await page.locator("#downloadSpecification").click();
+    check((await scenarioPromise).suggestedFilename().endsWith(".json"),
+      "Scenario download missing");
+    console.log("PASS pathways: options and explicitly unsolved specification download");
+
+    await route("atlas");
+    check(await page.locator("#spatialPipeline [data-layer]").count()===5,
+      "All five spatial evidence layers must load");
+    const forest=page.locator('#spatialPipeline [data-layer="forest"]');
+    await forest.click();
+    check(await forest.getAttribute("aria-expanded")==="true","Forest layer did not expand");
+    await visible(page.locator("#layer-forest"),"Forest verification detail");
+    check((await page.locator("#layer-forest").innerText()).includes("Next verifiable step"),
+      "Spatial layer has no follow-up");
+    console.log("PASS atlas: five layers and source-limited details");
+
+    await route("industry");
+    check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
+    await route("workbench");
+    check(await page.locator(".research-item").count()===11,
+      "All eleven research streams must render");
+    await page.locator("#workbenchSearch").fill("forest");
+    check(await page.locator(".research-item").count()>=1,
+      "Research filtering not functional");
+    await page.locator("#workbenchSearch").fill("");
+    await route("audit");
+    check(await page.locator(".gate").count()>=2,"Scientific release gates missing");
+    check((await page.locator("#auditGates").innerText()).includes("NOT PASSED"),
+      "Unresolved gates must be explicit");
+    await route("data");
+    const downloads=page.locator("#downloadGrid a[href]");
+    check(await downloads.count()>=15,"Published evidence library incomplete");
+    for(const href of await downloads.evaluateAll(els=>els.map(el=>el.getAttribute("href")))){
+      const response=await page.request.get(new URL(href,base).href);
+      check(response.status()===200,"Broken published download "+href+" / "+response.status());
+    }
+    console.log("PASS industry, eleven workstreams, filters, audit and all published downloads");
+
+    for(const theme of ["monsoon","laterite","kasavu"]){
+      await page.locator('[data-theme-choice="'+theme+'"]').click();
+      check(await page.locator("html").getAttribute("data-theme")===theme,
+        "Theme selection broken: "+theme);
+      check(await page.locator('[data-theme-choice="'+theme+'"]').getAttribute("aria-pressed")==="true",
+        "Selected theme not accessible");
+    }
+    await page.reload({waitUntil:"domcontentloaded"});
+    await page.locator("#headlineMetrics .number-card").first().waitFor();
+    check(await page.locator("html").getAttribute("data-theme")==="kasavu",
+      "Theme not persisted");
+    console.log("PASS all three themes and session preference");
+
+    const share=await page.request.get(base+"assets/kerala2040-share.png");
+    check(share.status()===200,"Public social image is missing");
+    const image=await share.body();
+    check(image.subarray(0,8).equals(Buffer.from("89504e470d0a1a0a","hex")),
+      "Social card must be PNG, not SVG");
+    check(image.readUInt32BE(16)===1200&&image.readUInt32BE(20)===630,
+      "Incorrect social thumbnail dimensions");
+    check((await page.locator('meta[property="og:image"]').getAttribute("content"))
+      ==="https://kerala2040.github.io/assets/kerala2040-share.png",
+      "Open Graph source not published");
+    console.log("PASS social PNG, metadata, favicon bundle and source SHA");
+
+    const deep=await browser.newContext({reducedMotion:"reduce",viewport:{width:390,height:844},
+      acceptDownloads:true});
+    const mobile=await deep.newPage();
+    const mobileErrors=[];
+    mobile.on("pageerror",e=>mobileErrors.push(String(e)));
+    await mobile.goto(base+"#atlas",{waitUntil:"domcontentloaded"});
+    await mobile.locator("#spatialPipeline [data-layer]").first().waitFor();
+    check(!await mobile.locator("#welcomeCard").isVisible(),
+      "Direct links/reduced motion must not show splash");
+    const overflow=await mobile.evaluate(()=>
+      document.documentElement.scrollWidth-document.documentElement.clientWidth);
+    check(overflow<=2,"Mobile page overflows horizontally by "+overflow+"px");
+    await mobile.locator("#menuToggle").click();
+    await visible(mobile.locator("#mobileNav"),"Mobile menu");
+    await mobile.locator('#mobileNav button[data-route="industry"]').click();
+    await visible(mobile.locator('.view.active[data-view="industry"]'),"Mobile navigation");
+    check(!await mobile.locator("#mobileNav").isVisible(),"Mobile menu must close after navigation");
+    await mobile.screenshot({path:path.join(artifactDir,"mobile-industry.png"),fullPage:true});
+    check(mobileErrors.length===0,"Mobile JS errors: "+mobileErrors.join(" | "));
+    check(errors.length===0,"Desktop JS errors: "+errors.join(" | "));
+    check(failed.length===0,"Missing first-party assets: "+failed.join(" | "));
+    console.log("PASS mobile, reduced motion, deep link, no overflow, no console/page failures");
+    console.log("BROWSER_SMOKE_PASS="+JSON.stringify({
+      routes:8,researchStreams:11,spatialLayers:5,downloadLinks:await downloads.count(),
+      screenshotDirectory:artifactDir,sourceCommit:expected||"local-branch-build"}));
+    await deep.close();await ctx.close();
+  }finally{
+    if(browser)await browser.close();
+    await new Promise(resolve=>httpd.close(resolve));
+  }
+}
+main().catch(e=>{console.error("BROWSER_SMOKE_FAIL",e?.stack||e);process.exitCode=1});
