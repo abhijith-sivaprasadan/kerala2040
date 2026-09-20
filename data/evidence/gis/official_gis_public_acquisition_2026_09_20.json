@@ -1,0 +1,166 @@
+{
+  "classification": "verified_workflow_download_hashes_and_shapefile_archive_components_NOT_geospatial_or_legal_validation",
+  "source_run": "https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35504312456",
+  "retrieved_at_utc": "2026-09-20T10:10:46+00:00",
+  "original_files_held_in_temporary_github_actions_artifact": true,
+  "original_files_committed_to_repository": false,
+  "public_kerala_dsm_pilot": {
+    "source_url": "https://copernicus-dem-90m.s3.amazonaws.com/Copernicus_DSM_COG_30_N09_00_E076_00_DEM/Copernicus_DSM_COG_30_N09_00_E076_00_DEM.tif",
+    "bytes": 4031096,
+    "sha256": "cab81d17d0f6b42c5083f2bf61206b78c607ba59da0663e2677cfebe7f21dd79",
+    "original_crs": "EPSG:4326",
+    "width": 1200,
+    "height": 1200,
+    "bounds_wgs84": [
+      75.99958333333333,
+      9.000416666666666,
+      76.99958333333333,
+      10.000416666666666
+    ],
+    "nodata_defined": false,
+    "classification": "one_2021_GLO90_DSM_tile_not_Kerala_terrain_mosaic"
+  },
+  "gsi_2022": {
+    "landing_page": "https://sdma.kerala.gov.in/hazard-maps/",
+    "published_district_links_retrieved": 13,
+    "archives_with_shp_shx_dbf_prj": 13,
+    "per_district": [
+      {
+        "district": "Thiruvananthapuram",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/TVM.zip",
+        "bytes": 1442362,
+        "sha256": "fc52f23d8a7c381842b22598baaa77bfdeb21b9542baf4cf64c1c3404ce3d3e7",
+        "complete_shapefile_groups": [
+          "tvm/thiruvananthapuram_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Kollam",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Kollam.zip",
+        "bytes": 2378335,
+        "sha256": "b652924f52c19d74fb87c6b662755c9291a6d6b394ee607eb56907ef71d3fbb8",
+        "complete_shapefile_groups": [
+          "kollam/kollam_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Pathanamthitta",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Pathanamthitta.zip",
+        "bytes": 6885576,
+        "sha256": "05d364f252b5c848142e1d2b5d548fb350760846dbf74b27f8eed0b1b5652a2d",
+        "complete_shapefile_groups": [
+          "pathanamthitta/pathanamthitta_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Kottayam",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Kottayam.zip",
+        "bytes": 2127097,
+        "sha256": "08961414faa3cefd0f294a6953f2ea3494490569d12b340e2ad9572cce57574b",
+        "complete_shapefile_groups": [
+          "kottayam/kottayam_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Idukki",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Idukki.zip",
+        "bytes": 19884678,
+        "sha256": "51f6ddeef29910609ae019aaf9a125519a5e9b5f09a05c72d11fa9ed21d8c12c",
+        "complete_shapefile_groups": [
+          "idukki/idukki_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Ernakulam",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Ernakulam.zip",
+        "bytes": 3541467,
+        "sha256": "7bac333a4a2c26410582555dbf722157fa97df63fafa24b5a0bb8ef269935b20",
+        "complete_shapefile_groups": [
+          "ernakulam/ernakulam_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Thrissur",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Thrissur.zip",
+        "bytes": 3390062,
+        "sha256": "1a894e394a31441d3ca318981e277e6fe4f453fb163b3155b3fb9473e5e94352",
+        "complete_shapefile_groups": [
+          "thrissur/thrissur_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Palakkad",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Palakkad.zip",
+        "bytes": 4960873,
+        "sha256": "a9598154a7616611c4f39c13c8b0aac87a53501d52bda6fdff0992655e46a1e4",
+        "complete_shapefile_groups": [
+          "palakkad/palakkad_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Malappuram",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Malappuram.zip",
+        "bytes": 2130667,
+        "sha256": "92567b0b233f7e89c3e11aac2c261e225ef2dfc16022aaa66f8865e8cb15d0e0",
+        "complete_shapefile_groups": [
+          "malappuram/malappuram_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Kozhikode",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Kozhikode.zip",
+        "bytes": 1936396,
+        "sha256": "7afa02ce8897fe59a6ee1d3465bda625acac69846da777592f3212be9946e312",
+        "complete_shapefile_groups": [
+          "kozhikode/kozhikode_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Wayanad",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Wayanad.zip",
+        "bytes": 3072545,
+        "sha256": "e5da8e031c0523a8f98a1086f4c13ebaad76721cd2afd34e6a20b35556037e2f",
+        "complete_shapefile_groups": [
+          "wayanad/wayanad_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Kannur",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Kannur.zip",
+        "bytes": 2587981,
+        "sha256": "cf6c566d64c660d0b58edf1f5a51adbd178005521b915809997fc5737c23be7b",
+        "complete_shapefile_groups": [
+          "kannur/kannur_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      },
+      {
+        "district": "Kasaragod",
+        "source_url": "https://sdma.kerala.gov.in/wp-content/uploads/2025/08/Kasaragod.zip",
+        "bytes": 4094972,
+        "sha256": "ba8232c108fda9f451b3e2a235c825deda419512e7e6a81b4b36f308e53e57dc",
+        "complete_shapefile_groups": [
+          "kasaragod/kasaragod_gsi_ls"
+        ],
+        "structural_status": "zip_components_qa_only_NOT_geometry_or_hazard_validated"
+      }
+    ],
+    "geometries_crs_and_classes_independently_validated": false,
+    "alappuzha_package_in_published_list": false
+  },
+  "forest_official_boundary_geometries_acquired": false,
+  "swak_final_wetland_polygons_acquired": false,
+  "eligible_area_sq_km": null,
+  "capacity_ceiling_mw": null
+}
