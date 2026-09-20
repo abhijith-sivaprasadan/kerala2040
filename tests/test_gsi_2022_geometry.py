@@ -27,6 +27,8 @@ def _sample(tmp_path: Path, *, bad_crs: bool = False):
         crs=None if bad_crs else "EPSG:4326",
     )
     frame.to_file(directory / "example.shp", driver="ESRI Shapefile", engine="pyogrio")
+    if bad_crs:
+        (directory / "example.prj").write_text("UNKNOWN_INVALID_CRS", encoding="utf-8")
     file = tmp_path / "official_test_only.zip"
     with zipfile.ZipFile(file, "w") as out:
         for part in directory.iterdir():
