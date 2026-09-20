@@ -109,8 +109,10 @@ def _parse_geojson(original: bytes) -> dict:
 def _kerala_feature(fc: dict):
     if fc.get("type") != "FeatureCollection":
         raise ValueError("State source is not a GeoJSON FeatureCollection")
-    if fc.get("crs") and "4326" not in json.dumps(fc["crs"]):
-        raise ValueError("Unknown non-WGS84 GeoJSON CRS")
+    if fc.get("crs"):
+        crs_text = json.dumps(fc["crs"]).casefold()
+        if not any(name in crs_text for name in ("4326", "crs84", "wgs84", "wgs 84")):
+            raise ValueError(f"Unknown non-WGS84 GeoJSON CRS: {crs_text[:200]}")
     matches = []
     for feat in fc.get("features", []):
         props = feat.get("properties") or {}
