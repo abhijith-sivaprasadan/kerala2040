@@ -60,7 +60,7 @@ async function run(){
       const attr=(selector,field)=>head.querySelector(selector)?.getAttribute(field);
       return {og:attr('meta[property="og:image"]',"content"),
         twitter:attr('meta[name="twitter:card"]',"content"),
-        css:head.querySelector('link[rel="stylesheet"]')?.href,
+        css:head.querySelector('link[href*="/assets/kerala."]')?.href,
         app:head.querySelector("script[src]")?.src};
     });
     assert.equal(content.og,"https://kerala2040.github.io/assets/kerala2040-share.png");
