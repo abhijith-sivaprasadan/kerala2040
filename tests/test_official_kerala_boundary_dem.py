@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from audit_official_kerala_boundary_dem import (  # noqa: E402
+from audit_official_kerala_boundary_dem import (
     _eligible_resource,
     _kerala_feature,
     _parse_geojson,
