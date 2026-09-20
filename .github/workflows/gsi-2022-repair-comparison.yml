@@ -1,0 +1,65 @@
+name: Compare GSI 2022 geometry repairs
+
+on:
+  pull_request:
+    paths:
+      - "scripts/compare_gsi_2022_geometry_repairs.py"
+      - "tests/test_gsi_geometry_repair.py"
+      - "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json"
+      - "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+      - ".github/workflows/gsi-2022-repair-comparison.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/compare_gsi_2022_geometry_repairs.py"
+      - "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+      - ".github/workflows/gsi-2022-repair-comparison.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compare-repairs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: src:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install geospatial comparison stack
+        run: pip install "geopandas>=1,<2" "pyogrio>=0.10,<1" "shapely>=2,<3" "pyproj>=3.7,<4" "requests>=2.32,<3" "pandas>=2.2,<3" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Lint and unit tests
+        run: |
+          ruff check scripts/compare_gsi_2022_geometry_repairs.py tests/test_gsi_geometry_repair.py
+          pytest -q tests/test_gsi_geometry_repair.py
+      - name: Download source packages and compare repairs
+        run: python scripts/compare_gsi_2022_geometry_repairs.py
+      - name: Assert scientific boundaries and derivative integrity
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a = json.loads(Path("results/gis/gsi_2022_repair_comparison.json").read_text())
+          assert a["source_archives"] == 13
+          assert a["source_features"] == 39
+          assert a["all_make_valid_features_valid"] is True
+          assert a["all_buffer0_features_valid"] is True
+          assert a["all_39_features_retained"] is True
+          assert a["derivative"]["feature_count"] == 39
+          assert a["derivative"]["all_valid"] is True
+          assert a["alappuzha_hazard_status_inferred"] is False
+          assert a["legal_exclusion_interpretation_applied"] is False
+          assert a["technology_specific_hazard_rule_validated"] is False
+          assert a["capacity_ceiling_mw"] is None
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gsi-2022-repair-comparison-and-valid-derivative-NOT-LEGAL-EXCLUSION
+          path: |
+            results/gis/gsi_2022_repair_comparison.json
+            results/gis/gsi_2022_repaired.gpkg
+          retention-days: 90
