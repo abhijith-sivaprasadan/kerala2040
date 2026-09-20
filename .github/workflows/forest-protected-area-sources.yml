@@ -35,6 +35,8 @@ jobs:
           pytest -q tests/test_forest_protected_area_sources.py
       - name: Probe official Kerala Forest source pages
         run: python scripts/audit_forest_protected_area_sources.py
+      - name: Emit complete source-audit evidence to immutable workflow log
+        run: cat results/gis/forest_protected_area_source_audit.json
       - name: Keep legal/spatial gate fail-closed
         run: |
           python - <<'PY'
