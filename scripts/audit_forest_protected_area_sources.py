@@ -9,8 +9,10 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import re
+import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
 from pathlib import Path
@@ -93,6 +95,57 @@ def _extract_pa_counts(text: str) -> dict[str, int | None]:
 
 def _page_sha(response: requests.Response) -> str:
     return hashlib.sha256(response.content).hexdigest()
+
+
+def _inspect_zip_candidate(session: requests.Session, row: dict[str, str]) -> dict:
+    """Inspect official ZIP members without promoting archive label to GIS data."""
+    url = row["url"]
+    try:
+        response = session.get(url, timeout=(15, 120), headers=HEADERS, stream=True)
+        response.raise_for_status()
+        declared = int(response.headers.get("Content-Length", "0") or 0)
+        if declared > 250_000_000:
+            return {**row, "status": "not_inspected_declared_over_250MB", "bytes": declared}
+        chunks = []
+        total = 0
+        digest = hashlib.sha256()
+        for chunk in response.iter_content(1024 * 1024):
+            if not chunk:
+                continue
+            total += len(chunk)
+            if total > 250_000_000:
+                return {**row, "status": "not_inspected_stream_over_250MB", "bytes": total}
+            digest.update(chunk)
+            chunks.append(chunk)
+        payload = b"".join(chunks)
+        with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+            names = archive.namelist()
+            suffixes = sorted({Path(name).suffix.lower() for name in names if Path(name).suffix})
+            stems: dict[str, set[str]] = {}
+            for name in names:
+                p = Path(name)
+                stems.setdefault(str(p.with_suffix("")).casefold(), set()).add(p.suffix.lower())
+            shapefile_groups = [
+                stem for stem, exts in stems.items()
+                if {".shp", ".shx", ".dbf", ".prj"} <= exts
+            ]
+            direct_geo = [
+                name for name in names
+                if Path(name).suffix.lower() in {".geojson", ".gpkg", ".kml", ".kmz"}
+            ]
+            return {
+                **row,
+                "status": "zip_members_inspected",
+                "bytes": total,
+                "sha256": digest.hexdigest(),
+                "member_count": len(names),
+                "member_suffixes": suffixes,
+                "complete_shapefile_groups": shapefile_groups,
+                "direct_geospatial_members": direct_geo,
+                "contains_machine_readable_geometry": bool(shapefile_groups or direct_geo),
+            }
+    except (requests.RequestException, zipfile.BadZipFile, OSError) as exc:
+        return {**row, "status": "zip_inspection_failed", "error": f"{type(exc).__name__}: {exc}"}
 
 
 def run(output: Path) -> dict:
@@ -183,10 +236,22 @@ def run(output: Path) -> dict:
             row for row in all_file_links.values()
             if row["kind"] == "vector_candidate"
         ]
-        # A ZIP is only a candidate. Never infer it contains official geometry.
+        # A ZIP is only a candidate until its members are inspected.
         direct_nonzip_vector = [
             row for row in vectors
             if not urlparse(row["url"]).path.lower().endswith(".zip")
+        ]
+        zip_candidates = [
+            row for row in vectors
+            if urlparse(row["url"]).path.lower().endswith(".zip")
+        ]
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            inspected_zip_candidates = list(pool.map(
+                lambda row: _inspect_zip_candidate(session, row), zip_candidates
+            ))
+        verified_geometry_archives = [
+            row for row in inspected_zip_candidates
+            if row.get("contains_machine_readable_geometry") is True
         ]
         result = {
             "classification": (
@@ -210,6 +275,9 @@ def run(output: Path) -> dict:
             ),
             "machine_readable_vector_candidates": vectors,
             "direct_nonzip_machine_readable_vector_candidates": direct_nonzip_vector,
+            "inspected_official_zip_candidates": inspected_zip_candidates,
+            "verified_archives_containing_machine_readable_geometry": verified_geometry_archives,
+            "verified_geometry_archive_count": len(verified_geometry_archives),
             "public_authoritative_forest_polygon_verified": False,
             "public_authoritative_protected_area_polygon_verified": False,
             "notification_to_polygon_linkage_verified": False,
@@ -266,6 +334,7 @@ def main() -> int:
         "direct_nonzip_vectors": len(
             result["direct_nonzip_machine_readable_vector_candidates"]
         ),
+        "verified_geometry_archives": result["verified_geometry_archive_count"],
         "pa_counts": result["protected_area_network_counts_from_department_page"],
         "legal_exclusion_overlay_ready": result["legal_exclusion_overlay_ready"],
     }, indent=2))
