@@ -64,6 +64,12 @@ workstreams:
     direct_nonzip_machine_readable_vectors: 0
     verified_geometry_archives: 0
     zip_access_result: eight_HTTP_403_one_HTTP_404
+    wdpa_reconciled_secondary_crosswalk_run: https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35533796181
+    wdpa_secondary_source_envelope_polygon_count: 4
+    wdpa_secondary_source_envelope_point_count: 4
+    wdpa_unique_matches_to_25_kfd_designations: 0
+    wdpa_secondary_spatial_screening_admitted: false
+    official_area_reference_update: Kerala_Economic_Review_2025_appendix_3_6_6
     data_request: >-
       Current machine-readable reserve-forest and protected-area polygons with
       source notification/gazette identifiers, effective dates, legal category,
