@@ -109,10 +109,14 @@ def _parse_geojson(original: bytes) -> dict:
 def _kerala_feature(fc: dict):
     if fc.get("type") != "FeatureCollection":
         raise ValueError("State source is not a GeoJSON FeatureCollection")
-    if fc.get("crs"):
-        crs_text = json.dumps(fc["crs"]).casefold()
-        if not any(name in crs_text for name in ("4326", "crs84", "wgs84", "wgs 84")):
-            raise ValueError(f"Unknown non-WGS84 GeoJSON CRS: {crs_text[:200]}")
+    crs_text = json.dumps(fc.get("crs") or {}).casefold()
+    # NWIC distributes GeoJSON with explicitly PROJECTED Indian NSF coordinates.
+    # Without reading its CRS, metre eastings would be mistaken for degrees.
+    source_epsg = "EPSG:7755" if "7755" in crs_text else "EPSG:4326"
+    if crs_text != "{}" and source_epsg == "EPSG:4326" and not any(
+        name in crs_text for name in ("4326", "crs84", "wgs84", "wgs 84")
+    ):
+        raise ValueError(f"Unknown GeoJSON CRS: {crs_text[:200]}")
     matches = []
     for feat in fc.get("features", []):
         props = feat.get("properties") or {}
@@ -121,6 +125,11 @@ def _kerala_feature(fc: dict):
     if len(matches) != 1:
         raise ValueError(f"Expected exactly one Kerala polygon, found {len(matches)}")
     geom = shape(matches[0]["geometry"])
+    if source_epsg == "EPSG:7755":
+        geom = transform(
+            Transformer.from_crs(source_epsg, "EPSG:4326", always_xy=True).transform,
+            geom,
+        )
     if geom.is_empty or not geom.is_valid or geom.geom_type not in ("Polygon", "MultiPolygon"):
         raise ValueError("Kerala source polygon not valid polygonal geometry")
     west, south, east, north = geom.bounds
@@ -214,7 +223,9 @@ def inspect(root: Path, output: Path, raw_dir: Path) -> dict:
                     "kerala_source_properties": properties,
                     "kerala_bounds_wgs84": list(kerala.bounds),
                     "kerala_polygon_area_sq_km_approx_NOT_land_eligibility": area,
-                    "source_crs": "GeoJSON WGS84/EPSG:4326",
+                    "source_crs": ("EPSG:7755 / India NSF LCC" if "7755" in json.dumps(fc.get("crs") or {})
+                                   else "EPSG:4326"),
+                    "boundary_analysis_crs": "EPSG:4326",
                     "source_boundary_simplification_scale_unknown": True,
                     "source_tile_footprint_intersections": checks,
                     "missing_source_tile_intersection_with_official_kerala": {
