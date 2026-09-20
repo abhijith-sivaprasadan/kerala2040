@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from kerala2040.audit_readiness import build_audit
 from kerala2040.research_ledger import build_ledger
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,10 +42,8 @@ def test_terrain_coverage_is_not_promoted_to_suitability():
 
 
 def test_ledger_rejects_false_model_readiness():
-    ledger = build_ledger(ROOT)
-    bad = {"release_gates": {**ledger["release_gates"],
-           "techno_economic_2040": {"passed": True, "blocking_checks": []}}}
+    audit = build_audit(ROOT)
+    audit["release_gates"]["techno_economic_2040"]["passed"] = True
+    audit["release_gates"]["techno_economic_2040"]["blocking_checks"] = []
     with pytest.raises(AssertionError):
-        # A forged audit can never upgrade the planning release while GIS is open.
-        build_ledger(ROOT, {**ledger, **bad, "classification":
-            "repository_evidence_audit_not_external_source_validation"})
+        build_ledger(ROOT, audit)
