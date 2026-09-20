@@ -192,7 +192,7 @@ def run(root: Path, output: Path, raw: Path) -> dict:
     output.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
     print(json.dumps({
         "wdpa_features_returned": len(frame),
-        "wdpa_names_preview": sorted(set(str(x) for x in frame["name_eng"].dropna()))[:40],
+        "wdpa_names_preview": sorted({str(x) for x in frame["name_eng"].dropna()})[:40],
         "official_expected": len(primary),
         "unique_matches": len(matches),
         "unresolved": len(unmatched),
