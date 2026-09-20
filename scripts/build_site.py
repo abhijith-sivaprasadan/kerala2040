@@ -11,9 +11,9 @@ import re
 import shutil
 import subprocess
 from datetime import datetime, timedelta
+from html.parser import HTMLParser
 from itertools import pairwise
 from pathlib import Path
-from html.parser import HTMLParser
 from urllib.parse import unquote, urlsplit
 
 from kerala2040.audit_readiness import build_audit
