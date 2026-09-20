@@ -21,6 +21,7 @@ TECH = "configs/techno_economics.yaml"
 GIS = "configs/gis_inputs.yaml"
 LULC = "configs/lulc_native_acquisition_2024_25.yaml"
 GIS_3 = "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
+BOUNDARY_QA = "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json"
 FINDINGS = "configs/audit_findings.yaml"
 HYDRO_TOPOLOGY = "configs/hydro_topology_evidence_2024_25.yaml"
 TRANSFER = "configs/grid_transfer_contract_evidence_2024_25.yaml"
@@ -249,6 +250,36 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
     acquired_gsi = gis_public["workstreams"]["wetlands_waterbodies_landslide"][
         "gsi_original_zips_downloaded_to_workflow_artifact"
     ]
+    boundary = _json(root, BOUNDARY_QA)
+    if boundary.get("classification") != (
+        "hash_verified_NWIC_published_Kerala_state_polygon_and_missing_GLO90_tile_intersections_NOT_pixel_coverage_or_legal_mask"
+    ):
+        raise ValueError("NWIC boundary source QA classification mismatch")
+    footprints = boundary["source_tile_footprint_intersections"]
+    missing_footprints = [
+        row for row in footprints if row["source_status"] == "tile_not_published_http_404"
+    ]
+    if (
+        len(boundary["original_sha256"]) != 64
+        or boundary["original_bytes"] <= 0
+        or boundary["source_crs"] != "EPSG:7755 / India NSF LCC"
+        or boundary["boundary_analysis_crs"] != "EPSG:4326"
+        or boundary["feature_collection_count"] != 36
+        or not boundary["original_source_url"].startswith(
+            "https://nwdp.nwic.gov.in/dataset/"
+        )
+        or len(footprints) != 20
+        or len(missing_footprints) != 6
+        or boundary["missing_source_tile_intersection_with_official_kerala"]["count"] != 0
+        or any(item["boundary_intersects_missing_tile"] or
+               item["boundary_intersection_km2_approx"] != 0
+               for item in missing_footprints)
+        or boundary["kerala_state_pixel_completeness_verified"] is not False
+        or boundary["legal_exclusion_applied"] is not False
+        or boundary["eligible_area_sq_km"] is not None
+        or boundary["capacity_ceiling_mw"] is not None
+    ):
+        raise ValueError("NWIC source cannot self-certify pixelwise terrain/eligibility")
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
@@ -272,11 +303,12 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         "decoded as 39 EPSG:32643 MultiPolygons with verified source classes "
         "Low/Moderate/High, but every source feature fails OGC validity through "
         "ring self-intersection and no repaired/merged overlay is admitted. "
-        "14 original Copernicus GLO90 source tiles and a partial DSM mosaic "
-        "have separate SHA provenance; 6 envelope tiles returned 404 and "
-        "unknown uncovered pixels are retained. Official Kerala boundary, "
-        "verified terrain height datum, wetland/forest legal boundaries and "
-        "tech-specific slope criteria remain absent; no eligible km2 or MW.",
+        "14 original Copernicus GLO90 source tiles and partial DSM mosaic have "
+        "separate SHA provenance. A 36-feature NWIC state-boundary GeoJSON "
+        "declares EPSG:7755; reprojected Kerala polygon intersects 0 of the "
+        "6 unpublished source tile footprints. This is NOT pixel-level coverage, "
+        "verified vertical datum, wetland/forest legal boundaries or "
+        "tech-specific slope eligibility; no site-eligible km2 or MW.",
         "docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md",
     )
     return {
