@@ -77,6 +77,59 @@ function sourceTrail(item){
     return url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(link.label)+' ↗</a>':"";
   }).join("")+"</div>";
 }
+// The welcome is a small dismissible card, never a modal or an evidence loader.
+// It runs at most once per browser session, only on the home route.
+let welcomeTimer=null;
+let welcomeSeenInMemory=false;
+function prefersReducedMotion(){
+  return Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches);
+}
+function dismissWelcome(){
+  const card=$("#welcomeCard");
+  if(welcomeTimer!==null){clearTimeout(welcomeTimer);welcomeTimer=null}
+  if(!card || card.hidden)return;
+  card.classList.remove("is-open");
+  if(prefersReducedMotion()){
+    card.hidden=true;
+    return;
+  }
+  card.classList.add("is-leaving");
+  welcomeTimer=setTimeout(()=>{
+    card.hidden=true;
+    card.classList.remove("is-leaving");
+    welcomeTimer=null;
+  },220);
+}
+function showWelcome(){
+  const card=$("#welcomeCard");
+  if(!card || welcomeSeenInMemory || location.hash && location.hash!=="#overview" ||
+     prefersReducedMotion())return false;
+  try{
+    if(sessionStorage.getItem("kerala2040-welcomed")==="1")return false;
+    sessionStorage.setItem("kerala2040-welcomed","1");
+  }catch{
+    // Storage can be disabled: still never replay on later route changes.
+  }
+  welcomeSeenInMemory=true;
+  card.hidden=false;
+  card.classList.remove("is-leaving");
+  card.classList.add("is-open");
+  welcomeTimer=setTimeout(dismissWelcome,2400);
+  return true;
+}
+function setupMotion(){
+  if(prefersReducedMotion() || !window.IntersectionObserver)return;
+  document.documentElement.classList.add("motion-ready");
+  const observer=new window.IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.14});
+  $(".system-story, .chapter").forEach(element=>observer.observe(element));
+}
 function go(route){
   const target=routeIds.includes(route)?route:"overview";
   if(location.hash!=="#"+target)history.pushState(null,"","#"+target);
@@ -84,6 +137,7 @@ function go(route){
 }
 function showView(route){
   state.route=routeIds.includes(route)?route:"overview";
+  if(state.route!=="overview")dismissWelcome();
   $$(".view").forEach(view=>{view.classList.toggle("active",view.dataset.view===state.route);});
   $$("[data-route]").forEach(el=>{
     const active=el.dataset.route===state.route;
@@ -111,7 +165,8 @@ function chooseTheme(name){
 }
 function bindInteractions(){
   bindRoutes();
-  $$("[data-theme-choice]").forEach(button=>
+  $("#welcomeDismiss")?.addEventListener("click",dismissWelcome);
+  $("[data-theme-choice]").forEach(button=>
     button.addEventListener("click",()=>chooseTheme(button.dataset.themeChoice)));
   $("#menuToggle")?.addEventListener("click",()=>{
     const nav=$("#mobileNav"),button=$("#menuToggle");
@@ -500,6 +555,9 @@ function renderAll(){
 }
 async function init(){
   bindInteractions();
+  showView(location.hash.slice(1)||"overview");
+  showWelcome();
+  setupMotion();
   try{
     await loadPlatformData();
     renderAll();
@@ -510,9 +568,8 @@ async function init(){
     const origin=$("#dataOrigin");
     if(origin)origin.textContent="Published data unavailable; inspect the repository instead.";
   }
-  showView(location.hash.slice(1)||"overview");
 }
-if(typeof window!=="undefined")window.addEventListener("load",()=>{
+if(typeof window!=="undefined")window.addEventListener("DOMContentLoaded",()=>{
   let theme="kasavu";try{theme=localStorage.getItem("kerala2040-theme")||theme}catch{}
   chooseTheme(theme);init();
 });
