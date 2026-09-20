@@ -73,13 +73,14 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
             "metric": f'{qa["observed_days"]} / {qa["expected_days"]}',
             "unit": "SLDC days verified",
             "summary": "Source-hashed daily accounting and station-level exports; no measured full-year interval load or interchange series.",
-            "completed": "Daily balance source QA, import/hydro tables and dated official comparison.",
+            "completed": "Daily balance source QA, import/hydro tables and official comparison. All 11 missing dates retried 2026-09-20: zero recovery, known-day control confirmed.",
             "blocked": "11 missing daily reports, interval chronology and final historical calibration.",
             "action": "Recover original SLDC reports and authenticated interval exports.",
             "route": "electricity",
             "evidence": [
                 {"label": "SLDC source QA", "href": ROOT + "data/external/sldc_fy2024_25/qa_report.json"},
                 {"label": "Historical daily replay method", "href": ROOT + "docs/OBSERVED_DAILY_PYPSA.md"},
+                {"label": "Missing-11 public source retry", "href": "https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35539424582"},
             ],
         },
         {
