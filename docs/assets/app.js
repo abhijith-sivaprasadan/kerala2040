@@ -146,7 +146,7 @@ function showView(route){
   });
   const menu=$("#mobileNav"),toggle=$("#menuToggle");
   if(menu&&toggle){menu.hidden=true;toggle.setAttribute("aria-expanded","false")}
-  window.scrollTo?.({top:0,behavior:"instant"});
+  window.scrollTo?.({top:0,behavior:"auto"});
 }
 function bindRoutes(root=document){
   $$("[data-route]",root).forEach(button=>{
