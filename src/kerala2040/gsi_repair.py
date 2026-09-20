@@ -45,10 +45,18 @@ def compare_feature(source, make_valid_geometry, buffer0_geometry) -> dict[str, 
     source_area = float(source.area)
     mv_area = float(make_valid_geometry.area)
     b0_area = float(buffer0_geometry.area)
-    union = make_valid_geometry.union(buffer0_geometry)
-    symmetric = make_valid_geometry.symmetric_difference(buffer0_geometry)
-    union_area = float(union.area)
-    disagreement = 0.0 if union_area == 0 else float(symmetric.area) / union_area
+    area_scale = max(mv_area, b0_area)
+    area_disagreement = (
+        0.0 if area_scale == 0 else abs(mv_area - b0_area) / area_scale
+    )
+    mv_centroid = make_valid_geometry.centroid
+    b0_centroid = buffer0_geometry.centroid
+    centroid_shift = float(mv_centroid.distance(b0_centroid))
+    mv_bounds = make_valid_geometry.bounds
+    b0_bounds = buffer0_geometry.bounds
+    bounds_max_abs_delta = max(
+        abs(float(a) - float(b)) for a, b in zip(mv_bounds, b0_bounds, strict=True)
+    )
     return {
         "source_computational_area_m2_invalid_geometry": source_area,
         "make_valid_area_m2": mv_area,
@@ -56,9 +64,12 @@ def compare_feature(source, make_valid_geometry, buffer0_geometry) -> dict[str, 
         "make_valid_vs_source_area_ratio": ratio(mv_area, source_area),
         "buffer0_vs_source_area_ratio": ratio(b0_area, source_area),
         "make_valid_vs_buffer0_area_ratio": ratio(mv_area, b0_area),
-        "repair_symmetric_difference_over_union": disagreement,
+        "repair_relative_area_disagreement": area_disagreement,
+        "repair_centroid_shift_m": centroid_shift,
+        "repair_bounds_max_abs_delta_m": bounds_max_abs_delta,
         "make_valid_parts": parts(make_valid_geometry),
         "buffer0_parts": parts(buffer0_geometry),
+        "part_count_difference": parts(make_valid_geometry) - parts(buffer0_geometry),
         "make_valid_valid": bool(make_valid_geometry.is_valid),
         "buffer0_valid": bool(buffer0_geometry.is_valid),
         "make_valid_empty": bool(make_valid_geometry.is_empty),
