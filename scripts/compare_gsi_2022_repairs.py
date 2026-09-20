@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import math
 import tempfile
 from datetime import UTC, datetime
 from itertools import combinations
@@ -22,7 +21,6 @@ import requests
 import shapely
 from shapely.geometry import MultiPolygon, Polygon
 from shapely.ops import unary_union
-
 from validate_gsi_2022_landslide import ACQ, download, safe_extract, sha256
 
 VALIDATED = Path("data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json")
