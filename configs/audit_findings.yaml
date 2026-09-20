@@ -25,6 +25,7 @@ sources:
   lulc_source_review: docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md
   three_gis_source_review: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   three_gis_workstreams: configs/gis_forest_dem_wetlands_hazards_2026.yaml
+  gsi_source_polygon_review: data/evidence/gis/gsi_2022_original_geometry_review_2026_09_20.json
   economics_registry: configs/techno_economics.yaml
 
 findings:
@@ -116,11 +117,13 @@ findings:
     acquisition: >-
       Request SWAK current wetland inventory, final-notification polygons,
       draft outlines, waterbodies and influence zones separately. KSDMA
-      lists 13 GSI 2022 district landslide shapefile downloads, not an
-      authenticated 14-district mosaic; acquire ZIPs and validate actual
-      geospatial classes, CRS, vintage, missing coverage and source licence.
-      Do not use superseded NCESS map or turn hazards into automatic legal bans.
-    evidence: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
+      provided all 13 GSI 2022 source ZIPs with verified original hashes.
+      All opened: each district has one High, Moderate and Low MultiPolygon
+      in EPSG:32643, but all 39 original geometries fail ring-validity.
+      Preserve raw classes; assess repairs separately and verify independent
+      district boundaries/Alappuzha coverage, licence and legal wetlands.
+      Do not treat landslide susceptibility as an automatic legal exclusion.
+    evidence: docs/GSI_2022_GEOMETRY_VALIDATION.md
   - id: niwe_wind_resource
     priority: P1
     check: gis_model_ready
