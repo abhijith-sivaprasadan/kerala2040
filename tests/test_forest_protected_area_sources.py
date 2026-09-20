@@ -38,3 +38,7 @@ def test_protected_area_counts_parse_only_explicit_department_prose():
 
 def test_missing_counts_stay_unknown():
     assert all(v is None for v in m._extract_pa_counts("Protected areas of Kerala").values())
+
+
+def test_zip_label_is_only_candidate_until_members_are_inspected():
+    assert m._file_kind("https://forest.kerala.gov.in/images/abc/plan.zip") == "vector_candidate"
