@@ -1,0 +1,58 @@
+name: Audit Kerala forest and protected-area legal sources
+
+on:
+  pull_request:
+    paths:
+      - "scripts/audit_forest_protected_area_sources.py"
+      - "tests/test_forest_protected_area_sources.py"
+      - "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json"
+      - ".github/workflows/forest-protected-area-sources.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/audit_forest_protected_area_sources.py"
+      - "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json"
+      - ".github/workflows/forest-protected-area-sources.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install source-audit stack
+        run: pip install "requests>=2.32,<3" "beautifulsoup4>=4.12,<5" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Test source classifications
+        run: |
+          ruff check scripts/audit_forest_protected_area_sources.py tests/test_forest_protected_area_sources.py
+          pytest -q tests/test_forest_protected_area_sources.py
+      - name: Probe official Kerala Forest source pages
+        run: python scripts/audit_forest_protected_area_sources.py
+      - name: Emit complete source-audit evidence to immutable workflow log
+        run: cat results/gis/forest_protected_area_source_audit.json
+      - name: Keep legal/spatial gate fail-closed
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path("results/gis/forest_protected_area_source_audit.json").read_text())
+          assert x["public_authoritative_forest_polygon_verified"] is False
+          assert x["public_authoritative_protected_area_polygon_verified"] is False
+          assert x["notification_to_polygon_linkage_verified"] is False
+          assert x["legal_exclusion_overlay_ready"] is False
+          assert x["eligible_area_sq_km"] is None
+          assert x["capacity_ceiling_mw"] is None
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: forest-protected-area-source-audit-NOT-model-overlay
+          path: results/gis/forest_protected_area_source_audit.json
+          retention-days: 90
