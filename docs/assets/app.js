@@ -19,6 +19,7 @@ const state = {
   nationalContext: null,
   sldcStationEvidence: null,
   audit: null,
+  researchLedger: null,
   nationalContext: null,
   chartRows: [],
   chartColumns: [],
@@ -68,6 +69,7 @@ async function loadPlatformData() {
   ]);
   state.sldcStationEvidence = files.sldc_station_evidence ? await fetchJSON(`${RAW}${files.sldc_station_evidence}`) : null;
   state.audit = files.audit_readiness ? await fetchJSON(`${RAW}${files.audit_readiness}`, true) : null;
+  state.researchLedger = files.research_ledger ? await fetchJSON(`${RAW}${files.research_ledger}`, true) : null;
 }
 
 function refs() {
@@ -661,14 +663,14 @@ function bindRouteButtons(root=document) {
 }
 
 function navigate(route) {
-  const valid=['overview','electricity','pathways','atlas','industry','audit','data'];
+  const valid=['overview','electricity','workbench','pathways','atlas','industry','audit','data'];
   const target=valid.includes(route)?route:'overview';
   if(location.hash!==`#${target}`) history.pushState(null,'',`#${target}`);
   showView(target);
 }
 
 function showView(route) {
-  if (!['overview','electricity','pathways','atlas','industry','audit','data'].includes(route)) route='overview';
+  if (!['overview','electricity','workbench','pathways','atlas','industry','audit','data'].includes(route)) route='overview';
   qsa('.view').forEach(v=>v.classList.toggle('active',v.dataset.view===route));
   qsa('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.route===route));
   qsa('.nav-link').forEach(b=>b.setAttribute('aria-current',b.dataset.route===route?'page':'false'));
@@ -698,6 +700,8 @@ function bindInteractions() {
   for(const selector of ['#auditSearch','#auditPriority','#auditStatus']) {
     qs(selector)?.addEventListener(selector==='#auditSearch'?'input':'change',renderAuditFindings);
   }
+  qs('#workbenchSearch')?.addEventListener('input',renderWorkbench);
+  qs('#workbenchPhase')?.addEventListener('change',renderWorkbench);
   window.addEventListener('popstate',()=>showView(location.hash.slice(1)||'overview'));
   window.addEventListener('hashchange',()=>showView(location.hash.slice(1)||'overview'));
 }
@@ -812,6 +816,7 @@ function renderAll() {
   
   renderPlatformMeta();renderHeadline();renderOverview();renderEvidenceFeed();renderElectricity();renderSldcDeepDive();renderPathwayReferences();renderScenarioLab();renderIndustry();renderDataCentre();
   renderConnectedEvidence();
+  renderWorkbench();
   renderResearchProgress();
   renderAudit();
   if (!window.Plotly) qsa('.chart:not(#scenarioInputChart)').forEach(el=>el.innerHTML='<p class="model-gate">Charts could not load. Use the data tables and downloads below.</p>');
