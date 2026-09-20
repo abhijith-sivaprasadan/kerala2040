@@ -1,0 +1,61 @@
+name: Compare GSI 2022 topology repairs
+
+on:
+  pull_request:
+    paths:
+      - "scripts/compare_gsi_2022_repairs.py"
+      - "tests/test_gsi_repair_comparison.py"
+      - "data/evidence/gis/gsi_2022_repair_comparison_2026_09_20.json"
+      - "data/evidence/gis/gsi_2022_geometry_validation_2026_09_20.json"
+      - ".github/workflows/gsi-2022-geometry-repair.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/compare_gsi_2022_repairs.py"
+      - "data/evidence/gis/gsi_2022_repair_comparison_2026_09_20.json"
+      - ".github/workflows/gsi-2022-geometry-repair.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compare-originals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: src:scripts:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install geospatial comparison stack
+        run: pip install "geopandas>=1,<2" "pyogrio>=0.10,<1" "shapely>=2.1,<3" "pyproj>=3.7,<4" "requests>=2.32,<3" "pandas>=2.2,<3" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Static tests and method regression
+        run: |
+          ruff check scripts/compare_gsi_2022_repairs.py tests/test_gsi_repair_comparison.py
+          pytest -q tests/test_gsi_repair_comparison.py
+      - name: Reacquire SHA-verified official originals and quantify all repairs
+        run: python scripts/compare_gsi_2022_repairs.py
+      - name: Enforce preliminary-evidence boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("results/gis/gsi_2022_repair_method_comparison.json").read_text())
+          assert a["district_count"] == 13
+          assert a["feature_count"] == 39
+          assert len(a["feature_comparison"]) == 39
+          assert a["automatic_method_selection"] is None
+          assert a["model_ready_repaired_geopackage_written"] is False
+          assert a["fully_notified_district_boundaries_compared"] is False
+          assert a["alappuzha_hazard_status_inferred"] is False
+          assert a["capacity_ceiling_mw"] is None
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: GSI-repair-sensitivity-NOT-approved-hazard-layer
+          retention-days: 90
+          path: results/gis/gsi_2022_repair_method_comparison.json
