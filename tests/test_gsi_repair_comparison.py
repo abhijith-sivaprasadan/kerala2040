@@ -34,6 +34,9 @@ def test_self_intersection_requires_explicit_candidate_comparison():
         observed["candidates"][method]["area_m2"] > 0
         for method in METHODS
     )
+    import json
+
+    json.dumps(observed, allow_nan=False)  # numpy scalar values must serialize cleanly
     assert observed["candidate_automatically_admitted"] is False
     assert observed["source_geometry_is_valid"] is False
     assert variants["linework"].area >= variants["buffer0"].area
