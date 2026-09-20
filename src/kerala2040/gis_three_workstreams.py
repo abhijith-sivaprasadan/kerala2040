@@ -41,8 +41,8 @@ def check_raster(path: Path) -> dict[str, Any]:
         )
         if east <= 74.5 or west >= 78.0 or north <= 8.0 or south >= 12.9:
             raise ValueError("DEM sample does not overlap Kerala bounding envelope")
-        if src.count != 1 or src.nodata is None:
-            raise ValueError("DEM sample needs a source nodata definition")
+        if src.count != 1:
+            raise ValueError("DEM sample must be single-band")
         valid = sum(
             src.read(1, window=window, masked=True).count()
             for _, window in src.block_windows(1)
@@ -55,13 +55,14 @@ def check_raster(path: Path) -> dict[str, Any]:
             "driver": src.driver,
             "crs": src.crs.to_string(),
             "nodata": src.nodata,
+            "source_nodata_defined": src.nodata is not None,
             "width": src.width,
             "height": src.height,
             "source_resolution_crs_units": list(src.res),
             "bounds_wgs84": [west, south, east, north],
             "valid_pixels_in_this_file": valid,
             "vertical_datum": "not_verified_by_raster_structure",
-            "is_digital_surface_model": True,
+            "surface_type": "not_established_by_raster_structure",
             "statewide_coverage_verified": False,
             "slope_threshold_validated": False,
         }
