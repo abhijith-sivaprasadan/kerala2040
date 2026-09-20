@@ -155,7 +155,7 @@ test("all eight research pages render against one real observed-data snapshot",(
   function el(selector){
     return elements[selector] ||= {
       innerHTML:"",textContent:"",value:"",
-      addEventListener:()=>{},setAttribute:()=>{},classList:{toggle:()=>{}}
+      addEventListener:()=>{},setAttribute:()=>{},querySelectorAll:()=>[],classList:{toggle:()=>{}}
     };
   }
   const c=context({document:{querySelector:el,querySelectorAll:()=>[],
