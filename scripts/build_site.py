@@ -201,7 +201,7 @@ def validate_static_site(output: Path) -> None:
         parts = urlsplit(raw)
         if parts.scheme in {"http", "https", "mailto", "data", "blob"}:
             continue
-        if raw.startswith("#") or raw.startswith("//"):
+        if raw.startswith(("#", "//")):
             continue
         local = unquote(parts.path)
         if not local:
