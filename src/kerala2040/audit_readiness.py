@@ -13,11 +13,14 @@ from typing import Any
 
 import yaml
 
+from kerala2040.gis_three_workstreams import audit_gis
+
 QA = "data/external/sldc_fy2024_25/qa_report.json"
 ERA5 = "public/era5-daily-manifest.json"
 TECH = "configs/techno_economics.yaml"
 GIS = "configs/gis_inputs.yaml"
 LULC = "configs/lulc_native_acquisition_2024_25.yaml"
+GIS_3 = "configs/gis_forest_dem_wetlands_hazards_2026.yaml"
 FINDINGS = "configs/audit_findings.yaml"
 HYDRO_TOPOLOGY = "configs/hydro_topology_evidence_2024_25.yaml"
 TRANSFER = "configs/grid_transfer_contract_evidence_2024_25.yaml"
@@ -216,11 +219,45 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         or lulc["model_use"]["generation_capacity_ceiling_mw"] is not None
     ):
         raise ValueError("LULC cannot contain unsupported capacity or eligible area")
+    gis_three = _yaml(root, GIS_3)
+    if gis_three.get("classification") != (
+        "source_scoped_three_workstream_gis_review_not_validated_geometry"
+    ):
+        raise ValueError("GIS workstream source review may not certify model geometry")
+    reviewed = gis_three["workstreams"]
+    if set(reviewed) != {
+        "forest_protected_areas", "elevation_dem", "wetlands_waterbodies_landslide"
+    }:
+        raise ValueError("GIS workstream discovery must cover all three tasks")
+    if any(gis_three["model_use"][key] is not False for key in (
+        "authoritative_forest_exclusions_verified",
+        "full_kerala_height_and_slope_verified",
+        "wetland_waterbody_land_hazard_overlay_verified",
+        "ecological_capacity_ceiling_ready",
+    )):
+        raise ValueError("Unverified GIS source registry cannot certify spatial exclusions")
+    if any(gis_three["model_use"][key] is not None for key in (
+        "eligible_area_sq_km", "potential_mw",
+    )):
+        raise ValueError("Unverified GIS source registry cannot invent eligibility")
+    gsi_count = len(
+        reviewed["wetlands_waterbodies_landslide"]["published_gsi_district_labels"]
+    )
+    if gsi_count != 13:
+        raise ValueError("Published GSI 2022 source list must preserve district scope")
+    gis_public = audit_gis(root)
+    acquired_gsi = gis_public["workstreams"]["wetlands_waterbodies_landslide"][
+        "gsi_original_zips_downloaded_to_workflow_artifact"
+    ]
     n_layers = len(gis["layers"])
     staged = sum(
         item["acquisition_status"] not in (
             "not_downloaded", "not_downloaded_in_repository",
             "not_downloaded_native_data_requires_approved_route",
+            "official_download_listed_but_not_committed_verified",
+            "official_internal_gis_reported_geometry_not_secured",
+            "source_routes_verified_statewide_raster_not_committed",
+            "draft_notified_legal_distinction_original_geometry_not_secured",
             "authoritative_geometry_not_yet_secured",
             "current_authoritative_geometry_not_yet_secured",
             "download_form_required",
@@ -230,11 +267,14 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
     gis_check = _check(
         STATUS_BLOCKED,
         f"{n_layers} catalogued GIS layers; {staged} beyond acquisition-only status; "
-        f"{len(products)} NRSC LULC product routes reviewed. The 2024-25 map layer "
-        "is not a verified original Kerala raster or class legend. No authenticated "
-        "statewide mask, technology-specific eligibility overlay, authoritative "
-        "legal status or capacity-ceiling QA is evidenced here.",
-        "docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md",
+        f"{len(products)} NRSC LULC product routes and three forest/DEM/hazard "
+        f"workstreams reviewed; {acquired_gsi} downloaded GSI ZIPs and one "
+        "public Copernicus GLO-90 DSM tile have original-file hashes recorded "
+        "from a workflow artifact. Archive components/TIFF structure pass "
+        "preliminary QA, but polygon geometry, GSI hazard classes, notified "
+        "forest/wetland boundaries, a statewide height mosaic and legal "
+        "constraints are NOT established; no site-eligible km2 or MW ceiling.",
+        "docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md",
     )
     return {
         "sldc_accounting_integrity": accounting,

@@ -1,0 +1,150 @@
+version: 1
+classification: source_scoped_three_workstream_gis_review_not_validated_geometry
+review_date: "2026-09-20"
+geography: Kerala
+official_public_acquisition_manifest: data/evidence/gis/official_gis_public_acquisition_2026_09_20.json
+public_acquisition_workflow: https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35504312456
+raw_artifacts_uncommitted: true
+source_registry:
+  kerala_forest:
+    organisation: Kerala Forest and Wildlife Department
+    url: https://forest.kerala.gov.in/
+    note: Department reports digitised reserve forest and protected area boundary layers; no verified public machine-readable download identified.
+  kerala_forest_gis_report:
+    organisation: Kerala Forest and Wildlife Department
+    url: https://forest.kerala.gov.in/images/abc/AR_Book_2022.pdf
+    note: Source report describes its in-house digital forest and protected-area boundary data, not file delivery.
+  kerala_ksdi:
+    organisation: Kerala State Spatial Data Infrastructure
+    url: https://eitd.kerala.gov.in/en/kerala-state-spatial-data-infrastructure/
+    note: State-wide data-sharing geoportal route, not an authenticated exclusion geometry.
+  ksdma_hazard:
+    organisation: Kerala State Disaster Management Authority
+    url: https://sdma.kerala.gov.in/hazard-maps/
+    note: Official GSI 2022 landslide district shapefile download links; NCESS 2010 superseded.
+  nrsc_cartodem:
+    organisation: NRSC / ISRO Bhuvan
+    url: https://bhuvan-app3.nrsc.gov.in/data/download/help/source/html/steps_to_download_data.htm
+    note: CartoDEM 1-arcsecond tile selection and download require user login; published download limit applies.
+  copernicus_dem:
+    organisation: Copernicus Programme / Sinergise
+    url: https://registry.opendata.aws/copernicus-dem/
+    technical_readme: https://copernicus-dem-30m.s3.amazonaws.com/readme.html
+    note: GLO-30 and GLO-90 are digital SURFACE models, not bare-earth DTMs; 2021 release, COG tiles via public AWS.
+  swak:
+    organisation: State Wetland Authority Kerala
+    url: https://envt.kerala.gov.in/state-wetland-authority-kerala-swak/
+    note: Authority for notification and wetland inventory; registry/draft/notified boundaries and influence zones require separate version checks.
+  swak_briefs:
+    organisation: State Wetland Authority Kerala
+    url: https://www.swak.kerala.gov.in/index.php/wetland-notification-in-kerala/draft-brief-documents-of-wetlands
+    note: DRAFT briefs must not be treated as legally final notification polygons.
+  swak_wiams:
+    organisation: State Wetland Authority Kerala
+    url: https://wiams.kerala.gov.in/
+    note: Wetland Inventory Assessment and Monitoring Systems portal login is not a downloaded vector dataset.
+  sac_nwia:
+    organisation: ISRO Space Applications Centre
+    url: https://vedas.sac.gov.in/en/National_Wetland_Inventory_and_Assessment_%28NWIA%29_Atlas.html
+    note: Kerala NWIA atlas is a PDF/background map; not a supplied GIS geometry or 2024-25 legal wetland boundary.
+
+workstreams:
+  forest_protected_areas:
+    priority: P0
+    source_ids: [kerala_forest, kerala_forest_gis_report, kerala_ksdi]
+    candidate_products:
+      - reserved_forest_current_notification_boundaries
+      - protected_areas_national_parks_wildlife_sanctuaries_community_reserves
+      - eco_sensitive_zones_final_vs_draft_with_notification_dates
+    data_request: >-
+      Current machine-readable reserve-forest and protected-area polygons with
+      source notification/gazette identifiers, effective dates, legal category,
+      original CRS, boundary survey accuracy and rights of use or redistribution.
+    expected_raw_path: data/external/gis/forest/protected_areas
+    original_file_sha256: null
+    actual_source_vintage: null
+    original_crs: null
+    licence: null
+    confirmed_geometry_acquired: false
+    legal_exclusion_verified: false
+  elevation_dem:
+    priority: P1
+    source_ids: [nrsc_cartodem, copernicus_dem]
+    candidate_products:
+      - id: nrsc_cartodem_1arcsec
+        source: nrsc_cartodem
+        type: digital_elevation_model
+        access: login_required_tile_selection
+        data_reference_year: null
+        validated_kerala_tiles: 0
+      - id: copernicus_glo30_public
+        source: copernicus_dem
+        type: digital_surface_model
+        access: public_cog_subject_to_tile_release_and_licence
+        release: "2021"
+        validated_kerala_tiles: 0
+      - id: copernicus_glo90
+        source: copernicus_dem
+        type: digital_surface_model
+        access: public_cog
+        release: "2021"
+        validated_kerala_tiles: 0
+    expected_raw_path: data/external/gis/terrain
+    original_file_sha256: null
+    downloaded_glo90_pilot_tiles_in_workflow: 1
+    source_pilot_sha256: cab81d17d0f6b42c5083f2bf61206b78c607ba59da0663e2677cfebe7f21dd79
+    geospatial_mosaic_coverage_verified: false
+    source_vertical_datum_verified: false
+    ecological_slope_threshold_verified: false
+    note: >-
+      No state-wide height raster has been committed and verified in this
+      repository. Do not assume that a DSM is bare earth or select one
+      universally valid slope threshold.
+  wetlands_waterbodies_landslide:
+    priority: P0
+    source_ids: [swak, swak_briefs, swak_wiams, sac_nwia, ksdma_hazard]
+    candidate_products:
+      - current_final_notified_wetlands_plus_official_zones_of_influence
+      - wetlands_draft_briefs_kept_distinct_from_notified
+      - georeferenced_waterbody_polygons_with_floating_solar_uses_screened
+      - gsi_2022_kerala_district_landslide_susceptibility_shapefiles
+    published_gsi_district_labels:
+      - Thiruvananthapuram
+      - Kollam
+      - Pathanamthitta
+      - Kottayam
+      - Idukki
+      - Ernakulam
+      - Thrissur
+      - Palakkad
+      - Malappuram
+      - Kozhikode
+      - Wayanad
+      - Kannur
+      - Kasaragod
+    note: >-
+      KSDMA lists 13 district shapefile download links; Alappuzha is
+      not shown in that list. Absence is not evidence of zero hazard or
+      a verified statewide coverage exemption. The older NCESS layer is
+      superseded for source choice by GSI 2022.
+    expected_raw_path: data/external/gis/ksdma/landslide
+    original_file_sha256: null
+    observed_verified_gsi_districts: 0
+    source_original_zips_downloaded_and_structurally_checked_in_artifact: 13
+    wetland_geometries_verified: 0
+    current_notified_wetland_geometries_verified: 0
+    final_notifications_mapped: false
+    statewide_hazard_coverage_verified: false
+
+acceptance:
+  raster: [original_file_sha256, original_crs, nodata, x_y_resolution, bounding_box, vintage, coverage_mask, vertical_datum_if_height, licence]
+  vector: [all_shapefile_components_or_gpkg, sha256, original_crs, nonempty_geometry, validity, extent, attributes, vintage, licence]
+  legal: [gazette_identifier, effective_date, final_or_draft_status, legally_applicable_boundary, no_universal_unsupported_buffer]
+  derived: [source_to_output_provenance, target_projected_crs, per_technology_rules, unknown_class_policy, no_double_count]
+model_use:
+  authoritative_forest_exclusions_verified: false
+  full_kerala_height_and_slope_verified: false
+  wetland_waterbody_land_hazard_overlay_verified: false
+  ecological_capacity_ceiling_ready: false
+  eligible_area_sq_km: null
+  potential_mw: null
