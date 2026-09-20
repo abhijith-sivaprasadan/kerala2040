@@ -21,7 +21,7 @@ def test_polygonal_drops_non_areal_make_valid_debris():
 
 def test_two_repairs_of_self_intersection_are_compared_not_assumed_equal():
     source = Polygon([(0, 0), (2, 2), (0, 2), (2, 0), (0, 0)])
-    mv = polygonal(make_valid(source))
+    mv = polygonal(make_valid(source, method="structure", keep_collapsed=True))
     b0 = polygonal(source.buffer(0))
     result = compare_feature(source, mv, b0)
     assert result["make_valid_valid"]
