@@ -84,7 +84,9 @@ def aggregate_class(frame: gpd.GeoDataFrame) -> list[dict[str, Any]]:
     return sorted(rows, key=lambda x: str(x["susceptibility"]))
 
 
-def run(\n    root: Path, output: Path, gpkg: Path, raw_dir: Path, district: str | None = None\n) -> dict[str, Any]:
+def run(
+    root: Path, output: Path, gpkg: Path, raw_dir: Path, district: str | None = None
+) -> dict[str, Any]:
     acquisition = json.loads((root / ACQ).read_text())
     prior = json.loads((root / SOURCE_QA).read_text())
     if (
