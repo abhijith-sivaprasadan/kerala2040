@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 import requests
 from pyproj import Transformer
 from shapely.geometry import box, shape
-from shapely.ops import transform, unary_union
+from shapely.ops import transform
 
 DEM_MANIFEST = "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json"
 DATASET = "https://nwdp.nwic.gov.in/dataset/state-boundary"
