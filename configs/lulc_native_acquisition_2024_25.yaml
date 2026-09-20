@@ -1,0 +1,115 @@
+version: 1
+classification: official_lulc_discovery_no_native_kerala_raster_acquired
+review_date: "2026-09-20"
+geography: Kerala
+purpose: historical_land_use_reference_for_ecological_screening_not_legal_eligibility
+sources:
+  nrsc_annual_lulc:
+    organisation: National Remote Sensing Centre / ISRO
+    url: https://www.nrsc.gov.in/nrscnew/Apps_LULC.php
+    note: "Annual 1:250,000 LULC uses AWiFS and is intended for regional mapping."
+  bhuvan_store:
+    organisation: NRSC / Bhuvan
+    url: https://bhuvan-app1.nrsc.gov.in/2dresources/bhuvanstore2.php
+    note: "Catalogue lists LULC250K data for download through 2022-23; this does not verify download of 2024-25."
+  bhuvan_latest_view:
+    organisation: NRSC / Bhuvan
+    url: https://bhuvan-app1.nrsc.gov.in/moef/
+    note: "2024-25 is selectable for LULC250K visualization; not evidence of downloadable native class-code raster."
+  isro_access:
+    organisation: ISRO
+    url: https://www.isro.gov.in/SpaceBasedEarthObservationServices.html
+    note: "Native 1:250K data requested with organisational Head-signed MoU; 1:50K public OGC services not native data."
+  bhuvan_sisdp:
+    organisation: NRSC / Bhuvan Panchayat
+    url: https://bhuvan-panchayat3.nrsc.gov.in/
+    note: "Portal advertises request/download option for 1:10K SISDP LULC. Check individual Kerala district availability."
+  bhuvan_wms:
+    organisation: NRSC / Bhuvan
+    url: https://bhuvan-ras2.nrsc.gov.in/cgi-bin/LULC250K.exe
+    note: "WMS is rendered map imagery, NOT an unambiguous class-coded raster."
+products:
+  - id: nrsc_lulc250k_2024_25
+    source_ids: [nrsc_annual_lulc, bhuvan_latest_view, bhuvan_store, isro_access]
+    reported_vintage: "2024-25"
+    reported_scale_denominator: 250000
+    reported_native_pixel_m: null
+    coverage_claim: "India-level visual theme; native Kerala raster coverage not validated"
+    access: native_download_or_institutional_mou_request
+    access_status: map_layer_listed_native_not_acquired
+    native_raster_path: data/external/gis/bhuvan/lulc/kerala_nrsc_lulc250k_2024_25.tif
+    native_sha256: null
+    class_legend_path: data/external/gis/bhuvan/lulc/kerala_nrsc_lulc250k_2024_25_legend.csv
+    class_legend_sha256: null
+    original_crs: null
+    nodata: null
+    redistribution_permission: null
+    preferred_reference: true
+    use_scope: regional_historical_land_use_context_not_parcel_eligibility
+  - id: nrsc_lulc250k_2022_23_download_catalogue
+    source_ids: [bhuvan_store, nrsc_annual_lulc, isro_access]
+    reported_vintage: "2022-23"
+    reported_scale_denominator: 250000
+    reported_native_pixel_m: null
+    access: native_download_catalogued_verify_current_access
+    access_status: not_downloaded_or_validated
+    native_raster_path: data/external/gis/bhuvan/lulc/kerala_nrsc_lulc250k_2022_23.tif
+    native_sha256: null
+    class_legend_path: data/external/gis/bhuvan/lulc/kerala_nrsc_lulc250k_2022_23_legend.csv
+    class_legend_sha256: null
+    original_crs: null
+    nodata: null
+    redistribution_permission: null
+    preferred_reference: false
+    use_scope: out_of_fy_vintage_regional_comparison_only
+  - id: nrsc_sisdp_lulc10k
+    source_ids: [bhuvan_sisdp, isro_access]
+    reported_vintage: "2018-23 phase 2 (confirm Kerala districts independently)"
+    reported_scale_denominator: 10000
+    reported_native_pixel_m: null
+    access: district_request_or_portal_download
+    access_status: request_not_fulfilled
+    native_raster_path: null
+    native_sha256: null
+    class_legend_path: null
+    class_legend_sha256: null
+    original_crs: null
+    nodata: null
+    redistribution_permission: null
+    preferred_reference: false
+    use_scope: possible_finer_crosscheck_not_assumed_current
+  - id: nrsc_lulc50k_2015_16
+    source_ids: [bhuvan_store, isro_access]
+    reported_vintage: "2015-16"
+    reported_scale_denominator: 50000
+    reported_native_pixel_m: null
+    access: wms_visualization_only_under_public_terms
+    access_status: too_old_no_native_raster
+    native_raster_path: null
+    native_sha256: null
+    class_legend_path: null
+    class_legend_sha256: null
+    original_crs: null
+    nodata: null
+    redistribution_permission: null
+    preferred_reference: false
+    use_scope: historical_reference_not_recent_siting
+acceptance:
+  minimum_vintage: "2022-23"
+  preferred_vintage: "2024-25"
+  require_actual_native_categorical_values: true
+  require_exact_source_url_and_raw_sha256: true
+  require_legend_exact_class_code_coverage: true
+  require_original_crs_nodata_resolution_bounds: true
+  require_authoritative_state_boundary_and_kerala_coverage_qa: true
+  require_licence_and_redistribution_terms: true
+  require_verified_legal_protection_layers_separately: true
+  require_siting_scale_appropriateness: true
+  on_wms_rendered_png: reject_as_native_categorical
+model_use:
+  native_kerala_lulc_acquired: false
+  native_kerala_lulc_validated: false
+  authorised_redistribution: false
+  ecological_exclusion_ready: false
+  land_available_area_sq_km: null
+  generation_capacity_ceiling_mw: null
