@@ -32,6 +32,8 @@ def test_readiness_preserves_historical_evidence_and_blocks_2040_claims():
     assert "2024-08-12" in report["checks"]["sldc_daily_coverage"]["detail"]
     assert report["checks"]["measured_interval"]["status"] == STATUS_BLOCKED
     assert report["checks"]["era5_complete"]["status"] == STATUS_PARTIAL
+    assert report["checks"]["hydro_physics"]["status"] == STATUS_BLOCKED
+    assert "9 qualitative links" in report["checks"]["hydro_physics"]["detail"]
     assert report["checks"]["generator_assets"]["status"] == STATUS_PARTIAL
     assert "100 MW" in report["checks"]["generator_assets"]["detail"]
     assert report["checks"]["technology_costs"]["status"] == STATUS_BLOCKED
@@ -60,6 +62,7 @@ def test_source_qa_tampering_fails_closed(tmp_path):
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
+        "configs/hydro_topology_evidence_2024_25.yaml",
         "public/kseb-projects.json",
     ):
         target = tmp_path / file
@@ -89,6 +92,7 @@ def test_unknown_gate_is_rejected_instead_of_counted_ready(tmp_path):
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
+        "configs/hydro_topology_evidence_2024_25.yaml",
         "public/kseb-projects.json",
     ):
         target = tmp_path / file
@@ -113,6 +117,7 @@ def test_generator_register_official_source_crosscheck_fails_closed(tmp_path):
         "configs/audit_findings.yaml",
         "configs/observed_2024_25.yaml",
         "configs/generator_reconciliation_2024_25.yaml",
+        "configs/hydro_topology_evidence_2024_25.yaml",
         "public/kseb-projects.json",
     )
     for file in inputs:
