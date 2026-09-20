@@ -6,6 +6,9 @@ on:
       - "src/kerala2040/gsi_2022_geometry.py"
       - "scripts/validate_gsi_2022_geometry.py"
       - "tests/test_gsi_2022_geometry.py"
+      - "src/kerala2040/gsi_geometry_repair.py"
+      - "tests/test_gsi_geometry_repair.py"
+      - "scripts/assess_gsi_2022_repairs.py"
       - "data/evidence/gis/official_gis_public_acquisition_2026_09_20.json"
       - ".github/workflows/gsi-geometry-2022.yml"
   push:
@@ -35,10 +38,12 @@ jobs:
         run: pip install "requests>=2.32,<3" "pyyaml>=6,<7" "shapely>=2,<3" "pyogrio>=0.10,<1" "geopandas>=1,<2" "pytest>=8,<9" "ruff>=0.7,<1"
       - name: Lint and test failure gates with explicitly synthetic polygons
         run: |
-          ruff check src/kerala2040/gsi_2022_geometry.py scripts/validate_gsi_2022_geometry.py tests/test_gsi_2022_geometry.py
-          pytest -q tests/test_gsi_2022_geometry.py
+          ruff check src/kerala2040/gsi_2022_geometry.py scripts/validate_gsi_2022_geometry.py tests/test_gsi_2022_geometry.py src/kerala2040/gsi_geometry_repair.py scripts/assess_gsi_2022_repairs.py tests/test_gsi_geometry_repair.py
+          pytest -q tests/test_gsi_2022_geometry.py tests/test_gsi_geometry_repair.py
       - name: Redownload and decode 13 ORIGINAL GSI district archives
         run: python scripts/validate_gsi_2022_geometry.py --download
+      - name: Diagnose original ring self-intersections without replacing originals
+        run: python scripts/assess_gsi_2022_repairs.py
       - name: Confirm no statewide or legal eligibility claim
         run: |
           python - <<'PY'
@@ -61,5 +66,6 @@ jobs:
           name: GSI13-original-ZIPs-geometry-profiles-NOT-statewide-or-legal
           path: |
             results/gis/gsi_2022_geometry_audit.json
+            results/gis/gsi_2022_repair_review.json
             results/gis/pilot_raw/ksdma/*.zip
           retention-days: 30
