@@ -1,0 +1,60 @@
+name: Audit SWAK wetland sources without legal geometry promotion
+
+on:
+  pull_request:
+    paths:
+      - "scripts/audit_swak_wetland_sources.py"
+      - "tests/test_swak_wetland_sources.py"
+      - ".github/workflows/swak-wetland-sources.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/audit_swak_wetland_sources.py"
+      - ".github/workflows/swak-wetland-sources.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  swak-source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install scoped dependencies
+        run: pip install "requests>=2.32,<3" "beautifulsoup4>=4.12,<5" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Lint and regression tests
+        run: |
+          ruff check scripts/audit_swak_wetland_sources.py tests/test_swak_wetland_sources.py
+          pytest -q tests/test_swak_wetland_sources.py
+      - name: Probe official SWAK/DoECC pages and retain unknowns
+        run: python scripts/audit_swak_wetland_sources.py
+      - name: Gate legal and vector admission independently from HTTP success
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("results/gis/swak_wetland_source_audit.json").read_text())
+          assert a["classification"].endswith("NOT_notification_or_geometry_validation")
+          assert len(a["pages"]) == 4
+          assert a["draft_briefs_not_promoted_to_final"] is True
+          assert a["gazette_identity_and_effective_date_verified"] is False
+          assert a["notification_linked_original_vector_verified"] is False
+          assert a["waterbody_inventory_original_vector_verified"] is False
+          assert a["zone_of_influence_original_vector_verified"] is False
+          assert a["legal_wetland_exclusion_ready"] is False
+          assert a["eligible_area_sq_km"] is None
+          assert a["capacity_ceiling_mw"] is None
+          PY
+      - name: Print auditable page/candidate results
+        run: cat results/gis/swak_wetland_source_audit.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: SWAK-wetland-source-audit-NOT-notification-or-geometry
+          path: results/gis/swak_wetland_source_audit.json
+          retention-days: 90
