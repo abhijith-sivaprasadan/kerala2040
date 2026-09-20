@@ -6,10 +6,11 @@ import importlib
 import sys
 from pathlib import Path
 
-import numpy as np
 import pytest
-import rasterio
-from rasterio.transform import from_origin
+
+np = pytest.importorskip("numpy")
+rasterio = pytest.importorskip("rasterio")
+from_origin = rasterio.transform.from_origin
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 dem = importlib.import_module("acquire_copernicus_glo90_envelope")
