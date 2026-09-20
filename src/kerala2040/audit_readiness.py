@@ -268,12 +268,12 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
         STATUS_BLOCKED,
         f"{n_layers} catalogued GIS layers; {staged} beyond acquisition-only status; "
         f"{len(products)} NRSC LULC product routes and three forest/DEM/hazard "
-        f"workstreams reviewed; {acquired_gsi} downloaded GSI ZIPs and one "
-        "public Copernicus GLO-90 DSM tile have original-file hashes recorded "
-        "from a workflow artifact. Archive components/TIFF structure pass "
-        "preliminary QA, but polygon geometry, GSI hazard classes, notified "
-        "forest/wetland boundaries, a statewide height mosaic and legal "
-        "constraints are NOT established; no site-eligible km2 or MW ceiling.",
+        f"workstreams reviewed; {acquired_gsi} GSI district ZIPs were downloaded, "
+        "decoded as 39 EPSG:32643 MultiPolygons with verified source classes "
+        "Low/Moderate/High, but every source feature fails OGC validity through "
+        "ring self-intersection and no repaired/merged overlay is admitted. "
+        "Notified forest/wetland boundaries and a statewide height mosaic remain "
+        "absent; no site-eligible km2 or MW ceiling.",
         "docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md",
     )
     return {
