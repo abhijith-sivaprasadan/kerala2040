@@ -1,1143 +1,516 @@
-const RAW = 'data/';
-const REPO = 'https://github.com/abhijith-sivaprasadan/kerala2040';
-const qs = (s, root = document) => root.querySelector(s);
-const qsa = (s, root = document) => [...root.querySelectorAll(s)];
-const esc = (v) => String(v ?? '').replace(/[&<>'"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const n = (v) => v == null || v === '' || typeof v === 'boolean' ? null : Number.isFinite(Number(v)) ? Number(v) : null;
-const fmt = (v, d = 1) => n(v) == null ? '—' : Number(v).toFixed(d);
-const pct = (v, d = 1) => n(v) == null ? '—' : `${(100 * Number(v)).toFixed(d)}%`;
-
-const state = {
-  data: null,
-  origin: 'research pipeline',
-  daily: null,
-  monthly: null,
-  duration: null,
-  ksebHistory: null,
-  hourlyProxy: null,
-  hourlySeries: null,
-  nationalContext: null,
-  sldcStationEvidence: null,
-  audit: null,
-  researchLedger: null,
-  nationalContext: null,
-  chartRows: [],
-  chartColumns: [],
-  chartTitle: '',
-  currentOverviewMetric: 'demand',
-  selectedScenario: null,
-  selectedStress: new Set(),
-  map: null,
-  markers: [],
-  mapKind: 'all',
-  industryCase: 'kmml',
-  focusId: 'electricity'
+/* Kerala2040 — one evidence snapshot, one intelligible research story.
+ * The actual numbers, workstreams and gate states come only from packaged QA.
+ * The landscape art and Malayalam labels are cultural design, never GIS evidence. */
+"use strict";
+const RAW = "data/";
+const REPO = "https://github.com/abhijith-sivaprasadan/kerala2040";
+const $ = (selector,root=document) => root.querySelector(selector);
+const $$ = (selector,root=document) => Array.from(root.querySelectorAll(selector));
+const esc = value => String(value == null ? "" : value).replace(/[&<>'"]/g,
+  char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
+const num = value => value == null || value === "" || typeof value === "boolean" ? null :
+  Number.isFinite(Number(value)) ? Number(value) : null;
+const fmt = (value,digits=1) => num(value) == null ? "—" :
+  Number(value).toLocaleString("en-IN",{minimumFractionDigits:digits,maximumFractionDigits:digits});
+const plain = value => String(value == null ? "" : value).replaceAll("_"," ");
+const safeURL = value => {
+  const s=String(value||"");
+  return /^https:\/\/[a-z0-9.-]+(?::443)?\/[^\s<>"']*$/i.test(s) &&
+    !/^https:\/\/[^/]*@/.test(s) ? s : "";
 };
+const repoEvidence = value => {
+  const url=safeURL(value);
+  if(url.startsWith(REPO+"/blob/main/") ||
+    new RegExp("^"+REPO.replaceAll(".","\\.")+"/actions/runs/[0-9]+$").test(url))return url;
+  return "";
+};
+const repoFile = value => {
+  const path=String(value||"");
+  return path && !path.includes("..") && /^[a-zA-Z0-9_./-]+$/.test(path) ?
+    REPO+"/blob/main/"+path : "";
+};
+const state={site:null,daily:null,audit:null,ledger:null,route:"overview",month:"all",
+  metric:"consumption_mu",scenario:null,theme:"kasavu"};
+const gatesRequired=["ecological_capacity_ceiling","techno_economic_2040"];
+const routeIds=["overview","electricity","pathways","atlas","industry","workbench","audit","data"];
 
-async function fetchJSON(url, required = false) {
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 9000);
-    const r = await fetch(url, {cache:'no-store', signal:controller.signal});
-    clearTimeout(timer);
-    if (!r.ok) throw new Error(`${r.status}`);
-    return await r.json();
-  } catch (err) {
-    if (required) throw err;
-    console.warn('Optional dataset unavailable:', url, err);
-    return null;
-  }
+async function getJSON(filename) {
+  if(!/^[a-z0-9_-]+\.json$/i.test(filename))throw new Error("Unsafe bundle filename");
+  const response=await fetch(RAW+filename,{cache:"no-store"});
+  if(!response.ok)throw new Error("Evidence unavailable: "+filename+" HTTP "+response.status);
+  return response.json();
 }
 
-async function loadPlatformData() {
-  state.data = await fetchJSON(`${RAW}site-data.json`, true);
-  if (!state.data?.metadata?.files) throw new Error('Unsupported evidence bundle');
-  state.origin = 'Published evidence snapshot';
-  const files = state.data?.metadata?.files || {};
-  const dailyName = files.daily_balance || 'daily-balance.json';
-  const monthlyName = files.monthly_balance || 'monthly-balance.json';
-  const durationName = files.import_duration || 'import-duration.json';
-  const ksebHistoryName = files.kseb_history || 'kseb-history.json';
-  const hourlyProxyName = files.hourly_load_proxy_summary || 'hourly-load-proxy-summary.json';
-  [state.daily, state.monthly, state.duration, state.ksebHistory, state.hourlyProxy, state.hourlySeries, state.nationalContext] = await Promise.all([
-    files.daily_balance ? fetchJSON(`${RAW}${dailyName}`, true) : null,
-    files.monthly_balance ? fetchJSON(`${RAW}${monthlyName}`, true) : null,
-    files.import_duration ? fetchJSON(`${RAW}${durationName}`, true) : null,
-    files.kseb_history ? fetchJSON(`${RAW}${ksebHistoryName}`) : null,
-    files.hourly_load_proxy_summary ? fetchJSON(`${RAW}${hourlyProxyName}`, true) : null,
-    files.hourly_load_proxy ? fetchJSON(`${RAW}${files.hourly_load_proxy}`, true) : null,
-    files.energyproject_context ? fetchJSON(`${RAW}${files.energyproject_context}`, true) : null
+function verifySnapshot(site,daily,audit,ledger) {
+  if(!site || !site.metadata || !site.metadata.files || !site.baseline)throw new Error("Missing published evidence contract");
+  if(!daily || !Array.isArray(daily.records) || site.baseline.rows!==daily.records.length)throw new Error("Mixed SLDC snapshots");
+  if(!audit || audit.classification!=="repository_evidence_audit_not_external_source_validation" ||
+     audit.finding_count!==audit.findings.length)throw new Error("Audited findings unavailable");
+  if(!ledger || ledger.classification!=="dated_repository_research_progress_NOT_geospatial_or_model_readiness" ||
+     ledger.audit_open_findings!==audit.open_findings)throw new Error("Mixed research audit");
+  if(ledger.eligible_area_sq_km!==null || ledger.potential_mw!==null ||
+     ledger.ecological_capacity_ceiling_ready!==false ||
+     gatesRequired.some(key=>ledger.release_gates[key]?.passed))throw new Error("Unadmitted scientific result");
+  if(site.baseline.hourly_model_calibrated!==false)throw new Error("Unproven hourly calibration");
+  return true;
+}
+
+async function loadPlatformData(){
+  const site=await getJSON("site-data.json");
+  const f=site.metadata?.files||{};
+  if(!f.daily_balance || !f.audit_readiness || !f.research_ledger)throw new Error("Incomplete published data manifest");
+  const [daily,audit,ledger]=await Promise.all([
+    getJSON(f.daily_balance),getJSON(f.audit_readiness),getJSON(f.research_ledger)
   ]);
-  state.sldcStationEvidence = files.sldc_station_evidence ? await fetchJSON(`${RAW}${files.sldc_station_evidence}`) : null;
-  state.audit = files.audit_readiness ? await fetchJSON(`${RAW}${files.audit_readiness}`, true) : null;
-  state.researchLedger = files.research_ledger ? await fetchJSON(`${RAW}${files.research_ledger}`, true) : null;
+  verifySnapshot(site,daily,audit,ledger);
+  state.site=site;state.daily=daily;state.audit=audit;state.ledger=ledger;
+  return state;
 }
-
-function refs() {
-  const raw = state.data?.references || {};
-  return {
-    cstep: raw.cstep_2024 || {},
-    cn50: raw.kerala_cn50_2026 || {}
-  };
+function labelStage(phase){
+  return {validated_source:"Source coverage verified · model gate open",
+    partial:"Partial evidence",blocked:"Missing critical evidence"}[phase]||"Not verified";
 }
-
-function statusMap() {
-  if (state.data?.metadata?.status) return state.data.metadata.status;
-  const items = state.data?.buildStatus || [];
-  const map = {};
-  items.forEach((x, i) => map[`source_${i}`] = {available:x.state === 'ready', evidence:x.state === 'gap' ? 'gap' : 'status', note:x.label});
-  return map;
+function stageClass(phase){return phase==="validated_source"?"verified":phase==="partial"?"partial":"blocked"}
+function sourceTrail(item){
+  return '<div class="source-links">'+(item.evidence||[]).map(link=>{
+    const url=repoEvidence(link.href);
+    return url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(link.label)+' ↗</a>':"";
+  }).join("")+"</div>";
 }
-
-function scenarios() {
-  const list = state.data?.scenarios || [];
-  return list.map((s, i) => ({
-    id: s.id || `${s.code || `S${i}`}_${s.name || 'scenario'}`,
-    code: s.code || `S${i}`,
-    name: s.name || s.id || `Scenario ${i}`,
-    type: s.type || inferScenarioType(s.code),
-    description: s.description || s.summary || '',
-    demand_flexibility: s.demand_flexibility || s.dimensions?.['Demand flexibility'] || 'medium',
-    ecology_constraint: s.ecology_constraint || s.dimensions?.Ecology || 'baseline legal exclusions',
-    import_option: ![false, 'disabled', 'off'].includes(s.import_option),
-    dimensions: s.dimensions || null
-  }));
-}
-
-function inferScenarioType(code) {
-  return ({S0:'reference',S1:'stress pathway',S2:'technology pathway',S3:'system pathway',S4:'constraint pathway'})[code] || 'scenario';
-}
-
-function chartTheme() {
-  const css = getComputedStyle(document.documentElement);
-  return {
-    ink: css.getPropertyValue('--ink').trim(),
-    muted: css.getPropertyValue('--muted').trim(),
-    line: css.getPropertyValue('--line').trim(),
-    green: css.getPropertyValue('--green').trim(),
-    blue: css.getPropertyValue('--blue').trim(),
-    amber: css.getPropertyValue('--amber').trim(),
-    surface: css.getPropertyValue('--surface').trim()
-  };
-}
-
-function layout({height=410, xTitle='', yTitle='', margin={l:64,r:28,t:30,b:58}} = {}) {
-  const c = chartTheme();
-  return {
-    height, margin, paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
-    transition:{duration:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?0:350,easing:'cubic-in-out'},
-    hovermode:'x unified',
-    font:{family:'Inter, sans-serif', size:11, color:c.ink},
-    xaxis:{title:xTitle, gridcolor:c.line, linecolor:c.line, zeroline:false, color:c.muted, automargin:true},
-    yaxis:{title:yTitle, gridcolor:c.line, linecolor:c.line, zeroline:false, color:c.muted, automargin:true},
-    legend:{orientation:'h', x:0, y:1.12, font:{size:10}},
-    hoverlabel:{bgcolor:c.surface,bordercolor:c.line,font:{family:'Inter, sans-serif',color:c.ink}}
-  };
-}
-
-const plotConfig = {displayModeBar:false, responsive:true, scrollZoom:false};
-
-function renderHeadline() {
-  const {cstep, cn50} = refs();
-  const o = observed()?.electricity;
-  const metrics = o ? [
-    ['FY2024-25 electricity sales', `${fmt(o.annual_sales_within_state_and_open_access_mu / 1000, 2)} TWh`, 'within state + open access', 'Kerala Economic Review 2025'],
-    ['FY2024-25 maximum peak', `${fmt(o.maximum_peak_demand_mw / 1000, 2)} GW`, o.maximum_peak_date || 'observed maximum', 'Kerala Economic Review 2025'],
-    ['Installed capacity', `${fmt(o.installed_capacity_mw, 2)} MW`, 'as at 31 March 2025', 'Kerala Economic Review 2025'],
-    ['T&D loss', `${fmt(o.td_loss_pct, 2)}%`, 'reported FY2024-25', 'Kerala Economic Review 2025']
-  ] : [
-    ['CSTEP 2040 demand', `${fmt(cstep.fy2040?.final_demand_with_td_losses_mu / 1000, 1)} TWh`, 'incl. T&D losses', 'CSTEP 2024'],
-    ['CSTEP 2040 peak', `${fmt(cstep.fy2040?.peak_demand_mw / 1000, 2)} GW`, 'published planning benchmark', 'CSTEP 2024'],
-    ['In-state resource potential', `${fmt(cn50.in_state_resource_potential_gw?.total, 2)} GW`, 'screened technical potential in CN50', 'Kerala CN50 2026'],
-    ['CN50 2040 net-grid demand', `${fmt(cn50.net_grid_demand_twh?.cn50_2040, 1)} TWh`, 'carbon-neutral pathway', 'Kerala CN50 2026']
-  ];
-  qs('#headlineMetrics').innerHTML = metrics.map(([label,value,note,source]) => `<div class="headline-metric"><small>${esc(label)}</small><strong>${esc(value)}</strong><span>${esc(note)}</span><span class="metric-source"> · ${esc(source)}</span></div>`).join('');
-  qs('#heroDemandNumber').textContent = fmt(baseline()?.aggregate_import_share * 100, 1);
-}
-
-function renderOverview(metric = state.currentOverviewMetric) {
-  state.currentOverviewMetric = metric;
-  qsa('#overviewMetricTabs button').forEach(b => b.classList.toggle('active', b.dataset.metric === metric));
-  if (!window.Plotly) return;
-  const {cstep, cn50} = refs();
-  const c = chartTheme();
-  let traces = [], chartLayout = layout(), note = '', insight = '';
-
-  if (metric === 'demand') {
-    const labels = ['CSTEP 2040', 'CN50 BAU 2040', 'CN50 pathway 2040'];
-    const values = [cstep.fy2040.final_demand_with_td_losses_mu/1000, cn50.net_grid_demand_twh.bau_2040, cn50.net_grid_demand_twh.cn50_2040];
-    traces = [{type:'bar', x:labels, y:values, marker:{color:[c.green,c.blue,c.amber]}, text:values.map(v=>`${fmt(v,1)} TWh`), textposition:'outside', hovertemplate:'%{x}<br>%{y:.2f} TWh<extra></extra>'}];
-    chartLayout = {...layout({yTitle:'TWh/year'}), showlegend:false};
-    note = 'The published studies use different scopes and electrification assumptions; values are displayed side-by-side, not blended.';
-    insight = `<span class="eyebrow">WHY THE RANGE MATTERS</span><h3>There is no single “2040 demand” number.</h3><p>CSTEP and Kerala CN50 answer different planning questions. Kerala 2040 keeps both as external benchmarks and tests its own assumptions against measured history.</p><div class="insight-stat"><strong>${fmt(values[2]-values[0],1)} TWh</strong><span>difference between the two displayed 2040 endpoints</span></div><button class="text-button" data-route="pathways">Compare pathways →</button>`;
-  } else if (metric === 'capacity') {
-    const cap = cstep.cited_capacity_addition_bau_mw || {};
-    const labels = ['Solar','Wind','Large hydro','Small hydro'];
-    const values = [cap.solar,cap.wind,cap.large_hydro,cap.small_hydro].map(v=>n(v)||0);
-    traces = [{type:'bar', orientation:'h', y:labels, x:values, marker:{color:c.green}, text:values.map(v=>`${fmt(v/1000,2)} GW`), textposition:'outside', hovertemplate:'%{y}<br>%{x:,.0f} MW<extra></extra>'}];
-    chartLayout = {...layout({xTitle:'MW of cited BAU additions', margin:{l:95,r:80,t:30,b:58}}), showlegend:false};
-    note = 'CSTEP 2024 cited BAU capacity additions. These are reference-study values, not Kerala 2040 model results.';
-    insight = `<span class="eyebrow">RESOURCE CONTEXT</span><h3>${fmt(cn50.in_state_resource_potential_gw.total,2)} GW screened in-state potential.</h3><p>The 2026 CN50 report gives a separate resource-potential estimate. Technical potential is not the same as buildable capacity after ecology, grid and land constraints.</p><div class="insight-stat"><strong>${fmt(cn50.in_state_resource_potential_gw.ground_mounted_solar,2)} GW</strong><span>ground-mounted solar potential in the CN50 reference</span></div><button class="text-button" data-route="atlas">Open the atlas →</button>`;
-  } else {
-    const st = statusMap();
-    const labels = Object.keys(st).map(k => friendlyStatusName(k));
-    const values = Object.values(st).map(() => 1);
-    const colors = Object.values(st).map(v => v.available ? c.green : (v.evidence === 'gap' ? c.amber : c.blue));
-    const words = Object.values(st).map(v => v.available ? 'connected' : (v.evidence === 'gap' ? 'gap' : 'pending'));
-    traces = [{type:'bar', orientation:'h', y:labels, x:values, marker:{color:colors}, text:words, textposition:'inside', hovertemplate:'%{y}: %{text}<extra></extra>'}];
-    chartLayout = {...layout({margin:{l:180,r:25,t:30,b:45}}), showlegend:false, xaxis:{visible:false, range:[0,1]}};
-    note = 'Categorical evidence state only — no artificial completion percentages are assigned.';
-    const ready = Object.values(st).filter(v=>v.available).length;
-    insight = `<span class="eyebrow">EVIDENCE FIRST</span><h3>${ready} connected evidence layer${ready===1?'':'s'} in the current public bundle.</h3><p>Model outputs remain provisional until the historical system is reconstructed well enough to calibrate dispatch, imports and hydro behaviour.</p><div class="insight-stat"><strong>${Object.values(st).filter(v=>v.evidence==='gap').length}</strong><span>explicit high-priority data gap(s)</span></div><button class="text-button" data-route="data">Inspect sources →</button>`;
-  }
-  Plotly.react('overviewChart', traces, chartLayout, plotConfig);
-  qs('#overviewChartNote').textContent = note;
-  qs('#overviewInsight').innerHTML = insight;
-  bindRouteButtons(qs('#overviewInsight'));
-}
-
-function friendlyStatusName(key) {
-  const names = {
-    official_observed_2024_25:'Official FY2024-25 baseline',
-    sldc_daily:'SLDC daily balance',
-    baseline_summary:'Historical summary',
-    reservoir_storage:'Reservoir storage',
-    weather:'NASA POWER weather',
-    era5_reanalysis:'ERA5 reanalysis',
-    grid_india_psp:'Grid-India cross-check',
-    kseb_project_inventory:'KSEB project inventory',
-    kseb_historical_export:'KSEB historical export',
-    hazard_layers:'KSDMA hazard layers',
-    hourly_load_proxy:'Hourly load reconstruction',
-    hourly_state_load:'Measured hourly state load'
-  };
-  return names[key] || key.replaceAll('_',' ');
-}
-
-function renderEvidenceFeed() {
-  const st = statusMap();
-  const entries = Object.entries(st);
-  if (!entries.length) { qs('#evidenceFeed').innerHTML = '<div class="evidence-item"><strong>No status registry in bundle.</strong></div>'; return; }
-  qs('#evidenceFeed').innerHTML = entries.map(([key,v]) => {
-    const stateClass = v.partial ? 'progress' : v.available ? 'ready' : (v.evidence === 'gap' ? 'gap' : 'progress');
-    const proxy = String(v.evidence || '').startsWith('proxy');
-    const word = v.partial ? 'Partial acquisition' : proxy && v.available ? 'Proxy available' : v.available ? 'Available' : (v.evidence === 'gap' ? 'Data gap' : 'Pending');
-    return `<article class="evidence-item"><div class="status-row"><i class="status-dot ${stateClass}"></i><strong>${esc(friendlyStatusName(key))}</strong></div><p>${esc(word)}${v.note ? ` · ${v.note}` : ''}</p></article>`;
-  }).join('');
-}
-
-function observed() { return state.data?.observed || null; }
-function baseline() { return state.data?.baseline || null; }
-
-function renderElectricity() {
-  const b = baseline();
-  const o = observed()?.electricity;
-  const {cstep} = refs();
-  const dailyReady = !!(state.daily?.records?.length);
-  const status = qs('#electricityStatus');
-  status.textContent = dailyReady ? `${state.daily.records.length} daily records connected` : 'Historical refresh pending';
-  status.classList.toggle('neutral', !dailyReady);
-
-  const kpis = b ? [
-    ['Observed-day consumption', `${fmt(b.consumption_twh,2)} TWh`, `${b.rows} days; not a complete annual total`],
-    ['In-state generation', `${fmt(b.internal_generation_twh,2)} TWh`, `${pct(b.aggregate_internal_share)} of consumption`],
-    ['Net imports', `${fmt(b.net_import_twh,2)} TWh`, `${pct(b.aggregate_import_share)} aggregate share`],
-    ['Coverage', pct(b.coverage_fraction,1), `${b.rows ?? '—'} daily records`]
-  ] : o ? [
-    ['FY2024-25 electricity sales', `${fmt(o.annual_sales_within_state_and_open_access_mu/1000,2)} TWh`, 'official annual reference'],
-    ['Maximum peak demand', `${fmt(o.maximum_peak_demand_mw/1000,2)} GW`, o.maximum_peak_date || 'FY2024-25'],
-    ['Installed capacity', `${fmt(o.installed_capacity_mw/1000,2)} GW`, 'reported FY2024-25'],
-    ['Hourly chronology', 'Open gap', 'authenticated 8760/35040 series still needed']
-  ] : [
-    ['2040 demand reference', `${fmt(cstep.fy2040.final_demand_with_td_losses_mu/1000,1)} TWh`, 'CSTEP 2024'],
-    ['2040 peak reference', `${fmt(cstep.fy2040.peak_demand_mw/1000,2)} GW`, 'CSTEP 2024'],
-    ['Measured daily baseline', dailyReady ? 'Connected' : 'Refreshing', dailyReady ? `${state.daily.records.length} records` : 'not yet in public bundle'],
-    ['Hourly chronology', 'Open gap', 'authenticated 8760/35040 series needed']
-  ];
-  qs('#electricityKpis').innerHTML = kpis.map(([l,v,m])=>`<div class="kpi-card"><small>${esc(l)}</small><strong>${esc(v)}</strong><span>${esc(m)}</span></div>`).join('');
-
-  const select = qs('#electricityMetric');
-  const optionData = {
-    hydro_seasons: Object.keys(state.data?.research_results?.products?.hydro?.seasonal||{}),
-    cstep_demand: state.data?.research_results?.products?.cstep?.tables?.demand_projection_fy2023_fy2040,
-    daily: state.daily?.records,
-    monthly: state.monthly?.records,
-    duration: state.duration?.records,
-    hourly_proxy: state.hourlySeries?.records,
-    proxy_duration: state.hourlyProxy?.duration_bins,
-    india_mix: state.nationalContext?.generation_average_day,
-    india_price: state.nationalContext?.market_average_day,
-    kseb_capacity: state.ksebHistory?.series?.installed_capacity,
-    kseb_energy: state.ksebHistory?.series?.annual_energy_balance,
-    kseb_loss: state.ksebHistory?.series?.td_loss,
-    kseb_network: state.ksebHistory?.series?.network
-  };
-  for (const option of select.options) {
-    option.disabled = option.value !== 'reference' && !(optionData[option.value]?.length);
-  }
-  if (select.options[select.selectedIndex]?.disabled) {
-    select.value = dailyReady ? 'daily' : 'reference';
-  }
-  renderElectricityChart(select.value);
-  renderCapacityChart();
-  renderElectricityEvidence();
-}
-
-function renderElectricityChart(metric) {
-  const c = chartTheme();
-  const {cstep, cn50} = refs();
-  let traces = [], chartLayout = layout(), title = '', note = '';
-  const isTimed = ['daily','hourly_proxy'].includes(metric);
-  const period = qs('#electricityPeriod');
-  const selectedPeriod = period.value;
-  const available = metric==='hourly_proxy' ? state.hourlySeries?.records||[] : state.daily?.records||[];
-  const months = [...new Set(available.map(r=>(r.date||r.timestamp).slice(0,7)))].sort();
-  period.innerHTML = '<option value="all">Full available period</option>'+months.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
-  period.value = months.includes(selectedPeriod)?selectedPeriod:'all';
-  period.disabled=!isTimed;
-  qs('#chartUnitControl').hidden=metric!=='india_mix';
-  const selectPeriod=rows=>period.value==='all'?rows:rows.filter(r=>(r.date||r.timestamp).startsWith(period.value));
-  state.chartRows=[];state.chartColumns=[];
-  if (metric === 'hourly_proxy' && state.hourlySeries?.records?.length) {
-    const d=selectPeriod(state.hourlySeries.records);
-    traces=[{type:'scatter',mode:'lines',name:'Reconstructed load',x:d.map(r=>r.timestamp.slice(0,19)),y:d.map(r=>r.load_mw),line:{color:c.green,width:1.6},hovertemplate:'%{x}<br>%{y:,.1f} MW<extra>Proxy · IST</extra>'},
-      {type:'scatter',mode:'markers',name:'Day energy interpolated',x:d.filter(r=>r.daily_energy_imputed).map(r=>r.timestamp.slice(0,19)),y:d.filter(r=>r.daily_energy_imputed).map(r=>r.load_mw),marker:{color:c.amber,size:3},hovertemplate:'%{x}<br>%{y:,.1f} MW<extra>Proxy · imputed daily total</extra>'}];
-    chartLayout=layout({xTitle:'Local time (IST) · interval start',yTitle:'Reconstructed load (MW)'});
-    title='Hourly Kerala load · reconstructed, not measured';
-    note=`${d.length.toLocaleString()} displayed hours. Daily energy preserved; ${state.hourlyProxy?.daily_observations_interpolated??'unknown'} missing daily totals interpolated in the full year. The assumed intraday shape is not independently validated.`;
-    state.chartRows=d;state.chartColumns=[['timestamp','Interval start (IST)'],['load_mw','Proxy load (MW)'],['daily_energy_imputed','Daily energy interpolated'],['classification','Evidence class']];
-  } else if(metric==='hydro_seasons' && state.data?.research_results?.products?.hydro){
-    const d=Object.entries(state.data.research_results.products.hydro.seasonal).map(([season,row])=>({season,...row}));
-    traces=[['Hydro','hydro_mu_mean',c.green],['Net imports','net_import_mu_mean',c.amber]].map(([name,key,color])=>({type:'bar',name,x:d.map(r=>r.season.replaceAll('_',' ')),y:d.map(r=>r[key]),marker:{color},hovertemplate:'%{x}<br>%{y:.2f} MU/day<extra>'+name+'</extra>'}));
-    chartLayout={...layout({yTitle:'Mean observed daily energy (MU)'}),barmode:'group'};
-    title='Hydro and imports across observed seasons';note='Kerala SLDC FY2024–25, 354 observed days. Unequal seasonal coverage; missing days are not filled. This comparison describes co-movement and does not establish dispatch causality.';
-    state.chartRows=d;state.chartColumns=[['season','Season'],['days','Observed days'],['hydro_mu_mean','Hydro mean (MU/day)'],['net_import_mu_mean','Net imports mean (MU/day)'],['storage_pct_mean','Storage mean (%)']];
-  } else if(metric==='cstep_demand' && state.data?.research_results?.products?.cstep){
-    const d=state.data.research_results.products.cstep.tables.demand_projection_fy2023_fy2040;
-    traces=[['Published final requirement','published_final_demand_with_td_losses_mu',c.green],['Published demand before losses','published_final_demand_without_td_losses_mu',c.amber]].map(([name,key,color])=>({type:'scatter',mode:'lines+markers',name,x:d.map(r=>r.financial_year),y:d.map(r=>r[key]/1000),line:{color,width:2},hovertemplate:'FY%{x}<br>%{y:.2f} TWh<extra>'+name+'</extra>'}));
-    chartLayout=layout({xTitle:'Financial year ending',yTitle:'Published annual demand (TWh)'});
-    title='CSTEP 2024 demand pathway · external benchmark';note='Published external scenario, report page 54. These are CSTEP projections, not observed demand or Kerala 2040 optimisation results. Published totals and rounding differences are preserved.';
-    state.chartRows=d;state.chartColumns=[['financial_year','Financial year'],['published_final_demand_with_td_losses_mu','Requirement (MU)'],['published_final_demand_without_td_losses_mu','Before losses (MU)'],['ev_demand_mu','EV (MU)'],['induction_cooktop_demand_mu','Cooking (MU)'],['classification','Evidence class'],['report_page','Report page']];
-  } else if(metric==='proxy_duration'  && state.hourlyProxy?.duration_bins?.length){
-    const d=state.hourlyProxy.duration_bins;
-    traces=[['CEA reference','hours',c.ink],['Reconstruction','proxy_hours',c.green]].map(([name,key,color])=>({type:'bar',name,x:d.map(r=>`${r.min_mw}–${r.max_mw}`),y:d.map(r=>r[key]),marker:{color},hovertemplate:'%{x} MW<br>%{y} hours<extra>'+name+'</extra>'}));
-    chartLayout={...layout({xTitle:'Load interval (MW, upper bound excluded)',yTitle:'Hours'}),barmode:'group'};
-    title='Load-duration fit: published bins and reconstruction';note='These are fitting targets, not independent validation. A close annual total or peak does not establish an accurate hourly chronology. Differences remain visible here.';
-    state.chartRows=d;state.chartColumns=[['min_mw','From MW'],['max_mw','Below MW'],['hours','CEA hours'],['proxy_hours','Proxy hours'],['difference_hours','Difference hours']];
-  } else if(['india_mix','india_price'].includes(metric) && state.nationalContext){
-    const ep=state.nationalContext;
-    if(metric==='india_mix'){
-      const d=ep.generation_average_day;const share=qs('#chartUnit').value==='share';
-      const defs=[['Thermal','thermal',c.ink],['Nuclear','nuclear','#8b7196'],['Gas','gas',c.amber],['Hydro','hydro','#547f94'],['Wind','wind',c.green],['Solar','solar','#c5a54a'],['Storage discharge','storage_gen','#90ad84'],['Others','others','#aaa']];
-      traces=defs.filter(([,key])=>d.some(r=>n(r[key])!=null)).map(([name,key,color])=>({type:'scatter',mode:'lines',stackgroup:'generation',...(share?{groupnorm:'percent'}:{}),name,x:d.map(r=>r.time),y:d.map(r=>n(r[key])==null?null:r[key]/1000),line:{color,width:0.6},fillcolor:color,hovertemplate:`${name}<br>%{x}<br>%{y:.2f} ${share?'%':'GW'}<extra></extra>`}));
-      chartLayout=layout({xTitle:'Time of day · source clock',yTitle:share?'Generation share (%)':'Average generation (GW)'});chartLayout.xaxis={...chartLayout.xaxis,type:'category',tickvals:['00:00','06:00','12:00','18:00','23:45']};
-      title=`India's average generation day · ${ep.month}`;
-      state.chartRows=d;state.chartColumns=[['time','Source time'],...defs.map(([label,key])=>[key,`${label} (MW)`])];
-    }else{
-      const d=ep.market_average_day;traces=[{type:'scatter',mode:'lines',name:'National day-ahead price',x:d.map(r=>r.time),y:d.map(r=>r.price_inr_per_kwh),line:{color:c.green,width:2},fill:'tozeroy',fillcolor:'rgba(52,119,89,.12)',hovertemplate:'%{x}<br>₹%{y:.2f}/kWh<extra>National market</extra>'}];
-      chartLayout=layout({xTitle:'Time of day · source clock',yTitle:'Average market price (₹/kWh)'});chartLayout.xaxis={...chartLayout.xaxis,type:'category',tickvals:['00:00','06:00','12:00','18:00','23:45']};title=`India day-ahead market · ${ep.month}`;
-      state.chartRows=d;state.chartColumns=[['time','Source time'],['price_inr_per_kwh','Price (INR/kWh)'],['sample_days','Days sampled']];
-    }
-    note=`India-wide context via Energy Project (publisher attributes NLDC / IEX / CEA). ${ep.month_complete?'Complete':'Partial'} month: generation ${ep.generation_date_range.join(' to ')} (${ep.generation_days} days); market ${ep.market_date_range.join(' to ')} (${ep.market_days} days). Not Kerala telemetry or a delivered tariff. Storage discharge is separate; no clean-energy claim is inferred. Exported generation values remain in MW.`;
-  } else if (metric === 'daily' && state.daily?.records?.length) {
-    const d = selectPeriod(state.daily.records);
-    const defs = [['Consumption','consumption_mu',c.ink],['Internal generation','internal_generation_mu',c.green],['Net imports','net_import_interface_mu',c.amber],['Hydro','hydel_total_mu',c.blue]];
-    traces = defs.filter(([,k])=>d.some(r=>n(r[k])!=null)).map(([name,k,color])=>({type:'scatter', mode:'lines', name, x:d.map(r=>r.date), y:d.map(r=>r[k]), line:{width:1.6,color}, hovertemplate:`${name}<br>%{x}<br>%{y:.2f} MU<extra></extra>`}));
-    chartLayout = layout({yTitle:'MU/day'}); title = 'Daily electricity balance'; note = `${d.length} records from the processed Kerala SLDC bundle.`;
-    state.chartRows=d;state.chartColumns=[['date','Date'],['consumption_mu','Consumption (MU)'],['internal_generation_mu','Internal generation (MU)'],['net_import_interface_mu','Net imports (MU)'],['hydel_total_mu','Hydro (MU)']];
-    traces.forEach(trace=>{const x=[],y=[];trace.x.forEach((date,i)=>{if(i&&Date.parse(date)-Date.parse(trace.x[i-1])>86400000){x.push(new Date(Date.parse(trace.x[i-1])+86400000).toISOString().slice(0,10));y.push(null)}x.push(date);y.push(trace.y[i])});trace.x=x;trace.y=y;trace.connectgaps=false});
-    note+=' Missing days remain gaps; hover to compare series, click a legend label to toggle it.';
-  } else if (metric === 'monthly' && state.monthly?.records?.length) {
-    const m = state.monthly.records;
-    traces = [['Consumption','consumption_mu',c.ink],['Internal generation','internal_generation_mu',c.green],['Net imports','net_import_interface_mu',c.amber]].filter(([,k])=>m.some(r=>n(r[k])!=null)).map(([name,k,color])=>({type:'bar', name, x:m.map(r=>r.month), y:m.map(r=>r[k]), marker:{color}, hovertemplate:`${name}<br>%{x}<br>%{y:.1f} MU<extra></extra>`}));
-    chartLayout = {...layout({yTitle:'MU / observed month'}),barmode:'group'}; title = 'Monthly system balance'; note = 'Sums of available days only. Months with missing observations are incomplete; no days are estimated.';
-  } else if (metric === 'duration' && state.duration?.records?.length) {
-    const d = state.duration.records;
-    traces = [{type:'scatter',mode:'lines',x:d.map(r=>r.rank),y:d.map(r=>100*n(r.import_share)),line:{color:c.green,width:2},hovertemplate:'Rank %{x}<br>%{y:.1f}% imports<extra></extra>'}];
-    chartLayout = layout({xTitle:'Days ranked from highest import share',yTitle:'Imports / consumption (%)'}); title = 'Import-dependence duration curve'; note = 'Derived from measured daily balance; this is not an hourly duration curve.';
-  } else if (metric === 'kseb_capacity' && state.ksebHistory?.series?.installed_capacity?.length) {
-    const d = state.ksebHistory.series.installed_capacity;
-    traces = [{type:'scatter',mode:'lines',x:d.map(r=>r.year),y:d.map(r=>r.mw),line:{color:c.green,width:2.2},hovertemplate:'%{x}<br>%{y:,.2f} MW<extra></extra>'}];
-    chartLayout = layout({xTitle:'Financial year',yTitle:'Installed capacity (MW)'});
-    title = 'KSEB installed-capacity history';
-    const latest=d[d.length-1];
-    const ref=observed()?.electricity?.installed_capacity_mw;
-    note = `Official KSEB export · ${latest.year}: ${fmt(latest.mw,2)} MW. Economic Review reference: ${fmt(ref,2)} MW; difference ${fmt(latest.mw-ref,2)} MW.`;
-  } else if (metric === 'kseb_energy' && state.ksebHistory?.series?.annual_energy_balance?.length) {
-    const d = state.ksebHistory.series.annual_energy_balance;
-    const defs = [
-      ['Generation excl. auxiliary','generation_excl_aux_mu',c.green],
-      ['Power purchased / import','power_purchased_import_mu',c.amber],
-      ['Sales incl. open access','sales_incl_open_access_mu',c.blue]
-    ];
-    traces = defs.map(([name,key,color])=>({type:'scatter',mode:'lines',name,x:d.map(r=>r.year),y:d.map(r=>r[key]),line:{color,width:2},hovertemplate:`${name}<br>%{x}<br>%{y:,.1f} MU<extra></extra>`}));
-    chartLayout = layout({xTitle:'Financial year',yTitle:'Annual energy (MU)'});
-    title = 'KSEB annual generation, purchases and sales';
-    note = 'The KSEB export label “Power Purchased_Import” is preserved; it is not silently redefined as net interstate imports.';
-  } else if (metric === 'kseb_loss' && state.ksebHistory?.series?.td_loss?.length) {
-    const d = state.ksebHistory.series.td_loss;
-    traces = [{type:'scatter',mode:'lines+markers',x:d.map(r=>r.year),y:d.map(r=>r.pct),line:{color:c.amber,width:2},marker:{size:5},hovertemplate:'%{x}<br>%{y:.2f}%<extra></extra>'}];
-    chartLayout = layout({xTitle:'Financial year',yTitle:'T&D loss (%)'});
-    title = 'KSEB transmission & distribution loss history';
-    note = `Official KSEB export · ${d[0].year}: ${fmt(d[0].pct,2)}% → ${d[d.length-1].year}: ${fmt(d[d.length-1].pct,2)}%.`;
-  } else if (metric === 'kseb_network' && state.ksebHistory?.series?.network?.length) {
-    const d = state.ksebHistory.series.network;
-    traces = [
-      {type:'scatter',mode:'lines',name:'11 kV lines',x:d.map(r=>r.year),y:d.map(r=>r.line_11kv_km),line:{color:c.green,width:2},hovertemplate:'11 kV<br>%{x}<br>%{y:,.0f} km<extra></extra>'},
-      {type:'scatter',mode:'lines',name:'LT lines',x:d.map(r=>r.year),y:d.map(r=>r.lt_line_km),line:{color:c.blue,width:2},hovertemplate:'LT<br>%{x}<br>%{y:,.0f} km<extra></extra>'}
-    ];
-    chartLayout = layout({xTitle:'Financial year',yTitle:'Line length (km)'});
-    title = 'KSEB distribution-network growth';
-    const latest=d[d.length-1];
-    note = `${latest.year}: ${fmt(latest.line_11kv_km,0)} km of 11 kV lines, ${fmt(latest.lt_line_km,0)} km of LT lines and ${fmt(latest.distribution_transformers,0)} distribution transformers.`;
-  } else {
-    const labels = ['CSTEP 2040', 'CN50 BAU 2040', 'CN50 pathway 2040'];
-    const values = [cstep.fy2040.final_demand_with_td_losses_mu/1000, cn50.net_grid_demand_twh.bau_2040, cn50.net_grid_demand_twh.cn50_2040];
-    traces = [{type:'bar',x:labels,y:values,marker:{color:[c.green,c.blue,c.amber]},text:values.map(v=>fmt(v,1)),textposition:'outside',hovertemplate:'%{x}<br>%{y:.2f} TWh<extra></extra>'}];
-    chartLayout = {...layout({yTitle:'TWh/year'}),showlegend:false}; title = 'Published 2040 electricity-demand references'; note = 'Independent studies with different accounting scopes. These are published references, not outputs of this model.';
-  }
-  qs('#electricityChartTitle').textContent = title;
-  qs('#electricityChartNote').textContent = note;
-  if(metric.startsWith('india_'))qs('#electricityChartNote').innerHTML+=` <a href="https://www.energyproject.in/grid" target="_blank" rel="noopener">Source: Energy Project ↗</a>`;
-  state.chartTitle=title;
-  if(!state.chartColumns.length){
-    state.chartColumns=[['series','Series'],['x',chartLayout.xaxis?.title||'Period'],['value',chartLayout.yaxis?.title||'Value']];
-    state.chartRows=traces.flatMap(t=>t.x.map((x,i)=>({series:t.name||title,x,value:t.y[i]})));
-  }
-  qs('#chartValues').innerHTML=`<p class="chart-values-note">${state.chartRows.length.toLocaleString()} values. Showing the first ${Math.min(96,state.chartRows.length)}; download chart data for all values. ${esc(title)}</p><div class="table-scroll"><table><thead><tr>${state.chartColumns.map(([,label])=>`<th>${esc(label)}</th>`).join('')}</tr></thead><tbody>${state.chartRows.slice(0,96).map(r=>`<tr>${state.chartColumns.map(([key])=>`<td>${typeof r[key]==='number'?fmt(r[key],3):esc(r[key]??'—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-  if(window.Plotly){
-    const revision=(state.chartRevision||0)+1;state.chartRevision=revision;
-    qs('#downloadChartImage').disabled=true;
-    const nextLayout={...chartLayout,datarevision:revision};
-    state.chartRender=Promise.resolve(state.chartRender).catch(()=>{}).then(async()=>{
-      if(revision!==state.chartRevision)return;
-      if(state.lastChartMetric!==metric){
-        Plotly.purge('electricityChart');
-        nextLayout.transition={duration:0};
-      }
-      await Plotly.react('electricityChart',traces,nextLayout,plotConfig);
-      state.lastChartMetric=metric;
-      if(revision===state.chartRevision)qs('#downloadChartImage').disabled=false;
-    }).catch(error=>{console.error(error);qs('#electricityChartNote').textContent+=' Chart could not render; use the values table or CSV.';});
-  }
-}
-
-function renderCapacityChart() {
-  if (!window.Plotly) return;
-  const c = chartTheme();
-  const observedMix = observed()?.electricity?.capacity_mix_mw;
-  const cap = observedMix || refs().cstep.cited_capacity_addition_bau_mw || {};
-  const labels = observedMix ? ['Hydro','Solar','Thermal','Wind'] : ['Solar','Wind','Large hydro','Small hydro'];
-  const values = observedMix
-    ? [cap.hydel,cap.solar,cap.thermal,cap.wind].map(v=>n(v)||0)
-    : [cap.solar,cap.wind,cap.large_hydro,cap.small_hydro].map(v=>n(v)||0);
-  Plotly.react('capacityChart',[{type:'bar',x:labels,y:values,marker:{color:c.green},text:values.map(v=>`${fmt(v/1000,2)} GW`),textposition:'outside',hovertemplate:'%{x}<br>%{y:,.0f} MW<extra></extra>'}],{...layout({height:330,yTitle:'MW'}),showlegend:false},plotConfig);
-}
-
-function renderElectricityEvidence() {
-  const st = statusMap();
-  const rows = [
-    ['Official FY2024-25 baseline', st.official_observed_2024_25, 'Kerala Economic Review / KSEBL annual reference'],
-    ['SLDC daily electricity balance', st.sldc_daily, 'Measured state system accounting'],
-    ['Reservoir / hydro chronology', st.reservoir_storage, 'Measured hydro-storage evidence'],
-    ['NASA POWER weather', st.weather, 'Hourly representative-point weather'],
-    ['ERA5 reanalysis', st.era5_reanalysis, 'Independent hourly climate/reanalysis input'],
-    ['Grid-India cross-check', st.grid_india_psp, 'Independent official daily cross-check'],
-    ['KSEB historical export', st.kseb_historical_export, 'Annual capacity, generation, purchases, losses, network and consumer history'],
-    ['Measured hourly Kerala load', st.hourly_state_load || {available:false,evidence:'gap'}, 'Authenticated 8760/35040 chronology remains an open data gap']
-  ];
-  qs('#electricityEvidence').innerHTML = rows.map(([label,s,desc]) => {
-    const available = s?.available; const gap = s?.evidence === 'gap'; const proxy = String(s?.evidence || '').startsWith('proxy');
-    return `<div class="evidence-row"><i class="status-dot ${available?'ready':gap?'gap':'progress'}"></i><div><strong>${esc(label)}</strong><p>${esc(desc)}</p></div><span>${s?.partial?'partial':proxy&&available?'proxy':available?'available':gap?'gap':'pending'}</span></div>`;
-  }).join('');
-}
-
-function renderPathwayReferences() {
-  if (!window.Plotly) return;
-  const {cstep,cn50} = refs(); const c = chartTheme();
-  const labels = ['2030','2040'];
-  const bau = [cn50.net_grid_demand_twh.bau_2030,cn50.net_grid_demand_twh.bau_2040];
-  const carbon = [cn50.net_grid_demand_twh.cn50_2030,cn50.net_grid_demand_twh.cn50_2040];
-  const cstep2040 = cstep.fy2040.final_demand_with_td_losses_mu/1000;
-  Plotly.react('pathwayReferenceChart',[
-    {type:'bar',name:'Kerala CN50 · BAU',x:labels,y:bau,marker:{color:c.blue}},
-    {type:'bar',name:'Kerala CN50 · CN50',x:labels,y:carbon,marker:{color:c.amber}},
-    {type:'scatter',mode:'markers+text',name:'CSTEP · 2040',x:['2040'],y:[cstep2040],marker:{size:14,color:c.green},text:[`${fmt(cstep2040,1)} TWh`],textposition:'top center'}
-  ],{...layout({yTitle:'TWh/year'}),barmode:'group'},plotConfig);
-  qs('#referenceNarrative').innerHTML = `<span class="eyebrow">DO NOT BLEND THESE</span><h3>Different scope produces different demand.</h3><p>The 2024 CSTEP roadmap and the 2026 Kerala CN50 report are independent published references. Kerala 2040 uses them as boundary checks, not as interchangeable forecasts.</p><div class="ref-row"><strong>${fmt(cstep2040,2)} TWh · ${fmt(cstep.fy2040.peak_demand_mw/1000,2)} GW peak</strong><span>CSTEP 2040 · demand including stated T&D losses</span></div><div class="ref-row"><strong>${fmt(cn50.net_grid_demand_twh.bau_2040,2)} / ${fmt(cn50.net_grid_demand_twh.cn50_2040,2)} TWh</strong><span>Kerala CN50 2040 · BAU / carbon-neutral pathway net-grid demand</span></div>`;
-}
-
-function renderScenarioLab(selectedCode = null) {
-  const list = scenarios();
-  if (!list.length) return;
-  const chosen = list.find(s=>s.code===selectedCode) || list.find(s=>s.code===state.selectedScenario) || list[0];
-  state.selectedScenario = chosen.code;
-  qs('#scenarioRail').innerHTML = list.map(s=>`<button class="scenario-tab ${s.code===chosen.code?'active':''}" data-scenario="${esc(s.code)}"><span>${esc(s.code)} · ${esc(s.type)}</span><strong>${esc(s.name)}</strong></button>`).join('');
-  qs('#scenarioCode').textContent = chosen.code;
-  qs('#scenarioName').textContent = chosen.name;
-  qs('#scenarioType').textContent = chosen.type;
-  qs('#scenarioDescription').textContent = chosen.description;
-
-  const dims = chosen.dimensions || {
-    'Demand flexibility': chosen.demand_flexibility,
-    'Ecology constraint': String(chosen.ecology_constraint).replaceAll('_',' '),
-    'Interstate trade': chosen.import_option ? 'enabled' : 'disabled'
-  };
-  qs('#scenarioDimensions').innerHTML = Object.entries(dims).map(([k,v])=>`<div class="scenario-dimension"><span>${esc(k)}</span><strong>${esc(v)}</strong></div>`).join('');
-
-  renderScenarioInputChart(chosen);
-  const stresses = state.data?.stress_tests || {};
-  qs('#stressTests').innerHTML = Object.entries(stresses).map(([id,s])=>`<button class="chip ${state.selectedStress.has(id)?'active':''}" data-stress="${esc(id)}" aria-pressed="${state.selectedStress.has(id)}" title="${esc(s.description||'')}">${esc(id.replaceAll('_',' '))}</button>`).join('');
-}
-
-function renderScenarioInputChart(s) {
-  qs('#scenarioInputChart').innerHTML = `<div class="model-gate"><span class="section-label">SCENARIO DESIGN · ${esc(s.code)}</span><h3>Ready to specify.<br>Not yet ready to solve.</h3><p>Daily accounting has been checked. Authenticated hourly demand, calibrated dispatch and numerical resource, grid and cost constraints are still needed before optimisation.</p><a class="text-link" href="${REPO}/blob/main/docs/hourly_demand_gap.md">See the calibration requirements ↗</a></div>`;
-  renderStressSelection();
-}
-
-function renderStressSelection() {
-  const selected = [...state.selectedStress];
-  qs('#stressSelection').innerHTML = selected.length
-    ? selected.map(id => `<p><strong>${esc(id.replaceAll('_',' '))}</strong> — ${esc(state.data.stress_tests[id]?.description)}</p>`).join('')
-    : '<p>Model-development assumptions and stress inputs are maintained in GitHub.</p>';
-}
-
-function downloadSpecification() {
-  const scenario = scenarios().find(s => s.code === state.selectedScenario);
-  const payload = {classification:'unsolved_scenario_specification', model_year:2040, scenario,
-    stress_tests:Object.fromEntries([...state.selectedStress].map(id=>[id,state.data.stress_tests[id]])),
-    evidence_commit:state.data.metadata.git_sha, hourly_model_calibrated:false};
-  const url = URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));
-  const a = document.createElement('a'); a.href=url; a.download=`kerala2040-${scenario.code}-specification.json`; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-function getNodes() {
-  return state.data?.screening_nodes || state.data?.screeningNodes || [];
-}
-
-function renderAtlas() {
-  const nodes = getNodes();
-  const scope = state.data?.scope;
-  qs('#statewideScope').innerHTML = `<div><strong>Whole Kerala · statewide model</strong><p>${esc(scope?.initial_model || 'The initial aggregate model represents the entire Kerala electricity system.')}</p><details><summary>Districts within the study scope</summary><p>${esc((scope?.districts||[]).join(' · '))}</p><p>${esc(scope?.coverage_rule||'')}</p></details></div>`;
-  const kinds = ['all',...new Set(nodes.map(x=>x.kind))];
-  qs('#mapFilters').innerHTML = kinds.map(k=>`<button class="filter-chip ${state.mapKind===k?'active':''}" data-kind="${esc(k)}">${esc(k==='all'?'All':k)}</button>`).join('');
-  if (!window.L || !nodes.length) {
-    qs('#map').innerHTML='<div class="model-gate">Map tiles are unavailable. The screening-node catalogue remains available below.</div>';
-    qs('#mapNodeList').innerHTML=nodes.map(node=>`<button class="node-button" data-node="${esc(node.name)}"><strong>${esc(node.name)}</strong><span>${esc(node.lat)}, ${esc(node.lon)}</span></button>`).join('');
-    qs('#mapDetail').innerHTML='<h2>Whole Kerala</h2><p>Choose a research location from the catalogue. The study covers the entire state.</p>'; return;
-  }
-  if (!state.map) {
-    state.map = L.map('map',{zoomControl:true,scrollWheelZoom:true});
-    state.map.fitBounds([[8.15,74.85],[12.85,77.5]],{padding:[12,12]});
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap contributors'}).addTo(state.map);
-  }
-  updateMapMarkers();
-  setTimeout(()=>state.map.invalidateSize(),100);
-}
-
-function updateMapMarkers(selected = null) {
-  const nodes = getNodes();
-  state.markers.forEach(m=>m.remove()); state.markers=[];
-  const shown = nodes.filter(x=>state.mapKind==='all'||x.kind===state.mapKind);
-  const palette={demand:'#2f6ea4',storage:'#0b6f5d',wind:'#71933b',circular:'#b7791f',marine:'#2a879d'};
-  shown.forEach(node=>{
-    const marker=L.circleMarker([node.lat,node.lon],{radius:8,color:'#fff',weight:2,fillColor:palette[node.kind]||'#667',fillOpacity:1}).addTo(state.map);
-    marker.bindTooltip(node.name,{direction:'top'}); marker.on('click',()=>selectMapNode(node)); state.markers.push(marker);
-  });
-  qs('#mapCount').textContent=`${shown.length} screening node${shown.length===1?'':'s'}`;
-  qs('#mapNodeList').innerHTML=shown.map(node=>`<button class="node-button ${selected?.name===node.name?'active':''}" data-node="${esc(node.name)}"><strong>${esc(node.name)}</strong><span>${esc(node.kind)}</span></button>`).join('');
-  if (selected) selectMapNode(selected,false);
-  else qs('#mapDetail').innerHTML='<h2>Whole Kerala</h2><p>No city is selected by default. Choose a marker to inspect a research location.</p><p>The map is an initial catalogue. Validated transmission lines, substations and district demand layers still need to be added.</p>';
-}
-
-function selectMapNode(node, pan=true) {
-  if(!node)return;
-  qs('#mapDetail').innerHTML=`<span class="node-kind">${esc(node.kind)}</span><h2>${esc(node.name)}</h2><p>${esc(node.note||'Research screening node.')}</p><p><small>Classification: research screening · not siting approval.</small></p>`;
-  qsa('.node-button').forEach(b=>b.classList.toggle('active',b.dataset.node===node.name));
-  if(pan&&state.map)state.map.flyTo([node.lat,node.lon],Math.max(state.map.getZoom(),8),{duration:.6});
-}
-
-function renderIndustry() {
-  const cases = state.data?.circular_industry?.cases || {};
-  if (!cases[state.industryCase]) state.industryCase = Object.keys(cases)[0];
-  qs('#industryTabs').innerHTML = Object.entries(cases).map(([id,x])=>`<button data-industry="${esc(id)}" class="${state.industryCase===id?'active':''}">${esc(id.toUpperCase())}</button>`).join('');
-  const x = cases[state.industryCase];
-  if (!x) { qs('#industryCase').textContent='No sourced industrial cases are available.'; return; }
-  qs('#industryCase').innerHTML = `<h2>${esc(x.organisation || state.industryCase)}</h2>${state.industryCase===state.data.circular_industry.primary_case?'<p><strong>Selected primary CET case study.</strong></p>':''}<p>${esc(state.data.circular_industry.principle)}</p>${x.limitation?`<p>${esc(x.limitation)}</p>`:''}${evidenceDetails('Research use',x.modelling_use)}${evidenceDetails('Observed or commissioned',x.observed_or_commissioned,true)}${evidenceDetails('Planned or under development',x.planned_or_development)}${evidenceDetails('Primary sources',x.sources,true)}<p class="chart-note">These are source records. A validated mass balance, costs and product offtake are still needed for a viable recovery case.</p>`;
-}
-
-function evidenceDetails(title, value, open=false) {
-  if (value == null) return '';
-  const label = key => String(key).replaceAll('_',' ');
-  const show = v => {
-    if (v == null) return 'Unavailable';
-    if (Array.isArray(v)) return v.map(show).join('; ');
-    if (typeof v === 'object') return `<dl>${Object.entries(v).map(([k,x])=>`<dt>${esc(label(k))}</dt><dd>${show(x)}</dd>`).join('')}</dl>`;
-    if (typeof v === 'string' && /^https:\/\//.test(v)) return `<a href="${esc(v)}" target="_blank" rel="noopener">Open reference ↗</a>`;
-    return esc(v);
-  };
-  return `<details class="evidence-block" ${open?'open':''}><summary>${esc(title)}</summary>${show(value)}</details>`;
-}
-
-function renderConnectedEvidence() {
-  const b=baseline();
-  qs('.energy-motif').innerHTML = (state.monthly?.records||[]).map(r=>`<i style="height:${Math.max(0,Math.min(100,100*(n(r.import_share)||0)))}%" title="${esc(r.month)}: ${pct(r.import_share)} imports"></i>`).join('');
-  qs('#heroCoverage').textContent=b ? `Bars: monthly import share. ${b.rows} of ${b.expected_days} days · FY2024–25. ${b.missing_days_count} missing days. This share describes observed SLDC system accounting, not a full-year forecast.` : 'Historical daily evidence is not available in this snapshot.';
-  qs('#researchReadiness').innerHTML=`<p><strong>Research status</strong> · ${b?.calibration_gate_pass?'Daily accounting checks passed.':'Daily accounting needs review.'} Measured hourly Kerala telemetry is still missing; no synthetic chronology is published here. Published 2040 studies are benchmarks; scenario selections are design specifications.</p><a href="${REPO}/blob/main/docs/NEXT_STEPS.md">CET research checklist ↗</a>`;
-  const rows=state.daily?.records||[];
-  qs('#dailyTable').innerHTML=`<p>Missing dates: ${esc(b?.missing_days?.join(', ')||'none reported')}. No interpolation is applied.</p><a class="text-link" href="data/daily-balance.json">Download all ${rows.length} observations ↓</a><div class="table-scroll"><table><thead><tr><th>Date</th><th>Consumption (MU)</th><th>Generation (MU)</th><th>Net imports (MU)</th><th>Storage (%)</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.date)}</td><td>${fmt(r.consumption_mu,2)}</td><td>${fmt(r.internal_generation_mu,2)}</td><td>${fmt(r.net_import_interface_mu,2)}</td><td>${fmt(r.storage_pct_energy_weighted,1)}</td></tr>`).join('')}</tbody></table></div>`;
-  qs('#reconciliation').innerHTML=`<p>SLDC consumption sums available daily records. Economic Review sales and CEA energy requirement have different accounting boundaries. None is silently substituted for another.</p>${evidenceDetails('SLDC coverage and daily accounting',b)}${evidenceDetails('Economic Review annual electricity reference',observed()?.electricity)}${evidenceDetails('CEA resource adequacy · actual FY2024–25',state.data.cea_resource_adequacy?.actual_2024_25,true)}${evidenceDetails('CEA hourly demand evidence and source',state.data.cea_resource_adequacy?.hourly_demand_2024_25)}${evidenceDetails('CEA source',state.data.cea_resource_adequacy?.source)}`;
-  qs('#fuelEvidence').innerHTML=evidenceDetails('PPAC context · keep snapshot periods explicit',state.data.non_electric_energy);
-  qs('#ecologyEvidence').innerHTML=evidenceDetails('Ecological and hazard constraint registry',state.data.ecology_constraints?.layers,true)+evidenceDetails('KSDMA source catalogue',state.data.hazard_catalog)+evidenceDetails('KSEB project inventory · partial if no project rows',state.data.kseb_projects);
-}
-
-function sourceEntries() {
-  const src = state.data?.sources || {};
-  if (Object.keys(src).length) return Object.entries(src);
-  return [
-    ['kerala_sldc',{note:'Kerala system statistics and storage reports.',system_statistics_url:'https://sldckerala.com/index.php?id=1'}],
-    ['grid_india_daily_psp',{note:'Official national / state daily power-system cross-check.',file_api:'https://webapi.grid-india.in/api/v1/file'}],
-    ['nasa_power',{note:'Representative-point weather inputs.',endpoint:'https://power.larc.nasa.gov/'}]
-  ];
-}
-
-function sourceStatusKey(id) {
-  return ({
-    energyproject:'energyproject_context',
-    kerala_sldc:'sldc_daily',
-    grid_india_daily_psp:'grid_india_psp',
-    kseb_pms:'kseb_project_inventory',
-    kseb_historical_export:'kseb_historical_export',
-    era5:'era5_reanalysis',
-    nasa_power:'weather',
-    ksdma:'hazard_layers'
-  })[id] || null;
-}
-
-function renderDataCentre() {
-  const st=statusMap(); const src=sourceEntries(); const files=state.data?.metadata?.files||{};
-  const ready=Object.values(st).filter(v=>v.available).length;
-  const gaps=Object.values(st).filter(v=>v.evidence==='gap').length;
-  const summary=[['Connected layers',ready],['Registered sources',src.length],['Public data files',Object.keys(files).length||1],['Explicit data gaps',gaps]];
-  qs('#dataSummary').innerHTML=`<div class="summary-grid">${summary.map(([l,v])=>`<div class="summary-item"><strong>${esc(v)}</strong><span>${esc(l)}</span></div>`).join('')}</div>`;
-
-  const audit=state.data?.source_audit?.sources||{};
-  qs('#sourceRegistry').innerHTML=src.map(([id,s])=>{
-    const url=s.system_statistics_url||s.tracker||s.hazard_maps||s.open_data||s.economic_review_2025||s.catalog||s.endpoint||s.home||s.file_api||'#';
-    const label=id.replaceAll('_',' ');
-    const probe=audit[id];
-    const probeText=probe?.status ? probe.status.replaceAll('_',' ') : 'not probed';
-    const statusKey=sourceStatusKey(id);
-    const dataStatus=statusKey ? st[statusKey] : null;
-    const dataText=dataStatus ? (dataStatus.partial ? 'partial' : dataStatus.available ? 'connected' : dataStatus.evidence==='gap' ? 'gap' : 'pending') : 'registered reference';
-    return `<article class="source-card" data-search="${esc((label+' '+(s.note||'')+' '+(s.acquisition||'')+' '+probeText+' '+dataText).toLowerCase())}"><span class="eyebrow">${esc(s.acquisition||'source')}</span><h3><strong>${esc(label)}</strong></h3><p>${esc(s.note||'Registered research source.')}</p><small>Data: ${esc(dataText)} · Endpoint probe: ${esc(probeText)}</small>${url!=='#'?`<a href="${esc(url)}" target="_blank" rel="noopener">Open source ↗</a>`:''}</article>`;
-  }).join('');
-
-  const downloads=[
-    ['Public site manifest','site-data.json',`${RAW}site-data.json`],
-    ['Scenario definitions','configs/scenarios_2040.yaml',`${REPO}/blob/main/configs/scenarios_2040.yaml`],
-    ['Published reference registry','configs/published_2040_references.yaml',`${REPO}/blob/main/configs/published_2040_references.yaml`],
-    ['Source registry','configs/sources.yaml',`${REPO}/blob/main/configs/sources.yaml`],
-    ['Hourly-demand data-gap note','docs/hourly_demand_gap.md',`${REPO}/blob/main/docs/hourly_demand_gap.md`]
-  ];
-  Object.entries(files).forEach(([k,f])=>downloads.push([k.replaceAll('_',' '),f,`${RAW}${f}`]));
-  const unique=[]; const seen=new Set(); downloads.forEach(x=>{if(!seen.has(x[2])){seen.add(x[2]);unique.push(x)}});
-  qs('#downloadGrid').innerHTML=unique.map(([label,path,url])=>`<a class="download-card" href="${esc(url)}" target="_blank" rel="noopener" data-search="${esc((label+' '+path).toLowerCase())}"><div><strong>${esc(label)}</strong><small>${esc(path)}</small></div><b>↗</b></a>`).join('');
-
-  const t=state.data?.metadata?.generated_at_utc;
-  qs('#bundleTime').textContent=t?`Bundle · ${new Date(t).toLocaleString()}`:`${state.origin}`;
-}
-
-function renderPlatformMeta() {
-  const t=state.data?.metadata?.generated_at_utc;
-  qs('#dataOrigin').textContent = t ? `${state.origin} · refreshed ${new Date(t).toLocaleDateString()}` : state.origin;
-  if(t) qs('#evidenceDate').textContent=`Research bundle ${new Date(t).toLocaleDateString()} · model horizon 2040`;
-}
-
-function bindRouteButtons(root=document) {
-  qsa('[data-route]',root).forEach(el=>{
-    if(el.dataset.routeBound)return;
-    el.dataset.routeBound='1';
-    el.addEventListener('click',e=>{e.preventDefault();navigate(el.dataset.route)});
-  });
-}
-
-function navigate(route) {
-  const valid=['overview','electricity','workbench','pathways','atlas','industry','audit','data'];
-  const target=valid.includes(route)?route:'overview';
-  if(location.hash!==`#${target}`) history.pushState(null,'',`#${target}`);
+function go(route){
+  const target=routeIds.includes(route)?route:"overview";
+  if(location.hash!=="#"+target)history.pushState(null,"","#"+target);
   showView(target);
 }
-
-function showView(route) {
-  if (!['overview','electricity','workbench','pathways','atlas','industry','audit','data'].includes(route)) route='overview';
-  qsa('.view').forEach(v=>v.classList.toggle('active',v.dataset.view===route));
-  qsa('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.route===route));
-  qsa('.nav-link').forEach(b=>b.setAttribute('aria-current',b.dataset.route===route?'page':'false'));
-  window.scrollTo({top:0,behavior:'instant'});
-  if(route==='atlas')renderAtlas();
-  requestAnimationFrame(()=>qsa('.view.active .js-plotly-plot').forEach(el=>window.Plotly?.Plots.resize(el)));
-}
-
-function bindInteractions() {
-  bindRouteButtons();
-  qs('#overviewMetricTabs')?.addEventListener('click',e=>{const b=e.target.closest('[data-metric]');if(b)renderOverview(b.dataset.metric)});
-  qs('#electricityMetric')?.addEventListener('change',e=>renderElectricityChart(e.target.value));
-  qs('#electricityPeriod')?.addEventListener('change',()=>renderElectricityChart(qs('#electricityMetric').value));
-  qs('#chartUnit')?.addEventListener('change',()=>renderElectricityChart(qs('#electricityMetric').value));
-  qs('#sldcDetailMetric')?.addEventListener('change',()=>renderSldcDeepDive());
-  qs('#downloadChartData')?.addEventListener('click',downloadChartData);
-  qs('#downloadChartImage')?.addEventListener('click',()=>{
-    if(window.Plotly)Plotly.downloadImage('electricityChart',{format:'png',filename:`kerala2040-${qs('#electricityMetric').value}`,width:1400,height:650});
+function showView(route){
+  state.route=routeIds.includes(route)?route:"overview";
+  $$(".view").forEach(view=>{view.classList.toggle("active",view.dataset.view===state.route);});
+  $$("[data-route]").forEach(el=>{
+    const active=el.dataset.route===state.route;
+    el.classList.toggle("active",active);
+    if(el.closest("nav"))el.setAttribute("aria-current",active?"page":"false");
   });
-  qs('#scenarioRail')?.addEventListener('click',e=>{const b=e.target.closest('[data-scenario]');if(b)renderScenarioLab(b.dataset.scenario)});
-  qs('#stressTests')?.addEventListener('click',e=>{const b=e.target.closest('[data-stress]');if(!b)return;const id=b.dataset.stress;state.selectedStress.has(id)?state.selectedStress.delete(id):state.selectedStress.add(id);b.classList.toggle('active');b.setAttribute('aria-pressed',state.selectedStress.has(id));renderStressSelection()});
-  qs('#downloadSpecification')?.addEventListener('click',downloadSpecification);
-  qs('#mapFilters')?.addEventListener('click',e=>{const b=e.target.closest('[data-kind]');if(!b)return;state.mapKind=b.dataset.kind;renderAtlas()});
-  qs('#mapNodeList')?.addEventListener('click',e=>{const b=e.target.closest('[data-node]');if(!b)return;const node=getNodes().find(x=>x.name===b.dataset.node);selectMapNode(node)});
-  qs('#industryTabs')?.addEventListener('click',e=>{const b=e.target.closest('[data-industry]');if(!b)return;state.industryCase=b.dataset.industry;renderIndustry()});
-  qs('#sourceSearch')?.addEventListener('input',e=>{const term=e.target.value.trim().toLowerCase();qsa('#sourceRegistry [data-search],#downloadGrid [data-search]').forEach(el=>el.hidden=term&&!el.dataset.search.includes(term))});
-  for(const selector of ['#auditSearch','#auditPriority','#auditStatus']) {
-    qs(selector)?.addEventListener(selector==='#auditSearch'?'input':'change',renderAuditFindings);
-  }
-  qs('#workbenchSearch')?.addEventListener('input',renderWorkbench);
-  qs('#workbenchPhase')?.addEventListener('change',renderWorkbench);
-  qs('#decisionTopics')?.addEventListener('click',event=>{
-    const button=event.target.closest('[data-focus]');
+  const menu=$("#mobileNav"),toggle=$("#menuToggle");
+  if(menu&&toggle){menu.hidden=true;toggle.setAttribute("aria-expanded","false")}
+  window.scrollTo?.({top:0,behavior:"instant"});
+}
+function bindRoutes(root=document){
+  $$("[data-route]",root).forEach(button=>{
+    if(button.dataset.routeBound)return;
+    button.dataset.routeBound="1";
+    button.addEventListener("click",event=>{event.preventDefault();go(button.dataset.route)});
+  });
+}
+function chooseTheme(name){
+  if(!["kasavu","monsoon","laterite"].includes(name))name="kasavu";
+  state.theme=name;
+  document.documentElement.dataset.theme=name;
+  $$("[data-theme-choice]").forEach(button=>
+    button.setAttribute("aria-pressed",String(button.dataset.themeChoice===name)));
+  try{localStorage.setItem("kerala2040-theme",name)}catch{}
+}
+function bindInteractions(){
+  bindRoutes();
+  $$("[data-theme-choice]").forEach(button=>
+    button.addEventListener("click",()=>chooseTheme(button.dataset.themeChoice)));
+  $("#menuToggle")?.addEventListener("click",()=>{
+    const nav=$("#mobileNav"),button=$("#menuToggle");
+    nav.hidden=!nav.hidden;
+    button.setAttribute("aria-expanded",String(!nav.hidden));
+  });
+  $("#energyMetric")?.addEventListener("change",e=>{state.metric=e.target.value;renderChart()});
+  $("#energyMonth")?.addEventListener("change",e=>{state.month=e.target.value;renderChart()});
+  $("#downloadObserved")?.addEventListener("click",downloadObserved);
+  $("#scenarioList")?.addEventListener("click",e=>{
+    const button=e.target.closest("[data-scenario]");
+    if(button){state.scenario=button.dataset.scenario;renderScenario()}
+  });
+  $("#workbenchSearch")?.addEventListener("input",renderWorkbench);
+  $("#workbenchPhase")?.addEventListener("change",renderWorkbench);
+  $("#auditSearch")?.addEventListener("input",renderFindings);
+  $("#auditPriority")?.addEventListener("change",renderFindings);
+  $("#sourceSearch")?.addEventListener("input",renderSources);
+  $("#spatialPipeline")?.addEventListener("click",e=>{
+    const button=e.target.closest("[data-layer]");
     if(!button)return;
-    state.focusId=button.dataset.focus;
-    renderDecisionDesk();
-    qs('#decisionTopics [aria-pressed="true"]')?.focus();
+    const id=button.dataset.layer;
+    const detail=document.getElementById("layer-"+id);
+    if(!detail)return;
+    const expanded=button.getAttribute("aria-expanded")==="true";
+    button.setAttribute("aria-expanded",String(!expanded));
+    detail.hidden=expanded;
   });
-  window.addEventListener('popstate',()=>showView(location.hash.slice(1)||'overview'));
-  window.addEventListener('hashchange',()=>showView(location.hash.slice(1)||'overview'));
+  window.addEventListener("popstate",()=>showView(location.hash.slice(1)));
+  window.addEventListener("hashchange",()=>showView(location.hash.slice(1)));
 }
-
-function downloadChartData(){
-  const cell=value=>`"${String(value??'').replaceAll('"','""')}"`;
-  const metadata=[['Chart',state.chartTitle],['Note',qs('#electricityChartNote').textContent],['Bundle',state.data?.metadata?.git_sha||'unknown']];
-  const rows=[...metadata,[],state.chartColumns.map(([,label])=>label),...state.chartRows.map(r=>state.chartColumns.map(([key])=>r[key]))];
-  const url=URL.createObjectURL(new Blob(['\uFEFF'+rows.map(r=>r.map(cell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));
-  const link=document.createElement('a');link.href=url;link.download=`kerala2040-${qs('#electricityMetric').value}.csv`;link.click();URL.revokeObjectURL(url);
+function statsHTML(items){
+  return items.map(([value,label,note])=>'<div class="summary-stat"><strong>'+
+    esc(value)+'</strong><span>'+esc(label)+'</span><small>'+esc(note)+'</small></div>').join("");
 }
-
-function bindTheme() {
-  let stored; try { stored=localStorage.getItem('k2040-theme'); } catch {}
-  document.documentElement.dataset.theme=stored||'light';
-  qs('#themeToggle')?.addEventListener('click',()=>{
-    const next=document.documentElement.dataset.theme==='dark'?'light':'dark';
-    document.documentElement.dataset.theme=next;try { localStorage.setItem('k2040-theme',next); } catch {}
-    if(state.data) {renderOverview();renderElectricity();renderSldcDeepDive();renderPathwayReferences();renderScenarioLab(state.selectedScenario);}
+function renderHomepage(){
+  const baseline=state.site.baseline;
+  const rows=state.ledger.workstreams||[];
+  const elements=[
+    [fmt(baseline.aggregate_import_share*100,1)+"%","Net imports / consumption",
+      "354 observed SLDC days, not a full-year annual share"],
+    [fmt(baseline.rows,0)+"/"+fmt(baseline.expected_days,0),"Daily reports preserved",
+      "FY2024–25 · "+fmt(baseline.missing_days_count,0)+" dates missing"],
+    [fmt(baseline.hydro_generation_twh,2)+" TWh","Observed hydro generation",
+      "Available days only; not a firm generation guarantee"],
+    [fmt(baseline.missing_days_count,0),"Days still unverified",
+      "Original as-issued reports needed; no interpolation"]
+  ];
+  const metrics=$("#headlineMetrics");
+  if(metrics)metrics.innerHTML=elements.map(([value,label,note])=>
+    '<div class="number-card"><strong>'+esc(value)+'</strong><span>'+esc(label)+
+    '</span><small>'+esc(note)+'</small></div>').join("");
+  const coverage=$("#heroCoverage");
+  if(coverage)coverage.textContent=baseline.rows+" / "+baseline.expected_days+
+    " daily reports · FY2024–25 · no measured full-year hourly series";
+  const t=state.site.metadata.generated_at_utc||"";
+  const origin=$("#dataOrigin");
+  if(origin)origin.textContent="Observed bundle "+(t?t.slice(0,10):"undated")+
+    " · Research audit "+(state.ledger.reviewed_date||"undated");
+  const target=$("#homeResearchLedger");
+  if(target){
+    const ids=["electricity","boundary","landslide","forest","wetlands","modelling"];
+    target.innerHTML=ids.map(id=>rows.find(item=>item.id===id)).filter(Boolean)
+      .map(item=>'<article class="note-row"><span>'+esc(labelStage(item.phase))+
+        '</span><h3>'+esc(item.title)+'</h3><p>'+esc(item.summary)+'</p>'+
+        '<div class="note-metric">'+esc(item.metric)+'<small>'+esc(item.unit)+
+        '</small></div><button type="button" data-route="'+esc(item.route)+
+        '">Investigate this question ↗</button></article>').join("");
+    bindRoutes(target);
+  }
+}
+function renderProvenance(){
+  const s=state.site.metadata,l=state.ledger;
+  const source=/^[a-f0-9]{40}$/.test(s.research_source_commit||"") ?
+    s.research_source_commit : null;
+  const dated=(s.generated_at_utc||"").slice(0,10)||"undated";
+  const rev=source?source.slice(0,12):"unrecorded";
+  const trail=$("#footerResearchIdentity");
+  if(trail)trail.textContent="Research "+rev+" · Observed bundle "+dated+
+    " · Audit "+(l.reviewed_date||"undated");
+  const box=$("#evidenceSnapshot");
+  if(box)box.innerHTML=
+    '<span>Research audit reviewed <strong>'+esc(l.reviewed_date||"undated")+'</strong></span>'+
+    '<span>Observed bundle published <strong>'+esc(dated)+'</strong></span>'+
+    '<span>Research revision <strong>'+esc(rev)+'</strong></span>'+
+    '<span>Original evidence build <strong>'+esc((s.git_sha||"unknown").slice(0,12))+'</strong></span>'+
+    (source?'<a href="'+REPO+'/tree/'+source+'" target="_blank" rel="noopener noreferrer">Inspect pinned research ↗</a>':"");
+}
+const metrics={
+  consumption_mu:["Consumption","MU/day"],
+  net_import_interface_mu:["Net imports","MU/day"],
+  internal_generation_mu:["In-state generation","MU/day"],
+  hydel_total_mu:["Hydro generation","MU/day"]
+};
+function selectedDays(){
+  return (state.daily?.records||[]).filter(row=>
+    state.month==="all"||row.date.slice(0,7)===state.month);
+}
+function plotValues(rows,key){
+  if(!rows.length)return '<div class="chart-empty">No observed rows for this period. No values have been interpolated.</div>';
+  const values=rows.map(row=>Number(row[key]));
+  if(values.some(v=>!Number.isFinite(v)))return '<div class="chart-empty">Source values unavailable; no chart interpolated.</div>';
+  const t0=Date.parse(rows[0].date+"T00:00:00Z");
+  const t1=Date.parse(rows[rows.length-1].date+"T00:00:00Z");
+  const low=Math.min(...values),high=Math.max(...values);
+  const range=Math.max(high-low,1);
+  const x=(t)=>60+840*(t-t0)/Math.max(86400000,t1-t0);
+  const y=(v)=>245-190*(v-low)/range;
+  const segments=[];let segment=[];
+  rows.forEach((row,i)=>{
+    const t=Date.parse(row.date+"T00:00:00Z");
+    if(i&&t-Date.parse(rows[i-1].date+"T00:00:00Z")>86400000){
+      if(segment.length)segments.push(segment);segment=[];
+    }
+    segment.push(x(t).toFixed(2)+","+y(values[i]).toFixed(2));
   });
+  if(segment.length)segments.push(segment);
+  const grid=[0,.25,.5,.75,1].map(frac=>{
+    const yy=245-190*frac;
+    return '<line class="chart-grid" x1="60" y1="'+yy+'" x2="900" y2="'+yy+'"/>'+
+      '<text class="chart-axis" x="5" y="'+(yy+4)+'">'+esc(fmt(low+range*frac,1))+'</text>';
+  }).join("");
+  const lines=segments.map(points=>{
+    const xy=points.join(" ");
+    return points.length===1?'<circle class="chart-dot" cx="'+points[0].split(",")[0]+
+      '" cy="'+points[0].split(",")[1]+'" r="4"/>' :
+      '<polyline class="chart-line" points="'+xy+'"/>';
+  }).join("");
+  const title=metrics[key]?.[0]||plain(key);
+  const labels='<text class="chart-label" x="60" y="282">'+esc(rows[0].date)+'</text>'+
+    '<text class="chart-label" x="900" y="282" text-anchor="end">'+esc(rows[rows.length-1].date)+'</text>';
+  return '<svg viewBox="0 0 960 302" role="img" aria-label="'+esc(title)+
+    ', '+rows.length+' observed days. Breaks represent missing days." xmlns="http://www.w3.org/2000/svg">'+
+    '<title>'+esc(title)+" · "+rows.length+" observed days · gaps not connected</title>"+
+    grid+lines+labels+'</svg>';
 }
-
-// The audit is built from source checks at website packaging time, not from
-// arbitrary client-side percentages or an unverified live API.
-const auditStatusLabel = status => ({
-  verified_in_committed_evidence: 'Verified evidence',
-  partial_or_provisional: 'Partial / provisional',
-  blocked_missing_verified_evidence: 'Blocked / missing evidence'
-}[status] || 'Unverified');
-
-function auditStatusClass(status) {
-  return status === 'verified_in_committed_evidence' ? 'verified' :
-    status === 'partial_or_provisional' ? 'partial' : 'blocked';
+function renderChart(){
+  const key=metrics[state.metric]?state.metric:"consumption_mu";
+  const rows=selectedDays();
+  const box=$("#energyChart");if(box)box.innerHTML=plotValues(rows,key);
+  const caption=$("#energyChartCaption");
+  const gaps=(state.site.baseline.missing_days||[]).filter(date=>
+    state.month==="all"||date.slice(0,7)===state.month);
+  if(caption)caption.textContent=metrics[key][0]+" · "+metrics[key][1]+" · "+
+    rows.length+" observed days · "+gaps.length+
+    " unverified days within period. Breaks mark missing dates. Values are reported daily energy, not hourly MW.";
+  const table=$("#energyTable");
+  if(table)table.innerHTML='<table><thead><tr><th>Date</th><th>Consumption (MU)</th>'+
+    '<th>Net imports (MU)</th><th>Internal generation (MU)</th><th>Hydro (MU)</th></tr></thead><tbody>'+
+    rows.map(row=>'<tr><td>'+esc(row.date)+'</td>'+
+      ["consumption_mu","net_import_interface_mu","internal_generation_mu","hydel_total_mu"]
+        .map(k=>'<td>'+esc(fmt(row[k],4))+'</td>').join("")+'</tr>').join("")+
+    '</tbody></table>';
 }
-
-function auditFindingHTML(item) {
-  const v=item.verification||{};
-  const source=String(v.evidence||item.evidence||'');
-  const sourceURL=source&&!source.includes('..')&&!source.startsWith('/') ?
-    REPO+'/blob/main/'+source.split('/').map(encodeURIComponent).join('/') : '';
-  return '<article class="audit-finding">' +
-    '<div class="audit-finding-top"><span class="audit-priority">'+esc(item.priority)+'</span>' +
-    '<span class="audit-pill '+auditStatusClass(v.status)+'">'+esc(auditStatusLabel(v.status))+'</span></div>' +
-    '<h3>'+esc(item.id.replaceAll('_',' '))+'</h3>' +
-    '<p class="audit-acquisition">'+esc(item.acquisition)+'</p>' +
-    '<p class="audit-evidence-detail">'+esc(v.detail||'No verified evidence recorded.')+'</p>' +
-    (sourceURL?'<a target="_blank" rel="noopener" href="'+esc(sourceURL)+'">Inspect source evidence ↗</a>':'') +
-    '</article>';
+function renderElectricity(){
+  const b=state.site.baseline;
+  $("#electricitySummary").innerHTML=statsHTML([
+    [fmt(b.consumption_twh,2)+" TWh","Consumption","Observed days only"],
+    [fmt(b.net_import_twh,2)+" TWh","Net imports","Same SLDC accounting scope"],
+    [fmt(b.internal_generation_twh,2)+" TWh","In-state generation","Observed days only"],
+    [fmt(b.rows,0)+"/"+fmt(b.expected_days,0),"Days with reports","Not a complete FY or hourly chronology"]
+  ]);
+  const month=$("#energyMonth"),months=[...new Set(state.daily.records.map(row=>row.date.slice(0,7)))];
+  if(month)month.innerHTML='<option value="all">All observed dates</option>'+
+    months.map(m=>'<option value="'+esc(m)+'">'+esc(m)+'</option>').join("");
+  renderChart();
+  const item=state.ledger.workstreams.find(x=>x.id==="electricity");
+  if(item)$("#electricityResearch").innerHTML='<div class="decision-banner blocked"><strong>'+
+    esc(item.title)+" · "+esc(labelStage(item.phase))+'</strong><p><b>Next:</b> '+
+    esc(item.action)+'</p>'+sourceTrail(item)+'</div>';
 }
-
-function renderAuditFindings() {
-  const box=qs('#auditFindings'),count=qs('#auditResultCount'),audit=state.audit;
-  if(!box||!count||!audit)return;
-  const search=(qs('#auditSearch')?.value||'').trim().toLowerCase();
-  const priority=qs('#auditPriority')?.value||'all';
-  const status=qs('#auditStatus')?.value||'all';
-  const results=(audit.findings||[]).filter(item=>
-    (priority==='all'||item.priority===priority) &&
-    (status==='all'||item.verification?.status===status) &&
-    (!search||[item.id,item.acquisition,item.priority,item.evidence,
-      item.verification?.detail,item.verification?.evidence].join(' ').toLowerCase().includes(search)));
-  count.textContent=results.length+' of '+audit.finding_count+
-    ' findings · statuses describe committed evidence, not completed code.';
-  box.innerHTML=results.length?results.map(auditFindingHTML).join(''):
-    '<p class="audit-empty">No findings match this filter. Change the filters to view all acquisitions.</p>';
+function csvValue(v){
+  let s=String(v==null?"":v);
+  if(/^[=+@\t\r]/.test(s))s="'"+s;
+  return '"'+s.replaceAll('"','""')+'"';
 }
-
-function renderAudit() {
-  const audit=state.audit;
-  const overview=qs('#auditOverviewText');
-  if(!audit||audit.classification!=='repository_evidence_audit_not_external_source_validation') {
-    if(overview)overview.textContent='A verified audit has not been packaged in this evidence snapshot.';
-    const summary=qs('#auditSummary');
-    if(summary)summary.textContent='Audit unavailable — no readiness claims can be made.';
-    return;
+function downloadObserved(){
+  const rows=selectedDays();
+  const keys=["date","consumption_mu","net_import_interface_mu","internal_generation_mu","hydel_total_mu"];
+  const text=["# Kerala2040 observed FY2024-25 SLDC daily series, selected period: "+state.month,
+    "# Missing dates not filled. MU/day, not hourly MW.",
+    keys.map(csvValue).join(","),
+    ...rows.map(row=>keys.map(k=>csvValue(row[k])).join(","))].join("\r\n");
+  const url=URL.createObjectURL(new Blob(["\uFEFF"+text],{type:"text/csv;charset=utf-8"}));
+  const a=document.createElement("a");a.href=url;a.download="kerala2040-observed-"+state.month+".csv";
+  a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function renderScenario(){
+  const all=state.site.scenarios||[];
+  if(!all.length){$("#scenarioDetail").textContent="Scenario specifications unavailable.";return}
+  const selected=all.find(item=>item.code===state.scenario)||all[0];
+  state.scenario=selected.code;
+  $("#scenarioList").innerHTML=all.map(item=>
+    '<button type="button" data-scenario="'+esc(item.code)+'" class="'+
+    (item.code===selected.code?"selected":"")+'" aria-pressed="'+
+    (item.code===selected.code)+'"><span>'+esc(item.code)+
+    ' / UNSOLVED SPECIFICATION</span>'+esc(item.name)+'</button>').join("");
+  $("#scenarioDetail").innerHTML='<span class="section-eyebrow">'+esc(selected.code)+
+    ' / RESEARCH DESIGN</span><h3>'+esc(selected.name)+'</h3><p>'+
+    esc(selected.description)+'</p><div class="spec-grid">'+
+    [['Demand flexibility',selected.demand_flexibility],
+      ['Ecological rule',selected.ecology_constraint],
+      ['Interstate trade',selected.import_option],
+      ['Modelling status',"Not solved / not calibrated"]]
+      .map(([k,v])=>'<div><small>'+esc(k)+'</small><strong>'+esc(plain(v))+'</strong></div>').join("")+
+    '</div><p><b>Not a prediction or a recommendation.</b> No Kerala2040 2040 capacity, cost or reliability result has been released.</p>'+
+    '<button type="button" id="downloadSpecification" class="button button-dark">Download this research question ↓</button>';
+  $("#downloadSpecification")?.addEventListener("click",()=>downloadSpecification(selected));
+}
+function downloadSpecification(s){
+  const payload={classification:"unsolved_scenario_specification",hourly_model_calibrated:false,
+    ecological_capacity_ceiling_ready:false,eligible_area_sq_km:null,potential_mw:null,
+    source_research_commit:state.site.metadata.research_source_commit,
+    evidence_build_commit:state.site.metadata.git_sha,
+    scenario:s};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}));
+  const a=document.createElement("a");a.href=url;a.download="kerala2040-"+s.code+"-research-question.json";
+  a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function renderPathways(){
+  const g=state.ledger.release_gates.techno_economic_2040;
+  $("#pathwayGate").innerHTML='<strong>2040 optimisation: '+(g.passed?"Scoped gate passed":"Not released")+
+    '</strong><p>Historical chronology, economics, hydro physics, grid deliverability and ecological limits must be independently validated. None of the scenarios below is a computed Kerala2040 forecast.</p>';
+  renderScenario();
+  const ref=state.site.references||{};
+  $("#referenceStudies").innerHTML=[
+    ["cstep_2024","CSTEP 2024 / external benchmark"],
+    ["kerala_cn50_2026","CN50 2026 / external benchmark"]
+  ].map(([id,label])=>{
+    const x=ref[id];if(!x)return "";
+    const link=safeURL(x.primary_url);
+    return '<article class="reference-card"><span class="section-eyebrow">'+esc(label)+
+      '</span><h3>'+esc(x.title)+'</h3><small>'+esc(x.publisher)+'</small>'+
+      '<p>'+esc(x.caveat||x.note||"Published external assumptions, not project results.")+'</p>'+
+      (link?'<a target="_blank" rel="noopener noreferrer" href="'+esc(link)+'">Read published study ↗</a>':"")+
+      '</article>';
+  }).join("");
+}
+const spatialIds=["boundary","lulc","landslide","forest","wetlands"];
+function renderAtlas(){
+  const records=spatialIds.map(id=>state.ledger.workstreams.find(x=>x.id===id)).filter(Boolean);
+  const box=$("#spatialPipeline");if(!box)return;
+  box.innerHTML=records.map((item,i)=>
+    '<section><button type="button" class="land-record" data-layer="'+esc(item.id)+
+    '" aria-expanded="false" aria-controls="layer-'+esc(item.id)+'">'+
+    '<span class="record-index">'+String(i+1).padStart(2,"0")+
+    '<span class="record-status">'+esc(labelStage(item.phase))+'</span></span>'+
+    '<h3>'+esc(item.title)+'</h3><p><b>'+esc(item.metric)+" "+esc(item.unit)+
+    '</b><br>'+esc(item.summary)+'</p><span class="record-arrow" aria-hidden="true">↗</span></button>'+
+    '<div class="land-detail" id="layer-'+esc(item.id)+'" hidden>'+
+    '<p><b>What has been established:</b> '+esc(item.completed)+'</p>'+
+    '<p><b>What has not been established:</b> '+esc(item.blocked)+'</p>'+
+    '<p><b>Next verifiable step:</b> '+esc(item.action)+'</p>'+
+    sourceTrail(item)+'</div></section>').join("");
+}
+function renderIndustry(){
+  const source=state.site.circular_industry||{},cases=source.cases||{};
+  const ids=["kmml","ttpl","fact","kspcb"];
+  $("#industryCases").innerHTML=ids.map(id=>{
+    const item=cases[id];if(!item)return "";
+    const sources=Object.values(item.sources||{}).map(row=>{
+      const url=safeURL(row.url);
+      return url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+
+        esc(row.note||"Official source")+' ↗</a>':"";
+    }).join("");
+    return '<article class="industry-card"><span class="section-eyebrow">'+
+      esc(id===source.primary_case?"SELECTED CASE / NEEDS MEASURED FLOWS":"DOCUMENTED CONTEXT / RESEARCH CANDIDATE")+
+      '</span><h2>'+esc(item.organisation)+'</h2><p>'+
+      esc(item.limitation||"Source-recorded operations and proposed projects are distinguished; no new recoverable quantity is inferred.")+
+      '</p><h3>Potential research use</h3><p>'+
+      esc((item.modelling_use||[]).map(plain).join(" · "))+
+      '</p><details><summary>Official evidence trail</summary><div class="source-links">'+
+      sources+'</div></details></article>';
+  }).join("");
+}
+function renderWorkbench(){
+  const l=state.ledger;
+  const all=l.workstreams||[],q=($("#workbenchSearch")?.value||"").toLowerCase().trim();
+  const phase=$("#workbenchPhase")?.value||"all";
+  const rows=all.filter(item=>(phase==="all"||phase===item.phase) &&
+    (!q||[item.id,item.title,item.summary,item.completed,item.blocked,item.action]
+      .join(" ").toLowerCase().includes(q)));
+  $("#workbenchSummary").innerHTML=statsHTML([
+    [String(all.length),"Source-linked workstreams","Not a progress percentage"],
+    [String(l.audit_open_findings),"Open acquisition findings","Some have partial or validated source QA"],
+    [String(Object.values(l.release_gates).filter(g=>g.passed).length)+
+      "/"+Object.keys(l.release_gates).length,"Scoped gates passed","No approved Kerala 2040 optimisation"],
+    ["—","Eligible land / MW","No admitted numerical ceiling"]
+  ]);
+  $("#workbenchCount").textContent=rows.length+" / "+all.length+" research records shown";
+  $("#workbenchCards").innerHTML=rows.length?rows.map(item=>
+    '<article class="research-item"><div class="research-top"><span class="section-eyebrow">'+
+    esc(item.id.toUpperCase())+'</span><span class="status '+stageClass(item.phase)+'">'+
+    esc(labelStage(item.phase))+'</span></div><h2>'+esc(item.title)+'</h2><p>'+
+    esc(item.summary)+'</p><div class="research-metric">'+esc(item.metric)+' <small>'+
+    esc(item.unit)+'</small></div><details><summary>Read the evidence, limitation and next step</summary>'+
+    '<p><b>Established:</b> '+esc(item.completed)+'</p><p><b>Unresolved:</b> '+
+    esc(item.blocked)+'</p><p><b>Next:</b> '+esc(item.action)+'</p>'+
+    sourceTrail(item)+'</details></article>').join("") :
+    '<p>No research records match. Clear the filter to view all workstreams.</p>';
+}
+function renderFindings(){
+  const a=state.audit;
+  const q=($("#auditSearch")?.value||"").trim().toLowerCase();
+  const priority=$("#auditPriority")?.value||"all";
+  const found=(a.findings||[]).filter(item=>(priority==="all"||item.priority===priority)&&
+    (!q||[item.id,item.acquisition,item.verification?.detail].join(" ").toLowerCase().includes(q)));
+  $("#auditCount").textContent=found.length+" / "+a.finding_count+
+    " tracked acquisitions · open does not mean no research has been done";
+  $("#auditFindings").innerHTML=found.map(item=>{
+    const v=item.verification||{},url=repoFile(v.evidence||item.evidence);
+    return '<article class="finding"><small>'+esc(item.priority||"SOURCE")+' / '+
+      esc(plain(item.id))+'</small><h3>'+esc(plain(item.id))+'</h3><p>'+
+      esc(item.acquisition)+'</p><p>'+esc(v.detail||"Evidence remains unverified.")+'</p>'+
+      '<span class="status '+(v.status==="verified_in_committed_evidence"?"verified":
+      v.status==="partial_or_provisional"?"partial":"blocked")+'">'+esc(plain(v.status||"unverified"))+
+      '</span> '+(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">Inspect committed source ↗</a>':"")+
+      '</article>';
+  }).join("")||'<p>No findings match these filters.</p>';
+}
+function renderAudit(){
+  const a=state.audit;
+  $("#auditSummary").innerHTML=statsHTML([
+    [String(a.finding_count),"Tracked acquisition questions","As defined in committed audit"],
+    [String(a.open_findings),"Open findings","Unresolved, including partial evidence"],
+    [String(Object.values(a.release_gates).filter(g=>g.passed).length)+
+      "/"+Object.keys(a.release_gates).length,"Scoped gates passed","Not a model completion score"],
+    ["0","Published 2040 optimisations","Techno-economic gate not passed"]
+  ]);
+  $("#auditGates").innerHTML=Object.entries(a.release_gates||{}).map(([key,g])=>
+    '<article class="gate"><span class="status '+(g.passed?"verified":"blocked")+'">'+
+    (g.passed?"SCOPED PASS":"NOT PASSED")+'</span><div><h3>'+
+    esc(plain(key))+'</h3><p>'+esc(g.description||"")+'</p><p>'+
+    (g.blocking_checks?.length?"Outstanding: "+esc(g.blocking_checks.join(" · ")):
+      "Only this explicitly scoped gate is satisfied.")+'</p></div></article>').join("");
+  const p=$("#auditProvenance");
+  if(p)p.textContent="Committed repository-evidence audit · archived SLDC source SHA-256 "+
+    (a.source_qa_sha256||"unknown")+" · "+(a.evidence_limit||"No external source inference");
+  renderFindings();
+}
+function sourceHome(source){
+  for(const field of ["system_statistics_url","tracker","hazard_maps","open_data",
+    "economic_review_2025","catalog","endpoint","home","file_api","url","storage_url"]){
+    const v=safeURL(source[field]);if(v)return v;
   }
-  const findings=audit.findings||[];
-  const partial=findings.filter(f=>f.verification?.status==='partial_or_provisional').length;
-  const blocked=findings.filter(f=>f.verification?.status==='blocked_missing_verified_evidence').length;
-  if(overview)overview.textContent=audit.open_findings+' of '+audit.finding_count+
-    ' acquisition findings remain open. Observed-day accounting passes; full-year and 2040 scientific gates are still blocked.';
-  const summary=qs('#auditSummary');
-  if(summary)summary.innerHTML=[
-    [audit.finding_count,'Tracked acquisitions'],
-    [audit.closed_findings,'Verified acquisitions'],
-    [partial,'Partial evidence'],
-    [blocked,'Blocked evidence']
-  ].map(([value,label])=>'<div class="audit-stat"><strong>'+esc(value)+
-    '</strong><span>'+esc(label)+'</span></div>').join('');
-  const provenance=qs('#auditProvenance');
-  if(provenance)provenance.textContent='Repository-evidence audit · SLDC source archive SHA-256 '+
-    audit.source_qa_sha256+' · '+audit.evidence_limit;
-  const gates=qs('#auditGates');
-  const names={
-    daily_accounting:'Available-day electricity accounting',
-    observed_full_year:'Complete measured historical chronology',
-    ecological_capacity_ceiling:'Ecological capacity ceilings',
-    techno_economic_2040:'2040 techno-economic optimisation',
-    kmml_case:'KMML measured industrial case'
-  };
-  if(gates)gates.innerHTML=Object.entries(audit.release_gates||{}).map(([name,gate])=>
-    '<article class="audit-gate"><div><span class="audit-pill '+(gate.passed?'verified':'blocked')+
-    '">'+(gate.passed?'PASS':'BLOCKED')+'</span><h3>'+esc(names[name]||name.replaceAll('_',' '))+'</h3></div>'+
-    '<p>'+esc(gate.description)+'</p>'+
-    '<small>'+(gate.blocking_checks?.length?'Outstanding checks: '+esc(gate.blocking_checks.join(', ')):
-      'All checks specified for this limited gate passed.')+'</small></article>'
-  ).join('');
-  renderAuditFindings();
+  return "";
 }
-
-// Read-only workbench: a data acquisition milestone is never a siting approval.
-const researchPhaseLabel = phase => ({
-  validated_source: 'Source coverage verified · model gate open',
-  partial: 'Partial / under review',
-  blocked: 'Missing critical evidence'
-}[phase] || 'Status unverified');
-
-function researchEvidenceURL(value) {
-  const url = String(value || '');
-  return url.startsWith(REPO + '/blob/main/') ||
-    /^https:\/\/github\.com\/abhijith-sivaprasadan\/kerala2040\/actions\/runs\/\d+$/.test(url) ?
-    url : '';
+function renderSources(){
+  const s=state.site,files=s.metadata.files||{};
+  const q=($("#sourceSearch")?.value||"").trim().toLowerCase();
+  const registry=Object.entries(s.sources||{});
+  const registered=registry.filter(([id,item])=>
+    !q||[id,item.organisation,item.note,item.acquisition].join(" ").toLowerCase().includes(q));
+  $("#sourceRegistry").innerHTML=registered.map(([id,item])=>{
+    const url=sourceHome(item);
+    const status=s.metadata.status[id]||{},label=status.available?
+      (status.partial?"Partially acquired":"Available in bundle"):
+      status.evidence==="gap"?"Missing verified evidence":"Registered reference, not confirmed acquisition";
+    return '<article class="source-entry"><span class="section-eyebrow">'+esc(item.priority||"SOURCE")+
+      ' / '+esc(plain(id))+'</span><h3>'+esc(item.organisation||plain(id))+'</h3><p>'+
+      esc(item.note||"Source registered, acquisition and usage require verification.")+'</p>'+
+      '<small>'+esc(label)+' · '+esc(plain(item.acquisition||"source link"))+'</small>'+
+      (url?'<a target="_blank" rel="noopener noreferrer" href="'+esc(url)+'">Open original source ↗</a>':"")+
+      '</article>';
+  }).join("")||'<p>No sources match that query.</p>';
+  const downloads=Object.entries(files).map(([key,name])=>[plain(key),name]);
+  if(s.metadata.files.sldc_station_evidence)downloads.push(["Processed observed-day CSV archive","sldc-processed-evidence.zip"]);
+  $("#downloadGrid").innerHTML=downloads.filter(([key,name])=>
+    !q||(key+" "+name).toLowerCase().includes(q)).map(([key,name])=>
+    '<article class="download-entry"><strong>'+esc(key)+'</strong><small>'+
+    esc(name)+'</small><a href="'+RAW+encodeURIComponent(name)+'" download>Download published file ↓</a></article>').join("")||
+    '<p>No published downloads match.</p>';
+  $("#dataSummary").innerHTML=statsHTML([
+    [String(registry.length),"Registered sources","Not all sources acquired or model-ready"],
+    [String(downloads.length),"Public downloadable products","Only those allowed by publication policy"],
+    [String(s.baseline.rows),"Observed SLDC daily reports","FY2024–25 subset"],
+    [String(state.ledger.audit_open_findings),"Open evidence findings","Dated repository audit"]
+  ]);
 }
-
-function researchLedgerCardHTML(item, compact = false) {
-  const links = (item.evidence || []).map(entry => {
-    const url = researchEvidenceURL(entry.href);
-    return url ? '<a target="_blank" rel="noopener" href="' + esc(url) + '">' +
-      esc(entry.label) + ' ↗</a>' : '';
-  }).filter(Boolean).join('');
-  return '<article class="research-card phase-' +
-    (['validated_source','partial','blocked'].includes(item.phase) ? item.phase : 'blocked') + '">' +
-    '<div class="research-card-top"><span class="research-id">' + esc(item.id) +
-    '</span><span class="research-phase">' + esc(researchPhaseLabel(item.phase)) + '</span></div>' +
-    '<h3>' + esc(item.title) + '</h3>' +
-    '<p class="research-desc">' + esc(item.summary) + '</p>' +
-    '<div class="research-measure"><strong>' + esc(item.metric) +
-    '</strong><span>' + esc(item.unit) + '</span></div>' +
-    (compact ? '' : '<div class="research-evidence-pair">' +
-      '<div><span class="mini-label">WHAT IS DONE</span><p>' + esc(item.completed) + '</p></div>' +
-      '<div><span class="mini-label">WHAT BLOCKS USE</span><p>' + esc(item.blocked) + '</p></div>' +
-      '</div><p class="research-next"><b>Next / </b>' + esc(item.action) + '</p>') +
-    '<div class="research-links">' + links +
-    '<button type="button" data-route="' +
-    (['atlas','electricity','pathways','industry','audit','data','workbench'].includes(item.route) ?
-      item.route : 'workbench') + '">Explore topic →</button></div></article>';
+function renderAll(){
+  renderHomepage();renderProvenance();renderElectricity();renderPathways();
+  renderAtlas();renderIndustry();renderWorkbench();renderAudit();renderSources();
+  bindRoutes();
 }
-
-function renderWorkbench() {
-  const l = state.researchLedger;
-  const board = qs('#workbenchCards');
-  const home = qs('#homeResearchLedger');
-  const atlas = qs('#atlasResearchLedger');
-  if (!l || l.classification !==
-    'dated_repository_research_progress_NOT_geospatial_or_model_readiness') {
-    const note = 'This published snapshot has no verified research ledger. Use the source audit; no new readiness is implied.';
-    [board,home,atlas].forEach(el=>{if(el)el.textContent=note});
-    const caution = qs('#workbenchCaution');if(caution)caution.textContent=note;
-    return;
-  }
-  const rows = l.workstreams || [];
-  const search = (qs('#workbenchSearch')?.value || '').toLowerCase().trim();
-  const phase = qs('#workbenchPhase')?.value || 'all';
-  const filtered = rows.filter(item=>
-    (phase==='all' || item.phase===phase) &&
-    (!search || [item.title,item.id,item.summary,item.completed,item.blocked,
-      item.action].join(' ').toLowerCase().includes(search)));
-  if(board) {
-    board.innerHTML=filtered.length ? filtered.map(x=>researchLedgerCardHTML(x)).join('') :
-      '<p class="audit-empty">No workstream matches. Clear search or change the stage.</p>';
-    bindRouteButtons(board);
-  }
-  if(home) {
-    home.innerHTML=rows.filter(x=>['electricity','boundary','landslide','forest','wetlands','modelling'].includes(x.id)).map(x=>researchLedgerCardHTML(x,true)).join('');
-    bindRouteButtons(home);
-  }
-  if(atlas) {
-    atlas.innerHTML=rows.filter(x=>['boundary','landslide','forest','wetlands','lulc'].includes(x.id))
-      .map(x=>researchLedgerCardHTML(x,true)).join('');
-    bindRouteButtons(atlas);
-  }
-  const count=qs('#workbenchCount');
-  if(count)count.textContent=filtered.length+' of '+rows.length+
-    ' source-linked workstreams · no artificial completion score.';
-  const reviewed=qs('#workbenchReviewed');
-  if(reviewed)reviewed.textContent='Research audit · '+l.reviewed_date;
-  const caution=qs('#workbenchCaution');
-  if(caution)caution.textContent=l.caution;
-  const summary=qs('#workbenchSummary');
-  const gates=Object.entries(l.release_gates||{});
-  if(summary)summary.innerHTML=[
-    [rows.length,'Tracked workstreams'],
-    [l.audit_open_findings,'Open source findings'],
-    [gates.filter(([,v])=>v.passed).length + ' / ' + gates.length,'Scoped gates passed']
-  ].map(([value,label])=>'<div><strong>'+esc(value)+'</strong><span>'+
-    esc(label)+'</span></div>').join('');
-  const gateBox=qs('#workbenchGates');
-  if(gateBox)gateBox.innerHTML=gates.map(([key,gate])=>
-    '<article class="research-gate"><span class="research-phase '+(gate.passed?'phase-ok':'phase-no')+
-    '">'+(gate.passed?'SCOPED PASS':'NOT PASSED')+'</span><h3>'+
-    esc(key.replaceAll('_',' '))+'</h3><p>'+
-    esc(gate.passed?'All checks required for this specific limited gate pass; not a full-system result.' :
-      'Still requires: '+(gate.blocking_checks||[]).join(', '))+'</p></article>').join('');
-}
-
-// Dated research ledger and observation bundle are distinct publication identities.
-// These cards use the exact same audited ledger as the workbench and release gates.
-function renderEvidenceSnapshot() {
-  const box = qs('#evidenceSnapshot');
-  const footer = qs('#footerResearchIdentity');
-  if(!box)return;
-  const metadata = state.data?.metadata || {};
-  const ledger = state.researchLedger;
-  const audit = state.audit;
-  if(!ledger || !audit ||
-     ledger.classification !== 'dated_repository_research_progress_NOT_geospatial_or_model_readiness' ||
-     audit.classification !== 'repository_evidence_audit_not_external_source_validation') {
-    box.textContent = 'Dated research audit unavailable. No scientific readiness can be inferred.';
-    if(footer)footer.textContent = 'A validated research audit is unavailable in this publication.';
-    return;
-  }
-  const commit = /^[a-f0-9]{40}$/.test(metadata.research_source_commit || '') ?
-    metadata.research_source_commit : null;
-  const evidenceCommit = /^[a-f0-9]{40}$/.test(metadata.git_sha || '') ?
-    metadata.git_sha : null;
-  const revision = commit ? commit.slice(0,10) : 'Not recorded';
-  const published = metadata.generated_at_utc ?
-    metadata.generated_at_utc.slice(0,10) : 'Unknown';
-  const reviewed = ledger.reviewed_date || 'Unknown';
-  const passed = Object.values(ledger.release_gates || {}).filter(g => g.passed).length;
-  const gates = Object.keys(ledger.release_gates || {}).length;
-  const sourceLink = commit ?
-    '<a href="' + REPO + '/tree/' + commit + '" target="_blank" rel="noopener">Inspect this research revision ↗</a>' :
-    '<span>Repository commit unavailable in this build</span>';
-  box.innerHTML =
-    '<div class="snapshot-heading"><span class="section-label">PUBLICATION RECORD / TWO SEPARATE CLOCKS</span>'+
-    '<strong>Research date ≠ observation date</strong></div>'+
-    '<div class="snapshot-grid">'+
-    '<div class="snapshot-cell"><span>Research audit reviewed</span><strong>'+esc(reviewed)+'</strong>'+
-    '<small>Source/geometry QA, open findings and scientific gates</small></div>'+
-    '<div class="snapshot-cell"><span>Observed data snapshot</span><strong>'+esc(published)+'</strong>'+
-    '<small>Bundle publication date · FY2024–25 reference</small></div>'+
-    '<div class="snapshot-cell"><span>Scoped release gates</span><strong>'+esc(passed)+' / '+esc(gates)+'</strong>'+
-    '<small>Not a percent-complete score or a 2040 approval</small></div>'+
-    '<div class="snapshot-cell"><span>Research revision</span><strong class="revision-code">'+esc(revision)+'</strong>'+
-    '<small>'+sourceLink+'</small></div></div>';
-  if(footer)footer.textContent='Research audit '+reviewed+' · observation bundle '+
-    published+' · source revision '+revision+
-    (evidenceCommit ? ' · original evidence build '+evidenceCommit.slice(0,10) : '');
-}
-
-function decisionEvidenceLinks(item) {
-  return (item.evidence || []).map(entry => {
-    const url = researchEvidenceURL(entry.href);
-    return url ? '<a href="' + esc(url) +
-      '" target="_blank" rel="noopener">' + esc(entry.label) + ' ↗</a>' : '';
-  }).filter(Boolean).join('');
-}
-
-function decisionRow(item) {
-  const phase = ['validated_source','partial','blocked'].includes(item.phase) ?
-    item.phase : 'blocked';
-  return '<div class="decision-outcome phase-' + phase + '">' +
-    '<span class="decision-outcome-value">' + esc(item.metric) + '</span>' +
-    '<span class="decision-outcome-unit">' + esc(item.unit) + '</span></div>';
-}
-
-function decisionDetailHTML(item) {
-  const route = ['electricity','atlas','workbench','audit','data','pathways','industry'].includes(item.route) ?
-    item.route : 'workbench';
-  return '<div class="decision-detail-header"><span class="section-label">RESEARCH RECORD / '+
-    esc(item.id.toUpperCase())+'</span><span class="research-phase">'+
-    esc(researchPhaseLabel(item.phase))+'</span></div>'+
-    '<h3>'+esc(item.title)+'</h3><p class="decision-summary">'+esc(item.summary)+'</p>'+
-    decisionRow(item)+
-    '<div class="decision-compare"><div><span class="mini-label">ESTABLISHED BY THE EVIDENCE</span><p>'+
-    esc(item.completed)+'</p></div><div><span class="mini-label">NOT YET ESTABLISHED</span><p>'+
-    esc(item.blocked)+'</p></div></div>'+
-    '<div class="decision-action"><span class="mini-label">NEXT VERIFIABLE STEP</span><p>'+
-    esc(item.action)+'</p></div>'+
-    '<div class="decision-detail-footer"><div class="decision-evidence"><span class="mini-label">SOURCE TRAIL</span>'+
-    decisionEvidenceLinks(item)+'</div><button type="button" class="button primary" data-route="'+
-    route+'">Open research area →</button></div>';
-}
-
-function renderDecisionDesk() {
-  const topics = qs('#decisionTopics');
-  const detail = qs('#decisionDetail');
-  if(!topics || !detail)return;
-  const ledger = state.researchLedger;
-  if(!ledger || ledger.classification !==
-     'dated_repository_research_progress_NOT_geospatial_or_model_readiness') {
-    topics.textContent = '';
-    detail.textContent = 'The audited research ledger is unavailable in this snapshot.';
-    return;
-  }
-  const interests = ['electricity','boundary','landslide','forest','wetlands','modelling'];
-  const items = interests.map(id => ledger.workstreams.find(row => row.id === id)).filter(Boolean);
-  if(!items.length){detail.textContent='No source-traced research records have been packaged.';return;}
-  const selected = items.find(item => item.id === state.focusId) || items[0];
-  state.focusId = selected.id;
-  topics.innerHTML = items.map((item,i) =>
-    '<button type="button" class="decision-topic '+(selected.id===item.id?'selected':'')+
-    '" data-focus="'+esc(item.id)+'" aria-pressed="'+(selected.id===item.id)+'">'+
-    '<span class="decision-topic-index">'+String(i+1).padStart(2,'0')+'</span>'+
-    '<span class="decision-topic-copy"><strong>'+esc(item.title)+'</strong><small>'+
-    esc(item.unit)+'</small></span><span aria-hidden="true">↗</span></button>'
-  ).join('');
-  detail.innerHTML = decisionDetailHTML(selected);
-  bindRouteButtons(detail);
-}
-
-function renderSpatialPipeline() {
-  const box=qs('#spatialPipeline');
-  if(!box)return;
-  const ledger=state.researchLedger;
-  if(!ledger || ledger.classification !==
-     'dated_repository_research_progress_NOT_geospatial_or_model_readiness') {
-    box.textContent='Verified spatial source ledger unavailable. No siting claim can be made.';
-    return;
-  }
-  const ids=['boundary','lulc','landslide','forest','wetlands'];
-  const rows=ids.map(id=>ledger.workstreams.find(item=>item.id===id)).filter(Boolean);
-  box.innerHTML=rows.map((item,i)=>{
-    const label=researchPhaseLabel(item.phase);
-    const phase=['validated_source','partial','blocked'].includes(item.phase)?
-      item.phase:'blocked';
-    return '<article class="spatial-step phase-'+phase+'"><div class="spatial-step-top">'+
-      '<span class="spatial-index">'+String(i+1).padStart(2,'0')+'</span>'+
-      '<span class="spatial-stage">'+esc(label)+'</span></div>'+
-      '<h3>'+esc(item.title)+'</h3><div class="spatial-number">'+
-      esc(item.metric)+' <small>'+esc(item.unit)+'</small></div>'+
-      '<p>'+esc(item.summary)+'</p><details><summary>Source, missing evidence and next step</summary>'+
-      '<p><b>Established:</b> '+esc(item.completed)+'</p>'+
-      '<p><b>Not established:</b> '+esc(item.blocked)+'</p>'+
-      '<p><b>Next:</b> '+esc(item.action)+'</p>'+
-      '<div class="spatial-sources">'+decisionEvidenceLinks(item)+'</div></details></article>';
-  }).join('')+
-    '<div class="spatial-stop"><strong>Admission boundary</strong><p>None of these source records establishes legal exclusion geometry, eligible km², technology-specific siting, or a Kerala 2040 MW ceiling.</p>'+
-    '<button class="button secondary" data-route="audit">Inspect scientific gates →</button></div>';
-  bindRouteButtons(box);
-}
-
-function renderAll() {
-  
-  renderPlatformMeta();renderHeadline();renderOverview();renderEvidenceFeed();renderElectricity();renderSldcDeepDive();renderPathwayReferences();renderScenarioLab();renderIndustry();renderDataCentre();
-  renderConnectedEvidence();
-  renderWorkbench();
-  renderDecisionDesk();
-  renderSpatialPipeline();
-  renderEvidenceSnapshot();
-  renderResearchProgress();
-  renderAudit();
-  if (!window.Plotly) qsa('.chart:not(#scenarioInputChart)').forEach(el=>el.innerHTML='<p class="model-gate">Charts could not load. Use the data tables and downloads below.</p>');
-}
-
-async function init() {
-  bindTheme();
+async function init(){
   bindInteractions();
-  try {
+  try{
     await loadPlatformData();
     renderAll();
-  } catch (err) {
-    console.error(err);
-    qs('#dataOrigin').innerHTML='The evidence snapshot could not load. <button type="button" onclick="location.reload()">Retry</button>';
-    qs('#headlineMetrics').textContent='Data unavailable — please retry. No placeholder values are shown.';
+  }catch(err){
+    console.error("Kerala2040 evidence load failed:",err);
+    const box=$("#headlineMetrics");
+    if(box)box.textContent="The verified evidence snapshot could not load. No figures are being shown.";
+    const origin=$("#dataOrigin");
+    if(origin)origin.textContent="Published data unavailable; inspect the repository instead.";
   }
-  showView(location.hash.slice(1)||'overview');
+  showView(location.hash.slice(1)||"overview");
 }
-
-window.addEventListener('load',init);
-
-function renderResearchProgress(){
-  const p=state.data?.research_results?.products;
-  const box=qs('#researchProgress');if(!box)return;
-  if(!p){box.textContent='Research artifacts have not been published in this snapshot.';return;}
-  const rows=[];
-  if(p.hydro)rows.push(['Hydro analysis','Derived from SLDC observations',`${p.hydro.days} days; ${p.hydro.reservoir_level_diagnostics.length} reservoirs. Descriptive relationships, not a causal dispatch model.`]);
-  if(p.renewables)rows.push(['Renewable availability','Modelled resource profile',`${fmt(p.renewables.solar_mean_p_max_pu*100,1)}% mean solar availability; ${fmt(p.renewables.wind_mean_p_max_pu*100,1)}% generic wind. Equal-weight weather points, not measured plant generation. UTC coverage needs IST alignment.`]);
-  if(p.replay)rows.push(['PyPSA daily replay','Observed-day accounting check',`${p.replay.network_meta.observed_days} daily snapshots; ${fmt(p.replay.load_mwh/1e6,3)} TWh represented; ${fmt(p.replay.balance_error_mwh,2)} MWh balance residual. No hourly telemetry or synthetic hourly load used.`]);
-  if(p.inventory)rows.push(['Generator inventory','Portal inventory seed',`${p.inventory.project_records} project records (${p.inventory.completed_records} marked completed). Portal vintage: ${p.inventory.portal_data_as_of_label}. Not a complete current operating fleet.`]);
-  if(p.gis)rows.push(['Ecological inputs','Raw acquisition',`${p.gis.available_count} inputs acquired; ${p.gis.missing_count} unresolved. Eligibility maps and capacity ceilings are not yet model-ready.`]);
-  if(p.cstep)rows.push(['CSTEP 2024','External benchmark',`${Object.keys(p.cstep.tables).length} extracted tables with page provenance. Demand and capacity paths are external scenarios; storage interpretation remains flagged.`]);
-  rows.push(['2040 optimisation and KMML','Not yet solved','Scenario framework is present. Sourced costs, grid limits, ecological ceilings, interval telemetry and KMML operating data remain required.']);
-  box.innerHTML=`<div class="table-scroll"><table><thead><tr><th>Workstream</th><th>Evidence</th><th>Result and limits</th></tr></thead><tbody>${rows.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-  if(p.reconciliation)box.innerHTML+=`<details><summary>Official energy reconciliation · different accounting boundaries</summary><div class="table-scroll"><table><thead><tr><th>Metric</th><th>MU</th><th>Boundary</th><th>Source</th></tr></thead><tbody>${p.reconciliation.rows.map(r=>`<tr><td>${esc(r.metric.replaceAll('_',' '))}</td><td>${fmt(r.value_mu,2)}</td><td>${esc(r.boundary)}</td><td>${esc(r.source)}</td></tr>`).join('')}</tbody></table></div></details>`;
-  if(p.gis)box.innerHTML+=`<details><summary>Ecological acquisition register</summary><div class="table-scroll"><table><thead><tr><th>Layer</th><th>State</th><th>Source</th></tr></thead><tbody>${p.gis.records.map(r=>`<tr><td>${esc(r.layer_id.replaceAll('_',' '))}</td><td>${r.local_exists?'Raw file acquired':'Unresolved'}</td><td>${esc(r.source)}</td></tr>`).join('')}</tbody></table></div></details>`;
-  box.innerHTML+=`<p><a href="${REPO}/blob/main/docs/CSTEP_FY2016_DATA_REQUEST_DRAFT.md" target="_blank" rel="noopener">CSTEP FY2016 data request ↗</a> · <a href="${REPO}/blob/main/docs/NEXT_STEPS.md" target="_blank" rel="noopener">Next research steps ↗</a></p>`;
-}
-
-// Expand the historical daily evidence only when the independently validated archive
-// is packaged. Missing dates remain gaps; no interval chronology is inferred.
-function renderSldcDeepDive() {
-  const box=qs('#sldcDetailChart'), note=qs('#sldcDetailNote'), limits=qs('#sldcDetailLimitations');
-  if(!box||!note||!limits)return;
-  const e=state.sldcStationEvidence;
-  if(!e) {
-    box.innerHTML='<p class="model-gate">Expanded historical SLDC tables are not packaged in this snapshot.</p>';
-    note.textContent='The independent historical data layer remains under integration.';
-    return;
-  }
-  const metric=qs('#sldcDetailMetric')?.value||'stations';
-  const c=chartTheme();let traces=[],options=layout(),description='';
-  if(metric==='stations') {
-    const rows=e.stations.filter(r=>r.days_with_reported_generation>0).slice(0,12);
-    traces=[{type:'bar',orientation:'h',name:'Reported generation',x:rows.map(r=>r.generation_mu/1000),y:rows.map(r=>r.station_name_as_reported),marker:{color:c.green},hovertemplate:'%{y}<br>%{x:.3f} TWh<extra>Observed days only</extra>'}];
-    options={...layout({xTitle:'Reported generation (TWh; observed days only)'}),margin:{l:165,r:30,t:15,b:65},yaxis:{autorange:'reversed',automargin:true}};
-    description='Station names are preserved as reported. Only nonblank daily generation values contribute; these are not installed capacity or plant-level hourly dispatch.';
-  } else if(metric==='interfaces') {
-    const rows=e.interfaces;
-    traces=[{type:'bar',orientation:'h',name:'Reported net import',x:rows.map(r=>r.import_mu/1000),y:rows.map(r=>r.interface_name_as_reported),marker:{color:c.amber},hovertemplate:'%{y}<br>%{x:.3f} TWh<extra>Reported daily energy</extra>'}];
-    options={...layout({xTitle:'Reported interface energy (TWh; observed days only)'}),margin:{l:195,r:30,t:15,b:65},yaxis:{autorange:'reversed',automargin:true}};
-    description='Reported grouped imports are daily energy measurements, not MW transfer limits or a solved regional grid model.';
-  } else if(metric==='months') {
-    const rows=e.monthly;
-    traces=[['Hydro','hydro_mu',c.green],['Net imports','net_import_mu',c.amber]].map(([name,key,color])=>({type:'bar',name,x:rows.map(r=>r.month),y:rows.map(r=>r[key]/1000),marker:{color},hovertemplate:'%{x}<br>%{y:.3f} TWh<extra>'+name+'</extra>'}));
-    options={...layout({xTitle:'Calendar month',yTitle:'Reported energy (TWh; observed days only)'}),barmode:'group'};
-    description='Monthly values exclude missing dates. Coverage by month is recorded in the downloadable JSON; no missing-date scaling or interpolation.';
-  } else if(metric==='reservoirs') {
-    const rows=e.reservoirs.filter(r=>r.observation_count>0);
-    traces=[{type:'bar',orientation:'h',name:'Minimum reported storage',y:rows.map(r=>r.reservoir_name_as_reported),x:rows.map(r=>r.storage_pct_min),marker:{color:c.amber}},
-      {type:'bar',orientation:'h',name:'Observed range above minimum',y:rows.map(r=>r.reservoir_name_as_reported),x:rows.map(r=>r.storage_pct_max-r.storage_pct_min),marker:{color:c.green}}];
-    options={...layout({xTitle:'Reported storage (%)'}),barmode:'stack',margin:{l:160,r:30,t:15,b:65},yaxis:{autorange:'reversed',automargin:true}};
-    description='Minima and maxima of each reservoir’s reported daily storage percentage; not turbine capacity, usable energy or a validated reservoir–plant cascade.';
-  }
-  const suffix=`${e.observed_days}/${e.expected_days} days · source archive SHA-256 ${e.source_archive_sha256.slice(0,12)}…`;
-  note.textContent=`${description} ${suffix}`;
-  limits.innerHTML=`<p>${e.reported_row_counts.hydro_station.toLocaleString()} station, ${e.reported_row_counts.import_interface.toLocaleString()} interface and ${e.reported_row_counts.reservoir.toLocaleString()} reservoir rows. 11 missing days: ${e.missing_dates.join(', ')}.</p><ul>${e.limitations.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
-  if(window.Plotly)Plotly.react(box,traces,options,{responsive:true,displaylogo:false});
-  else box.innerHTML='<p class="model-gate">Chart library unavailable; download the source-labelled data tables below.</p>';
-}
+if(typeof window!=="undefined")window.addEventListener("load",()=>{
+  let theme="kasavu";try{theme=localStorage.getItem("kerala2040-theme")||theme}catch{}
+  chooseTheme(theme);init();
+});
