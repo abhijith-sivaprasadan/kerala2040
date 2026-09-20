@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import hashlib
-from pathlib import Path
 import zipfile
+from pathlib import Path
 
 import pytest
 
