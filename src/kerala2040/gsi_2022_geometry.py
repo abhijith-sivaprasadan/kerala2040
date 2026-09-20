@@ -8,15 +8,15 @@ district boundary, class re-labelling, or capacity calculation is performed.
 from __future__ import annotations
 
 import argparse
-from collections import Counter
-from datetime import UTC, datetime
 import hashlib
 import json
-from pathlib import Path
 import shutil
 import tempfile
-from urllib.parse import urlparse
 import zipfile
+from collections import Counter
+from datetime import UTC, datetime
+from pathlib import Path
+from urllib.parse import urlparse
 
 import requests
 
@@ -112,7 +112,7 @@ def _small_field_profile(frame, field: str) -> dict:
     counts = values.value_counts(dropna=False)
     return {
         "field": field,
-        "unique_raw_values": int(len(counts)),
+        "unique_raw_values": len(counts),
         "complete_values_recorded": len(counts) <= 25,
         "raw_value_counts": {
             str(name)[:110]: int(n) for name, n in counts.iloc[:25].items()
@@ -124,8 +124,8 @@ def inspect_archive(path: Path, row: dict) -> dict:
     """Full row/geometry reads, original CRS/fields and class candidates."""
     import geopandas as gpd
     import pyogrio
-    from pyproj import CRS, Transformer
     import shapely
+    from pyproj import CRS, Transformer
 
     if not path.is_file() or sha256(path) != row["sha256"]:
         raise ValueError("Original GSI source checksum missing or changed")
