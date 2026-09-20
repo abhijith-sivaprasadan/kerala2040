@@ -106,6 +106,13 @@ workstreams:
     unknown_uncovered_envelope_cells: 8640000
     downloaded_glo90_pilot_tiles_in_workflow: 1
     source_pilot_sha256: cab81d17d0f6b42c5083f2bf61206b78c607ba59da0663e2677cfebe7f21dd79
+    # A distinct research-only source pixel-centre result; does not certify a bare-earth DTM,
+    # complete projected-grid coverage, watershed terrain or ecological suitability.
+    nwic_kerala_native_grid_dsm_pixel_centres_verified: true
+    nwic_kerala_native_grid_finite_boundary_pixel_centres: 4624362
+    nwic_kerala_projected_nonfinite_boundary_pixel_centres: 2596
+    nwic_kerala_descriptive_surface_slope_finite_pixels: 4779307
+    nwic_kerala_dsm_slope_qa_run: https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35523266172
     geospatial_mosaic_coverage_verified: false
     source_vertical_datum_verified: false
     ecological_slope_threshold_verified: false
