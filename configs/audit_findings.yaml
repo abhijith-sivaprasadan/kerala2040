@@ -16,6 +16,8 @@ sources:
   generator_unit_crosschecks: configs/generator_reconciliation_2024_25.yaml
   hydro_topology_evidence: configs/hydro_topology_evidence_2024_25.yaml
   hydro_operations_audit: docs/HYDRO_RESERVOIR_OPERATIONS_AUDIT.md
+  grid_transfer_review: docs/GRID_TRANSFER_CONTRACTS_FY2024_25_AUDIT.md
+  grid_transfer_source_registry: configs/grid_transfer_contract_evidence_2024_25.yaml
   project_qa: data/external/sldc_fy2024_25/qa_report.json
   era5_manifest: public/era5-daily-manifest.json
   gis_catalogue: configs/gis_inputs.yaml
@@ -66,8 +68,14 @@ findings:
   - id: interstate_transfer_and_contracts
     priority: P0
     check: grid_transfer
-    acquisition: Verified ATC/TTC, seasonal derating, import/export and procurement contracts; daily imported energy is not a MW limit.
-    evidence: docs/OBSERVED_DAILY_PYPSA.md
+    acquisition: >-
+      Validate eight named daily SLDC import-energy interface rows across
+      354 observed days. SRPC's January 2025 TTC/margin snapshot and KSEBL's
+      retrospective March capability increase are not a complete FY ATC/TTC
+      chronology or export rights. Obtain revision-dated import/export limits,
+      N-1/ICT/HVDC constraints, actual versus scheduled intervals, and a
+      commercially usable contract/deliverability register.
+    evidence: docs/GRID_TRANSFER_CONTRACTS_FY2024_25_AUDIT.md
   - id: recent_lulc_georeferenced
     priority: P0
     check: gis_model_ready
@@ -111,8 +119,12 @@ findings:
   - id: import_tariffs_and_prices
     priority: P0
     check: grid_transfer
-    acquisition: KSERC/KSEBL approved procurement prices, contracted energy, assumptions and cost year.
-    evidence: docs/MODELLING_DATA_ROADMAP.md
+    acquisition: >-
+      Reconcile dated KSERC-approved versus KSEBL actual station/bilateral/DEEP/
+      swap/market procurement, delivery profiles, obligations, transmission
+      charges and landed INR/MWh by cost year; avoid treating post-FY PPAs,
+      exchange-clearing prices or nameplate MW as FY2024-25 delivered energy.
+    evidence: docs/GRID_TRANSFER_CONTRACTS_FY2024_25_AUDIT.md
   - id: kmml_material_chemistry
     priority: P2
     check: kmml_measured

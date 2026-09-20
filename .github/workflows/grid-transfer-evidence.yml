@@ -1,0 +1,67 @@
+name: Audit FY2024-25 interstate transfers and procurement evidence
+
+on:
+  pull_request:
+    paths:
+      - "configs/grid_transfer_contract_evidence_2024_25.yaml"
+      - "configs/observed_2024_25.yaml"
+      - "data/external/sldc_fy2024_25/**"
+      - "src/kerala2040/grid_transfer_evidence.py"
+      - "scripts/audit_grid_transfer.py"
+      - "tests/test_grid_transfer_evidence.py"
+      - ".github/workflows/grid-transfer-evidence.yml"
+  push:
+    branches: [main]
+    paths:
+      - "configs/grid_transfer_contract_evidence_2024_25.yaml"
+      - "configs/observed_2024_25.yaml"
+      - "data/external/sldc_fy2024_25/**"
+      - "src/kerala2040/grid_transfer_evidence.py"
+      - "scripts/audit_grid_transfer.py"
+      - ".github/workflows/grid-transfer-evidence.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-partial-transfer-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: src:.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install narrowly scoped audit dependencies
+        run: pip install "pyyaml>=6,<7" "pytest>=8,<9" "ruff>=0.7,<1"
+      - name: Check evidence code, regressions and actual daily source sums
+        run: |
+          ruff check src/kerala2040/grid_transfer_evidence.py scripts/audit_grid_transfer.py tests/test_grid_transfer_evidence.py
+          pytest -q tests/test_grid_transfer_evidence.py
+          python scripts/audit_grid_transfer.py
+      - name: Keep 6500-MW screening case out of real import limits
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          q = json.loads(Path("results/grid/transfer_contract_evidence.json").read_text())
+          assert q["observed_days"] == 354
+          assert q["import_interface_rows"] == 2832
+          assert q["reported_grouped_interfaces"] == 8
+          assert q["max_daily_interface_reconciliation_residual_mu"] <= 0.001
+          assert q["observed_days_only_net_import_mu"] == 22635.0183
+          assert q["full_fy_atc_ttc_profile_verified"] is False
+          assert q["contract_deliverability_verified"] is False
+          assert q["contract_landed_prices_verified"] is False
+          assert q["model_import_limit_verified"] is False
+          assert q["existing_6500_mw_is_only_scenario_assumption"] is True
+          assert q["audit_gate_closed"] is False
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fy24-25-imports-and-transfer-snapshots-NOT-VALIDATED-ATC-CONTRACTS
+          path: results/grid/transfer_contract_evidence.json
+          retention-days: 90
