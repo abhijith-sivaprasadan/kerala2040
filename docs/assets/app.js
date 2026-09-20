@@ -875,11 +875,11 @@ function renderWorkbench() {
     bindRouteButtons(board);
   }
   if(home) {
-    home.innerHTML=rows.map(x=>researchLedgerCardHTML(x,true)).join('');
+    home.innerHTML=rows.filter(x=>['electricity','boundary','landslide','forest','wetlands','modelling'].includes(x.id)).map(x=>researchLedgerCardHTML(x,true)).join('');
     bindRouteButtons(home);
   }
   if(atlas) {
-    atlas.innerHTML=rows.filter(x=>['boundary','landslide','forest','wetlands'].includes(x.id))
+    atlas.innerHTML=rows.filter(x=>['boundary','landslide','forest','wetlands','lulc'].includes(x.id))
       .map(x=>researchLedgerCardHTML(x,true)).join('');
     bindRouteButtons(atlas);
   }
