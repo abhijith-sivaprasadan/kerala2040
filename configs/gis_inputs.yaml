@@ -39,17 +39,29 @@ layers:
   ksdma_landslide:
     source: Kerala State Disaster Management Authority / Geological Survey of India
     landing_page: https://sdma.kerala.gov.in/hazard-maps/
-    expected_format: shapefile_or_authoritative_download
+    acquisition_register: configs/gis_forest_dem_wetlands_hazards_2026.yaml
+    report: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
+    expected_format: gsi_2022_district_shapefile_zip_plus_class_legend
     raw_path: data/external/gis/ksdma/landslide
-    role: slope_and_landslide_constraint
-    acquisition_status: authoritative_geometry_not_yet_secured
+    role: susceptibility_penalty_or_avoidance_not_universal_statutory_exclusion
+    acquisition_status: official_download_listed_but_not_committed_verified
+    note: >-
+      KSDMA lists 13 GSI 2022 district shapefile links, excluding Alappuzha;
+      do not infer hazard-free missing coverage. Old NCESS map superseded.
+      The source list does not establish downloaded ZIPs or GIS validity.
   kerala_forest_protected_areas:
     source: Kerala Forest and Wildlife Department
     landing_page: https://forest.kerala.gov.in/
-    expected_format: vector
+    acquisition_register: configs/gis_forest_dem_wetlands_hazards_2026.yaml
+    report: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
+    expected_format: notified_vector_plus_gazette_identity
     raw_path: data/external/gis/forest/protected_areas
-    role: hard_ecological_exclusion
-    acquisition_status: authoritative_geometry_not_yet_secured
+    role: legal_ecological_exclusion_only_after_verified_notification
+    acquisition_status: official_internal_gis_reported_geometry_not_secured
+    note: >-
+      Department reports digitised forest and protected-area boundaries; public
+      authoritative original georeferenced file, notification linkage, effective
+      date and redistribution terms not acquired. Forest cover != legal forest.
   bhuvan_lulc:
     source: NRSC/ISRO Bhuvan
     landing_page: https://bhuvan-app1.nrsc.gov.in/2dresources/bhuvanstore2.php
@@ -70,19 +82,32 @@ layers:
       ISRO describes native 250K data requests via a signed institutional MoU.
       SISDP 10K district availability requires separate confirmation.
   bhuvan_dem:
-    source: NRSC/ISRO Bhuvan
-    landing_page: https://bhuvan.nrsc.gov.in/
-    expected_format: raster
-    raw_path: data/external/gis/bhuvan/dem
-    role: slope_terrain_constraint
-    acquisition_status: not_downloaded
+    source: NRSC/ISRO Bhuvan and Copernicus Programme
+    landing_page: https://bhuvan-app3.nrsc.gov.in/data/download/help/source/html/steps_to_download_data.htm
+    public_alternative: https://registry.opendata.aws/copernicus-dem/
+    acquisition_register: configs/gis_forest_dem_wetlands_hazards_2026.yaml
+    report: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
+    expected_format: source_height_cog_or_cartodem_tiles_with_vertical_datum
+    raw_path: data/external/gis/terrain
+    role: slope_terrain_input_not_legal_eligibility
+    acquisition_status: source_routes_verified_statewide_raster_not_committed
+    note: >-
+      CartoDEM requires a Bhuvan tile download/login. Public Copernicus
+      GLO-30/GLO-90 tiles are DIGITAL SURFACE models, not bare-earth DTM;
+      sample tile or catalogue does not verify seamless Kerala coverage.
   bhuvan_waterbodies:
-    source: NRSC/ISRO Bhuvan
-    landing_page: https://bhuvan.nrsc.gov.in/
-    expected_format: vector_or_raster
-    raw_path: data/external/gis/bhuvan/waterbodies
-    role: land_and_floating_solar_screening
-    acquisition_status: not_downloaded
+    source: State Wetland Authority Kerala / NRSC ISRO
+    landing_page: https://envt.kerala.gov.in/state-wetland-authority-kerala-swak/
+    source_atlas: https://vedas.sac.gov.in/en/National_Wetland_Inventory_and_Assessment_%28NWIA%29_Atlas.html
+    acquisition_register: configs/gis_forest_dem_wetlands_hazards_2026.yaml
+    report: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
+    expected_format: official_georeferenced_inventory_plus_final_notifications
+    raw_path: data/external/gis/wetlands
+    role: wetland_protection_and_waterbody_screening
+    acquisition_status: draft_notified_legal_distinction_original_geometry_not_secured
+    note: >-
+      NWIA atlas is not an official current legal geometry; SWAK draft briefs
+      and WIAMS portal are not final notification polygons. Keep all separate.
   niwe_wind_atlas_150m:
     source: National Institute of Wind Energy
     landing_page: https://niwe.res.in/Open_data_Set/open_wind_dataset/
