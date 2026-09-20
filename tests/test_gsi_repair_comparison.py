@@ -2,16 +2,21 @@
 
 from __future__ import annotations
 
+import importlib
+import sys
+from pathlib import Path
+
 import pytest
 from shapely.geometry import Polygon
 
-from scripts.compare_gsi_2022_repairs import (
-    CLASSES,
-    METHODS,
-    class_overlap,
-    compare_feature,
-    polygonal,
-)
+# The comparison is a standalone research CLI, not part of the installed package.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+_module = importlib.import_module("compare_gsi_2022_repairs")
+CLASSES = _module.CLASSES
+METHODS = _module.METHODS
+class_overlap = _module.class_overlap
+compare_feature = _module.compare_feature
+polygonal = _module.polygonal
 
 
 def test_self_intersection_requires_explicit_candidate_comparison():
