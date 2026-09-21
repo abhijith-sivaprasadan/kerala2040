@@ -311,3 +311,76 @@ test("hydro and reservoir are distinct gap-broken observed lines with different 
   assert.match(svg,/354\/365 reported dates/);
   assert.doesNotMatch(svg,/8760|forecast|potential_mw/);
 });
+
+
+test("dynamic chart preserves missing dates, exposes keyboard reading and never draws an invented bridge",()=>{
+  const c=context();
+  c.samples=[
+    {date:"2024-09-19",consumption_mu:80},
+    {date:"2024-09-21",consumption_mu:100},
+    {date:"2024-09-22",consumption_mu:93}
+  ];
+  const html=vm.runInContext('plotValues(samples,"consumption_mu")',c);
+  assert.equal((html.match(/class="chart-line"/g)||[]).length,1);
+  assert.equal((html.match(/class="chart-dot"/g)||[]).length,1);
+  assert.match(html,/tabindex="0"/);
+  assert.match(html,/class="chart-readout"/);
+  assert.match(html,/class="chart-crosshair"/);
+  assert.match(html,/class="chart-cursor"/);
+  assert.doesNotMatch(html,/2024-09-20[^<]*MU\/day/);
+});
+test("animated observations measure each original path instead of fabricating continuity",()=>{
+  let cssProps=[];
+  const fakePath={
+    getTotalLength:()=>114.52,
+    style:{setProperty:(key,value)=>cssProps.push([key,value])}
+  };
+  const root={
+    classList:{add:name=>cssProps.push(["class",name])},
+    querySelectorAll:()=>[fakePath,fakePath]
+  };
+  const c=context({
+    window:{addEventListener:()=>{},matchMedia:()=>({matches:false})},
+    document:{
+      documentElement:{classList:{contains:name=>name==="motion-ready"}},
+      querySelector:()=>null,querySelectorAll:()=>[]
+    }
+  });
+  c.fixture=root;
+  vm.runInContext("animateObservedPaths(fixture)",c);
+  assert.equal(cssProps.filter(([key])=>key==="--draw-length").length,2);
+  assert.ok(cssProps.some(([key,value])=>key==="--draw-length"&&Number(value)>114));
+  assert.ok(cssProps.some(([key,value])=>key==="class"&&value==="chart-animated"));
+  const reduced=context({
+    window:{addEventListener:()=>{},matchMedia:()=>({matches:true})},
+    document:{querySelector:()=>null,querySelectorAll:()=>[]}
+  });
+  reduced.fixture=root;cssProps=[];
+  vm.runInContext("animateObservedPaths(fixture)",reduced);
+  assert.equal(cssProps.length,0);
+});
+test("monthly and hydro artwork keeps data provenance when motion is enabled",()=>{
+  const c=context();
+  const days=read("daily-balance.json").records;
+  const base=read("site-data.json").baseline;
+  c.days=days;c.base=base;
+  const chart=vm.runInContext("drawMonthlyArt(observedMonths(days,base))",c);
+  assert.equal((chart.match(/class="viz-month-column"/g)||[]).length,12);
+  assert.equal((chart.match(/class="viz-gap-stroke"/g)||[]).length,7);
+  assert.match(chart,/--viz-delay:0ms/);
+  assert.match(chart,/--viz-delay:715ms/);
+  const hydro=vm.runInContext("drawHydroArt(days,base)",c);
+  assert.equal((hydro.match(/class="viz-gap-guide"/g)||[]).length,11);
+  assert.ok((hydro.match(/class="viz-hydro-line"/g)||[]).length>1);
+  assert.ok((hydro.match(/class="viz-storage-line"/g)||[]).length>1);
+  const css=fs.readFileSync(path.join(root,"docs/assets/kerala.css"),"utf8");
+  for(const name of ["trace-observed","rise-observed","backwater-drift",
+    "vallam-float","palm-sway","prefers-reduced-motion:reduce"]){
+    assert.ok(css.includes(name),name);
+  }
+  for(const name of ["electric","land","pathways","industry"]){
+    const file=fs.readFileSync(path.join(root,"docs/assets/chapter-"+name+".svg"),"utf8");
+    assert.match(file,/prefers-reduced-motion:no-preference/);
+    assert.match(file,/animation:/);
+  }
+});
