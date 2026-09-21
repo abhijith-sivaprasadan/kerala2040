@@ -44,6 +44,30 @@
       ],
       "note": "Official DSM material publishes Kerala schedule/actual-drawal accounting and describes blockwise commercial outputs. Treat it as an independent regional interchange source, not Kerala state demand and not a substitute for verified Kerala interface limits. Revision precedence and metering boundary must be checked."
     },
+    "srpc_kerala_atc": {
+      "priority": "P0",
+      "organisation": "Southern Regional Power Committee / Southern Regional LDC",
+      "meeting_notes": "https://www.srpc.kar.nic.in/website/2024/meetings/communication/rnkerala150125.pdf",
+      "acquisition": "official_qualitative_and_dated_snapshot_review",
+      "geography": "Kerala aggregate import (not per-line ratings)",
+      "use": [
+        "historical_atc_ttc_reference",
+        "contingency_evidence"
+      ],
+      "note": "January 2025 SRPC meeting provides a TTC/reliability-margin snapshot. Retrieve all dated revisions and source network studies before specifying an FY2024-25 hourly or 2040 import/export bound. The January snapshot is not an unconditional year-round N-1 capability or procurement right."
+    },
+    "ksebl_fy2024_25_procurement": {
+      "priority": "P0",
+      "organisation": "Kerala State Electricity Board Ltd",
+      "acquisition": "annual_report_extract_pending_first_party_pdf_and_contract_level_records",
+      "review": "docs/GRID_TRANSFER_CONTRACTS_FY2024_25_AUDIT.md",
+      "use": [
+        "historic_procurement_categories",
+        "financial_reference",
+        "planned_contracts"
+      ],
+      "note": "Archived KSEBL-authored annual report is currently accessible via a third-party copy; secure first-party publication and contract schedules before using as a deliverability or landed-price assumption. Banking and swap obligation dates must be kept separate from power exchanges."
+    },
     "grid_india_daily_psp": {
       "priority": "P0",
       "organisation": "Grid-India",

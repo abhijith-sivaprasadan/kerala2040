@@ -1,10 +1,10 @@
 {
   "metadata": {
     "project": "Kerala 2040 \u2014 Open Energy Intelligence",
-    "generated_at_utc": "2026-09-19T23:36:48+00:00",
+    "generated_at_utc": "2026-09-21T15:19:24+00:00",
     "research_repo": "https://github.com/abhijith-sivaprasadan/kerala2040",
     "web_repo": "https://github.com/kerala2040/kerala2040.github.io",
-    "git_sha": "d6ad73403985ed2982d8a5ccb6d47dae5ddd8a54",
+    "git_sha": "7a746eec78c6cad08598b835ee0eee2c25c3d237",
     "model_year": 2040,
     "principle": "Energy sovereignty means retaining sufficient controllable generation, storage, flexible demand and infrastructure to withstand climate, hydrological and market shocks while using interstate trade strategically. It does not mean autarky or zero imports.",
     "status": {
@@ -31,12 +31,12 @@
       "reservoir_storage": {
         "available": true,
         "evidence": "measured",
-        "note": "Kerala SLDC reservoir-storage chronology."
+        "note": "Kerala SLDC reservoir-storage chronology. Prior acquisition; raw series is not included in the site."
       },
       "weather": {
         "available": true,
         "evidence": "reanalysis/remote-sensing-derived",
-        "note": "NASA POWER representative-point hourly weather; not station or plant telemetry."
+        "note": "NASA POWER representative-point hourly weather; not station or plant telemetry. Prior acquisition; raw series is not included in the site."
       },
       "era5_reanalysis": {
         "available": true,
@@ -77,8 +77,9 @@
       }
     },
     "source_audit_summary": {
-      "reachable": 14,
-      "unreachable": 5,
+      "reachable": 13,
+      "unreachable": 8,
+      "no_probe_url": 3,
       "http_error": 1,
       "reachable_restricted": 1
     },
@@ -94,32 +95,32 @@
       "ecology_constraints": "ecology-constraints.json",
       "research_scope": "research-scope.json",
       "kseb_history": "kseb-history.json",
-      "baseline_summary": "baseline-summary.json",
-      "hourly_load_proxy_summary": "hourly-load-proxy-summary.json",
-      "hourly_load_proxy": "hourly-load-proxy.json",
+      "kseb_projects": "kseb-projects.json",
+      "hazard_catalog": "hazard-catalog.json",
+      "source_audit": "source-audit.json",
+      "screening_nodes": "screening-nodes.json",
       "daily_balance": "daily-balance.json",
       "monthly_balance": "monthly-balance.json",
       "import_duration": "import-duration.json",
-      "screening_nodes": "screening-nodes.json",
-      "kseb_projects": "kseb-projects.json",
-      "hazard_catalog": "hazard-catalog.json",
+      "baseline_summary": "baseline-summary.json",
       "era5_daily_manifest": "era5-daily-manifest.json",
-      "source_audit": "source-audit.json",
+      "hourly_load_proxy_summary": "hourly-load-proxy-summary.json",
+      "hourly_load_proxy": "hourly-load-proxy.json",
       "energyproject_context": "energyproject-context.json",
       "research_results": "research-results.json"
     },
     "layer_provenance": {
       "sldc_daily": {
-        "preserved": false,
+        "preserved": true,
         "evidence_bundle_at_utc": "2026-09-19T23:36:48+00:00"
       },
       "kseb_project_inventory": {
-        "preserved": true,
-        "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
+        "preserved": false,
+        "evidence_bundle_at_utc": "2026-09-21T15:19:24+00:00"
       },
       "hazard_layers": {
-        "preserved": true,
-        "evidence_bundle_at_utc": "2026-09-19T09:09:26+00:00"
+        "preserved": false,
+        "evidence_bundle_at_utc": "2026-09-21T15:19:24+00:00"
       },
       "era5_reanalysis": {
         "preserved": true,
@@ -127,15 +128,15 @@
       },
       "grid_india_psp": {
         "preserved": false,
-        "evidence_bundle_at_utc": "2026-09-19T23:36:48+00:00"
+        "evidence_bundle_at_utc": "2026-09-21T15:19:24+00:00"
       },
       "hourly_load_proxy": {
-        "preserved": false,
+        "preserved": true,
         "evidence_bundle_at_utc": "2026-09-19T23:36:48+00:00"
       },
       "source_audit": {
-        "preserved": true,
-        "evidence_bundle_at_utc": "2026-09-18T09:03:50+00:00"
+        "preserved": false,
+        "evidence_bundle_at_utc": "2026-09-21T15:19:24+00:00"
       },
       "energyproject_context": {
         "preserved": true,
@@ -143,7 +144,7 @@
       },
       "kseb_historical_export": {
         "preserved": false,
-        "evidence_bundle_at_utc": "2026-09-19T23:36:48+00:00"
+        "evidence_bundle_at_utc": "2026-09-21T15:19:24+00:00"
       }
     }
   },
@@ -4061,6 +4062,30 @@
       ],
       "note": "Official DSM material publishes Kerala schedule/actual-drawal accounting and describes blockwise commercial outputs. Treat it as an independent regional interchange source, not Kerala state demand and not a substitute for verified Kerala interface limits. Revision precedence and metering boundary must be checked."
     },
+    "srpc_kerala_atc": {
+      "priority": "P0",
+      "organisation": "Southern Regional Power Committee / Southern Regional LDC",
+      "meeting_notes": "https://www.srpc.kar.nic.in/website/2024/meetings/communication/rnkerala150125.pdf",
+      "acquisition": "official_qualitative_and_dated_snapshot_review",
+      "geography": "Kerala aggregate import (not per-line ratings)",
+      "use": [
+        "historical_atc_ttc_reference",
+        "contingency_evidence"
+      ],
+      "note": "January 2025 SRPC meeting provides a TTC/reliability-margin snapshot. Retrieve all dated revisions and source network studies before specifying an FY2024-25 hourly or 2040 import/export bound. The January snapshot is not an unconditional year-round N-1 capability or procurement right."
+    },
+    "ksebl_fy2024_25_procurement": {
+      "priority": "P0",
+      "organisation": "Kerala State Electricity Board Ltd",
+      "acquisition": "annual_report_extract_pending_first_party_pdf_and_contract_level_records",
+      "review": "docs/GRID_TRANSFER_CONTRACTS_FY2024_25_AUDIT.md",
+      "use": [
+        "historic_procurement_categories",
+        "financial_reference",
+        "planned_contracts"
+      ],
+      "note": "Archived KSEBL-authored annual report is currently accessible via a third-party copy; secure first-party publication and contract schedules before using as a deliverability or landed-price assumption. Banking and swap obligation dates must be kept separate from power exchanges."
+    },
     "grid_india_daily_psp": {
       "priority": "P0",
       "organisation": "Grid-India",
@@ -4375,9 +4400,19 @@
     }
   },
   "source_audit": {
-    "generated_at_utc": "2026-09-18T00:30:10+00:00",
+    "generated_at_utc": "2026-09-21T15:16:54+00:00",
     "classification": "connectivity_probe_not_data_validation",
     "sources": {
+      "energyproject": {
+        "priority": "P2",
+        "organisation": "Energy Project",
+        "acquisition": "public_default_chart_json",
+        "probe_url": "https://www.energyproject.in/grid",
+        "status": "reachable",
+        "http_status": 200,
+        "elapsed_ms": 624,
+        "final_url": "https://www.energyproject.in/grid"
+      },
       "kerala_sldc": {
         "priority": "P0",
         "organisation": "Kerala State Load Despatch Centre",
@@ -4385,8 +4420,31 @@
         "probe_url": "https://sldckerala.com/index.php?id=1",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 818,
+        "elapsed_ms": 861,
         "final_url": "https://sldckerala.com/index.php?id=1"
+      },
+      "srpc_dsm": {
+        "priority": "P0",
+        "organisation": "Southern Regional Power Committee",
+        "acquisition": "official_weekly_dsm_statements_and_data_files",
+        "probe_url": "https://www.srpc.kar.nic.in/html/",
+        "status": "unreachable",
+        "elapsed_ms": 774,
+        "error": "SSLError: HTTPSConnectionPool(host='www.srpc.kar.nic.in', port=443): Max retries exceeded with url: /html/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1016)')))"
+      },
+      "srpc_kerala_atc": {
+        "priority": "P0",
+        "organisation": "Southern Regional Power Committee / Southern Regional LDC",
+        "acquisition": "official_qualitative_and_dated_snapshot_review",
+        "probe_url": null,
+        "status": "no_probe_url"
+      },
+      "ksebl_fy2024_25_procurement": {
+        "priority": "P0",
+        "organisation": "Kerala State Electricity Board Ltd",
+        "acquisition": "annual_report_extract_pending_first_party_pdf_and_contract_level_records",
+        "probe_url": null,
+        "status": "no_probe_url"
       },
       "grid_india_daily_psp": {
         "priority": "P0",
@@ -4394,7 +4452,7 @@
         "acquisition": "public_json_api_plus_xls",
         "probe_url": "https://webapi.grid-india.in/api/v1/file",
         "status": "unreachable",
-        "elapsed_ms": 418,
+        "elapsed_ms": 534,
         "error": "ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
       },
       "kerala_spb": {
@@ -4402,10 +4460,9 @@
         "organisation": "Kerala State Planning Board",
         "acquisition": "official_pdf_and_html",
         "probe_url": "https://spb.kerala.gov.in/economic-review/ER2025/index.php",
-        "status": "reachable",
-        "http_status": 200,
-        "elapsed_ms": 985,
-        "final_url": "https://spb.kerala.gov.in/economic-review/ER2025/index.php"
+        "status": "unreachable",
+        "elapsed_ms": 8437,
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='spb.kerala.gov.in', port=443): Max retries exceeded with url: /economic-review/ER2025/index.php (Caused by ConnectTimeoutError(<HTTPSConnection(host='spb.kerala.gov.in', port=443) at 0x7f68aa0c3850>, 'Connection to spb.kerala.gov.in timed out. (connect timeout=8)'))"
       },
       "kseb_pms": {
         "priority": "P0",
@@ -4414,8 +4471,15 @@
         "probe_url": "https://pms.kseb.in/tracker",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 1692,
+        "elapsed_ms": 1769,
         "final_url": "https://pms.kseb.in/tracker"
+      },
+      "kseb_historical_export": {
+        "priority": "P0",
+        "organisation": "Kerala State Electricity Board Ltd",
+        "acquisition": "user_supplied_official_export",
+        "probe_url": null,
+        "status": "no_probe_url"
       },
       "cea": {
         "priority": "P0",
@@ -4424,7 +4488,7 @@
         "probe_url": "https://cea.nic.in/",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 912,
+        "elapsed_ms": 1036,
         "final_url": "https://cea.nic.in/"
       },
       "kserc": {
@@ -4434,7 +4498,7 @@
         "probe_url": "https://dev.erckerala.org/",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 971,
+        "elapsed_ms": 902,
         "final_url": "https://dev.erckerala.org/"
       },
       "era5": {
@@ -4444,7 +4508,7 @@
         "probe_url": "https://cds.climate.copernicus.eu/api",
         "status": "reachable",
         "http_status": 202,
-        "elapsed_ms": 1821,
+        "elapsed_ms": 1423,
         "final_url": "https://cds.climate.copernicus.eu/api"
       },
       "nasa_power": {
@@ -4454,7 +4518,7 @@
         "probe_url": "https://power.larc.nasa.gov/api/temporal/hourly/point",
         "status": "http_error",
         "http_status": 422,
-        "elapsed_ms": 343,
+        "elapsed_ms": 329,
         "final_url": "https://power.larc.nasa.gov/api/temporal/hourly/point"
       },
       "data_gov_in": {
@@ -4464,7 +4528,7 @@
         "probe_url": "https://www.data.gov.in/",
         "status": "reachable_restricted",
         "http_status": 403,
-        "elapsed_ms": 406,
+        "elapsed_ms": 566,
         "final_url": "https://www.data.gov.in/"
       },
       "niti_iced": {
@@ -4473,8 +4537,8 @@
         "acquisition": "discovery_download",
         "probe_url": "https://www.iced.niti.gov.in/",
         "status": "unreachable",
-        "elapsed_ms": 8522,
-        "error": "ConnectTimeout: HTTPSConnectionPool(host='www.iced.niti.gov.in', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.iced.niti.gov.in', port=443) at 0x7f7f821ef590>, 'Connection to www.iced.niti.gov.in timed out. (connect timeout=8)'))"
+        "elapsed_ms": 1106,
+        "error": "SSLError: HTTPSConnectionPool(host='www.iced.niti.gov.in', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, \"[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.iced.niti.gov.in'. (_ssl.c:1016)\")))"
       },
       "india_wris": {
         "priority": "P0",
@@ -4482,8 +4546,8 @@
         "acquisition": "portal_download_or_api_if_documented",
         "probe_url": "https://indiawris.gov.in/",
         "status": "unreachable",
-        "elapsed_ms": 8260,
-        "error": "ConnectTimeout: HTTPSConnectionPool(host='indiawris.gov.in', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPSConnection(host='indiawris.gov.in', port=443) at 0x7f7f821ef310>, 'Connection to indiawris.gov.in timed out. (connect timeout=8)'))"
+        "elapsed_ms": 8531,
+        "error": "ConnectTimeout: HTTPSConnectionPool(host='indiawris.gov.in', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPSConnection(host='indiawris.gov.in', port=443) at 0x7f68aa0d4910>, 'Connection to indiawris.gov.in timed out. (connect timeout=8)'))"
       },
       "niwe": {
         "priority": "P1",
@@ -4491,7 +4555,7 @@
         "acquisition": "official_open_dataset",
         "probe_url": "https://niwe.res.in/Open_data_Set/open_wind_dataset/",
         "status": "unreachable",
-        "elapsed_ms": 2684,
+        "elapsed_ms": 810,
         "error": "SSLError: HTTPSConnectionPool(host='niwe.res.in', port=443): Max retries exceeded with url: /Open_data_Set/open_wind_dataset/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1016)')))"
       },
       "ksdma": {
@@ -4501,7 +4565,7 @@
         "probe_url": "https://sdma.kerala.gov.in/hazard-maps/",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 1851,
+        "elapsed_ms": 2101,
         "final_url": "https://sdma.kerala.gov.in/hazard-maps/"
       },
       "bhuvan": {
@@ -4511,7 +4575,7 @@
         "probe_url": "https://bhuvan.nrsc.gov.in/",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 1533,
+        "elapsed_ms": 1610,
         "final_url": "https://bhuvan.nrsc.gov.in/ngmaps"
       },
       "kerala_forest": {
@@ -4519,20 +4583,18 @@
         "organisation": "Kerala Forest and Wildlife Department",
         "acquisition": "official_gis_and_reports",
         "probe_url": "https://forest.kerala.gov.in/",
-        "status": "reachable",
-        "http_status": 200,
-        "elapsed_ms": 3051,
-        "final_url": "https://forest.kerala.gov.in/"
+        "status": "unreachable",
+        "elapsed_ms": 20115,
+        "error": "ReadTimeout: HTTPSConnectionPool(host='forest.kerala.gov.in', port=443): Read timed out. (read timeout=12.0)"
       },
       "kspcb": {
         "priority": "P1",
         "organisation": "Kerala State Pollution Control Board",
         "acquisition": "official_reports",
         "probe_url": "https://kspcb.kerala.gov.in/",
-        "status": "reachable",
-        "http_status": 200,
-        "elapsed_ms": 1148,
-        "final_url": "https://kspcb.kerala.gov.in/"
+        "status": "unreachable",
+        "elapsed_ms": 1035,
+        "error": "SSLError: HTTPSConnectionPool(host='kspcb.kerala.gov.in', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1016)')))"
       },
       "ppac": {
         "priority": "P1",
@@ -4541,7 +4603,7 @@
         "probe_url": "https://ppac.gov.in/",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 1440,
+        "elapsed_ms": 2592,
         "final_url": "https://ppac.gov.in/"
       },
       "vahan": {
@@ -4549,9 +4611,10 @@
         "organisation": "Ministry of Road Transport and Highways / VAHAN",
         "acquisition": "public_dashboard_plus_official_reports",
         "probe_url": "https://analytics.parivahan.gov.in/",
-        "status": "unreachable",
-        "elapsed_ms": 12878,
-        "error": "ReadTimeout: HTTPSConnectionPool(host='analytics.parivahan.gov.in', port=443): Read timed out. (read timeout=12.0)"
+        "status": "reachable",
+        "http_status": 200,
+        "elapsed_ms": 7521,
+        "final_url": "https://analytics.parivahan.gov.in/analytics/"
       },
       "kmml": {
         "priority": "P2",
@@ -4560,7 +4623,7 @@
         "probe_url": "https://www.kmml.com/",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 423,
+        "elapsed_ms": 461,
         "final_url": "https://www.kmml.com/"
       },
       "ttpl": {
@@ -4570,7 +4633,7 @@
         "probe_url": "https://travancoretitanium.com/",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 3813,
+        "elapsed_ms": 2376,
         "final_url": "https://travancoretitanium.com/"
       },
       "fact": {
@@ -4580,13 +4643,13 @@
         "probe_url": "https://fact.co.in/",
         "status": "reachable",
         "http_status": 200,
-        "elapsed_ms": 1122,
+        "elapsed_ms": 1047,
         "final_url": "https://fact.co.in/"
       }
     }
   },
   "kseb_projects": {
-    "retrieved_at_utc": "2026-09-18T09:48:51+00:00",
+    "retrieved_at_utc": "2026-09-21T15:18:13+00:00",
     "classification": "official_project_portal_record",
     "tracker_url": "https://pms.kseb.in/tracker",
     "explorer_url": "https://pms.kseb.in/explore-projects",
@@ -5233,7 +5296,7 @@
     "portal_reported_total": 87
   },
   "hazard_catalog": {
-    "retrieved_at_utc": "2026-09-18T09:48:55+00:00",
+    "retrieved_at_utc": "2026-09-21T15:18:15+00:00",
     "classification": "official_hazard_download_catalog",
     "source_url": "https://sdma.kerala.gov.in/hazard-maps/",
     "records": [
