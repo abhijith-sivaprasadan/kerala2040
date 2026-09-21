@@ -1,6 +1,6 @@
 # ERA5 FY2024–25 source-gap recovery — 21 September 2026
 
-**Acquisition status: NOT CLOSED.** The committed [ERA5 public manifest](../public/era5-daily-manifest.json) reflects a *legacy* acquisition plan: five January–March 2025 NetCDF files were recorded, while the five April–December 2024 **nine-month** requests failed with CDS `HTTP 403: cost limits exceeded — your request is too large`. These are request-cost failures, not evidence that Copernicus has no historical Kerala weather data.
+**Source-acquisition status: CLOSED; model-admission status: OPEN.** The committed [ERA5 public manifest](../public/era5-daily-manifest.json) is retained as a *legacy* record of the original failed acquisition plan, where five January–March 2025 files were recorded and five oversized April–December 2024 requests failed with CDS `HTTP 403: cost limits exceeded — your request is too large`. The corrected bounded acquisition subsequently recovered all missing quarters and reacquired January–March source bytes.
 
 The source code defines **5 Kerala representative locations × 4 three-month periods = 20 source-request windows**, not 20 guaranteed NetCDF files. This is a change of *request granularity*, not the discovery of another ten historical records; never add the legacy 5/10 record count to the new plan. The original five Jan–Mar NetCDF hashes are stored only in the existing public manifest. Their presence in a manifest does not prove the original raw bytes are still locally accessible.
 
@@ -20,6 +20,9 @@ The existing January–March 2025 evidence stays unchanged. Each job requires th
 
 The new manifest counts NetCDF *components* in `files_succeeded` and request windows separately in `source_windows_succeeded`/`windows_completed`. A two-member ZIP is one successful source window, not two weather coverage windows.
 
+The [full-year source QA workflow](../.github/workflows/era5-full-year-source-qa.yml) then combined the 15 recovered April–December 2024 artifacts with the five January–March 2025 reacquisition artifacts. Run [35634190166](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35634190166) passed all 20 independent location-quarter records: **8,760 UTC hours per representative point and 43,800 point-hours overall**, with component/original-ZIP hashes, timestamps, variables, exact units, finite arrays and stable per-point grid geometry checked. The committed summary is [data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json](../data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json).
+
+
 **Automatic fallback:** If a three-month request still exceeds the CDS request-cost limit, the retriever records the original error and retries the same location as three separate one-month requests. It checks each returned NetCDF signature, preserves each original SHA-256 and fails the quarter if any month is absent or invalid. Do not bypass provider quotas by inventing outputs or claiming API success. Copernicus login, dataset licence acceptance, API key validity, availability and quotas remain prerequisites.
 
 ## Before changing the public manifest
@@ -29,7 +32,7 @@ The new manifest counts NetCDF *components* in `files_succeeded` and request win
 3. Match chunks by point and time without overlaps or silent imputation; verify the 2025 Jan–Mar originals are still available, or reacquire them.
 4. Verify reuse and republication conditions; then publish source provenance and coverage through a separate reviewed admission. Weather observation/reanalysis is not measured Kerala solar/wind generation, and representative point boxes do **not** demonstrate an eligible statewide renewable capacity.
 
-The 17 research-audit findings and scientific release gates remain unchanged by a retrieval attempt.
+The research audit now distinguishes the closed source-acquisition/chronology gap from the still-open scientific model-admission work. ERA5 remains blocked from model-ready status until the representative-point spatial method and PV/wind transformations are independently validated.
 
 
 ## Source-byte accessibility and spatial QA
