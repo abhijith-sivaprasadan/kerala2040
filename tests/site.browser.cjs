@@ -92,6 +92,22 @@ async function main(){
       "Seven months with unverified daily reports must visibly flag gaps");
     check((await page.locator("#homeMonthlyInsight").innerText()).includes("The mix moves"),
       "Monthly figure is missing its source-derived explanation");
+    await page.locator("#homeMonthlyArt").scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>
+      document.querySelector("#homeMonthlyArt")?.closest(".viz-card")?.classList.contains("is-visible"));
+    const monthMotion=await page.locator("#homeMonthlyArt .viz-net-bar").first()
+      .evaluate(el=>getComputedStyle(el).animationName);
+    check(monthMotion.includes("rise-observed"),"Observed month bars do not rise: "+monthMotion);
+    const hydroSplit=await page.locator("#homeBalanceArt .hydro-subtrack>span")
+      .evaluate(el=>getComputedStyle(el).animationName);
+    // The balance figure may still be above the active observer threshold.
+    check(hydroSplit.includes("grow-share")||hydroSplit==="none",
+      "Unexpected hydro subset animation: "+hydroSplit);
+    for(const css of [".scene-wave",".scene-vallam",".scene-palm"]){
+      const name=await page.locator(css).evaluate(el=>getComputedStyle(el).animationName);
+      check(name!=="none","Kerala landscape has no motion: "+css);
+    }
+    console.log("PASS MOTION: month bars, landscape water, vallam and coconut palms");
     console.log("PASS EDITORIAL HOME: balance totals, hydro subset, twelve month columns and gaps");
     await visible(page.locator("#welcomeCard"),"First-visit welcome");
     check(await page.locator("#main").isVisible(),"Splash cannot block content");
@@ -129,15 +145,52 @@ async function main(){
       "Electricity month chart must explain the changing mix");
     check((await page.locator("#hydroInsight").innerText()).includes("same reported date"),
       "Hydro chart must contextualize units and the observed low storage date");
+    await page.locator("#hydroSeasonArt").scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>
+      document.querySelector("#hydroSeasonArt")?.closest(".viz-card")?.classList.contains("is-visible"));
+    await page.waitForFunction(()=>
+      document.querySelector("#hydroSeasonArt .viz-hydro-svg")?.classList.contains("chart-animated"));
+    const hydroPaths=await page.locator("#hydroSeasonArt .viz-hydro-line").evaluateAll(elements=>
+      elements.map(el=>({length:Number(el.style.getPropertyValue("--draw-length")),
+        name:getComputedStyle(el).animationName})));
+    check(hydroPaths.length>1&&hydroPaths.every(path=>
+      path.length>0&&path.name.includes("trace-observed")),
+      "Each observed hydro segment must draw independently of eleven source gaps");
+    const storagePaths=await page.locator("#hydroSeasonArt .viz-storage-line").evaluateAll(elements=>
+      elements.map(el=>({length:Number(el.style.getPropertyValue("--draw-length")),
+        name:getComputedStyle(el).animationName})));
+    check(storagePaths.length>1&&storagePaths.every(path=>
+      path.length>0&&path.name.includes("trace-observed")),
+      "Reservoir chronology must animate only its actual observed segments");
     console.log("PASS EDITORIAL ELECTRICITY: twelve months, observed-day table and two gapped water series");
     await visible(page.locator("#energyChart svg"),"Daily observed electricity chart");
+    await page.waitForFunction(()=>
+      document.querySelector("#energyChart svg")?.classList.contains("chart-animated"));
+    const dateSvg=page.locator("#energyChart svg");
+    const trendMotion=await page.locator("#energyChart .chart-line").first()
+      .evaluate(el=>getComputedStyle(el).animationName);
+    check(trendMotion.includes("trace-observed"),"Daily trend path does not draw: "+trendMotion);
+    await dateSvg.focus();await dateSvg.press("Home");
+    check((await page.locator(".chart-readout").innerText()).includes("observed SLDC report"),
+      "Keyboard readout must identify the source-backed day");
+    await dateSvg.press("End");
+    check((await page.locator(".chart-readout").innerText()).includes("2025-03"),
+      "Keyboard End must inspect the last available observed date");
+    console.log("PASS DAILY MOTION: SVG trace and dated keyboard inspection");
     check((await page.locator("#energyChartCaption").innerText()).includes("11 unverified"),
       "Chart obscures gaps");
     await page.locator("#energyMetric").selectOption("net_import_interface_mu");
+    check((await page.locator("#energyChart .chart-line").first()
+      .evaluate(el=>getComputedStyle(el).animationName)).includes("trace-observed"),
+      "Metric changes should reanimate the newly rendered observed line");
     await visible(page.locator("#energyChart svg"),"Filtered energy series");
     const months=await page.locator("#energyMonth option").count();
     check(months>=12,"Historical month filter missing");
     await page.locator("#energyMonth").selectOption({index:1});
+    await page.locator("#energyChart svg").focus();
+    await page.locator("#energyChart svg").press("Home");
+    check((await page.locator(".chart-readout").innerText()).includes("2024-04"),
+      "Month selection must update the keyboard chart reading");
     const csvPromise=page.waitForEvent("download");
     await page.locator("#downloadObserved").click();
     const csv=await csvPromise;
@@ -232,6 +285,14 @@ async function main(){
     await mobile.locator('#mobileNav button[data-route="industry"]').click();
     await visible(mobile.locator('.view.active[data-view="industry"]'),"Mobile navigation");
     check(!await mobile.locator("#mobileNav").isVisible(),"Mobile menu must close after navigation");
+    await mobile.locator("#menuToggle").click();
+    await mobile.locator('#mobileNav button[data-route="electricity"]').click();
+    await mobile.locator("#energyChart svg").waitFor({state:"visible"});
+    check(!await mobile.locator("html").evaluate(el=>el.classList.contains("motion-ready")),
+      "Reduced-motion setting must not activate editorial animations");
+    check((await mobile.locator("#energyChart .chart-line").first()
+      .evaluate(el=>getComputedStyle(el).animationName))==="none",
+      "Reduced-motion users must get complete static observed lines");
     await mobile.screenshot({path:path.join(artifactDir,"mobile-industry.png"),fullPage:true});
     check(mobileErrors.length===0,"Mobile JS errors: "+mobileErrors.join(" | "));
     check(errors.length===0,"Desktop JS errors: "+errors.join(" | "));
