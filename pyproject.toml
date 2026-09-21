@@ -31,6 +31,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+era5 = [
+  "h5py>=3.12,<5",
+]
 geo = [
   "geopandas>=1,<2",
   "rasterio>=1.4,<2",
