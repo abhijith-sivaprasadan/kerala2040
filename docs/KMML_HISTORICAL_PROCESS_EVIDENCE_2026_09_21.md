@@ -83,6 +83,39 @@ Obtain **FY2024–25** (or nearest fully stated, internally consistent period) d
 
 Prefer plant-confirmed aggregate monthly totals if line-level sensitive data cannot be released, with explicit uncertainty and scope. Annual capacity alone is neither annual output nor annual energy. KSPCB consent conditions, plant monitoring records and dated KMML annual reports may cross-check plant claims, but do not substitute for missing measurements.
 
+## 6. Further historical pollution-control pages supplied 21 September 2026
+
+Two additional screenshots from the historical report describe acid and lime
+scrubbers, then explain a reverse-air bag filter, Venturi particulate scrubbers,
+and a dilution-air fan. **Separate the facility claims from generic textbook
+descriptions:**
+
+| Statement on supplied pages | Evidence classification | What to verify |
+|---|---|---|
+| "Here Acid scrubbers as well as Lime scrubbers are used" | Historical KMML-specific assertion, no dated process-line inventory | Which stacks/units, year, reagent rates, liquor bleed, contaminant removal and current operation |
+| Reverse-air baghouse design and cleaning mechanism | Generic bag-filter explanation; **does not establish a KMML baghouse installation** | Unit-level as-built equipment list, duct/sampling points, pressure drop and dust capture |
+| Venturi scrubber benefits | Generic technology overview, not proof of installation or performance | Actual equipment and specific streams, fan/pump power, pressure drop, liquor/sludge rate |
+| "Dilution air fan" with reference to "Clean Air Act" | Generic/possibly non-India boilerplate, not verified Kerala regulatory requirement or operating device | Actual fan existence, flows and local permit standards; dilution/dispersion is **not pollutant mass removal** |
+| ISO 14001 claim and environmental-policy bullet list | Historical self-assertion, no certificate ID, certification body, scope, issue date or validity | Obtain dated certificate and independent audit/consent records; policy is **not compliance proof** |
+
+The text makes broad assertions that scrubbers can handle explosive/flammable gases
+safely; that is **not** a facility-specific safety finding and must not be used
+to design hazardous-gas service without certified engineering review.
+
+### Pollution-control measurement boundary
+
+For each verified KMML exhaust route (ARP, IBP, U200, U300, ETP and utility
+combustion, only where physically applicable), request a dated
+unit-to-stack/scrubber/bag-filter map; before/after concentration and **dry/wet
+actual/standard volumetric flow**, pollutant identity and averaging period;
+reagent/wash-liquid supply; scrubber blowdown/sludge composition and mass;
+captured solids destination; fan and pump electrical use; maintenance/outage
+records; KSPCB consent conditions and stack/effluent monitoring results.
+Calculate removal on **pollutant mass flow**, not a simple reduction in
+concentration after dilution. Do not treat additions of dilution air as
+emissions abatement or assume that reported ISO 14001 certification proves
+regulatory compliance.
+
 ## Gate
 
 **`kmml_measured`: remains blocked.** This note improves the source and experimental boundary; it does not authenticate the screenshots' original reports, grant reproduction rights, establish 2024–25 production, or certify wastewater/emissions compliance.
