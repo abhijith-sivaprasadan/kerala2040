@@ -647,3 +647,16 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
     animation:none!important;transform:none!important;opacity:1!important
   }
 }
+
+/* The detailed electricity and hydro chapters are panels, not .viz-card figures. */
+.motion-ready .viz-electricity-story.is-visible .viz-month-column .viz-net-bar,
+.motion-ready .viz-electricity-story.is-visible .viz-month-column .viz-local-bar{
+  transform-box:fill-box;transform-origin:50% 100%;
+  animation:rise-observed .78s cubic-bezier(.17,.72,.23,1) var(--viz-delay,0ms) both
+}
+@media(prefers-reduced-motion:reduce){
+  .motion-ready .viz-electricity-story.is-visible .viz-month-column .viz-net-bar,
+  .motion-ready .viz-electricity-story.is-visible .viz-month-column .viz-local-bar{
+    animation:none!important;transform:none!important;opacity:1!important
+  }
+}
