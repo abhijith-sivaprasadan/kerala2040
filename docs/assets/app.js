@@ -392,12 +392,39 @@ function drawHydroTable(rows){
       '<td>'+fmt(row.storage_pct_energy_weighted,3)+'</td></tr>').join("")+
     '</tbody></table>';
 }
+function drawMonthlyInsight(months){
+  const complete=months.filter(m=>m.days.length&&m.total>0);
+  if(!complete.length)return "";
+  const ranked=complete.map(m=>({key:m.key,share:m.imports/m.total*100}))
+    .sort((a,b)=>a.share-b.share);
+  const low=ranked[0],high=ranked[ranked.length-1];
+  return '<span class="viz-insight-glyph" aria-hidden="true">↝</span>'+
+    '<p><strong>The mix moves.</strong> On reported days, the share recorded as net imports '+
+    'ranged from <b>'+fmt(low.share,1)+'% in '+esc(low.key)+'</b> to '+
+    '<b>'+fmt(high.share,1)+'% in '+esc(high.key)+'</b>. '+
+    'These are ratios of reported monthly energy, not twelve independently verified full-month totals.</p>';
+}
+function drawHydroInsight(rows){
+  const readings=rows.filter(row=>Number.isFinite(Number(row.storage_pct_energy_weighted))&&
+    Number.isFinite(Number(row.hydel_total_mu)));
+  if(!readings.length)return "";
+  const low=readings.reduce((a,b)=>Number(b.storage_pct_energy_weighted)<
+    Number(a.storage_pct_energy_weighted)?b:a);
+  return '<span class="viz-insight-glyph" aria-hidden="true">≈</span>'+
+    '<p><strong>Read the two panels together, not as one unit.</strong> The lowest '+
+    'recorded energy-weighted storage was <b>'+fmt(low.storage_pct_energy_weighted,1)+
+    '% on '+esc(low.date)+'</b>; on that same reported date, hydro output was '+
+    '<b>'+fmt(low.hydel_total_mu,2)+' MU</b>. This does not by itself establish '+
+    'why generation changed.</p>';
+}
 function renderEditorialHome(){
   if(!state.site||!state.daily)return;
   const months=observedMonths(state.daily.records,state.site.baseline);
   const balance=$("#homeBalanceArt"),year=$("#homeMonthlyArt");
   if(balance)balance.innerHTML=drawBalanceArt(state.daily.records);
   if(year)year.innerHTML=drawMonthlyArt(months);
+  const homeInsight=$("#homeMonthlyInsight");
+  if(homeInsight)homeInsight.innerHTML=drawMonthlyInsight(months);
 }
 function renderEditorialElectricity(){
   if(!state.site||!state.daily)return;
@@ -407,8 +434,12 @@ function renderEditorialElectricity(){
   const hydroArt=$("#hydroSeasonArt"),hydroTable=$("#hydroSeasonTable");
   if(monthArt)monthArt.innerHTML=drawMonthlyArt(months);
   if(monthTable)monthTable.innerHTML=drawMonthlyTable(months);
+  const monthInsight=$("#electricMonthInsight");
+  if(monthInsight)monthInsight.innerHTML=drawMonthlyInsight(months);
   if(hydroArt)hydroArt.innerHTML=drawHydroArt(rows,baseline);
   if(hydroTable)hydroTable.innerHTML=drawHydroTable(rows);
+  const waterInsight=$("#hydroInsight");
+  if(waterInsight)waterInsight.innerHTML=drawHydroInsight(rows);
 }
 
 function renderHomepage(){
