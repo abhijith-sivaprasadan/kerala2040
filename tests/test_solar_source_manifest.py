@@ -15,12 +15,14 @@ def test_solar_source_batch_manifest_is_complete_and_unambiguously_pinned() -> N
     assert d["release_tag"] == "solar-source-2026-09-21"
     assert d["release_uploaded"] is False  # Update only on verified remote upload.
     assets = d["assets"]
-    assert len(assets) == 8
+    assert len(assets) == 10
     assert len({item["name"] for item in assets}) == len(assets)
     for asset in assets:
         assert Path(asset["name"]).name == asset["name"]
         assert asset["bytes"] > 0
         assert re.fullmatch(r"[0-9a-f]{64}", asset["sha256"])
+    assert any(a["name"].endswith("derived 1(1).zip") for a in assets)
+    assert any(a["name"].endswith("derived 2(1).zip") for a in assets)
     members = d["solar_zip_members"]
     assert len(members) == 18
     assert len({m[0] for m in members}) == len(members)
