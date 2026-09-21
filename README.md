@@ -148,6 +148,11 @@ SHA256-gated: [solar uploader](scripts/publish_solar_source_release.py),
 [restore tool](scripts/restore_solar_source_release.py),
 and [NIWE original uploader/restorer](scripts/publish_niwe_original_release.py).
 See [one-time user setup](docs/RENEWABLE_FIVE_STEP_HANDOFF_2026_09_22.md).
+If only the five extracted Downloads folders remain, use the
+[private five-folder snapshot workflow](scripts/archive_renewable_folders_private.py):
+it verifies every nested file, splits large ZIP64 snapshots into upload parts
+and performs an independent SHA256 restore. Such snapshots are **not**
+byte-identical to the earlier original provider ZIPs.
 The public repository will retain source citations and hashes, not raw
 third-party data; private access does not supersede publisher use conditions.
 
