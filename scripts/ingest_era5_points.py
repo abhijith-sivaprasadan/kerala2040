@@ -19,7 +19,7 @@ from typing import Any
 from kerala2040.sources.era5 import DATASET, PERIODS, POINTS, VARIABLES, request_for
 
 PERIOD_LABELS = {label for label, _, _ in PERIODS}
-NETCDF_SIGNATURES = (b"CDF\\x01", b"CDF\\x02", b"\\x89HDF\\r\\n\\x1a\\n")
+NETCDF_SIGNATURES = (bytes.fromhex("43444601"), bytes.fromhex("43444602"), bytes.fromhex("894844460d0a1a0a"))
 
 
 def sha256(path: Path) -> str:
