@@ -90,30 +90,57 @@ def main() -> int:
     files: list[dict[str, Any]] = []
     failures: list[dict[str, str]] = []
 
+    fallbacks: list[dict[str, str]] = []
+    completed_windows = 0
+    requests_sent = 0
+
     for point, lat, lon, label, year, months in requests:
-        target = args.raw_dir / f"era5_{point}_{label}.nc"
-        try:
-            # A request can fail halfway through: remove stale/partial results,
-            # then check both the returned byte format and source-file hash.
-            target.unlink(missing_ok=True)
-            client.retrieve(DATASET, request_for(lat, lon, year, months), str(target))
-            if not valid_netcdf(target):
-                raise ValueError("CDS output is empty, truncated or not NetCDF/HDF5")
-            files.append({
-                "point": point,
-                "latitude": lat,
-                "longitude": lon,
-                "period": label,
-                "path": str(target),
-                "bytes": target.stat().st_size,
-                "sha256": sha256(target),
-            })
-        except Exception as exc:  # noqa: BLE001 - preserve individual CDS failure evidence
-            target.unlink(missing_ok=True)
-            failures.append({
-                "point": point, "period": label,
-                "error": f"{type(exc).__name__}: {exc}",
-            })
+        chunks = [(label, months)]
+        fallback_reason = None
+        quarter_succeeded = True
+
+        while chunks:
+            chunk_label, chunk_months = chunks.pop(0)
+            target = args.raw_dir / f"era5_{point}_{chunk_label}.nc"
+            try:
+                # Never accept a left-over source file for a failed current request.
+                target.unlink(missing_ok=True)
+                requests_sent += 1
+                client.retrieve(DATASET, request_for(lat, lon, year, chunk_months), str(target))
+                if not valid_netcdf(target):
+                    raise ValueError("CDS output is empty, truncated or not NetCDF/HDF5")
+                files.append({
+                    "point": point, "latitude": lat, "longitude": lon,
+                    "period": chunk_label, "selected_quarter": label,
+                    "months": chunk_months, "path": str(target),
+                    "bytes": target.stat().st_size, "sha256": sha256(target),
+                })
+            except Exception as exc:  # noqa: BLE001 - retain per-request evidence
+                target.unlink(missing_ok=True)
+                reason = f"{type(exc).__name__}: {exc}"
+                oversized = ("cost limits exceeded" in reason.lower()
+                             or "request is too large" in reason.lower())
+                if oversized and len(chunk_months) > 1:
+                    fallback_reason = reason
+                    fallbacks.append({
+                        "point": point, "selected_quarter": label,
+                        "failed_window": chunk_label, "error": reason,
+                        "action": "split_into_individual_months",
+                    })
+                    chunks = [
+                        (f"{year}-{month}", [month]) for month in chunk_months
+                    ] + chunks
+                else:
+                    quarter_succeeded = False
+                    failures.append({
+                        "point": point, "period": chunk_label,
+                        "selected_quarter": label, "error": reason,
+                    })
+        if quarter_succeeded:
+            completed_windows += 1
+        if fallback_reason:
+            print(f"ERA5 {point} {label}: three-month CDS request was too large;"
+                  " attempted individual months", flush=True)
 
     expected = len(POINTS) * len(PERIODS)
     payload = {
@@ -130,6 +157,9 @@ def main() -> int:
                       "max_requests": args.max_requests},
         "files_attempted": len(requests),
         "files_succeeded": len(files),
+        "windows_completed": completed_windows,
+        "source_requests_sent": requests_sent,
+        "oversized_window_fallbacks": fallbacks,
         "files_expected": expected,
         "files_not_attempted": expected - len(requests),
         "files": files,
@@ -143,11 +173,12 @@ def main() -> int:
     args.manifest.parent.mkdir(parents=True, exist_ok=True)
     args.manifest.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({
-        "files_succeeded": len(files), "files_attempted": len(requests),
+        "files_succeeded": len(files), "windows_completed": completed_windows,
+        "source_requests_sent": requests_sent, "files_attempted": len(requests),
         "files_expected": expected, "failures": len(failures),
         "manifest": str(args.manifest),
     }, indent=2))
-    return 0 if len(files) == len(requests) else 2
+    return 0 if completed_windows == len(requests) else 2
 
 
 if __name__ == "__main__":
