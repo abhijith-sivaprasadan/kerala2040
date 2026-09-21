@@ -1,41 +1,39 @@
-# KMML research collaboration enquiry — ready-to-review email
+# KMML research data request — ready-to-review email
 
 **Prepared:** 21 September 2026. **Status: DRAFT ONLY — NOT SENT.**
 **To:** Dr Gireesh VS, AGM (R&D), `mrd@kmml.com`  
 **Cc:** Technical Services, `hodts@kmml.com`  
-**Subject:** Research enquiry — KMML resource recovery and energy–water data for Kerala2040
+**Subject:** Request for non-confidential KMML production, energy and resource-recovery data (FY2024–25)
 
 Dear Dr Gireesh,
 
-My name is Abhijith Sivaprasadan. My background is in mechanical and sustainable energy engineering, including master's research at KTH Royal Institute of Technology, Sweden. I am independently developing **Kerala2040**, a research project examining Kerala's future energy system and opportunities for circular industrial processes. I would like to explore KMML's Chavara operations as a case study.
+My name is Abhijith Sivaprasadan. My background is in mechanical and sustainable energy engineering, including master's research at KTH Royal Institute of Technology, Sweden. I am independently undertaking Kerala2040, a research project on Kerala's energy system and circular resource use, with KMML's Chavara operations as a proposed industrial case study.
 
-I have reviewed KMML's published manufacturing-process descriptions and annual-report accounts of its R&D work. Your work on iron-oxide valorisation, TiO₂ fines recovery and water reuse is especially relevant: before studying any intervention, I want to understand which initiatives are already operational and where a research contribution could be useful.
+I have reviewed KMML's published manufacturing-process descriptions and annual reports. To establish an evidence-based baseline rather than rely on historical equipment capacities or assumed values, I would be grateful if KMML could share any existing, non-confidential data or reports covering **1 April 2024 to 31 March 2025**, or the nearest clearly identified recent reporting year, on:
 
-Would KMML be open to a brief technical discussion and, subject to your approval, sharing **non-confidential aggregate data for FY2024–25** (or another clearly identified recent year)? The most useful starting points would be:
+1. **Production and materials:** actual quantities of TiO2 pigment, beneficiated ilmenite, TiCl4 and titanium sponge produced; spent acid, recovered HCl, iron oxide, treatment sludge and other major residual streams, with units and relevant process boundaries.
+2. **Energy:** electricity consumed at the plant or major-unit level (monthly totals if available), fuel/steam use, and any publishable energy-audit or energy-conservation figures. An existing hourly/15-minute facility demand export would be helpful if releasable, but is not essential to the initial request.
+3. **Water and environment:** fresh-water intake, recycled/reused water, treated effluent/discharge and sludge quantities, along with publicly shareable environmental statements or monitoring summaries.
+4. **Existing recovery initiatives:** the implementation status and, where recorded, quantities or outcomes of the acidic iron-oxide valorisation, TiO2 fines recovery and filter-backwash-water reuse initiatives described in KMML's earlier annual report.
 
-- Monthly or annual production, by-product and residual quantities, particularly TiO₂, TiCl₄, recovered HCl, iron oxide and treatment sludge;
-- Electricity, fuel/steam and water intake–reuse–effluent figures at a whole-plant or suitable process-unit boundary, together with any publishable energy-audit or environmental summaries;
-- The present status and approximate scale of the iron-oxide recovery, TiO₂ fines recovery and filter-backwash-water reuse initiatives described in earlier KMML reports.
+Already-published documents, annual or monthly aggregate tables, or appropriately redacted reports would all be useful; detailed proprietary operating data are not required. Please indicate the reporting period, units and any citation, confidentiality or publication conditions for material supplied.
 
-Annual totals or a limited, suitably anonymised dataset would be welcome if detailed operational information is sensitive. I would respect any confidentiality, attribution and publication conditions agreed in advance; I am not requesting proprietary process drawings or commercially sensitive formulations.
+If this request is better handled by another department or through a formal data-request procedure, I would appreciate it if you could forward it to the appropriate officer or advise me of the required steps.
 
-If possible, I would appreciate a **20–30-minute online meeting**, or guidance on the appropriate technical contact and any formal procedure for a research-data request.
-
-Thank you for your time and consideration.
+Thank you for considering my request.
 
 Kind regards,  
 **Abhijith Sivaprasadan**  
 Kerala2040 — independent research project  
-Mechanical & Sustainable Energy Engineering  
-[Contact details, if different from sender address]
+Mechanical & Sustainable Energy Engineering
 
 ---
 
-## Recipient verification and sending notes
+## Routing and source notes
 
-Current KMML English management directory: https://www.kmml.com/management
-lists Dr Gireesh VS as AGM (R&D), `mrd@kmml.com`, and Mr K.S. AnilKumar as DGM(U/TS/QC) i/c, `hodts@kmml.com`. General fallback: `contact@kmml.com` at https://www.kmml.com/contact-us .
+Current KMML management directory: https://www.kmml.com/management
+lists Dr Gireesh VS as AGM (R&D), `mrd@kmml.com`, and Technical Services at `hodts@kmml.com`. General fallback: `contact@kmml.com` at https://www.kmml.com/contact-us .
 
-**Do not use the prior `hodenvqc@kmml.com` routing without reconfirmation:** the older Malayalam management directory differs from the current English directory. No current personal affiliation or institutional/KTH endorsement is asserted by this email, and neither the sender's master’s graduation nor a KMML collaboration has been claimed.
+The first-party FY2022–23 report identifies the historical recovery initiatives (not proof of FY2024–25 commissioning): https://www.kmml.com/uploads/ckeditor_files/1718428992_KMML%2BAnnual%2BReport%2B2022-23%2BLatest.pdf
 
-**Follow-up detail if they respond positively:** request a scoped field dictionary and monthly production/energy/water/residual ledger, actual recovery project status, explicit unit/meter/process and time boundaries, permission for publication and data-handling terms. The full field-specific checklist is in `docs/KMML_HISTORICAL_PROCESS_EVIDENCE_2026_09_21.md`. Do not attach user-shared Scribd screenshots or proprietary drawings to the first email.
+Do not attach user-shared third-party Scribd screenshots or private engineering drawings. No online meeting or collaboration commitment is requested; this is an existing-data enquiry. Sender affiliation is not presented as KTH endorsement.
