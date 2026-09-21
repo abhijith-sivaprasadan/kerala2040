@@ -76,6 +76,46 @@ by a Kerala administrative clip and project-specific ecological/grid screening.
 The visually selected coastal/offshore area particularly forbids interpreting
 the output as wholly onshore Kerala.
 
+### Revised 150 m CUF polygon — second user screenshot (21 September 2026)
+
+The user supplied a **second NIWE selection and popup** after the original
+6,796.61 sq km / 30,584.76 MW selection above. Preserve these as **two
+different map-selection observations**; the newer screenshot does not
+supersede or prove the precise coordinates of the earlier polygon.
+
+| Map CUF band (%) | Revised selection area (sq km) | Portal indicative MW |
+|---|---:|---:|
+| 25–30 | 2,186.54 | 9,839.43 |
+| 30–32 | 735.47 | 3,309.62 |
+| 32–35 | 837.45 | 3,768.53 |
+| 35–38 | 749.27 | 3,371.72 |
+| 38–40 | 375.49 | 1,689.71 |
+| >40 | 1,931.61 | 8,692.24 |
+| **Overall revised selection** | **6,815.83** | **30,671.25** |
+
+All displayed band capacities equal their band area **approximately multiplied
+by 4.5 MW/sq km** (allowing two-decimal rounding). This is a *portal
+implied uniform capacity density*, **not** established turbine spacing,
+permitting, grid feasibility, area-use fraction or ecological eligibility.
+The totals are for the displayed **CUF >=25% categories**, not the full
+administrative area of Kerala or every square kilometre inside the polygon.
+
+The new drawn western edge is still seaward of the Kerala coastline in
+places; it should be retained as a user-drawn exploratory envelope, not
+declared the statutory Kerala border, a legally permitted offshore zone
+or a land-sea disaggregated geospatial result. **Including sea inside the
+selection does not prove NIWE counted offshore wind resource pixels**:
+the screenshot predominantly shows the coloured NIWE resource layer
+on land and no separately validated offshore CUF resource. Conversely,
+uncoloured sea does not prove offshore wind potential is zero.
+
+The original national NIWE **150 m CSV has seven wind-climatology columns
+but no portal CUF map layer, offshore study-area polygon or capacity field**.
+Our scientifically auditable next deliverables are a coordinate-based NWIC
+Kerala land clip, a *separately defined* offshore study polygon plus a
+verified offshore resource dataset, and technology/constraint screening.
+Neither popup's 30+ GW can be admitted as a Kerala2040 siting/capacity ceiling.
+
 ### Further NIWE map screenshots — hybrid, 20 m wind speed and terrain (21 September 2026)
 
 - The user's hybrid-map screenshot displays **Wind Solar_Hybrid** classes
