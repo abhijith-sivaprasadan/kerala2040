@@ -10,14 +10,19 @@ on:
 permissions:
   contents: read
 
+# One independent artifact per location and quarter: a slow/failed CDS request
+# must not discard four other locations' evidence. Limit concurrent CDS jobs to
+# avoid overwhelming a single account's request quota.
 jobs:
   source-recovery:
     runs-on: ubuntu-latest
-    timeout-minutes: 65
+    timeout-minutes: 120
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         quarter: [2024-04_to_2024-06, 2024-07_to_2024-09, 2024-10_to_2024-12]
+        point: [thiruvananthapuram, kochi, palakkad, kozhikode, kannur]
     env:
       CDSAPI_URL: https://cds.climate.copernicus.eu/api
       CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
@@ -26,28 +31,28 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install only Copernicus source-reader dependencies
+      - name: Install Copernicus source-reader dependencies
         run: python -m pip install "cdsapi>=0.7.7,<1" "numpy>=2,<3" "pandas>=2.2,<3" "beautifulsoup4>=4.12,<5"
-      - name: Retrieve bounded quarter into review-only artifact
+      - name: Retrieve one bounded location-quarter into review-only artifact
         env:
           PYTHONPATH: src
           QUARTER: ${{ matrix.quarter }}
+          POINT: ${{ matrix.point }}
         run: |
           python scripts/ingest_era5_points.py \
+            --points "$POINT" \
             --periods "$QUARTER" \
-            --max-requests 5 \
+            --max-requests 1 \
             --raw-dir results/acquisition/era5/source_files \
             --manifest results/acquisition/era5/retrieval_attempt.json
       - name: Preserve original NetCDFs, per-file hashes and failure evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: era5-${{ matrix.quarter }}-source-attempt-NOT-MODEL-READY
+          name: era5-${{ matrix.point }}-${{ matrix.quarter }}-SOURCE-UNVALIDATED
           retention-days: 90
           if-no-files-found: warn
           path: results/acquisition/era5/
 
-# This workflow cannot write the main branch, public source manifest, QA gates
-# or website. Review original bytes, dates, units, area and reuse terms before
-# a separate admission PR. Never concatenate a 5/10 legacy manifest into a
-# purported 20/20 complete reanalysis chronology.
+# No public manifest / website mutation. New source bytes must be inspected
+# (hours, variables, units, spatial coordinates and SHA-256) before admission.
