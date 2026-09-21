@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "classification": "SCENARIO_SCREENING_PLAN_FAIL_CLOSED_NOT_ELIGIBLE_CAPACITY",
+  "date": "2026-09-22",
+  "geography": "NWIC Kerala administrative land polygon; onshore only; offshore completely separate",
+  "input_source_qas": [
+    "data/evidence/solar/kerala_boundary_resource_clips_2026_09_22.json",
+    "data/evidence/solar/solar_wind_consolidated_numeric_2026_09_22.json",
+    "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json",
+    "docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md"
+  ],
+  "technologies": {
+    "rooftop_pv": {
+      "indicative_GWp": null,
+      "feasible_GWp_range": null,
+      "missing": [
+        "building roof footprint/typology survey",
+        "roof usability and structural load",
+        "roof shading and electrical connections",
+        "distribution feeder hosting limits"
+      ],
+      "reason": "GSA per-kWp resource is not usable rooftop area"
+    },
+    "ground_mounted_pv": {
+      "indicative_GWp": null,
+      "feasible_GWp_range": null,
+      "missing": [
+        "native classified Kerala land-use/paddy and wetlands",
+        "notification-linked forest/protected areas",
+        "legal access and setbacks",
+        "slope/terrain eligibility thresholds",
+        "grid evacuation capacity"
+      ],
+      "reason": "2020 World Bank screening masks not statutory Kerala exclusion data"
+    },
+    "floating_pv": {
+      "publisher_NISE_2026_scenarios_GWp_DC": {
+        "20percent_surface": 2.22,
+        "broader_feasible_area": 5.73
+      },
+      "feasible_GWp_range": null,
+      "missing": [
+        "verified reservoir inventory/polygons",
+        "reject/resolve Arabian Sea-labelled source records",
+        "minimum water level and seasonal usable surface",
+        "hydro reservoir/irrigation/navigation constraints",
+        "ecological and operator clearances",
+        "grid interconnection"
+      ],
+      "reason": "NISE scenarios are alternatives and not permitted project capacity"
+    },
+    "onshore_wind": {
+      "NIWE_user_selection_unfiltered_map_MW": 30671.25,
+      "indicative_MW": null,
+      "feasible_MW_range": null,
+      "missing": [
+        "exact resource cell turbine curve and wake layout",
+        "legal forest/ESA and slope/terrain screen",
+        "settlements and setbacks",
+        "roads/transport access",
+        "grid hosting and land rights",
+        "validated wind conditions"
+      ],
+      "reason": "NIWE popup buffer covers non-exact selection and assumes 4.5MW/sqkm without unsuitable-land exclusion"
+    },
+    "offshore_wind": {
+      "indicative_MW": null,
+      "feasible_MW_range": null,
+      "missing": [
+        "defined offshore study polygon",
+        "independently validated offshore resource",
+        "bathymetry and seabed",
+        "navigation/fishing/ecology",
+        "export-cable landfall and transmission",
+        "rights and permissions"
+      ],
+      "reason": "NIWE onshore 150m atlas and buffered onshore selection provide no marine resource assessment"
+    }
+  },
+  "numerical_admission_rule": "Do not invent or calculate 'feasible' MW from source counts or study potential without technology-specific valid polygons and power density/layout, legal/water constraints, grid headroom and defensible assumptions. Keep NISE figures as attributed scenarios and NIWE popup as unfiltered portal output.",
+  "model_admitted": false
+}
