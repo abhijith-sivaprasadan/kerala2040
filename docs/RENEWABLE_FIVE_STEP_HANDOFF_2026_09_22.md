@@ -20,7 +20,7 @@ also SHA256-pinned. The proposed private destination is
 [`abhijith-sivaprasadan/kerala2040-source-archive`](https://github.com/abhijith-sivaprasadan/kerala2040-source-archive), **verified PRIVATE with an initialized `main` branch and README on 22 September 2026**. No original binary assets have been uploaded yet. Do **not** upload raw originals
 or derived source extracts to public `kerala2040` Releases.
 
-**Private repository is created and its visibility and `main` README verified.** Keep its access limited to authorized people. Install and log in to [GitHub CLI](https://cli.github.com/) on the local machine; keep all 17 original solar-batch files together, named exactly as in the manifest, plus original `Wind.zip` separately.
+**Private repository is created and its visibility and `main` README verified.** Keep its access limited to authorized people. Install and log in to [GitHub CLI](https://cli.github.com/) on the local machine. **The originals can stay in their existing nested folders**; pass their common parent to `--source-dir`. The uploader recursively locates all 17 original ZIP/PDF filenames and verifies each exact SHA256 and size before uploading. NIWE can be found recursively with `--wind-dir`. If you only have *extracted contents* and not the original ZIP bytes, the original manifest cannot be passed by re-zipping: use a separately identified folder snapshot and do not set `release_uploaded=true` for the absent originals.
 
 Run from a current local checkout of public `kerala2040`:
 
@@ -29,10 +29,10 @@ git pull
 gh auth login
 gh repo view abhijith-sivaprasadan/kerala2040-source-archive --json isPrivate
 
-python scripts/publish_solar_source_release.py --source-dir "E:\Kerala2040\solar-originals"
+python scripts/publish_solar_source_release.py --source-dir "E:\Kerala2040"
 python scripts/restore_solar_source_release.py --dest "E:\Kerala2040\solar-restore-test"
 
-python scripts/publish_niwe_original_release.py --wind-zip "E:\Kerala2040\Wind.zip"
+python scripts/publish_niwe_original_release.py --wind-dir "E:\Kerala2040"
 python scripts/publish_niwe_original_release.py --verify --dest "E:\Kerala2040\wind-restore-test"
 ```
 
