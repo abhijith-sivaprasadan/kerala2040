@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/era5-quarter-recovery.yml"
+      - "scripts/ingest_era5_points.py"
+      - "src/kerala2040/sources/era5.py"
   workflow_dispatch:
 
 permissions:
