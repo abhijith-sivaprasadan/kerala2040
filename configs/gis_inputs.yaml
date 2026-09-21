@@ -238,6 +238,32 @@ layers:
       Annual totals are not FY2024-25 hourly chronology or PV
       measurements. Underlying source overlaps prior AAIGRID
       equivalents and is not independent model validation.
+  global_solar_atlas_india_avg_daily_geotiff:
+    source: Global Solar Atlas 2.0 / Solargis / World Bank ESMAP
+    landing_page: https://globalsolaratlas.info/download/india
+    source_batch: docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md
+    source_qa: data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json
+    original_sha_manifest: data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json
+    original_archive_names:
+      - monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF(1).zip
+      - India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF2(1).zip
+      - India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF.zip
+    expected_format: 12_monthly_and_7_yearly_AvgDaily_GeoTIFFs_with_ISO19139_sidecars_split_in_3_original_ZIPs
+    raw_path: data/external/raw/solar/source_2026_09_21
+    role: long_term_daily_average_solar_PV_climatology_not_FY2024_25_measured_hourly_PV
+    acquisition_status: three_user_supplied_original_ZIPs_SHA256_CRC_inner_TIFF_hashes_verified_NOT_GitHub_binary_archived
+    note: >-
+      Three original 2019 GSA 2.0 India avg-daily GeoTIFF ZIPs hold
+      PVOUT_01-12 and the seven India yearly-average layer names
+      DIF,DNI,GHI,GTI,PVOUT,OPTA,TEMP. Filename "AvgDailyTotals" and
+      sampled magnitudes imply per-day units for irradiation/PVOUT;
+      embedded XML says "monthly/yearly average in kWh" WITHOUT
+      explicit /day, so verify normalization against corresponding
+      previously acquired monthly/yearly-total raster cells before
+      model-facing use. OPTA.tif and TEMP.tif are byte-identical to
+      previously acquired full-year TIFFs. Long-term irradiation/PVOUT
+      source period 1999-2018, TEMP 1994-2018, NOT FY2024-25.
+      Original binary archives still need GitHub Release upload.
   nwic_kerala_solar_wind_station_observations:
     source: NWIC National Water Data Portal / Kerala Surface Water Department
     solar_landing_page: https://nwdp.nwic.gov.in/dataset/solar-radiation-telemetry-hourly-kerala-surface-water-department
