@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "recorded_utc": "2026-09-21",
-  "classification": "uploaded_originals_verified_sha256_LOCAL_MOUNT_ONLY_NOT_YET_IN_GITHUB_RELEASE_OR_GIT",
-  "storage_policy": "GitHub release assets under tag solar-source-2026-09-21 after redistribution review; release assets are attached to repo, NOT tracked as Git blobs or Git LFS. SHA256 verification mandatory on restore.",
+  "classification": "LOCAL_ORIGINALS_SHA256_VERIFIED_PRIVATE_ARCHIVE_UPLOAD_PENDING",
+  "storage_policy": "Original binary sources are stored ONLY as authenticated GitHub Release assets in a SEPARATE PRIVATE archive repository (never a Release on public kerala2040). Public kerala2040 keeps provenance and SHA256 only; source rights and access restrictions still apply. The private repo must be verified private before ANY upload. Never publish raw binaries to public GitHub.",
   "release_tag": "solar-source-2026-09-21",
   "release_uploaded": false,
   "release_url": null,
@@ -313,5 +313,7 @@
   },
   "additional_batch_qa": "data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json",
   "latest_batch_qa": "data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json",
-  "consolidated_analysis": "docs/SOLAR_WIND_CONSOLIDATED_ANALYSIS_2026_09_22.md"
+  "consolidated_analysis": "docs/SOLAR_WIND_CONSOLIDATED_ANALYSIS_2026_09_22.md",
+  "archive_repo_proposed": "abhijith-sivaprasadan/kerala2040-source-archive",
+  "archive_repo_created_and_private_verified": false
 }
