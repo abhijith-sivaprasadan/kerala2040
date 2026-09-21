@@ -1,0 +1,42 @@
+"""Guard the exact original-source solar batch manifest against accidental drift."""
+from __future__ import annotations
+
+import json
+import re
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+MANIFEST = ROOT / "data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json"
+
+
+def test_solar_source_batch_manifest_is_complete_and_unambiguously_pinned() -> None:
+    d = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    assert d["schema_version"] == 1
+    assert d["release_tag"] == "solar-source-2026-09-21"
+    assert d["release_uploaded"] is False  # Update only on verified remote upload.
+    assets = d["assets"]
+    assert len(assets) == 8
+    assert len({item["name"] for item in assets}) == len(assets)
+    for asset in assets:
+        assert Path(asset["name"]).name == asset["name"]
+        assert asset["bytes"] > 0
+        assert re.fullmatch(r"[0-9a-f]{64}", asset["sha256"])
+    members = d["solar_zip_members"]
+    assert len(members) == 18
+    assert len({m[0] for m in members}) == len(members)
+    for name, size, checksum, attribution in members:
+        assert name and size > 0 and attribution
+        assert re.fullmatch(r"[0-9a-f]{64}", checksum)
+
+
+def test_station_observation_counts_are_not_interpreted_as_statewide() -> None:
+    d = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    qa = d["telemetry_FY2024_25_preview"]
+    solar = qa["solar"]
+    wind = qa["wind"]
+    assert solar["fy_rows"] == sum(solar["fy_stations"].values()) == 6007
+    assert wind["fy_rows"] == sum(wind["fy_stations"].values()) == 10946
+    assert solar["unit"] == "W/m2"
+    assert wind["unit"] == "km/h"
+    assert solar["fy_rows"] < solar["total_rows"]
+    assert wind["fy_rows"] < wind["total_rows"]
