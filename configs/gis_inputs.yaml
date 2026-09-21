@@ -161,6 +161,7 @@ layers:
     wind_landing_page: https://nwdp.nwic.gov.in/dataset/wind-speed-telemetry-hourly-kerala-surface-water-department
     source_batch: docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md
     original_sha_manifest: data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json
+    expected_format: original_provider_station_CSVs_nested_in_Solar_ZIP
     raw_path: data/external/raw/solar/source_2026_09_21/Solar.zip
     role: pointwise_weather_validation_not_statewide_weather_or_generation
     acquisition_status: user_supplied_csv_in_original_zip_LOCAL_ONLY_partial_FY2024_25
