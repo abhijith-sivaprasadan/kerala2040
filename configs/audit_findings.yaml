@@ -20,6 +20,7 @@ sources:
   grid_transfer_source_registry: configs/grid_transfer_contract_evidence_2024_25.yaml
   project_qa: data/external/sldc_fy2024_25/qa_report.json
   era5_manifest: public/era5-daily-manifest.json
+  era5_full_year_source_qa: data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json
   gis_catalogue: configs/gis_inputs.yaml
   lulc_native_acquisition: configs/lulc_native_acquisition_2024_25.yaml
   lulc_source_review: docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md
@@ -157,8 +158,13 @@ findings:
   - id: era5_full_weather_year
     priority: P1
     check: era5_complete
-    acquisition: Complete FY2024-25 weather coverage with verified timestamps, units and PV/wind transformations.
-    evidence: public/era5-daily-manifest.json
+    acquisition: >-
+      FY2024-25 ERA5 representative-point source acquisition and chronology are
+      now verified for all 20 location-quarters (8,760 UTC hours per point).
+      Remaining work is scientific model admission: define and validate the
+      spatial selection/interpolation plus PV/wind transformations against
+      appropriate measured generation/resource evidence before use in 2040 runs.
+    evidence: data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json
   - id: technology_costs_finance
     priority: P0
     check: technology_costs
