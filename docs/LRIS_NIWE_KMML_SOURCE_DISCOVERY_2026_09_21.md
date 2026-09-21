@@ -76,6 +76,43 @@ by a Kerala administrative clip and project-specific ecological/grid screening.
 The visually selected coastal/offshore area particularly forbids interpreting
 the output as wholly onshore Kerala.
 
+### Further NIWE map screenshots — hybrid, 20 m wind speed and terrain (21 September 2026)
+
+- The user's hybrid-map screenshot displays **Wind Solar_Hybrid** classes
+  `<50`, `50–75`, `75–80`, `80–85`, `85–90`, `>90`,
+  with red patches in/near the Western Ghats and across the border in
+  Tamil Nadu. NIWE describes its hybrid map as combining its wind resource
+  and solar atlas in terms of CUF at 500 m resolution. **Do not equate a red
+  >90 hybrid-map value to a measured single-plant annual 90% output
+  factor**, nor count map colour as land feasibility. Original hybrid
+  raster, its algorithm and effective-CUF/evacuation definition have not been
+  acquired or independently implemented. Source:
+  https://niwe.res.in/media/pdf/Issue_77.pdf .
+- The wind-speed screenshot legend says `Wind Speed (%)` but uses bins
+  `0–3, 3–4, 4–5, 5–6, >6`. NIWE's official **20 m map** text confirms
+  those are **wind speed in m/s at 20 m**, not percentages and **not**
+  the 150 m data height. Source:
+  https://maps.niwe.res.in/resource_map/map/20m/ .
+- The maps visually highlight Palakkad Gap/eastern Ghats and southern
+  highland wind corridors, sometimes extending across Kerala–Tamil Nadu
+  borders. Terrain panels show steep ridges and the gap. This is **only
+  a shortlist for GIS and wind-resource analysis**: confirm each candidate's
+  grid coordinates, slope, administrative classification, ecological/forest
+  restrictions and grid access. NIWE's 150 m report uses a normalised
+  turbine and assumptions for converting wind distribution into CUF;
+  those are not measured site output.
+  Source: https://maps.niwe.res.in/media/150m-report.pdf .
+- The coastal/offshore area in the screenshots is largely uncoloured by
+  NIWE wind-speed/hybrid overlays. **Absence of map colour is not zero
+  offshore wind potential**, and the 150 m onshore atlas ZIP must not be
+  represented as an offshore metocean/energy-yield dataset. Offshore is a
+  distinct study area needing validated offshore wind, bathymetry, seabed,
+  marine uses and cable-landfall constraints.
+- Keep three distinct source IDs: `niwe_20m_visual`,
+  `niwe_150m_original_national_csv`, and `niwe_hybrid_visual`. Do not
+  merge values across heights, metrics or spatial footprints, or infer
+  annual generation for Kerala from coloured tiles.
+
 ## KMML — process topology identified, mass/energy/water balance still missing
 
 - Official main-process description: https://www.kmml.com/process-chart and https://www.kmml.com/manufacturing-facility
