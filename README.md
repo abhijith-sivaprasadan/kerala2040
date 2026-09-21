@@ -142,8 +142,8 @@ and [NIWE source QA](data/evidence/gis/niwe_150m_user_supplied_source_qa_2026_09
 
 **Private originals, public science:** the user chose a SEPARATE PRIVATE
 `kerala2040-source-archive` repository for third-party binary ZIPs/PDFs.
-The private repository has **not yet been created or verified**; no originals
-have yet been archived remotely. Upload and restore are privacy-checked and
+The private repository is **created, initialized and verified private**; the
+original binary files have **not yet been uploaded or restored remotely**. Upload and restore are privacy-checked and
 SHA256-gated: [solar uploader](scripts/publish_solar_source_release.py),
 [restore tool](scripts/restore_solar_source_release.py),
 and [NIWE original uploader/restorer](scripts/publish_niwe_original_release.py).
