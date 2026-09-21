@@ -56,5 +56,10 @@ def test_station_observation_counts_are_not_interpreted_as_statewide() -> None:
     assert wind["fy_rows"] == sum(wind["fy_stations"].values()) == 10946
     assert solar["unit"] == "W/m2"
     assert wind["unit"] == "km/h"
+    assert solar["all_values_zero"] is True
+    assert solar["daytime_values_positive"] == 0
+    assert solar["source_qa_status"].startswith("REJECT_FY2024_25")
+    assert solar["native_time_step_minutes"] == 30
+    assert wind["native_time_step_minutes"] == 30
     assert solar["fy_rows"] < solar["total_rows"]
     assert wind["fy_rows"] < wind["total_rows"]
