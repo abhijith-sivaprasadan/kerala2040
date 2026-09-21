@@ -67,7 +67,7 @@ def _source_meta(metadata: dict[str, Any], actual_hash: str) -> int:
              metadata["reuse_terms"].strip().lower() not in {"unknown", "none", "na"},
              "explicit reuse terms are required; data stay private by default")
     try:
-        observed_time = datetime.fromisoformat(str(metadata["obtained_at_utc"]).replace("Z", "+00:00"))
+        observed_time = datetime.fromisoformat(str(metadata["obtained_at_utc"]))
     except ValueError as exc:
         raise IntervalAdmissionError("obtained_at_utc must be ISO 8601") from exc
     _require(observed_time.tzinfo is not None and
