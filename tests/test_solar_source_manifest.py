@@ -15,7 +15,7 @@ def test_solar_source_batch_manifest_is_complete_and_unambiguously_pinned() -> N
     assert d["release_tag"] == "solar-source-2026-09-21"
     assert d["release_uploaded"] is False  # Update only on verified remote upload.
     assets = d["assets"]
-    assert len(assets) == 14
+    assert len(assets) == 17
     assert len({item["name"] for item in assets}) == len(assets)
     for asset in assets:
         assert Path(asset["name"]).name == asset["name"]
@@ -32,6 +32,15 @@ def test_solar_source_batch_manifest_is_complete_and_unambiguously_pinned() -> N
         assert name in {asset["name"] for asset in assets}
     assert d["latest_batch_qa"] == (
         "data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json"
+    )
+    for name in (
+        "monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF(1).zip",
+        "India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF2(1).zip",
+        "India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF.zip",
+    ):
+        assert name in {asset["name"] for asset in assets}
+    assert d["latest_batch_qa"] == (
+        "data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json"
     )
     members = d["solar_zip_members"]
     assert len(members) == 18
