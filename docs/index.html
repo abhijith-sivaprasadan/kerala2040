@@ -171,6 +171,7 @@
             <h3 id="homeSeasonTitle">The balance changes month by month.</h3></div>
             <span class="viz-stamp">Each bar = an average observed day in that month</span></div>
           <div id="homeMonthlyArt" class="viz-art" aria-live="polite">Loading monthly observed-day comparisons…</div>
+          <div id="homeMonthlyInsight" class="viz-insight" aria-live="polite"></div>
           <figcaption class="viz-caption">Bars use the same scale and divide reported consumption into recorded net imports and in-state generation. An amber marker means at least one original daily report is missing for that month—not zero demand. Monthly averages are <strong>not</strong> full-month or full-year totals.</figcaption>
           <div class="viz-action"><button type="button" data-route="electricity" class="text-button">Follow the daily records, hydro and water storage →</button></div>
         </figure>
@@ -209,6 +210,7 @@
           <span class="viz-stamp">MU/day · mean of observed reports in each month</span></div>
         <p class="viz-intro">Height shows how much electricity Kerala used on an average <em>recorded day</em>; the colours show where it came from. A month with missing reports remains visibly incomplete. This is energy over a day, not instantaneous grid power.</p>
         <div id="electricMonthlyArt" class="viz-art" aria-live="polite">Loading monthly visualisation…</div>
+          <div id="electricMonthInsight" class="viz-insight" aria-live="polite"></div>
         <details class="data-details viz-details"><summary>Read the exact monthly figures and missing dates</summary><div id="electricMonthlyTable" class="table-scroll"></div></details>
         <p class="viz-caption">An observed-day average is used so months of different lengths can be compared on the same axis. Missing days are not filled. No percentage here implies a verified year-end result.</p>
       </section>
@@ -218,6 +220,7 @@
           <span class="viz-stamp">Two scales · the same observed dates</span></div>
         <p class="viz-intro">Hydropower is electricity produced during a day. Reservoir storage is an energy-weighted snapshot of the water available in the monitored reservoirs. The charts share a timeline, but <strong>MU/day and % must not be read as the same unit</strong>. A visible break indicates a missing original daily report.</p>
         <div id="hydroSeasonArt" class="viz-art" aria-live="polite">Loading hydro and storage observations…</div>
+          <div id="hydroInsight" class="viz-insight" aria-live="polite"></div>
         <details class="data-details viz-details"><summary>Inspect water and hydro readings by observed date</summary><div id="hydroSeasonTable" class="table-scroll"></div></details>
         <p class="viz-caption">Observed Kerala SLDC daily hydro generation and energy-weighted reservoir storage percentage. A visual relationship is not a causal dispatch model or a guarantee of future hydro output.</p>
       </section>
