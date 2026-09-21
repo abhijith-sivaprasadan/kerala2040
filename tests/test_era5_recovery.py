@@ -52,3 +52,85 @@ def test_netcdf_probe_rejects_empty_truncated_html_and_zip(tmp_path: Path) -> No
         data.write_bytes(magic + b"0" * 5000)
         assert module.valid_netcdf(data) is True
         assert len(module.sha256(data)) == 64
+
+
+def test_oversized_quarter_recovers_with_verified_monthly_bytes(tmp_path, monkeypatch) -> None:
+    import json
+    import sys
+    from types import SimpleNamespace
+
+    class MockCDS:
+        def __init__(self) -> None:
+            self.calls = []
+
+        def retrieve(self, dataset, request, target):
+            assert dataset == module.DATASET
+            self.calls.append(tuple(request["month"]))
+            if len(request["month"]) > 1:
+                raise RuntimeError("HTTP 403: cost limits exceeded; your request is too large")
+            Path(target).write_bytes(bytes.fromhex("894844460d0a1a0a") + b"0" * 5000)
+
+    provider = MockCDS()
+    monkeypatch.setenv("CDSAPI_KEY", "synthetic-test-key-not-a-real-secret")
+    monkeypatch.setitem(sys.modules, "cdsapi", SimpleNamespace(Client=lambda **kwargs: provider))
+    manifest = tmp_path / "attempt.json"
+    monkeypatch.setattr(sys, "argv", [
+        "ingest_era5_points.py", "--points", "kochi", "--periods",
+        "2024-04_to_2024-06", "--max-requests", "1",
+        "--raw-dir", str(tmp_path / "raw"), "--manifest", str(manifest),
+    ])
+    assert module.main() == 0
+    result = json.loads(manifest.read_text())
+    assert result["classification"] == (
+        "reanalysis_retrieval_attempt_not_validated_resource_model"
+    )
+    assert result["windows_completed"] == 1
+    assert result["source_requests_sent"] == 4
+    assert result["files_succeeded"] == 3
+    assert result["files_expected"] == 20  # Full new plan, not observed source count
+    assert result["files_not_attempted"] == 19
+    assert result["failures"] == []
+    assert len(result["oversized_window_fallbacks"]) == 1
+    assert provider.calls == [
+        ("04", "05", "06"), ("04",), ("05",), ("06",)
+    ]
+    assert {row["period"] for row in result["files"]} == {
+        "2024-04", "2024-05", "2024-06"
+    }
+    for item in result["files"]:
+        assert Path(item["path"]).is_file()
+        assert len(item["sha256"]) == 64
+
+
+def test_incomplete_monthly_fallback_never_returns_success(tmp_path, monkeypatch) -> None:
+    import json
+    import sys
+    from types import SimpleNamespace
+
+    class MockCDS:
+        def retrieve(self, dataset, request, target):
+            months = request["month"]
+            if len(months) > 1:
+                raise RuntimeError("cost limits exceeded")
+            if months == ["05"]:
+                Path(target).write_bytes(b"<html>" * 1000)
+                return
+            Path(target).write_bytes(bytes.fromhex("43444601") + b"0" * 5000)
+
+    monkeypatch.setenv("CDSAPI_KEY", "synthetic-test-key-not-a-real-secret")
+    monkeypatch.setitem(sys.modules, "cdsapi", SimpleNamespace(
+        Client=lambda **kwargs: MockCDS()
+    ))
+    manifest = tmp_path / "attempt.json"
+    monkeypatch.setattr(sys, "argv", [
+        "ingest_era5_points.py", "--points", "kochi", "--periods",
+        "2024-04_to_2024-06", "--max-requests", "1",
+        "--raw-dir", str(tmp_path / "raw"), "--manifest", str(manifest),
+    ])
+    assert module.main() == 2
+    result = json.loads(manifest.read_text())
+    assert result["windows_completed"] == 0
+    assert result["files_succeeded"] == 2
+    assert len(result["failures"]) == 1
+    assert result["failures"][0]["period"] == "2024-05"
+    assert not (tmp_path / "raw/era5_kochi_2024-05.nc").exists()
