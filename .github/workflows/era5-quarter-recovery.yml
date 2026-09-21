@@ -23,10 +23,8 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        # Diagnostic probe before rerunning all 15 already-failing downloads.
-        # Restore the full matrix after inspecting the preserved CDS response.
-        quarter: [2024-04_to_2024-06]
-        point: [kochi]
+        quarter: [2024-04_to_2024-06, 2024-07_to_2024-09, 2024-10_to_2024-12]
+        point: [thiruvananthapuram, kochi, palakkad, kozhikode, kannur]
     env:
       CDSAPI_URL: https://cds.climate.copernicus.eu/api
       CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
