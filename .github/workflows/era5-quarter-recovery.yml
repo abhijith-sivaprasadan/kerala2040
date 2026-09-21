@@ -1,0 +1,53 @@
+name: Recover missing ERA5 FY2024-25 quarter
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/era5-quarter-recovery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    strategy:
+      fail-fast: false
+      matrix:
+        quarter: [2024-04_to_2024-06, 2024-07_to_2024-09, 2024-10_to_2024-12]
+    env:
+      CDSAPI_URL: https://cds.climate.copernicus.eu/api
+      CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install only Copernicus source-reader dependencies
+        run: python -m pip install "cdsapi>=0.7.7,<1"
+      - name: Retrieve bounded quarter into review-only artifact
+        env:
+          PYTHONPATH: src
+          QUARTER: ${{ matrix.quarter }}
+        run: |
+          python scripts/ingest_era5_points.py \
+            --periods "$QUARTER" \
+            --max-requests 5 \
+            --raw-dir results/acquisition/era5/source_files \
+            --manifest results/acquisition/era5/retrieval_attempt.json
+      - name: Preserve original NetCDFs, per-file hashes and failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: era5-${{ matrix.quarter }}-source-attempt-NOT-MODEL-READY
+          retention-days: 90
+          if-no-files-found: warn
+          path: results/acquisition/era5/
+
+# This workflow cannot write the main branch, public source manifest, QA gates
+# or website. Review original bytes, dates, units, area and reuse terms before
+# a separate admission PR. Never concatenate a 5/10 legacy manifest into a
+# purported 20/20 complete reanalysis chronology.

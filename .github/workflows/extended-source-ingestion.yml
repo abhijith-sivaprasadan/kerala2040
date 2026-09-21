@@ -52,12 +52,9 @@ jobs:
           --delay-seconds 0.12
           --output data/processed/grid_india_psp.parquet
 
-      - name: Retrieve ERA5 hourly representative-point inputs
-        continue-on-error: true
-        env:
-          CDSAPI_URL: https://cds.climate.copernicus.eu/api
-          CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
-        run: python scripts/ingest_era5_points.py
+      # ERA5 is acquired in the dedicated bounded source-only workflow.
+      # Never overwrite the public evidence snapshot with an unchecked partial
+      # manifest from this multi-source ingestion job.
 
       - name: Refresh published evidence before merging this acquisition
         if: always()
