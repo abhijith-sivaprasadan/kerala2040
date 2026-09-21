@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-09-21",
+  "classification": "uploaded_originals_verified_sha256_LOCAL_MOUNT_ONLY_NOT_YET_IN_GITHUB_RELEASE_OR_GIT",
+  "storage_policy": "GitHub release assets under tag solar-source-2026-09-21 after redistribution review; release assets are attached to repo, NOT tracked as Git blobs or Git LFS. SHA256 verification mandatory on restore.",
+  "release_tag": "solar-source-2026-09-21",
+  "release_uploaded": false,
+  "release_url": null,
+  "assets": [
+    {
+      "name": "Solar.zip",
+      "bytes": 81334710,
+      "sha256": "ddbbb0eaf76dfb3be3c7e4e099842767dbba863cffb66bf7f7fbfa5a0312e97f",
+      "sources": "mixed; see members",
+      "rights": "review_mixed_source_archive_before_public_reupload"
+    },
+    {
+      "name": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_AAIGRID.zip",
+      "bytes": 272539134,
+      "sha256": "385cf026674b9500b80dd89f3759d41f50e161be129bfabb7c385e80d3002856",
+      "publisher": "Solargis on behalf of World Bank/ESMAP",
+      "source": "https://globalsolaratlas.info/download/india",
+      "rights": "GSA CC BY 4.0 with mandatory terms/attribution; preserve originals; see GSA website",
+      "kind": "long_term_average_yearly_and_monthly_totals_NOT_FY2024_25"
+    },
+    {
+      "name": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_AAIGRID.zip",
+      "bytes": 317301351,
+      "sha256": "a948bf85287e5436109c9d71df696d3a49294f575c2752aa18dd2d1ba274daf5",
+      "publisher": "Solargis on behalf of World Bank/ESMAP",
+      "source": "https://globalsolaratlas.info/download/india",
+      "rights": "GSA CC BY 4.0 with mandatory terms/attribution; preserve originals; see GSA website",
+      "kind": "long_term_average_daily_totals_NOT_FY2024_25"
+    },
+    {
+      "name": "All_India_Survey_of_Photovoltaic_Module_Degradation_2013.pdf",
+      "bytes": 29663886,
+      "sha256": "366bb0a448efef4c46b4a78a5ae0afa965ba178f09ad0982271fd05c60719b60",
+      "publisher": "NCPRE IIT Bombay and Solar Energy Centre/NISE",
+      "period": "2013 survey; report dated 2014",
+      "rights": "review_before_mirroring"
+    },
+    {
+      "name": "report_batteries_solar_photovoltaic_applications.pdf",
+      "bytes": 6573821,
+      "sha256": "5143ef5ce5265eca89b77d6cca5426fa68edf73f971beeeb1a39d6d27068e2fc",
+      "publisher": "CSIR-CECRI and MNRE Solar Energy Centre",
+      "period": "June 2012; lead-acid PV applications",
+      "rights": "review_before_mirroring"
+    },
+    {
+      "name": "NREL-NISE-report-on-PV-module.pdf",
+      "bytes": 1303930,
+      "sha256": "6a7d5a4bc250cce2735876ca0715bb36a64272aa86d90ec9c9c481279fd562a6",
+      "publisher": "NREL/NISE",
+      "period": "Aug 2016 NREL/TP-5J00-66963; thin-film 2014-15",
+      "source": "https://www.nrel.gov/docs/fy16osti/66963.pdf",
+      "rights": "review_before_mirroring"
+    },
+    {
+      "name": "All-India-Survey-of-Photovoltaic-Module-Reliability-2016-_-Rev2_25012018_online_lowres.pdf",
+      "bytes": 8197287,
+      "sha256": "d5f481806a5041c86d751671bf173659c0d2cdde0c2bc74985397a7df48af398",
+      "publisher": "NCPRE IIT Bombay and NISE",
+      "period": "2016 survey; revision 25 Jan 2018",
+      "rights": "review_before_mirroring"
+    },
+    {
+      "name": "All_India_Survey_of_Photovoltaic_Module_Reliability_2014-min.pdf",
+      "bytes": 7379975,
+      "sha256": "2c79faa872d54664ee1676249664912d9719c6d49d08ef395cabcb19732158d9",
+      "publisher": "NCPRE IIT Bombay and NISE",
+      "period": "2014 survey; report March 2016 rev2",
+      "rights": "review_before_mirroring"
+    }
+  ],
+  "solar_zip_members": [
+    [
+      "All-India-Survey-of-Photovoltaic-Module-Reliability_2018_Report.pdf",
+      5319750,
+      "77b8300cb482ad969d748d296831e35e8bb2c7ec1edc9987acb60efdd0c97a63",
+      "NCPRE IIT Bombay/NISE; 2018 survey"
+    ],
+    [
+      "Global-Photovoltaic-Power-Potential-by-Country.pdf",
+      4851380,
+      "56f7c6e9a7ee6c5083674f2a40f39a292d39c0325a892fad7787e29b9e566378",
+      "World Bank/ESMAP/Solargis; 2020 study"
+    ],
+    [
+      "Ground Mounted.xlsx",
+      81692,
+      "ca097e72768b77f96cf2460ebf621d7b4b35d9484e805b19b90e3388b98ca980",
+      "NISE open-data ground-mounted potential; publisher provenance to verify"
+    ],
+    [
+      "GSA_Global-PV-potential-study_Factsheet_India.pdf",
+      1431863,
+      "cee6f7ef7224cff565929df84492d14fc052cfba0eae58c501d2f435715f75d1",
+      "GSA India factsheet"
+    ],
+    [
+      "Hotandcoldprofile23062021_New.xlsx",
+      1485111,
+      "090c36fb6b94d203f314302da59c294a90a0d0f9d9e09d6079e1990b0558cddc",
+      "NISE file; interpret workbook before model use"
+    ],
+    [
+      "India_DNI_mid-size-map_156x194mm-300dpi_v20191015.png",
+      3249667,
+      "cbdf11e234e35ba597d29679bac238b3bd65d9e0a86321a800fb3141d3ebb2a5",
+      "GSA India PNG map"
+    ],
+    [
+      "India_GHI_mid-size-map_156x194mm-300dpi_v20191015.png",
+      3295607,
+      "9c0aad2ef0688e329b1e84a1bb1a73bc5cd56aa3c89feb6480fecf742ec367ad",
+      "GSA India PNG map"
+    ],
+    [
+      "India_PVOUT_mid-size-map_156x194mm-300dpi_v20191015.png",
+      3387109,
+      "db45b3f4087fa577a931842d9f2ac56e101b30f299b957af25812f0710018ae9",
+      "GSA India PNG map"
+    ],
+    [
+      "NISE_floating potential_report_2026.pdf",
+      53461259,
+      "d655be7999fe042162f1e46de7ad35b098d427f50b00f30d4e1ce069b8a026fd",
+      "NISE Floating Solar PV Potential of India, June 2026"
+    ],
+    [
+      "Poster-and-Momento.pdf",
+      3229218,
+      "77735ca1552e5e9c5e8bdc4c46744455c8254c111712e7b11bf470564ee620ce",
+      "NISE miscellaneous; classify before model use"
+    ],
+    [
+      "Report-on-Comparison-of-Electric-and-Hydrogen-Vehicles.pdf",
+      3533719,
+      "4a4d6b8fef249ddbc63f163390c238e37482485ab9bad17230f7fa6866fc6c15",
+      "NISE EV vs hydrogen report; adjacent study"
+    ],
+    [
+      "Report-on-Hydrogen-Production-and-Demand-in-India.pdf",
+      1164926,
+      "be9dc072e3ece65fdbcddd3700c43828db7a1830cc1a4b4522670ffde816f632",
+      "NISE hydrogen production/demand; adjacent study"
+    ],
+    [
+      "solargis_pvpotential_countryranking_2020_data.xlsx",
+      129014,
+      "8a73d15c8ad1e8c8f82bb3b879ac8b34143a420b2b45ba37722394104a63696d",
+      "World Bank/ESMAP/Solargis country comparisons"
+    ],
+    [
+      "solar_rediation_tel_hr_kerala-sw_kl_1991_2020.csv",
+      4891,
+      "1f805f2c99168aa1c639b6527102671969bccea0bb311b0f2f20298164259038",
+      "NWDP Kerala SW older solar telemetry"
+    ],
+    [
+      "solar_rediation_tel_hr_kerala_sw_kl_2021_2025.csv",
+      25117676,
+      "1e547316c461176b5a121293213ea2eef8de7e69d2364b4c9cd492fdcc9f9fd6",
+      "NWDP Kerala SW solar radiation W/m2"
+    ],
+    [
+      "solar_rediation_tel_hr_kerala_sw_kl_2026_2030.csv",
+      219,
+      "e83acd16f2b106cfa9ce0e497591235df6489f25fe8e870f06d72ee3a8a05201",
+      "NWDP header-only snapshot"
+    ],
+    [
+      "wind_speed_tel_hr_kerala_sw_kl_1970_2025.csv",
+      30324625,
+      "0d4209be0f9984b20bb82457d03d5b8592d49eda10272d9e80c6ee72cd30b792",
+      "NWDP Kerala SW wind speed km/h"
+    ],
+    [
+      "wind_speed_tel_hr_kerala_sw_kl_2026_2030.csv",
+      229,
+      "f708788abf775dbefede5f03116a803a472124578eed021c59277c3e1890eeee",
+      "NWDP header-only snapshot"
+    ]
+  ],
+  "archive_inner_directory": "Solar/",
+  "source_landing_pages": {
+    "NWDP_solar": "https://nwdp.nwic.gov.in/dataset/solar-radiation-telemetry-hourly-kerala-surface-water-department",
+    "NWDP_wind": "https://nwdp.nwic.gov.in/dataset/wind-speed-telemetry-hourly-kerala-surface-water-department",
+    "Global_Solar_Atlas": "https://globalsolaratlas.info/download/india",
+    "NISE": "https://nise.res.in/",
+    "NREL": "https://www.nrel.gov/docs/fy16osti/66963.pdf"
+  },
+  "qa_note": "The actual archive path is /mnt/data only in the current conversation session. GitHub release creation/upload is NOT possible using existing connected GitHub text-only file APIs. A repository-side upload/restore script is provided, but source assets are not in GitHub until uploaded and independently checked. Do not claim acquisition fully archived.",
+  "telemetry_FY2024_25_preview": {
+    "solar": {
+      "total_rows": 181115,
+      "all_station_count": 13,
+      "fy_rows": 6007,
+      "fy_stations": {
+        "AMBALAPUZHA": 5986,
+        "KULAMAVU": 21
+      },
+      "unit": "W/m2"
+    },
+    "wind": {
+      "total_rows": 217754,
+      "all_station_count": 13,
+      "fy_rows": 10946,
+      "fy_stations": {
+        "AMBALAPUZHA": 5096,
+        "KULAMAVU": 5850
+      },
+      "unit": "km/h"
+    },
+    "caveat": "The filename date range is NOT actual complete coverage; observed timestamps cluster around May-Oct 2024 and Mar 2025. Timestamp timezone and sensor height not verified."
+  }
+}
