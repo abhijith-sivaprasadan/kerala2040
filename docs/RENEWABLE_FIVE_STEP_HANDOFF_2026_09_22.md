@@ -10,28 +10,51 @@ The NWIC official Kerala **state boundary** (original EPSG:7755; verified SHA256
 
 **Committed evidence**: [clip QA ledger](../data/evidence/solar/kerala_boundary_resource_clips_2026_09_22.json). **Reproducible processing**: [exact NWIC Kerala clipping script](../scripts/build_kerala_onshore_resource_clips.py) requires the original ZIPs and boundary Actions artifact. **Local binary output**: `kerala2040_resource_clips_2026_09_22.zip` is in the conversation download only. It contains actual GeoTIFFs, Kerala NIWE CSV, boundary and PNG maps. **These GeoTIFF/PNG/ZIP bytes have NOT been uploaded into GitHub**: the available connected GitHub write actions support text, while this runtime cannot authenticate a binary upload. Do not link to a non-existent Release.
 
-## Raw original archival (user action required)
+## Raw original archival — PRIVATE repository, user action required
 
-The committed [17-file solar manifest](../data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json) has original user filenames/bytes/SHA256; **release_uploaded remains false**. Original NIWE `Wind.zip` has its own source QA. The original archives were available in the model's upload workspace for analysis, but the originals are *not permanently available from this repo*.
+The user chose a **private archive**, not public redistribution. The public
+[17-file source manifest](../data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json)
+has original filenames, byte sizes, provenance and SHA256 only;
+`release_uploaded` remains **false**. Separate original NIWE `Wind.zip` is
+also SHA256-pinned. The proposed private destination is
+`abhijith-sivaprasadan/kerala2040-source-archive`, which does **not yet exist**
+or has not been verified accessible/private. Do **not** upload raw originals
+or derived source extracts to public `kerala2040` Releases.
 
-The permanent archival path is [solar Release uploader](../scripts/publish_solar_source_release.py) with its [SHA-checking restore script](../scripts/restore_solar_source_release.py). **Do not publish mixed-provider `Solar.zip`, third-party PDFs, NWDP data or NIWE restricted material solely because it was publicly downloadable.** For NIWE, a separate [rights-gated DRAFT publisher](../scripts/publish_niwe_original_release.py) exists. Source redistribution rights must be confirmed for each original; if rights are not granted, use a private immutable repository/store and a public SHA256-only metadata manifest, not a public GitHub Release.
+**One-time user setup (GitHub UI):** create a **PRIVATE** repository named
+`kerala2040-source-archive` under `abhijith-sivaprasadan`, initialize it
+with a README so the default branch exists, and keep access limited to
+authorized people. Install and log in to [GitHub CLI](https://cli.github.com/)
+on the local machine; keep all 17 original solar-batch files together,
+named exactly as in the manifest, plus original `Wind.zip` separately.
 
-On the user's Windows machine, after reviewing public redistribution permission, place all 17 original source files named in the manifest into one folder, install/authenticate `gh`, then run:
+Run from a current local checkout of public `kerala2040`:
 
 ```powershell
 git pull
 gh auth login
-python scripts/publish_solar_source_release.py --source-dir "E:\Kerala2040\solar-originals" --confirm-public-redistribution --publish
+gh repo view abhijith-sivaprasadan/kerala2040-source-archive --json isPrivate
+
+python scripts/publish_solar_source_release.py --source-dir "E:\Kerala2040\solar-originals"
 python scripts/restore_solar_source_release.py --dest "E:\Kerala2040\solar-restore-test"
+
+python scripts/publish_niwe_original_release.py --wind-zip "E:\Kerala2040\Wind.zip"
+python scripts/publish_niwe_original_release.py --verify --dest "E:\Kerala2040\wind-restore-test"
 ```
 
-The NIWE original needs an **independent** NIWE permission decision; only if publicly redistributable run:
-
-```powershell
-python scripts/publish_niwe_original_release.py --wind-zip "E:\Kerala2040\Wind.zip" --confirm-public-redistribution
-```
-
-NIWE uploader intentionally creates a **draft** release; do not publish before checking the rights. Verify *real* GitHub Release assets and restored SHA256, then update manifests; no manifest is auto-marked true merely because a script exists.
+The uploader **aborts before upload if the destination is missing or public**.
+Solar and NIWE uploads produce releases inside the separate PRIVATE repository;
+a published release *inside a private repository* remains available only to
+authorized repo viewers. Do not make this archive repository public or share
+its access in violation of publisher terms. A private backup does not itself
+override licence conditions. Upload checks exact local SHA256/bytes before
+transfer and remote sizes; **the separate restore commands download all
+originals again and verify their actual SHA256s**. Only after that real
+remote check should `release_uploaded` be changed to true with the
+private archive repo identity in the public manifest (never embed tokens
+or signed download URLs). The private repo is a separate storage location:
+the public research repo carries code, source links, hashes and reproducibility
+instructions without exposing third-party raw bytes.
 
 ## Five-point FY2024–25 hourly sensitivities (calculated, not validated generation)
 
