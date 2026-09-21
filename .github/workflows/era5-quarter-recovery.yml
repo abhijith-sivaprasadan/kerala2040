@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install only Copernicus source-reader dependencies
-        run: python -m pip install "cdsapi>=0.7.7,<1"
+        run: python -m pip install "cdsapi>=0.7.7,<1" "numpy>=2,<3" "pandas>=2.2,<3" "beautifulsoup4>=4.12,<5"
       - name: Retrieve bounded quarter into review-only artifact
         env:
           PYTHONPATH: src
