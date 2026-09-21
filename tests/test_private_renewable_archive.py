@@ -1,6 +1,7 @@
 """Private research-source archive must fail closed on public repo or stale flags."""
 from __future__ import annotations
 
+import hashlib
 import json
 import runpy
 import subprocess
@@ -58,3 +59,45 @@ def test_restore_solar_defaults_to_private_repository() -> None:
     assert "ensure_private(args.archive_repo)" in restore
     assert 'default=PRIVATE_ARCHIVE' in restore
     assert '"abhijith-sivaprasadan/kerala2040"' not in restore
+
+
+
+def test_recursive_original_resolution_keeps_folder_structure(tmp_path: Path) -> None:
+    utilities = runpy.run_path(str(SCRIPTS / "private_archive_utils.py"))
+    find = utilities["find_originals_in_folders"]
+    nested = tmp_path / "user-uploads" / "Solar" / "originals"
+    nested.mkdir(parents=True)
+    payload = b"EXACT original zip bytes for synthetic test only"
+    original = nested / "Solar.zip"
+    original.write_bytes(payload)
+    (tmp_path / "other").mkdir()
+    (tmp_path / "other" / "Solar.zip").write_bytes(b"not identical")
+    manifest = [{
+        "name": "Solar.zip", "bytes": len(payload),
+        "sha256": hashlib.sha256(payload).hexdigest(),
+    }]
+    found = find(tmp_path, manifest)
+    assert found["Solar.zip"] == original
+    assert original.exists()
+
+
+def test_extracted_folder_is_not_original_zip(tmp_path: Path) -> None:
+    utilities = runpy.run_path(str(SCRIPTS / "private_archive_utils.py"))
+    unpacked = tmp_path / "Solar"
+    unpacked.mkdir()
+    (unpacked / "PVOUT.tif").write_bytes(b"extracted TIFF example")
+    with pytest.raises(ValueError, match="extracted folders cannot recreate"):
+        utilities["find_originals_in_folders"](
+            tmp_path,
+            [{"name": "Solar.zip", "bytes": 10, "sha256": "a" * 64}],
+        )
+
+
+def test_recursive_preflight_rejects_wrong_sha(tmp_path: Path) -> None:
+    utilities = runpy.run_path(str(SCRIPTS / "private_archive_utils.py"))
+    (tmp_path / "Wind.zip").write_bytes(b"candidate")
+    with pytest.raises(ValueError, match="SHA256 mismatch"):
+        utilities["find_originals_in_folders"](
+            tmp_path,
+            [{"name": "Wind.zip", "bytes": 9, "sha256": "0" * 64}],
+        )
