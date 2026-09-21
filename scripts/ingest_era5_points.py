@@ -63,7 +63,7 @@ def main() -> int:
     parser.add_argument("--raw-dir", type=Path, default=Path("data/raw/era5"))
     parser.add_argument(
         "--manifest", type=Path,
-        default=Path("data/processed/era5_daily_manifest.json"),
+        default=Path("results/acquisition/era5/retrieval_attempt.json"),
     )
     parser.add_argument("--points", nargs="+", choices=list(POINTS), default=list(POINTS))
     parser.add_argument(
