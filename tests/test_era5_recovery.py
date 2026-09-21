@@ -167,3 +167,56 @@ def test_rejected_cds_zip_is_preserved_with_hash_and_format(tmp_path, monkeypatc
     assert rejected.read_bytes() == response
     assert failure["response_sha256"] == module.sha256(rejected)
     assert not (tmp_path / "raw/era5_kochi_2024-04_to_2024-06.nc").exists()
+
+
+def test_cds_multi_stream_zip_is_extracted_with_original_hash(tmp_path, monkeypatch) -> None:
+    import io
+    import json
+    import sys
+    import zipfile
+    from types import SimpleNamespace
+
+    payload = io.BytesIO()
+    with zipfile.ZipFile(payload, "w") as bundle:
+        bundle.writestr(
+            "data_stream-oper_stepType-instant.nc",
+            bytes.fromhex("894844460d0a1a0a") + b"0" * 5000,
+        )
+        bundle.writestr(
+            "data_stream-oper_stepType-accum.nc",
+            bytes.fromhex("43444605") + b"1" * 5000,
+        )
+
+    class MockCDS:
+        def retrieve(self, dataset, request, target):
+            Path(target).write_bytes(payload.getvalue())
+
+    monkeypatch.setenv("CDSAPI_KEY", "synthetic-test-key-not-a-real-secret")
+    monkeypatch.setitem(sys.modules, "cdsapi", SimpleNamespace(Client=lambda **kw: MockCDS()))
+    manifest = tmp_path / "attempt.json"
+    monkeypatch.setattr(sys, "argv", [
+        "ingest_era5_points.py", "--points", "kochi", "--periods",
+        "2024-04_to_2024-06", "--max-requests", "1",
+        "--raw-dir", str(tmp_path / "raw"), "--manifest", str(manifest),
+    ])
+    assert module.main() == 0
+    result = json.loads(manifest.read_text())
+    assert result["source_windows_succeeded"] == result["windows_completed"] == 1
+    assert result["files_succeeded"] == 2
+    assert result["failures"] == []
+    assert {row["source_archive_member"] for row in result["files"]} == {
+        "data_stream-oper_stepType-instant.nc",
+        "data_stream-oper_stepType-accum.nc",
+    }
+    archives = {row["source_archive_path"] for row in result["files"]}
+    assert len(archives) == 1
+    archive = Path(archives.pop())
+    assert archive.suffix == ".zip"
+    assert archive.read_bytes() == payload.getvalue()
+    for row in result["files"]:
+        component = Path(row["path"])
+        assert component.is_file()
+        assert module.valid_netcdf(component)
+        assert row["sha256"] == module.sha256(component)
+        assert row["source_archive_sha256"] == module.sha256(archive)
+        assert row["source_archive_bytes"] == archive.stat().st_size
