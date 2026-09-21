@@ -23,6 +23,12 @@ manifest. These are foundations, not validated 2040 results.
 The 8,760-hour load reconstruction remains **proxy data, not measured telemetry**.
 See [the mandatory provenance policy](PROVENANCE_CORE_RULES.md).
 
+The P0 interval-data acquisition is supported by a
+[private, fail-closed 8,760-hour / 35,040-block intake validator](MEASURED_INTERVAL_INTAKE.md).
+It checks a future genuinely sourced export; no full FY2024-25 measured
+interval source has arrived, and running the validator does not unlock the
+historical-calibration or 2040 release gates.
+
 ## Your next actions, in order
 
 1. **Confirm the CET submission date and freeze the scope.** Make the first release
