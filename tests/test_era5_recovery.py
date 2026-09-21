@@ -48,7 +48,7 @@ def test_netcdf_probe_rejects_empty_truncated_html_and_zip(tmp_path: Path) -> No
         data.write_bytes(bad)
         assert module.valid_netcdf(data) is False
     for magic in (bytes.fromhex("43444601"), bytes.fromhex("43444602"),
-                  bytes.fromhex("894844460d0a1a0a")):
+                  bytes.fromhex("43444605"), bytes.fromhex("894844460d0a1a0a")):
         data.write_bytes(magic + b"0" * 5000)
         assert module.valid_netcdf(data) is True
         assert len(module.sha256(data)) == 64
@@ -134,3 +134,36 @@ def test_incomplete_monthly_fallback_never_returns_success(tmp_path, monkeypatch
     assert len(result["failures"]) == 1
     assert result["failures"][0]["period"] == "2024-05"
     assert not (tmp_path / "raw/era5_kochi_2024-05.nc").exists()
+
+
+def test_rejected_cds_zip_is_preserved_with_hash_and_format(tmp_path, monkeypatch) -> None:
+    import json
+    import sys
+    from types import SimpleNamespace
+
+    response = bytes.fromhex("504b0304") + b"not-a-netcdf" * 500
+
+    class MockCDS:
+        def retrieve(self, dataset, request, target):
+            Path(target).write_bytes(response)
+
+    monkeypatch.setenv("CDSAPI_KEY", "synthetic-test-key-not-a-real-secret")
+    monkeypatch.setitem(sys.modules, "cdsapi", SimpleNamespace(Client=lambda **kw: MockCDS()))
+    manifest = tmp_path / "attempt.json"
+    monkeypatch.setattr(sys, "argv", [
+        "ingest_era5_points.py", "--points", "kochi", "--periods",
+        "2024-04_to_2024-06", "--max-requests", "1",
+        "--raw-dir", str(tmp_path / "raw"), "--manifest", str(manifest),
+    ])
+    assert module.main() == 2
+    result = json.loads(manifest.read_text())
+    assert result["files_succeeded"] == 0
+    failure = result["failures"][0]
+    assert failure["response_format_guess"] == "zip"
+    assert failure["response_prefix_hex"].startswith("504b0304")
+    assert failure["response_bytes"] == len(response)
+    rejected = Path(failure["rejected_path"])
+    assert rejected.suffix == ".zip"
+    assert rejected.read_bytes() == response
+    assert failure["response_sha256"] == module.sha256(rejected)
+    assert not (tmp_path / "raw/era5_kochi_2024-04_to_2024-06.nc").exists()
