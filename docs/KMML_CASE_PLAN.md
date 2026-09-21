@@ -29,6 +29,19 @@ metal production**, not the main TiO2 pigment mass balance. The official chart
 supports only a qualitative flow diagram: quantities shown on it must not be
 treated as FY2024-25 measured throughput or process heat/electricity/water data.
 
+The user-supplied historical KMML introductory slides, ARP engineering excerpts,
+equipment nominal specifications, effluent/pollution-control narrative and scanned
+IBP/ARP/U200/U300 flow sheets have been separately transcribed and classified in
+[historical process evidence](KMML_HISTORICAL_PROCESS_EVIDENCE_2026_09_21.md).
+Historical 40,000 t/y TiO2, 90,000 t/y TiCl4 and planned 500 t/y sponge are **not**
+FY2024-25 production or verified present nameplates. The roaster, pumps, ponds
+and illustrative chemistry support a scoped design-model sensitivity only, not
+verified annual energy, circularity performance or regulatory compliance. This
+historical reference is separate from the first-party KMML process description.
+The ARP iron-oxide/HCl recovery and the ETP neutralisation/sludge route are
+specific circular-process hypotheses that warrant primary measured data.
+The sponge branch must remain a separate product/metrology boundary.
+
 Use official annual reports, environmental/consent records and facility-confirmed
 information. Public evidence is partial. Do not transfer TTPL sulphate-route
 recovery figures to KMML or assume interchangeable process chemistry.
