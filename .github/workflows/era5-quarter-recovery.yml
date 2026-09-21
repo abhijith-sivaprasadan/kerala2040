@@ -6,17 +6,6 @@ on:
     paths:
       - ".github/workflows/era5-quarter-recovery.yml"
   workflow_dispatch:
-    inputs:
-      quarter:
-        description: "Three-month FY2024-25 source retrieval window (all five points)"
-        required: true
-        type: choice
-        default: 2024-04_to_2024-06
-        options:
-          - 2024-04_to_2024-06
-          - 2024-07_to_2024-09
-          - 2024-10_to_2024-12
-          - 2025-01_to_2025-03
 
 permissions:
   contents: read
@@ -25,6 +14,10 @@ jobs:
   source-recovery:
     runs-on: ubuntu-latest
     timeout-minutes: 65
+    strategy:
+      fail-fast: false
+      matrix:
+        quarter: [2024-04_to_2024-06, 2024-07_to_2024-09, 2024-10_to_2024-12]
     env:
       CDSAPI_URL: https://cds.climate.copernicus.eu/api
       CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
@@ -38,7 +31,7 @@ jobs:
       - name: Retrieve bounded quarter into review-only artifact
         env:
           PYTHONPATH: src
-          QUARTER: ${{ inputs.quarter || '2024-04_to_2024-06' }}
+          QUARTER: ${{ matrix.quarter }}
         run: |
           python scripts/ingest_era5_points.py \
             --periods "$QUARTER" \
@@ -49,7 +42,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: era5-quarter-source-attempt-NOT-MODEL-READY
+          name: era5-${{ matrix.quarter }}-source-attempt-NOT-MODEL-READY
           retention-days: 90
           if-no-files-found: warn
           path: results/acquisition/era5/
