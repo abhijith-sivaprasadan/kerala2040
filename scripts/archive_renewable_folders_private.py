@@ -1,4 +1,4 @@
-"""Snapshot FIVE user folders into PRIVATE GitHub release assets, with SHA256 restore.
+r"""Snapshot FIVE user folders into PRIVATE GitHub release assets, with SHA256 restore.
 
 This handles extracted folders (not necessarily original ZIP bytes). Do not
 mistake a re-packaged directory for a byte-identical original provider ZIP.
