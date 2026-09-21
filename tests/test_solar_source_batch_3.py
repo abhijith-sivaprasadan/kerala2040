@@ -15,7 +15,7 @@ def test_third_batch_sha_and_member_structure() -> None:
     qa = json.loads(QA.read_text(encoding="utf-8"))
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     originals = {x["name"]: x for x in manifest["assets"]}
-    assert len(originals) == 14
+    assert len(originals) >= 14  # Common manifest legitimately grows with later batches.
     assert len(qa["archives"]) == 4
     assert sum(len(a["data_files"]) for a in qa["archives"]) == 29
     for archive in qa["archives"]:
