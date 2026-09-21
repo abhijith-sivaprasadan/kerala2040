@@ -63,6 +63,59 @@ def assert_original(path: Path, bytes_expected: int, hash_expected: str) -> None
         raise ValueError(f"Original SHA256 mismatch: {path}")
 
 
+
+def find_originals_in_folders(
+    root: Path, assets: list[dict],
+) -> dict[str, Path]:
+    """Find all exact original files recursively; compare actual bytes and SHA.
+
+    A ZIP made from an extracted folder is NOT the byte-identical original ZIP,
+    and it cannot satisfy an original ZIP's pinned SHA256.
+    """
+    if not root.is_dir():
+        raise NotADirectoryError(f"Source folder not found: {root}")
+    expected = {a["name"]: a for a in assets}
+    if len(expected) != len(assets) or any(
+        Path(n).name != n for n in expected
+    ):
+        raise ValueError("Manifest has duplicate or unsafe original filenames")
+    found: dict[str, list[Path]] = {name: [] for name in expected}
+    for candidate in root.rglob("*"):
+        if candidate.name in expected and candidate.is_file() and not candidate.is_symlink():
+            found[candidate.name].append(candidate)
+    result: dict[str, Path] = {}
+    problems = []
+    for name, item in expected.items():
+        candidates = sorted(found[name], key=lambda p: (len(p.parts), str(p)))
+        if not candidates:
+            problems.append(
+                f"MISSING original {name}; extracted folders cannot recreate "
+                "the original ZIP's exact SHA256"
+            )
+            continue
+        size_matches = [p for p in candidates if p.stat().st_size == item["bytes"]]
+        if not size_matches:
+            problems.append(
+                f"SIZE mismatch for {name}: {len(candidates)} namesake(s), "
+                f"expected {item['bytes']} bytes"
+            )
+            continue
+        valid = [p for p in size_matches if sha256(p) == item["sha256"]]
+        if not valid:
+            problems.append(
+                f"SHA256 mismatch for {name}: {len(size_matches)} size-matching file(s)"
+            )
+            continue
+        # Identical copies are harmless; preserve the shallowest exact original.
+        result[name] = valid[0]
+        print(f"VERIFIED original: {result[name]}", flush=True)
+    if problems:
+        raise ValueError(
+            "No files were uploaded. Recursive preflight failed:\n"
+            + "\n".join(problems)
+        )
+    return result
+
 def view_release(repo: str, tag: str) -> dict | None:
     """Distinguish a missing tag from a denied request where possible."""
     import subprocess as _subprocess
