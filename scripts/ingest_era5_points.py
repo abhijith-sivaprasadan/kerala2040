@@ -19,7 +19,12 @@ from typing import Any
 from kerala2040.sources.era5 import DATASET, PERIODS, POINTS, VARIABLES, request_for
 
 PERIOD_LABELS = {label for label, _, _ in PERIODS}
-NETCDF_SIGNATURES = (bytes.fromhex("43444601"), bytes.fromhex("43444602"), bytes.fromhex("894844460d0a1a0a"))
+NETCDF_SIGNATURES = (
+    bytes.fromhex("43444601"),  # NetCDF classic
+    bytes.fromhex("43444602"),  # NetCDF 64-bit offset
+    bytes.fromhex("43444605"),  # NetCDF CDF-5
+    bytes.fromhex("894844460d0a1a0a"),  # NetCDF-4 / HDF5
+)
 
 
 def sha256(path: Path) -> str:
@@ -116,7 +121,27 @@ def main() -> int:
                     "bytes": target.stat().st_size, "sha256": sha256(target),
                 })
             except Exception as exc:  # noqa: BLE001 - retain per-request evidence
-                target.unlink(missing_ok=True)
+                # Keep unexpected CDS response bytes for diagnosis. In particular,
+                # an HTTP-200 ZIP/GRIB/HTML response must not be silently deleted.
+                rejected_response = {}
+                if target.is_file():
+                    prefix = target.open("rb").read(16)
+                    fmt = ("zip" if prefix.startswith(b"PK\\x03\\x04") else
+                           "grib" if prefix.startswith(b"GRIB") else
+                           "html" if prefix.lstrip().lower().startswith((b"<html", b"<!doctype")) else
+                           "unknown")
+                    quarantine = args.raw_dir / "rejected"
+                    quarantine.mkdir(parents=True, exist_ok=True)
+                    rejected = quarantine / (target.name + (".zip" if fmt == "zip" else ".bin"))
+                    rejected.unlink(missing_ok=True)
+                    rejected_response = {
+                        "response_bytes": target.stat().st_size,
+                        "response_prefix_hex": prefix.hex(),
+                        "response_sha256": sha256(target),
+                        "response_format_guess": fmt,
+                        "rejected_path": str(rejected),
+                    }
+                    target.replace(rejected)
                 reason = f"{type(exc).__name__}: {exc}"
                 oversized = ("cost limits exceeded" in reason.lower()
                              or "request is too large" in reason.lower())
@@ -135,6 +160,7 @@ def main() -> int:
                     failures.append({
                         "point": point, "period": chunk_label,
                         "selected_quarter": label, "error": reason,
+                        **rejected_response,
                     })
         if quarter_succeeded:
             completed_windows += 1
@@ -177,6 +203,10 @@ def main() -> int:
         "source_requests_sent": requests_sent, "files_attempted": len(requests),
         "files_expected": expected, "failures": len(failures),
         "manifest": str(args.manifest),
+        "failure_details": [
+            {k: (v[:600] if k == "error" else v) for k, v in row.items()}
+            for row in failures
+        ],
     }, indent=2))
     return 0 if completed_windows == len(requests) else 2
 
