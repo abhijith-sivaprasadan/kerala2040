@@ -1,6 +1,6 @@
 # LRIS, NIWE 150 m and KMML: acquisition-route discovery (21 September 2026)
 
-**Classification: official-source discovery only. No raw GIS wind ZIP, LRIS vector/raster, or KMML measured operations dataset has been acquired by this document.** These sources were identified from user-shared portal screenshots and checked against publisher pages.
+**Classification: source-discovery note updated after user-provided NIWE original ZIP file QA.** NIWE raw *national source* is now user-supplied and independently hashed/parsed; no NIWE original bytes are committed to Git, no Kerala-only official-boundary clip or model-ready generation is established. LRIS native vector/raster and KMML measured operations data are not acquired.
 
 ## Kerala LRIS 2.0 — Land Use Department
 
@@ -21,6 +21,22 @@
 - Access requires the publisher's named form, purpose statement and explicit academic/research/educational-use undertaking. User must review and accept the terms personally; do not bypass the form or publish/mirror the ZIP/CSV to our public repository without permission.
 - On authorized receipt: preserve original ZIP and SHA256 privately; record actual columns, geometry/coordinates, CRS, source coverage/vintage/model reference, usage conditions, 500 m grid extent, missing/duplicate points, and source archive checksum. Extract Kerala cells using a documented boundary and reconcile border-adjacent high-resource pixels; do not attribute Tamil Nadu cells to Kerala. Do not claim CUF colours from a browser map are the downloaded CSV or legal siting feasibility.
 - Separate roles: NIWE = spatial long-term wind resource screening; ERA5 FY2024–25 = hourly weather chronology. Neither is validated turbine generation or screened installable MW. Parameterise wind turbine curves and losses, and keep the two evidence streams independent.
+
+### Source acquisition update — original received and inspected
+
+On 21 September 2026 the user supplied `Wind.zip` (422,482,328 bytes).
+It contains `Wind/150m_Map_Data_A_to_G.zip` (251,971,340 bytes),
+whose NIWE metadata and 877,276,846-byte CSV are verified in
+`data/evidence/gis/niwe_150m_user_supplied_source_qa_2026_09_21.json`.
+The full national CSV has 19,475,568 rows, seven numeric columns and zero
+non-numeric/missing values. **Only these actual CSV fields exist:** longitude,
+latitude, wind speed, Weibull A, Weibull k, air density, wind power density.
+Although the general metadata lists temperature, pressure, direction and
+joint-frequency, these are **not delivered in this CSV**. No CUF or hourly
+timestamps are in it. National source acquisition is now CLOSED; source
+redistribution permission, dated source vintage, official Kerala polygon
+clip and spatial/model admission remain OPEN. Neither the generic outer
+collection nor a bounding rectangle can be counted as a Kerala wind raster.
 
 ## KMML — process topology identified, mass/energy/water balance still missing
 
