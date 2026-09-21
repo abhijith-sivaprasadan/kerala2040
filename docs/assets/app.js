@@ -117,6 +117,25 @@ function showWelcome(){
   welcomeTimer=setTimeout(dismissWelcome,2400);
   return true;
 }
+// All line segments are measured separately: dash animation never crosses missing days.
+function animateObservedPaths(root){
+  if(!root || prefersReducedMotion() ||
+     !document.documentElement?.classList.contains("motion-ready"))return;
+  const paths=root.querySelectorAll?.(".chart-line, .viz-hydro-line, .viz-storage-line");
+  if(!paths)return;
+  paths.forEach((path,index)=>{
+    if(typeof path.getTotalLength!=="function")return;
+    const length=path.getTotalLength();
+    if(!Number.isFinite(length)||length<=0)return;
+    path.style.setProperty("--draw-length",(length+2).toFixed(2));
+    path.style.setProperty("--draw-delay",Math.min(index,16)*28+"ms");
+  });
+  root.classList.add("chart-animated");
+}
+function animateVisibleArtwork(){
+  $$(".viz-card.is-visible svg, .viz-electricity-story.is-visible svg, .viz-water-story.is-visible svg").forEach(animateObservedPaths);
+  if(state.route==="electricity")animateObservedPaths($("#energyChart svg"));
+}
 function setupMotion(){
   if(prefersReducedMotion() || !window.IntersectionObserver)return;
   document.documentElement.classList.add("motion-ready");
@@ -124,11 +143,14 @@ function setupMotion(){
     entries.forEach(entry=>{
       if(entry.isIntersecting){
         entry.target.classList.add("is-visible");
+        if(entry.target.matches(".viz-card, .viz-electricity-story, .viz-water-story")){
+          entry.target.querySelectorAll("svg").forEach(animateObservedPaths);
+        }
         observer.unobserve(entry.target);
       }
     });
   },{threshold:0.14});
-  $$(".system-story, .chapter").forEach(element=>observer.observe(element));
+  $$(".system-story, .chapter, .viz-card, .viz-electricity-story, .viz-water-story").forEach(element=>observer.observe(element));
 }
 function go(route){
   const target=routeIds.includes(route)?route:"overview";
@@ -147,6 +169,7 @@ function showView(route){
   const menu=$("#mobileNav"),toggle=$("#menuToggle");
   if(menu&&toggle){menu.hidden=true;toggle.setAttribute("aria-expanded","false")}
   window.scrollTo?.({top:0,behavior:"auto"});
+  if(state.route==="electricity")window.requestAnimationFrame?.(animateVisibleArtwork);
 }
 function bindRoutes(root=document){
   $$("[data-route]",root).forEach(button=>{
@@ -275,7 +298,7 @@ function drawMonthlyArt(months){
         esc(m.label)+'</text></g>';
     const a=Math.max(0,m.meanImports*scale),b=Math.max(0,m.meanLocal*scale);
     const yImp=yBase-a,yLocal=yImp-b;
-    return '<g class="viz-month-column"><title>'+esc(m.key)+': '+m.days.length+
+    return '<g class="viz-month-column" style="--viz-delay:'+(i*65)+'ms"><title>'+esc(m.key)+': '+m.days.length+
       '/'+m.expected+' reports. Mean observed day '+fmt(m.mean,2)+
       ' MU: net imports '+fmt(m.meanImports,2)+
       ', in-state generation '+fmt(m.meanLocal,2)+
@@ -425,6 +448,7 @@ function renderEditorialHome(){
   if(year)year.innerHTML=drawMonthlyArt(months);
   const homeInsight=$("#homeMonthlyInsight");
   if(homeInsight)homeInsight.innerHTML=drawMonthlyInsight(months);
+  animateVisibleArtwork();
 }
 function renderEditorialElectricity(){
   if(!state.site||!state.daily)return;
@@ -440,6 +464,7 @@ function renderEditorialElectricity(){
   if(hydroTable)hydroTable.innerHTML=drawHydroTable(rows);
   const waterInsight=$("#hydroInsight");
   if(waterInsight)waterInsight.innerHTML=drawHydroInsight(rows);
+  animateVisibleArtwork();
 }
 
 function renderHomepage(){
@@ -538,15 +563,75 @@ function plotValues(rows,key){
   const title=metrics[key]?.[0]||plain(key);
   const labels='<text class="chart-label" x="60" y="282">'+esc(rows[0].date)+'</text>'+
     '<text class="chart-label" x="900" y="282" text-anchor="end">'+esc(rows[rows.length-1].date)+'</text>';
-  return '<svg viewBox="0 0 960 302" role="img" aria-label="'+esc(title)+
-    ', '+rows.length+' observed days. Breaks represent missing days." xmlns="http://www.w3.org/2000/svg">'+
+  return '<svg viewBox="0 0 960 302" role="img" tabindex="0" aria-label="'+esc(title)+
+    ', '+rows.length+' observed days. Arrow keys inspect observed dates. Breaks represent missing days." xmlns="http://www.w3.org/2000/svg">'+
     '<title>'+esc(title)+" · "+rows.length+" observed days · gaps not connected</title>"+
-    grid+lines+labels+'</svg>';
+    grid+lines+labels+'<line class="chart-crosshair" x1="0" y1="55" x2="0" y2="245"/>'+
+    '<circle class="chart-cursor" cx="0" cy="0" r="5"/></svg>'+
+    '<div class="chart-readout" aria-live="off">Hover for a dated reading or focus the chart and use arrow keys. Missing days have no invented values.</div>';
+}
+function bindChartReadout(box,rows,key){
+  const svg=box.querySelector?.("svg");
+  const text=box.querySelector?.(".chart-readout");
+  if(!svg||!text||!rows.length)return;
+  const guides=svg.querySelectorAll(".chart-crosshair, .chart-cursor");
+  const first=Date.parse(rows[0].date+"T00:00:00Z");
+  const last=Date.parse(rows[rows.length-1].date+"T00:00:00Z");
+  const span=Math.max(1,Math.round((last-first)/86400000));
+  const dayMap=new Map(rows.map((row,index)=>[row.date,index]));
+  const values=rows.map(row=>Number(row[key]));
+  const low=Math.min(...values),range=Math.max(Math.max(...values)-low,1);
+  let current=-1;
+  function reset(){
+    svg.classList.remove("has-selection");
+    text.textContent="Hover for a dated reading or focus the chart and use arrow keys. Missing days have no invented values.";
+  }
+  function display(date,keyboard=false){
+    const index=dayMap.get(date);
+    text.setAttribute("aria-live",keyboard?"polite":"off");
+    if(index===undefined){
+      svg.classList.remove("has-selection");
+      text.textContent=date+" · no verified daily report. No value interpolated.";
+      return;
+    }
+    current=index;
+    const x=60+840*(Date.parse(date+"T00:00:00Z")-first)/Math.max(86400000,last-first);
+    const y=245-190*(values[index]-low)/range;
+    guides[0]?.setAttribute("x1",x.toFixed(2));
+    guides[0]?.setAttribute("x2",x.toFixed(2));
+    guides[1]?.setAttribute("cx",x.toFixed(2));
+    guides[1]?.setAttribute("cy",y.toFixed(2));
+    svg.classList.add("has-selection");
+    text.textContent=date+" · "+metrics[key][0]+": "+fmt(values[index],2)+" MU/day · observed SLDC report.";
+  }
+  svg.addEventListener("pointermove",event=>{
+    const bounds=svg.getBoundingClientRect();
+    if(!bounds.width)return;
+    const x=(event.clientX-bounds.left)*960/bounds.width;
+    if(x<60||x>900){reset();return}
+    const ordinal=Math.max(0,Math.min(span,Math.round((x-60)/840*span)));
+    display(new Date(first+ordinal*86400000).toISOString().slice(0,10));
+  });
+  svg.addEventListener("pointerleave",reset);
+  svg.addEventListener("keydown",event=>{
+    if(!["ArrowLeft","ArrowRight","Home","End","Escape"].includes(event.key))return;
+    event.preventDefault();
+    if(event.key==="Escape"){reset();return}
+    const index=event.key==="Home"?0:event.key==="End"?rows.length-1:
+      event.key==="ArrowRight"?Math.min(rows.length-1,current+1):
+      current<0?rows.length-1:Math.max(0,current-1);
+    display(rows[index].date,true);
+  });
 }
 function renderChart(){
   const key=metrics[state.metric]?state.metric:"consumption_mu";
   const rows=selectedDays();
-  const box=$("#energyChart");if(box)box.innerHTML=plotValues(rows,key);
+  const box=$("#energyChart");
+  if(box){
+    box.innerHTML=plotValues(rows,key);
+    bindChartReadout(box,rows,key);
+    if(state.route==="electricity")animateObservedPaths(box.querySelector?.("svg"));
+  }
   const caption=$("#energyChartCaption");
   const gaps=(state.site.baseline.missing_days||[]).filter(date=>
     state.month==="all"||date.slice(0,7)===state.month);
@@ -801,6 +886,7 @@ async function init(){
   try{
     await loadPlatformData();
     renderAll();
+    animateVisibleArtwork();
   }catch(err){
     console.error("Kerala2040 evidence load failed:",err);
     const box=$("#headlineMetrics");
