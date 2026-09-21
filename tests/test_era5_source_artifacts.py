@@ -96,3 +96,15 @@ def test_duplicate_artifact_is_not_full_year(tmp_path: Path) -> None:
     path = make_artifact(tmp_path)
     with pytest.raises(ValueError, match="Duplicate"):
         validator.verify([path, path])
+
+
+def test_extracted_artifact_directory_is_supported(tmp_path: Path) -> None:
+    path = make_artifact(tmp_path)
+    extracted = tmp_path / "downloaded-artifact"
+    extracted.mkdir()
+    with zipfile.ZipFile(path) as artifact:
+        artifact.extractall(extracted)
+    result = validator.inspect_artifact(extracted)
+    assert result["point"] == "kochi"
+    assert result["quarter"] == "2024-04_to_2024-06"
+    assert result["hours"] == 2184
