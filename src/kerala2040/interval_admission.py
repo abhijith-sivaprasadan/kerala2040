@@ -10,8 +10,7 @@ import csv
 import hashlib
 import json
 import math
-from collections import Counter
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
