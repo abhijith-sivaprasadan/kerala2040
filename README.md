@@ -134,21 +134,22 @@ OpenDSS, SAM and WEC-Sim where their specific questions justify them.
 
 ## Solar and wind original source batch (September 2026)
 
-The [solar/wind original-source ledger](docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md)
-records user-supplied original India Global Solar Atlas GIS ZIPs, Kerala
-NWIC telemetry CSVs and PV research reports. Exact original and inner-ZIP
-SHA256 checksums, publisher links, units and limits are in the
-[source manifest](data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json).
+The [source ledger](docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md)
+records original GSA GIS ZIPs, NWDP telemetry, PV studies and the separate
+NIWE wind atlas. Exact original file sizes, SHA256s and publisher references
+are in the [solar manifest](data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json)
+and [NIWE source QA](data/evidence/gis/niwe_150m_user_supplied_source_qa_2026_09_21.json).
 
-**The raw uploaded ZIP/PDF bytes are not yet hosted in this GitHub repository.**
-For large files, use the checksum-gated
-[GitHub Release publisher](scripts/publish_solar_source_release.py) after
-checking third-party public redistribution rights. Once a release is
-actually uploaded and verified, the
-[restore script](scripts/restore_solar_source_release.py) retrieves the
-same originals from GitHub Releases without relying on transient chat uploads.
-Neither source acquisition nor a long-term solar raster is automatic
-model admission.
+**Private originals, public science:** the user chose a SEPARATE PRIVATE
+`kerala2040-source-archive` repository for third-party binary ZIPs/PDFs.
+The private repository has **not yet been created or verified**; no originals
+have yet been archived remotely. Upload and restore are privacy-checked and
+SHA256-gated: [solar uploader](scripts/publish_solar_source_release.py),
+[restore tool](scripts/restore_solar_source_release.py),
+and [NIWE original uploader/restorer](scripts/publish_niwe_original_release.py).
+See [one-time user setup](docs/RENEWABLE_FIVE_STEP_HANDOFF_2026_09_22.md).
+The public repository will retain source citations and hashes, not raw
+third-party data; private access does not supersede publisher use conditions.
 
 ## September 2026 solar and wind progress
 
@@ -158,7 +159,7 @@ distinguishes exact Kerala-only descriptive clips, 43,800 site-hour
 technology-specific buildable MW, model admission gates, and source binary
 storage requiring an authenticated rights-reviewed upload. The original
 datasets and derived ZIP/GeoTIFF/PNG bytes are **not yet hosted as verified
-permanent GitHub Release assets**; manifests and processing code are committed.
+permanent PRIVATE GitHub Release assets**; manifests and processing code are committed.
 No numerical Kerala buildable renewable MW or validated 2040 renewable
 generation result is claimed.
 
