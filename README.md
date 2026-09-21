@@ -150,6 +150,18 @@ same originals from GitHub Releases without relying on transient chat uploads.
 Neither source acquisition nor a long-term solar raster is automatic
 model admission.
 
+## September 2026 solar and wind progress
+
+The [five-step renewable workstream handoff](docs/RENEWABLE_FIVE_STEP_HANDOFF_2026_09_22.md)
+distinguishes exact Kerala-only descriptive clips, 43,800 site-hour
+**UNVALIDATED** weather-to-generation sensitivity proxies, blocked
+technology-specific buildable MW, model admission gates, and source binary
+storage requiring an authenticated rights-reviewed upload. The original
+datasets and derived ZIP/GeoTIFF/PNG bytes are **not yet hosted as verified
+permanent GitHub Release assets**; manifests and processing code are committed.
+No numerical Kerala buildable renewable MW or validated 2040 renewable
+generation result is claimed.
+
 ## Reproducibility and data policy
 
 Every model/data run should record git commit, config, source IDs and retrieval
