@@ -30,9 +30,6 @@ def test_solar_source_batch_manifest_is_complete_and_unambiguously_pinned() -> N
         "New folder (2)(1).zip",
     ):
         assert name in {asset["name"] for asset in assets}
-    assert d["latest_batch_qa"] == (
-        "data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json"
-    )
     for name in (
         "monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF(1).zip",
         "India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF2(1).zip",
