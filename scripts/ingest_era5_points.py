@@ -126,7 +126,7 @@ def main() -> int:
                 rejected_response = {}
                 if target.is_file():
                     prefix = target.open("rb").read(16)
-                    fmt = ("zip" if prefix.startswith(b"PK\\x03\\x04") else
+                    fmt = ("zip" if prefix.startswith(bytes.fromhex("504b0304")) else
                            "grib" if prefix.startswith(b"GRIB") else
                            "html" if prefix.lstrip().lower().startswith((b"<html", b"<!doctype")) else
                            "unknown")
