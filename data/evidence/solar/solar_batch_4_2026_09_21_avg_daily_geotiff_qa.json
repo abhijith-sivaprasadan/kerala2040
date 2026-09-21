@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "qa_date_utc": "2026-09-21",
+  "classification": "USER_SUPPLIED_ORIGINAL_GSA_AVG_DAILY_TIFFS_SHA256_ZIP_CRC_PASS_LOCAL_ONLY_NOT_REPO_BINARY_ARCHIVED_NOT_MODEL_READY",
+  "publisher": "Global Solar Atlas 2.0 / Solargis / World Bank / ESMAP",
+  "original_landing_page": "https://globalsolaratlas.info/download/india",
+  "publisher_metadata_date": "2019-10-20",
+  "solar_reference_years": "1999-2018",
+  "temperature_reference_years": "1994-2018",
+  "dataset_name_in_zip": "AvgDailyTotals",
+  "publisher_XML_ambiguity": "Original XML still says 'Longterm monthly average ... kWh/kWp' or 'Longterm yearly average ... kWh/m2', without stating per-day denominator. Inference of DAILY denominator is from the product filename plus sample magnitudes; do not claim XML independently confirms a per-day unit.",
+  "original_archives": [
+    {
+      "name": "monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF(1).zip",
+      "bytes": 227575121,
+      "sha256": "3bda22074b6215cb0574c06775b537f32ded6ddbbf486a2455cdaeb4abb02a90",
+      "member_count": 49,
+      "uncompressed_bytes": 229874421,
+      "zip_crc": "PASS_all_members",
+      "tiffs": [
+        {
+          "name": "PVOUT_01.tif",
+          "bytes": 19967804,
+          "sha256": "1fa5886bc91d74dd98728ed1fc8b75bb2d5c875d4da09deae5ebf20e0b55105d"
+        },
+        {
+          "name": "PVOUT_02.tif",
+          "bytes": 19024498,
+          "sha256": "baa7ed65e0c224d8f54e1d0f0bbaf0023bf67f461bd218078b3b46466a4af06d"
+        },
+        {
+          "name": "PVOUT_03.tif",
+          "bytes": 18345292,
+          "sha256": "a1d1a34a7dcc78ec323b0b3e39eb2bb59d4dede05fd040cc9ee23d09f4f25042"
+        },
+        {
+          "name": "PVOUT_04.tif",
+          "bytes": 18265460,
+          "sha256": "4e6e747235c7632d06141c9eb448047ad16d11c5fc86914c5a446fa80d4b2741"
+        },
+        {
+          "name": "PVOUT_05.tif",
+          "bytes": 18695062,
+          "sha256": "d7d3430d37d9b6a1674c21e17352de7c2e8e09edfe93ee9c9678e2caec5112ea"
+        },
+        {
+          "name": "PVOUT_06.tif",
+          "bytes": 19037904,
+          "sha256": "207ce7f404c659f56e467e7ebc00b3ca36b108306ba82f71a2940bba10016f75"
+        },
+        {
+          "name": "PVOUT_07.tif",
+          "bytes": 18907934,
+          "sha256": "9e1b1cfbefbb60ea5896e18075f54bc6898338b3f2c0b666d743fde00cc90f04"
+        },
+        {
+          "name": "PVOUT_08.tif",
+          "bytes": 18955814,
+          "sha256": "589d8345aecbe27572090fd611c8cc4d894fccdd196bc30cac726aecf1678d5d"
+        },
+        {
+          "name": "PVOUT_09.tif",
+          "bytes": 19246542,
+          "sha256": "43b99605d5a270479899d3d39e7961b727489f131144e3e6212a9f04b33214f4"
+        },
+        {
+          "name": "PVOUT_10.tif",
+          "bytes": 19319184,
+          "sha256": "7aa56b66990254fb1925df83c14dd1a60d57af9eb1bde32a5bc771bd18210433"
+        },
+        {
+          "name": "PVOUT_11.tif",
+          "bytes": 19279684,
+          "sha256": "e3dc99c19b4d31e2a3d8b7e74aafb2ee8fcc50caa3046ced88961c983fc2a091"
+        },
+        {
+          "name": "PVOUT_12.tif",
+          "bytes": 19855522,
+          "sha256": "a06d569944fd3d2880d7519730bcbc0389b3cd900a4458513ed8438ceb64da6d"
+        }
+      ],
+      "source_sidecars": "12 original ISO19139 XML, 12 PDFs and 12 .aux.xml",
+      "note": "Long-term 12 calendar-month average DAILY PVOUT; contrasting prior monthly total TIFFs."
+    },
+    {
+      "name": "India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF2(1).zip",
+      "bytes": 191654321,
+      "sha256": "826b7be098d00fd28e44fcc3d0d9ecd99f09b0bfc2da6507ecef9af73272003a",
+      "member_count": 25,
+      "uncompressed_bytes": 193632597,
+      "zip_crc": "PASS_all_members",
+      "tiffs": [
+        {
+          "name": "DNI.tif",
+          "bytes": 184202752,
+          "sha256": "e12d26481fdae36a8503d451f9e28da690851743ff969feba2928bea3bf0600a",
+          "duplicate_from_batch3": false
+        },
+        {
+          "name": "OPTA.tif",
+          "bytes": 162935,
+          "sha256": "6726eb6b45dd3233c84233d3623bb57cf5860a32ab8b08474ecc60199f0d8b47",
+          "duplicate_from_batch3": true
+        },
+        {
+          "name": "TEMP.tif",
+          "bytes": 8701374,
+          "sha256": "22e57530899e7228ad913a1fd71679401c88f39443979ffebbfd72134fb8c4bc",
+          "duplicate_from_batch3": true
+        }
+      ],
+      "source_sidecars": "ISO19139 XML/PDF/aux files for all seven yearly layers, although some TIFFs are in other ZIP",
+      "note": "DNI daily mean and byte-identical OPTA/TEMP from previous batch; retain original ZIP hash."
+    },
+    {
+      "name": "India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF.zip",
+      "bytes": 431046310,
+      "sha256": "bccf2633cb34b6beeb1b0e11a21c0a154db518c99066eccec18e71d281e346c7",
+      "member_count": 5,
+      "uncompressed_bytes": 435726326,
+      "zip_crc": "PASS_all_members",
+      "tiffs": [
+        {
+          "name": "DIF.tif",
+          "bytes": 108654002,
+          "sha256": "d305ee175a1bd6d6019ed80bbc932e1e813136e948e4b547e63d1a8107e271ae",
+          "duplicate_from_batch3": false
+        },
+        {
+          "name": "GHI.tif",
+          "bytes": 145891092,
+          "sha256": "68581aa945544caf3b3dcec7cc414454036d18d7a2fc575a8df47629a582f01d",
+          "duplicate_from_batch3": false
+        },
+        {
+          "name": "GTI.tif",
+          "bytes": 163282662,
+          "sha256": "0a1eed6b10ead00f4f9693131fda192121e20a28d48047051d91c8f0992cb37b",
+          "duplicate_from_batch3": false
+        },
+        {
+          "name": "PVOUT.tif",
+          "bytes": 17898570,
+          "sha256": "aa5d58c6f290673bbd629fdc9c05c3b1be179086b6a91ac25524cac737103434",
+          "duplicate_from_batch3": false
+        }
+      ],
+      "source_sidecars": "None here; corresponding sidecars in GEOTIFF2 companion ZIP",
+      "note": "GHI, DIF, GTI and PVOUT day-normalized long-term averages"
+    }
+  ],
+  "zip_count": 3,
+  "tiff_count": 19,
+  "byte_duplicate_with_batch3": [
+    "OPTA.tif",
+    "TEMP.tif"
+  ],
+  "rasters": {
+    "all_crs": "EPSG:4326",
+    "all_bounds_lonlat": [
+      66,
+      6,
+      98,
+      38
+    ],
+    "monthly_pvout": {
+      "count": 12,
+      "shape": [
+        3840,
+        3840
+      ],
+      "resolution_arcsec": 30,
+      "dtype": "float32",
+      "nodata": "NaN"
+    },
+    "yearly_gHI_DNI_DIF_GTI": {
+      "shape": [
+        12800,
+        12800
+      ],
+      "resolution_arcsec": 9,
+      "units_inferred": "kWh/m2/day (product filename/sample), XML says yearly average kWh/m2"
+    },
+    "yearly_PVOUT": {
+      "shape": [
+        3840,
+        3840
+      ],
+      "resolution_arcsec": 30,
+      "units_inferred": "kWh/kWp/day (product filename/sample), XML says yearly average kWh/kWp"
+    },
+    "temperature": {
+      "shape": [
+        3840,
+        3840
+      ],
+      "resolution_arcsec": 30,
+      "unit": "degC",
+      "duplicate_from_batch3": true
+    },
+    "optimum_tilt": {
+      "shape": [
+        960,
+        960
+      ],
+      "resolution_arcsec": 120,
+      "unit": "degrees",
+      "duplicate_from_batch3": true
+    },
+    "sanity_window_NOT_Kerala": [
+      74,
+      8,
+      78,
+      13
+    ],
+    "sample_extrema_window": {
+      "PVOUT_01.tif": [
+        3.467,
+        4.988,
+        5.604
+      ],
+      "PVOUT_07.tif": [
+        1.914,
+        3.157,
+        4.295
+      ],
+      "PVOUT_12.tif": [
+        2.726,
+        4.439,
+        5.125
+      ],
+      "DNI.tif": [
+        1.293,
+        3.68,
+        4.385
+      ],
+      "DIF.tif": [
+        1.418,
+        2.534,
+        2.695
+      ],
+      "GHI.tif": [
+        2.759,
+        5.298,
+        5.759
+      ],
+      "GTI.tif": [
+        2.79,
+        5.435,
+        5.824
+      ],
+      "PVOUT.tif": [
+        3.045,
+        4.252,
+        4.576
+      ]
+    }
+  },
+  "scientific_role": "alternate long-term daily-average GeoTIFF format relative to previously ingested AvgDaily AAIGRID; not independent solar measurement, not FY2024-25 time series, not a Kerala official-boundary clip",
+  "model_ready": false,
+  "raw_binary_in_git_or_release": false,
+  "admission_pending": [
+    "Authoritative Kerala polygon clip",
+    "Verify per-day normalisation against yearly/monthly-total matching cells and calendar-day scaling",
+    "Confirm nodata, ocean edge, resampling on nonidentical layer grids",
+    "Independently validate FY2024-25 solar chronology using ERA5 and sparse NWIC station overlap",
+    "Check public redistribution permission before release upload"
+  ]
+}
