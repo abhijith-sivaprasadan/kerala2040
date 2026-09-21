@@ -50,6 +50,60 @@ or signed download URLs). The private repo is a separate storage location:
 the public research repo carries code, source links, hashes and reproducibility
 instructions without exposing third-party raw bytes.
 
+## Preferred archival path for the five extracted Downloads folders
+
+The source owner has confirmed these **five existing folders**, not necessarily
+the original 17 ZIP/PDF files:
+
+```text
+Downloads/
+  global-pv-potential-study-raster-data-layers-globalsolaratlas/
+  India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/
+  India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/
+  Wind/
+  Solar/
+```
+
+Use [the five-folder private archive script](../scripts/archive_renewable_folders_private.py).
+It keeps every nested relative path; checks every file SHA256 and ZIP CRC;
+packages the five folders independently into deterministic ZIP64 snapshots;
+splits each snapshot into <=768 MiB upload parts; and uploads those parts plus
+a private per-file checksum manifest to the verified **private** repository.
+The `--verify` mode independently downloads the manifest and every part,
+compares the remote manifest against the LOCAL preparation manifest, rebuilds
+each ZIP and verifies every nested file's SHA256. The staging and restore
+folders must be outside Downloads and preferably on a drive with ample free
+space, as both compressed archives and their upload parts take disk space.
+
+```powershell
+# Run these from your local kerala2040 repository checkout.
+git pull
+gh auth login
+
+$downloads = Join-Path $env:USERPROFILE 'Downloads'
+$stage = Join-Path $env:USERPROFILE 'Kerala2040ArchiveStage'
+$restore = Join-Path $env:USERPROFILE 'Kerala2040ArchiveRestore'
+
+# Stage: requires the five named subfolders and a new EMPTY stage directory.
+python scripts/archive_renewable_folders_private.py --source-root $downloads --staging-dir $stage
+
+# Upload ONLY to the separately verified PRIVATE repository.
+python scripts/archive_renewable_folders_private.py --staging-dir $stage --upload
+
+# Fresh independent private download; verify ZIP + EVERY nested file checksum.
+python scripts/archive_renewable_folders_private.py --staging-dir $restore --verify --reference-manifest (Join-Path $stage 'renewable-five-folders-manifest.json')
+```
+
+**Important identity distinction:** these are **content-preserving folder
+snapshots**. Repacking extracted source files cannot reproduce the exact
+bytes/SHA256 of an earlier provider archive. Therefore do NOT flip the
+17-original `release_uploaded` manifest flag when this folder-snapshot
+workflow succeeds; instead, record the separate private folder-snapshot
+release and verified per-file manifest. If any of the original ZIP/PDF
+files also remain nested inside the five folders, they are preserved as
+files in the snapshots. The legacy exact-original uploader remains
+available only for the exact, SHA-matching original files.
+
 ## Five-point FY2024–25 hourly sensitivities (calculated, not validated generation)
 
 The earlier verified ERA5 source chronology is **20 original quarter artifacts, five grid points × 8,760 UTC hours** for 2024-04-01 through 2025-03-31; fields are `ssrd` (hourly J/m²), `u10`, `v10` (m/s) and `t2m` (K). The exact source artifacts were recovered locally from the two GitHub Actions source runs and processed with [hourly proxy script](../scripts/build_kerala_hourly_proxy.py); output is a **43,800 point-hour** `RESOURCE_PROXIES_NOT_VALIDATED.csv.gz` and `hourly_proxy_qa.json`, supplied in the conversation download. **The CSV binary has not been committed into GitHub.**
