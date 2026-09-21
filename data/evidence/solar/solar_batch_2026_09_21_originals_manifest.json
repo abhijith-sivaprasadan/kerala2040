@@ -92,6 +92,46 @@
       "kind": "global_2020_PVOUT_level1_and_study_25yr_LCOE",
       "rights": "CC BY 4.0 with mandatory additional original README.txt terms; review before public release",
       "source_qa": "data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json"
+    },
+    {
+      "name": "global-PV-RASTER-DATA-LAYERS--GlobalSol masks(1).zip",
+      "bytes": 68394344,
+      "sha256": "18c63afb05374d6a764ce020a08efc857a275b2c3a0b8f3fe3364def596d9e8d",
+      "publisher": "The World Bank / ESMAP / Solargis",
+      "source": "https://globalsolaratlas.info/global-pv-potential-study",
+      "kind": "2020 global PV physical / land-cover / other screening masks; ten TIFFs + original README",
+      "rights": "CC BY 4.0 and mandatory additional licence terms in original source metadata; review before public release",
+      "source_qa": "data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json"
+    },
+    {
+      "name": "monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla(1).zip",
+      "bytes": 238607175,
+      "sha256": "acd82ec4f62fcc8be4bf733ab35844abaf97e7f4898f8d0db2baea00cda6959f",
+      "publisher": "Solargis for World Bank/ESMAP",
+      "source": "https://globalsolaratlas.info/download/india",
+      "kind": "Global Solar Atlas India long-term monthly PVOUT 12 TIFFs 1999-2018, kWh/kWp/month",
+      "rights": "CC BY 4.0 and mandatory additional licence terms in original source metadata; review before public release",
+      "source_qa": "data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json"
+    },
+    {
+      "name": "New folder(1).zip",
+      "bytes": 270364831,
+      "sha256": "0bce95de5cae09b43f6784cba9d5696fb5f533bbbf8c373d9ae5bc8994efa71f",
+      "publisher": "Solargis for World Bank/ESMAP",
+      "source": "https://globalsolaratlas.info/download/india",
+      "kind": "User-packaged Global Solar Atlas 2.0 India TIFFs DIF GHI OPTA TEMP and original sidecars for annual seven layers",
+      "rights": "CC BY 4.0 and mandatory additional licence terms in original source metadata; review before public release",
+      "source_qa": "data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json"
+    },
+    {
+      "name": "New folder (2)(1).zip",
+      "bytes": 384027406,
+      "sha256": "1c6b8076e893213fea362914801c318db4094f4357bfa980d2288f39e9467d4f",
+      "publisher": "Solargis for World Bank/ESMAP",
+      "source": "https://globalsolaratlas.info/download/india",
+      "kind": "User-packaged companion Global Solar Atlas 2.0 India TIFFs DNI GTI PVOUT; other sidecars in New folder(1).zip",
+      "rights": "CC BY 4.0 and mandatory additional licence terms in original source metadata; review before public release",
+      "source_qa": "data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json"
     }
   ],
   "solar_zip_members": [
@@ -236,5 +276,6 @@
     },
     "caveat": "The filename date range is NOT actual complete coverage; observed timestamps cluster around May-Oct 2024 and Mar 2025. Timestamp timezone and sensor height not verified."
   },
-  "additional_batch_qa": "data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json"
+  "additional_batch_qa": "data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json",
+  "latest_batch_qa": "data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json"
 }
