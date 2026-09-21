@@ -132,6 +132,36 @@
       "kind": "User-packaged companion Global Solar Atlas 2.0 India TIFFs DNI GTI PVOUT; other sidecars in New folder(1).zip",
       "rights": "CC BY 4.0 and mandatory additional licence terms in original source metadata; review before public release",
       "source_qa": "data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json"
+    },
+    {
+      "name": "monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF(1).zip",
+      "bytes": 227575121,
+      "sha256": "3bda22074b6215cb0574c06775b537f32ded6ddbbf486a2455cdaeb4abb02a90",
+      "publisher": "Global Solar Atlas 2.0 / Solargis / World Bank / ESMAP",
+      "source": "https://globalsolaratlas.info/download/india",
+      "kind": "12 long-term average daily monthly PVOUT GeoTIFFs; avoid confusion with monthly totals",
+      "rights": "GSA CC BY 4.0 and additional publisher terms; review before public rehosting",
+      "source_qa": "data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json"
+    },
+    {
+      "name": "India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF2(1).zip",
+      "bytes": 191654321,
+      "sha256": "826b7be098d00fd28e44fcc3d0d9ecd99f09b0bfc2da6507ecef9af73272003a",
+      "publisher": "Global Solar Atlas 2.0 / Solargis / World Bank / ESMAP",
+      "source": "https://globalsolaratlas.info/download/india",
+      "kind": "Daily-average India annual DNI; OPTA and TEMP duplicate prior TIFF bytes; seven-layer sidecars",
+      "rights": "GSA CC BY 4.0 and additional publisher terms; review before public rehosting",
+      "source_qa": "data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json"
+    },
+    {
+      "name": "India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF.zip",
+      "bytes": 431046310,
+      "sha256": "bccf2633cb34b6beeb1b0e11a21c0a154db518c99066eccec18e71d281e346c7",
+      "publisher": "Global Solar Atlas 2.0 / Solargis / World Bank / ESMAP",
+      "source": "https://globalsolaratlas.info/download/india",
+      "kind": "Daily-average India annual DIF GHI GTI PVOUT; companion GeoTIFF2 holds metadata",
+      "rights": "GSA CC BY 4.0 and additional publisher terms; review before public rehosting",
+      "source_qa": "data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json"
     }
   ],
   "solar_zip_members": [
@@ -277,5 +307,5 @@
     "caveat": "The filename date range is NOT actual complete coverage; observed timestamps cluster around May-Oct 2024 and Mar 2025. Timestamp timezone and sensor height not verified."
   },
   "additional_batch_qa": "data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json",
-  "latest_batch_qa": "data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json"
+  "latest_batch_qa": "data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json"
 }
