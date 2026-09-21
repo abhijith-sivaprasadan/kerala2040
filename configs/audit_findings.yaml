@@ -27,6 +27,7 @@ sources:
   three_gis_source_review: docs/FOREST_DEM_WETLANDS_LANDSLIDE_GIS_AUDIT.md
   three_gis_workstreams: configs/gis_forest_dem_wetlands_hazards_2026.yaml
   economics_registry: configs/techno_economics.yaml
+  kmml_historical_process_review: docs/KMML_HISTORICAL_PROCESS_EVIDENCE_2026_09_21.md
 
 findings:
   - id: sldc_missing_days
@@ -193,12 +194,24 @@ findings:
   - id: kmml_material_chemistry
     priority: P2
     check: kmml_measured
-    acquisition: KMML throughput, waste/residual quantities, chemistry, baseline treatment, recovery yield and offtake.
+    acquisition: >-
+      Historical process and design excerpts now identify IBP/ARP acid and
+      iron-oxide recovery, U200/U300/U400 pigment production, a separate Kroll
+      sponge branch and ETP/sludge/pond flows. The slides' historic nameplate
+      values and undated equipment design data are NOT FY2024-25 measured
+      throughput, recovery or compliance. Obtain matched actual production and
+      internal TiCl4 transfers, iron/chloride chemistry, residual quantities,
+      recovery yields, treatment and offtake.
     evidence: docs/KMML_CASE_PLAN.md
   - id: kmml_energy_water
     priority: P2
     check: kmml_measured
-    acquisition: KMML process electricity, heat, water and effluent time series with metering boundary and publication terms.
+    acquisition: >-
+      Old roaster, pump and pond design data cannot establish measured energy
+      or effluent performance. Obtain FY2024-25 aligned process electricity,
+      burner fuel, steam, water/recycle, ARP acid flow, ETP flow/sludge and
+      emissions/effluent records with meter/process boundary and publication
+      terms.
     evidence: docs/KMML_CASE_PLAN.md
   - id: cstep_2016_raw_interval
     priority: P1
