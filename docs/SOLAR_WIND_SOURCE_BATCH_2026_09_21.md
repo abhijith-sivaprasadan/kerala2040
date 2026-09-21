@@ -1,6 +1,6 @@
 # Solar / wind original-source batch — 21 September 2026
 
-**Acquisition:** user uploaded three GIS/source ZIPs and five standalone PDF studies. An additional 18 files are nested inside `Solar.zip`. **Original bytes are presently in the chat upload workspace, not in the GitHub repository or its Releases.** The raw originals' exact SHA256s, sizes, nested member hashes and publisher information are pinned in [the machine-readable manifest](../data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json). **Do not claim “archived in GitHub” until the Release asset upload and remote verification succeed.**
+**Acquisition:** user uploaded five GIS/source ZIPs and five standalone PDF studies. An additional 18 files are nested inside `Solar.zip`. **Original bytes are presently in the chat upload workspace, not in the GitHub repository or its Releases.** The raw originals' exact SHA256s, sizes, nested member hashes and publisher information are pinned in [the machine-readable manifest](../data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json). **Do not claim “archived in GitHub” until the Release asset upload and remote verification succeed.**
 
 ## Original provider references and reuse
 
@@ -35,9 +35,34 @@ These observations can validate selected points when temporal alignment and sens
 - `India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_AAIGRID.zip`: **317,301,351 bytes; 97 members; approximately 4.26 GB uncompressed**.
 - Packages contain `GHI`, `DNI`, `DIF`, `GTI`, `TEMP`, `OPTA`, `PVOUT` ASCII rasters, `monthly/PVOUT_01..12.asc`, plus per-raster WGS84 `.prj`, PDF/XML metadata. Their source archives have SHA256 checksums, but **all raster cells have not been numerically validated or clipped to Kerala**. The archives were inventoried, not fully CRC-decompressed. Choose the correct *yearly/monthly totals* versus *average daily totals* before interpreting a number; the two packages are not duplicate byte-identical copies.
 
+
+## Additional original study layers — 21 September 2026, second batch
+
+Two further original ZIPs from **[Global Photovoltaic Power Potential by Country](https://globalsolaratlas.info/global-pv-potential-study)**, © 2020 World Bank, financed by ESMAP, provided by Solargis, have been received as distinct sources:
+
+| Original ZIP | Content | Archived GitHub binary? |
+|---|---|---|
+| `global-PVRASTER-DATA-LAYERS--GlobalSol derived 1(1).zip` | `PVOUT_level2.tif`, `PVOUT_seasonality_index.tif` | **No: local upload only** |
+| `global-PVRASTER-DATA-LAYERS--GlobalSol derived 2(1).zip` | `PVOUT_level1.tif`, publisher's original `README.txt`, `LCOE-PVOUT-25years.tif` | **No: local upload only** |
+
+Full ZIP CRC passed for **every member of both archives**. Original ZIP and each five inner files' exact sizes/SHA256s, raster CRS/shape/nodata, licence and bounded sampling results are preserved in [the derived-layer QA manifest](../data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json). The new ZIPs were appended to the common source-archive manifest and therefore the checksum-gated release uploader/restorer now expects **ten originals** (earlier eight plus these two). The release status remains explicitly *not uploaded*.
+
+The TIFFs are **global EPSG:4326, 30 arcsecond (approximately 1 km, latitude-dependent) raster cells**, dimensions 13,800 × 43,200, not Kerala-specific extracts. Their study meanings:
+
+- **PVOUT Level 1:** long-term average specific PV yield screened for the original study's physical and technical constraints. In that study this includes complex terrain, water bodies, dense forests, remoteness and heavily urbanised land. This is a *global proxy*, not a validated Kerala siting decision.
+- **PVOUT Level 2:** additionally applies study-scale potential soft land-use/regulatory screens such as cropland and protected-area proxies. **It is not a notified forest/wetland polygon or a Kerala statutory ban.**
+- **PVOUT seasonality index:** ratio of highest to lowest monthly-average PVOUT, dimensionless; cannot reconstruct 8,760-hour variability.
+- **LCOE-PVOUT-25years:** study-specific simplified 25-year LCOE **not** a current Kerala financing or 2040 electricity-cost estimate. It inherits 2020 study assumptions and then-published historical cost estimates. Do not treat raster values as new CAPEX, tariff or bankable cost evidence.
+
+**Units caveat:** the TIFF metadata identifies the source study but does not declare per-band units. The *source study* expresses the practical PVOUT comparison as average daily kWh/kWp and the simplified LCOE as USD/kWh; verify the exact layer convention against the original study/metadata before processing. The two files are not independent measurements of PV generation.
+
+A deliberately broad **74–78°E × 8–13°N** sampling window reads sensibly, but it includes sea, Tamil Nadu, Karnataka and parts of neighbouring geography. The finite-cell counts and observed ranges recorded in the QA JSON **must never be labelled Kerala statistics**. Next scientific step is source-grid QA and masking using the correctly reprojected original NWIC state polygon and an explicit onshore/coastal/offshore scenario mask, then comparison with country-scale GSA and time-resolved ERA5 inputs. Screens created by the original global study must not be silently reused as Kerala legal exclusions.
+
+Publisher's **original README.txt** states CC BY 4.0 with an additional mandatory mediation/arbitration clause. Preserve it when distributing and check the [current terms of use](https://globalsolaratlas.info/support/terms-of-use). Attribution: **© 2020 The World Bank; data provided by Solargis, financed by ESMAP.**
+
 ## Storage in THIS repository, not another transient chat upload
 
-Standard GitHub file history is **not** a safe target for 317 MB and 272 MB originals (GitHub rejects normal >100 MB blobs). Do not commit these or 10 GB of unpacked `.asc` to Git history.
+Standard GitHub file history is **not** a safe target for 317 MB, 272 MB, 465 MB and 489 MB originals (GitHub rejects normal >100 MB blobs). Do not commit these or 10 GB of unpacked `.asc` to Git history.
 
 The project now includes:
 
