@@ -135,6 +135,42 @@ layers:
       class is NOT gazette-linked legal protected-area/wetland geometry and
       is not a replacement for FY2024-25 NRSC native LULC.
 
+  global_solar_atlas_india_lta:
+    source: Global Solar Atlas 2.0 / Solargis / World Bank ESMAP
+    landing_page: https://globalsolaratlas.info/download/india
+    source_batch: docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md
+    original_sha_manifest: data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json
+    original_archive_names:
+      - India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_AAIGRID.zip
+      - India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_AAIGRID.zip
+    expected_format: native_ascii_grid_lta_year_month_and_daily_with_prj_pdf_xml_metadata
+    raw_path: data/external/raw/solar/source_2026_09_21
+    role: spatial_long_term_solar_climatology_not_FY2024_25_hourly_generation
+    acquisition_status: user_supplied_originals_sha256_pinned_LOCAL_ONLY_NOT_YET_GITHUB_RELEASE
+    note: >-
+      Two original India GIS ZIPs received and hash-pinned; their 97 members
+      apiece are inventoried, NOT yet completely raster-validated or clipped
+      to Kerala. Includes GHI, DNI, DIF, GTI, TEMP, OPTA, PVOUT and
+      monthly PVOUT in different long-term average conventions. Do not
+      mistake long-term averages for FY2024-25 hourly observations.
+      GitHub release asset upload and public-redistribution review pending;
+      do not claim permanent repository archival before remote verification.
+  nwic_kerala_solar_wind_station_observations:
+    source: NWIC National Water Data Portal / Kerala Surface Water Department
+    solar_landing_page: https://nwdp.nwic.gov.in/dataset/solar-radiation-telemetry-hourly-kerala-surface-water-department
+    wind_landing_page: https://nwdp.nwic.gov.in/dataset/wind-speed-telemetry-hourly-kerala-surface-water-department
+    source_batch: docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md
+    original_sha_manifest: data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json
+    raw_path: data/external/raw/solar/source_2026_09_21/Solar.zip
+    role: pointwise_weather_validation_not_statewide_weather_or_generation
+    acquisition_status: user_supplied_csv_in_original_zip_LOCAL_ONLY_partial_FY2024_25
+    note: >-
+      Original NWIC solar and wind CSV files reside inside Solar.zip.
+      FY2024-25 has only 6007 solar observations and 10946 wind
+      observations across Ambalapuzha and Kulamavu, concentrated
+      May-Oct 2024 plus March 2025. Units are W/m2 for solar and
+      km/h for wind. Sensor height and time zone not yet established.
+      Raw original source is not yet uploaded to GitHub release.
   niwe_wind_atlas_150m:
     source: National Institute of Wind Energy
     landing_page: https://niwe.res.in/Open_data_Set/open_wind_dataset/
