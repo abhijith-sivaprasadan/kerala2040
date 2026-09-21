@@ -272,15 +272,19 @@ layers:
     original_sha_manifest: data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json
     expected_format: original_provider_station_CSVs_nested_in_Solar_ZIP
     raw_path: data/external/raw/solar/source_2026_09_21/Solar.zip
-    role: pointwise_weather_validation_not_statewide_weather_or_generation
-    acquisition_status: user_supplied_csv_in_original_zip_LOCAL_ONLY_partial_FY2024_25
+    role: wind_partial_weather_validation_and_solar_FY_rejected_zero_only_not_statewide_generation
+    acquisition_status: originals_user_supplied_LOCAL_ONLY_solar_FY2024_25_ALL_ZERO_UNUSABLE_wind_partial
     note: >-
-      Original NWIC solar and wind CSV files reside inside Solar.zip.
-      FY2024-25 has only 6007 solar observations and 10946 wind
-      observations across Ambalapuzha and Kulamavu, concentrated
-      May-Oct 2024 plus March 2025. Units are W/m2 for solar and
-      km/h for wind. Sensor height and time zone not yet established.
-      Raw original source is not yet uploaded to GitHub release.
+      Original NWIC CSVs reside inside Solar.zip. FY2024-25 solar has
+      6007/6007 zero irradiance readings INCLUDING daytime; REJECT as
+      observed solar weather validation, not absence of sunlight. The
+      same source contains nonzero values in 2021-22, not matched
+      to FY2024-25. FY wind has 10946 records with numeric positive
+      values, Ambalapuzha 5096 and Kulamavu 5850. Both exports are
+      principally 30-minute timestamps despite names stating hourly.
+      Wind speed source km/h versus NIWE 150m m/s; time zone,
+      wind sensor height and sensor QA unresolved. Raw original
+      Solar.zip still NOT uploaded to GitHub Release.
   niwe_wind_atlas_150m:
     source: National Institute of Wind Energy
     landing_page: https://niwe.res.in/Open_data_Set/open_wind_dataset/
