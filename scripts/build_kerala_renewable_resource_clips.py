@@ -155,26 +155,25 @@ def niwe_clip(wind: Path, boundary, output: Path) -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         original = Path(tmp) / "original.zip"
         original.write_bytes(niwe_original_bytes(wind))
-        with zipfile.ZipFile(original) as z:
-            with z.open("150m_Map_Data_A_to_G.csv") as rows:
-                columns = rows.readline().decode().strip().split(",")
-                for line in rows:
-                    examined += 1
-                    parts = line.split(b",", 2)
-                    lon = float(parts[0])
-                    if lon < last_lon:
-                        raise ValueError("NIWE longitude sequence not sorted")
-                    last_lon = lon
-                    if lon > east:
-                        break  # Verified sorted prefix covers the state longitude.
-                    if west <= lon <= east:
-                        lat = float(parts[1])
-                        if south <= lat <= north:
-                            bounding_candidates += 1
-                            buffer.append([float(part) for part in line.strip().split(b",")])
-                            if len(buffer) == 50_000:
-                                flush()
-                flush()
+        with zipfile.ZipFile(original) as z, z.open("150m_Map_Data_A_to_G.csv") as rows:
+            columns = rows.readline().decode().strip().split(",")
+            for line in rows:
+                examined += 1
+                parts = line.split(b",", 2)
+                lon = float(parts[0])
+                if lon < last_lon:
+                    raise ValueError("NIWE longitude sequence not sorted")
+                last_lon = lon
+                if lon > east:
+                    break  # Verified sorted prefix covers the state longitude.
+                if west <= lon <= east:
+                    lat = float(parts[1])
+                    if south <= lat <= north:
+                        bounding_candidates += 1
+                        buffer.append([float(part) for part in line.strip().split(b",")])
+                        if len(buffer) == 50_000:
+                            flush()
+            flush()
 
     clipped = pd.DataFrame(np.asarray(points), columns=columns)
     if len(clipped) < 1000 or len(columns) != 7:
