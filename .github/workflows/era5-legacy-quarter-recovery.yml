@@ -1,0 +1,57 @@
+name: Recover ERA5 Jan-Mar 2025 original-source accessibility
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/era5-legacy-quarter-recovery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Earlier public evidence recorded hashes for five Jan-Mar NetCDF files;
+# the raw bytes are not committed. Reacquire into separate review-only artifacts
+# rather than assuming that those source files still exist.
+jobs:
+  legacy-source-recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        point: [thiruvananthapuram, kochi, palakkad, kozhikode, kannur]
+    env:
+      CDSAPI_URL: https://cds.climate.copernicus.eu/api
+      CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install source acquisition dependencies
+        run: python -m pip install "cdsapi>=0.7.7,<1" "numpy>=2,<3" "pandas>=2.2,<3" "beautifulsoup4>=4.12,<5"
+      - name: Reacquire one Jan-Mar location without changing legacy manifest
+        env:
+          PYTHONPATH: src
+          POINT: ${{ matrix.point }}
+        run: |
+          python scripts/ingest_era5_points.py \
+            --points "$POINT" \
+            --periods 2025-01_to_2025-03 \
+            --max-requests 1 \
+            --raw-dir results/acquisition/era5/source_files \
+            --manifest results/acquisition/era5/retrieval_attempt.json
+      - name: Preserve raw CDS response, components and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: era5-${{ matrix.point }}-2025-01_to_2025-03-REACQUIRED-UNVALIDATED
+          retention-days: 90
+          if-no-files-found: warn
+          path: results/acquisition/era5/
+
+# Never replace original five public hashes with new bytes, even if the
+# provider repackages source files. Only separate reviewed admission may
+# associate refreshed source records with the FY2024-25 model baseline.
