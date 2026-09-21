@@ -32,6 +32,7 @@ def test_readiness_preserves_historical_evidence_and_blocks_2040_claims():
     assert "2024-08-12" in report["checks"]["sldc_daily_coverage"]["detail"]
     assert report["checks"]["measured_interval"]["status"] == STATUS_BLOCKED
     assert report["checks"]["era5_complete"]["status"] == STATUS_PARTIAL
+    assert "43,800 point-hours" in report["checks"]["era5_complete"]["detail"]
     assert "4 NRSC LULC product routes" in report["checks"]["gis_model_ready"]["detail"]
     assert report["checks"]["gis_model_ready"]["status"] == STATUS_BLOCKED
     assert "eight returned HTTP 403 and one HTTP 404" in report["checks"]["gis_model_ready"]["detail"]
@@ -67,6 +68,7 @@ def test_source_qa_tampering_fails_closed(tmp_path):
     for file in (
         "data/external/sldc_fy2024_25/qa_report.json",
         "public/era5-daily-manifest.json",
+        "data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json",
         "configs/techno_economics.yaml",
         "configs/gis_inputs.yaml",
         "configs/lulc_native_acquisition_2024_25.yaml",
@@ -105,6 +107,7 @@ def test_unknown_gate_is_rejected_instead_of_counted_ready(tmp_path):
     for file in (
         "data/external/sldc_fy2024_25/qa_report.json",
         "public/era5-daily-manifest.json",
+        "data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json",
         "configs/techno_economics.yaml",
         "configs/gis_inputs.yaml",
         "configs/lulc_native_acquisition_2024_25.yaml",
@@ -138,6 +141,7 @@ def test_generator_register_official_source_crosscheck_fails_closed(tmp_path):
     inputs = (
         "data/external/sldc_fy2024_25/qa_report.json",
         "public/era5-daily-manifest.json",
+        "data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json",
         "configs/techno_economics.yaml",
         "configs/gis_inputs.yaml",
         "configs/lulc_native_acquisition_2024_25.yaml",
@@ -172,6 +176,7 @@ def test_transfer_gate_rejects_import_limit_promotion(tmp_path):
     inputs = (
         "data/external/sldc_fy2024_25/qa_report.json",
         "public/era5-daily-manifest.json",
+        "data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json",
         "configs/techno_economics.yaml",
         "configs/gis_inputs.yaml",
         "configs/lulc_native_acquisition_2024_25.yaml",
@@ -206,6 +211,7 @@ def test_lulc_register_cannot_self_certify_ecological_capacity(tmp_path):
     inputs = (
         "data/external/sldc_fy2024_25/qa_report.json",
         "public/era5-daily-manifest.json",
+        "data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json",
         "configs/techno_economics.yaml",
         "configs/gis_inputs.yaml",
         "configs/lulc_native_acquisition_2024_25.yaml",
@@ -240,6 +246,7 @@ def test_three_gis_workstreams_cannot_invent_a_ceiling(tmp_path):
     inputs = (
         "data/external/sldc_fy2024_25/qa_report.json",
         "public/era5-daily-manifest.json",
+        "data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json",
         "configs/techno_economics.yaml",
         "configs/gis_inputs.yaml",
         "configs/lulc_native_acquisition_2024_25.yaml",
@@ -274,6 +281,7 @@ def test_forest_source_audit_cannot_self_certify_legal_geometry(tmp_path):
     inputs = (
         "data/external/sldc_fy2024_25/qa_report.json",
         "public/era5-daily-manifest.json",
+        "data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json",
         "configs/techno_economics.yaml",
         "configs/gis_inputs.yaml",
         "configs/lulc_native_acquisition_2024_25.yaml",
