@@ -18,7 +18,7 @@ import io
 import json
 import zipfile
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import h5py
@@ -35,10 +35,10 @@ def hourly_window(year: int, months: list[str]) -> np.ndarray:
     nums = [int(m) for m in months]
     if not nums or nums != list(range(nums[0], nums[-1] + 1)):
         raise ValueError("Duplicate, unordered or noncontiguous source months")
-    start = datetime(year, nums[0], 1, tzinfo=timezone.utc)
-    end = (datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+    start = datetime(year, nums[0], 1, tzinfo=UTC)
+    end = (datetime(year + 1, 1, 1, tzinfo=UTC)
            if nums[-1] == 12 else
-           datetime(year, nums[-1] + 1, 1, tzinfo=timezone.utc))
+           datetime(year, nums[-1] + 1, 1, tzinfo=UTC))
     return np.arange(int(start.timestamp()), int(end.timestamp()), 3600, dtype=np.int64)
 
 
@@ -47,8 +47,21 @@ def sha256(content: bytes) -> str:
 
 
 def inspect_artifact(path: Path) -> dict:
-    with zipfile.ZipFile(path) as artifact:
-        report = json.loads(artifact.read("retrieval_attempt.json"))
+    """Inspect either a downloaded GitHub artifact ZIP or its extracted directory."""
+    if path.is_dir():
+        def read_artifact(name: str) -> bytes:
+            return (path / name).read_bytes()
+
+        artifact_name = path.name
+        close = None
+    else:
+        archive = zipfile.ZipFile(path)
+        read_artifact = archive.read
+        artifact_name = path.name
+        close = archive.close
+
+    try:
+        report = json.loads(read_artifact("retrieval_attempt.json"))
         points, periods = report["selection"]["points"], report["selection"]["periods"]
         if (len(points) != 1 or len(periods) != 1 or points[0] not in POINTS
                 or periods[0] not in PERIODS):
@@ -66,12 +79,12 @@ def inspect_artifact(path: Path) -> dict:
         for entry in report["files"]:
             if entry["point"] != point or entry["selected_quarter"] != quarter:
                 raise ValueError("Crossed source provenance")
-            data = artifact.read("source_files/" + Path(entry["path"]).name)
+            data = read_artifact("source_files/" + Path(entry["path"]).name)
             if sha256(data) != entry["sha256"] or len(data) != entry["bytes"]:
                 raise ValueError("NetCDF member hash/size mismatch")
             if entry.get("source_archive_member"):
                 key = "source_files/" + Path(entry["source_archive_path"]).name
-                original = artifact.read(key)
+                original = read_artifact(key)
                 if (sha256(original) != entry["source_archive_sha256"]
                         or len(original) != entry["source_archive_bytes"]):
                     raise ValueError("Original CDS ZIP hash/size mismatch")
@@ -120,7 +133,10 @@ def inspect_artifact(path: Path) -> dict:
         return {"point": point, "quarter": quarter, "hours": len(expected),
                 "grid": {"latitude": list(lat), "longitude": list(lon)},
                 "original_zip_sha256": archives, "components": proofs,
-                "source_artifact": path.name}
+                "source_artifact": artifact_name}
+    finally:
+        if close:
+            close()
 
 
 def verify(paths: list[Path], require_full_year: bool = False) -> dict:
