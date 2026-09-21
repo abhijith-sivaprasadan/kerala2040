@@ -1,27 +1,22 @@
-"""Restore the checksum-pinned solar source batch from this repository's release.
+"""Restore SHA256-pinned originals from the separate PRIVATE solar data archive.
 
-Prerequisites: GitHub CLI (gh) authenticated and source release uploaded.
-Never treat successful retrieval as model admission; see the source manifest.
+Requires authenticated GitHub CLI. The destination repository MUST be private.
+No raw originals are downloaded from the public Kerala2040 repository.
 """
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
-import shutil
-import subprocess
 from pathlib import Path
+
+from private_archive_utils import (
+    PRIVATE_ARCHIVE,
+    ensure_private,
+    restore_exact_asset,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json"
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for block in iter(lambda: stream.read(4 * 1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def main() -> None:
@@ -30,39 +25,22 @@ def main() -> None:
         "--dest",
         type=Path,
         default=ROOT / "data/external/raw/solar/source_2026_09_21",
-        help="Local destination for release source archives (ignored by git)",
     )
-    parser.add_argument(
-        "--repo", default="abhijith-sivaprasadan/kerala2040"
-    )
+    parser.add_argument("--archive-repo", default=PRIVATE_ARCHIVE)
     args = parser.parse_args()
-    if not shutil.which("gh"):
-        raise SystemExit("GitHub CLI (gh) is required: https://cli.github.com/")
+
+    ensure_private(args.archive_repo)
     data = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    dest = args.dest.resolve()
-    dest.mkdir(parents=True, exist_ok=True)
-    for asset in data["assets"]:
-        path = dest / asset["name"]
-        if path.is_file():
-            if path.stat().st_size == asset["bytes"] and sha256_file(path) == asset["sha256"]:
-                print(f"VERIFIED cached original: {asset['name']}")
-                continue
-            raise SystemExit(f"Existing file fails manifest SHA/size; remove or move: {path}")
-        subprocess.run(
-            [
-                "gh", "release", "download", data["release_tag"],
-                "--repo", args.repo, "--dir", str(dest),
-                "--pattern", asset["name"],
-            ],
-            check=True,
+    for item in data["assets"]:
+        restore_exact_asset(
+            args.archive_repo, data["release_tag"],
+            item["name"], args.dest.resolve(),
+            item["bytes"], item["sha256"],
         )
-        if not path.is_file() or path.stat().st_size != asset["bytes"]:
-            raise SystemExit(f"Missing/wrong size release original: {path}")
-        if sha256_file(path) != asset["sha256"]:
-            path.unlink()
-            raise SystemExit(f"SHA256 mismatch; discarded downloaded file: {asset['name']}")
-        print(f"VERIFIED downloaded original: {asset['name']}")
-    print(f"All {len(data['assets'])} originals verified in {dest}")
+    print(
+        f"All {len(data['assets'])} original files restored from PRIVATE "
+        f"archive and SHA256-verified. This is source storage, not model admission."
+    )
 
 
 if __name__ == "__main__":
