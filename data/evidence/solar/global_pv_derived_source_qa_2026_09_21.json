@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "batch_id": "global_pv_derived_2026_09_21",
+  "classification": "USER_SUPPLIED_VERIFIED_SOURCE_LOCAL_MOUNT_ONLY_NOT_GITHUB_BINARY_ARCHIVED_NOT_MODEL_READY",
+  "source_title": "Global Photovoltaic Power Potential by Country: derived global raster layers",
+  "publisher": "The World Bank",
+  "financed_by": "Energy Sector Management Assistance Program (ESMAP)",
+  "data_provider": "Solargis",
+  "source_vintage": "2020 World Bank global photovoltaic potential study; downloaded 2026-09-21 does not mean source updated in 2026",
+  "study_url": "https://globalsolaratlas.info/global-pv-potential-study",
+  "alternative_landing_page": "https://energydata.info/",
+  "source_licence": "CC BY 4.0 with mandatory dispute-resolution/arbitration addition described in ORIGINAL README.txt and https://globalsolaratlas.info/support/terms-of-use",
+  "original_readme_embedded": "global-PVRASTER-DATA-LAYERS--GlobalSol derived 2/README.txt",
+  "study_pdf_in_previous_original_batch": "Solar.zip/Solar/Global-Photovoltaic-Power-Potential-by-Country.pdf",
+  "storage": {
+    "raw_bytes_in_github": false,
+    "release_tag": "solar-source-2026-09-21",
+    "release_asset_names_registered_for_upload": true,
+    "release_assets_remote_verified": false,
+    "note": "Original uploaded ZIPs in chat workspace are not permanent repo data. Reuse common checksum-gated GitHub Release publisher/restorer after rights review. All raster bytes remain out of Git history."
+  },
+  "archives": [
+    {
+      "name": "global-PVRASTER-DATA-LAYERS--GlobalSol derived 1(1).zip",
+      "bytes": 464979205,
+      "sha256": "a0ecc0ea090272d193a78948097502b1630bc5115a3a6fc18788546b8ecc02a2",
+      "zip_crc": "PASS_all_members",
+      "file_count": 2,
+      "members": [
+        {
+          "name": "PVOUT_level2.tif",
+          "bytes": 141015858,
+          "sha256": "efa6b5bdd407fd25a2fb0b8173244c6f8af83cac6be664157eb7826a327f1d52",
+          "role": "PVOUT_specific_yield_with_physical_and_possible_soft_regulatory_exclusion_mask"
+        },
+        {
+          "name": "PVOUT_seasonality_index.tif",
+          "bytes": 343724391,
+          "sha256": "2625cb78bf2a0c7d2a3177c6132297753f981d769d293c7eed2c1fbebc075691",
+          "role": "max_over_min_monthly_PVOUT_seasonality_index_dimensionless"
+        }
+      ]
+    },
+    {
+      "name": "global-PVRASTER-DATA-LAYERS--GlobalSol derived 2(1).zip",
+      "bytes": 488937292,
+      "sha256": "cda80a105dc76b8e27bc02c227ed8ee1eae923c425d12143c419be709f558081",
+      "zip_crc": "PASS_all_members",
+      "file_count": 3,
+      "members": [
+        {
+          "name": "LCOE-PVOUT-25years.tif",
+          "bytes": 321782914,
+          "sha256": "be2c45ece6775a8c35d5d212be762f844a7d30378a9ace70f704ef8890fd4fe3",
+          "role": "study_specific_simplified_25_year_PV_LCOE_NOT_current_Kerala_cost"
+        },
+        {
+          "name": "PVOUT_level1.tif",
+          "bytes": 177524620,
+          "sha256": "60969b2cef51ea95478b17fd46eaf0a8044097bfd0321a3b6bf33feaa48ad479",
+          "role": "PVOUT_specific_yield_with_physical_technical_exclusion_mask"
+        },
+        {
+          "name": "README.txt",
+          "bytes": 1697,
+          "sha256": "b6d550e0bdafac6cd043e2e63ca1e9f739ef2356bdd29079a39ac7054ae514d5",
+          "role": "original_publisher_attribution_and_licence"
+        }
+      ]
+    }
+  ],
+  "raster_qa": {
+    "all_files_driver": "GeoTIFF",
+    "all_files_shape": [
+      13800,
+      43200
+    ],
+    "all_files_epsg": 4326,
+    "all_files_bounds_lonlat": [
+      -180,
+      -55,
+      180,
+      60
+    ],
+    "pixel_resolution_degrees": [
+      0.008333333333333333,
+      -0.008333333333333333
+    ],
+    "source_metadata": "TIFFTAG_ARTIST=Solargis; TIFFTAG_COPYRIGHT=© 2020 The World Bank; TIFFTAG_IMAGEDESCRIPTION links global PV study",
+    "note": "Approx 30 arcsecond source resolution, not a true uniform 1km projected raster. Raster nodata is nan except LCOE float32 max sentinel. No complete-cell numeric read of global rasters.",
+    "source_files_analysed": [
+      {
+        "name": "PVOUT_level2.tif",
+        "dtype": "float32",
+        "nodata": "NaN"
+      },
+      {
+        "name": "PVOUT_seasonality_index.tif",
+        "dtype": "float64",
+        "nodata": "NaN"
+      },
+      {
+        "name": "LCOE-PVOUT-25years.tif",
+        "dtype": "float32",
+        "nodata": "3.4028234663852886e+38"
+      },
+      {
+        "name": "PVOUT_level1.tif",
+        "dtype": "float32",
+        "nodata": "NaN"
+      }
+    ],
+    "south_india_sanity_window": {
+      "bounds_lonlat": [
+        74,
+        8,
+        78,
+        13
+      ],
+      "WARNING": "RECTANGULAR ENVELOPE ONLY; contains Kerala and non-Kerala cells including sea/neighbour states; cannot be reported as Kerala statistics; no authoritative polygon clip done.",
+      "pixel_count_per_layer": 288000,
+      "layers": [
+        {
+          "name": "PVOUT_level2.tif",
+          "finite": 38540,
+          "min": 3.594,
+          "median": 4.199,
+          "max": 4.501
+        },
+        {
+          "name": "PVOUT_seasonality_index.tif",
+          "finite": 153245,
+          "min": 1.35,
+          "median": 1.698,
+          "max": 2.747
+        },
+        {
+          "name": "LCOE-PVOUT-25years.tif",
+          "finite": 143081,
+          "min": 0.06504,
+          "median": 0.06924,
+          "max": 0.09637
+        },
+        {
+          "name": "PVOUT_level1.tif",
+          "finite": 111024,
+          "min": 3.594,
+          "median": 4.281,
+          "max": 4.512
+        }
+      ]
+    }
+  },
+  "interpretation": {
+    "PVOUT_level0": "unmasked modeled practical specific yield, long-term average, kWh/kWp/day (base study)",
+    "PVOUT_level1": "PVOUT after global-study physical/technical screening; not a legal Kerala siting ruling",
+    "PVOUT_level2": "PVOUT after study physical/technical and soft/regulatory proxies; NOT legally authoritative protected area map",
+    "seasonality": "ratio of highest to lowest monthly average PVOUT; dimensionless",
+    "LCOE": "simplified study-specific lifetime metric; study text gives USD/kWh and globally simplified CAPEX/OPEX/WACC/degradation inputs; not Kerala 2026 or 2040 cost",
+    "model_use": "reference and cross-check only pending Kerala NWIC polygon clip, data interpretation/units verification against study, technology selection and scenario calibration",
+    "monthly_and_hourly_limitation": "annual long-term raster and index, not 2024-25 hourly weather or PV generation"
+  }
+}
