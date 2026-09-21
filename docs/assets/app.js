@@ -133,7 +133,7 @@ function animateObservedPaths(root){
   root.classList.add("chart-animated");
 }
 function animateVisibleArtwork(){
-  $(".viz-card.is-visible svg").forEach(animateObservedPaths);
+  $$(".viz-card.is-visible svg").forEach(animateObservedPaths);
   if(state.route==="electricity")animateObservedPaths($("#energyChart svg"));
 }
 function setupMotion(){
@@ -150,7 +150,7 @@ function setupMotion(){
       }
     });
   },{threshold:0.14});
-  $(".system-story, .chapter, .viz-card").forEach(element=>observer.observe(element));
+  $$(".system-story, .chapter, .viz-card").forEach(element=>observer.observe(element));
 }
 function go(route){
   const target=routeIds.includes(route)?route:"overview";
