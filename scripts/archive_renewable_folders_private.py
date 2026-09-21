@@ -8,7 +8,7 @@ archive is split into 768 MiB parts for robust Release uploads.
 Windows example (from the public kerala2040 checkout):
   python scripts/archive_renewable_folders_private.py --source-root "$env:USERPROFILE\Downloads" --staging-dir "E:\kerala-staging"
   python scripts/archive_renewable_folders_private.py --staging-dir "E:\kerala-staging" --upload
-  python scripts/archive_renewable_folders_private.py --staging-dir "E:\kerala-restore" --verify
+  python scripts/archive_renewable_folders_private.py --staging-dir "E:\kerala-restore" --verify --reference-manifest "E:\kerala-staging\renewable-five-folders-manifest.json"
 Requires gh auth login, PRIVATE archive repo with initialized default branch.
 """
 from __future__ import annotations
@@ -256,7 +256,7 @@ def upload(stage: Path, repo: str) -> None:
     print("Uploaded five folder snapshots to PRIVATE Release. Run --verify to test download.")
 
 
-def verify(stage: Path, repo: str) -> None:
+def verify(stage: Path, repo: str, reference_manifest: Path) -> None:
     ensure_private(repo)
     stage.mkdir(parents=True, exist_ok=True)
     # Manifest is remote, not silently reused from local source folders.
@@ -272,6 +272,10 @@ def verify(stage: Path, repo: str) -> None:
         "release", "download", TAG, "--repo", repo, "--dir", str(stage),
         "--pattern", MANIFEST_NAME, capture=False,
     )
+    if not reference_manifest.is_file():
+        raise FileNotFoundError(f"Trusted source manifest missing: {reference_manifest}")
+    if sha256(local_manifest) != sha256(reference_manifest):
+        raise ValueError("Remote manifest differs from LOCAL trusted preparation manifest")
     data = validate_manifest(stage)
     if data["archive_repo"] != repo:
         raise ValueError("Remote manifest references a different repository")
@@ -292,13 +296,19 @@ def main() -> None:
     mode.add_argument("--verify", action="store_true")
     parser.add_argument("--staging-dir", type=Path, required=True)
     parser.add_argument("--archive-repo", default=PRIVATE_ARCHIVE)
+    parser.add_argument("--reference-manifest", type=Path)
     args = parser.parse_args()
     if args.source_root is not None:
         prepare(args.source_root, args.staging_dir)
     elif args.upload:
         upload(args.staging_dir.resolve(), args.archive_repo)
     else:
-        verify(args.staging_dir.resolve(), args.archive_repo)
+        if args.reference_manifest is None:
+            parser.error("--verify requires --reference-manifest from local preparation")
+        verify(
+            args.staging_dir.resolve(), args.archive_repo,
+            args.reference_manifest.resolve(),
+        )
 
 
 if __name__ == "__main__":
