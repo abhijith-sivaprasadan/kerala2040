@@ -38,6 +38,44 @@ redistribution permission, dated source vintage, official Kerala polygon
 clip and spatial/model admission remain OPEN. Neither the generic outer
 collection nor a bounding rectangle can be counted as a Kerala wind raster.
 
+### NIWE interactive-map user-selection result — NOT Kerala's installable capacity
+
+A user-supplied 21 September 2026 screenshot from the NIWE 150 m map
+shows a **blue selection polygon** which visibly extends offshore from the
+west coast and does **not** trace Kerala's eastern administrative border.
+The source screenshot alone does not supply original polygon vertices,
+area-calculation rules, a geospatial mask or a downloadable cell-to-CUF table.
+It cannot be treated as a Kerala-only or a legal land-eligible zone.
+
+**Transcribed exactly as displayed by the portal, for that selection only:**
+
+| Map CUF band (%) | Portal reported area (sq km) | Portal 'Installable Capacity' (MW) |
+|---|---:|---:|
+| 25–30 | 2,219.59 | 9,988.16 |
+| 30–32 | 734.09 | 3,303.41 |
+| 32–35 | 842.27 | 3,790.22 |
+| 35–38 | 746.68 | 3,360.06 |
+| 38–40 | 361.78 | 1,628.01 |
+| >40 | 1,892.2 | 8,514.9 |
+| **Overall portal selection** | **6,796.61** | **30,584.76** |
+
+The popup itself says: **"The estimation is indicative and without
+unsuitable area exclusion. Site specific studies are required to estimate the
+actual installable potential."** Quotation from user-supplied screenshot;
+not a statement of technical/economic/siting feasibility. Do **not** call
+30,584.76 MW a verified Kerala potential, an approved 2040 capacity bound,
+offshore potential, land-use ceiling or candidate build programme. Even an
+exact Kerala clip of these resource pixels would not account for wind project
+spacing, turbine technology/hub height, forest/ESA/wetland rules, slope,
+settlements, land tenure, roads, substations, grid or other exclusions.
+
+The user's original NIWE CSV does **not** contain this portal CUF or installable
+capacity column. A reproducible reconciliation would need the actual portal
+selection polygon and the map's turbine/area-density/CUF assumptions, followed
+by a Kerala administrative clip and project-specific ecological/grid screening.
+The visually selected coastal/offshore area particularly forbids interpreting
+the output as wholly onshore Kerala.
+
 ## KMML — process topology identified, mass/energy/water balance still missing
 
 - Official main-process description: https://www.kmml.com/process-chart and https://www.kmml.com/manufacturing-facility
