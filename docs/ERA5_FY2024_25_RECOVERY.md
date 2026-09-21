@@ -16,7 +16,7 @@ The source code now defines a more granular plan: **5 Kerala representative loca
 
 The existing January–March 2025 evidence stays unchanged. Each job requires the repository's existing authorized `CDSAPI_KEY`, downloads source NetCDFs into an Actions artifact, checks minimum size/file signature, records SHA-256, area/point, date window and any exact provider error, and publishes **no new public evidence**. The manifest is an *attempt report*. A successful source download is not a validated full-year weather series or a derived PV/wind-power model.
 
-**Potential CDS follow-up:** If a three-month request is still over CDS's request-cost limit, reduce further to monthly windows (or shrink the spatial sample subject to research scope), retaining separate source hashes and failed attempts. Do not route around request quotas by fabricating outputs or claiming API success. Copernicus login, dataset licence acceptance, API key validity, availability and quotas remain prerequisites.
+**Automatic fallback:** If a three-month request still exceeds the CDS request-cost limit, the retriever records the original error and retries the same location as three separate one-month requests. It checks each returned NetCDF signature, preserves each original SHA-256 and fails the quarter if any month is absent or invalid. Do not bypass provider quotas by inventing outputs or claiming API success. Copernicus login, dataset licence acceptance, API key validity, availability and quotas remain prerequisites.
 
 ## Before changing the public manifest
 
