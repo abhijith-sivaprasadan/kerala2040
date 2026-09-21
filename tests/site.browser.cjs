@@ -81,6 +81,18 @@ async function main(){
     const currentAnimation=await page.locator(".system-current span").first().evaluate(e=>getComputedStyle(e).animationName);
     check(currentAnimation.includes("current-flow"),"Illustrated energy current is not animated: "+currentAnimation);
     console.log("PASS ANIMATION: hero sun, observer reveal and system current");
+    await visible(page.locator("#homeBalanceArt .balance-track"),"Observed energy balance visual");
+    check((await page.locator("#homeBalanceArt").innerText()).includes("22.64 TWh"),
+      "Visual observed net-import total missing");
+    check((await page.locator("#homeBalanceArt").innerText()).includes("7.21 TWh"),
+      "Hydropower must be nested, not double-counted");
+    check(await page.locator("#homeMonthlyArt .viz-month-column").count()===12,
+      "Homepage monthly comparison must contain twelve observed-period columns");
+    check(await page.locator("#homeMonthlyArt .viz-gap-stroke").count()===7,
+      "Seven months with unverified daily reports must visibly flag gaps");
+    check((await page.locator("#homeMonthlyInsight").innerText()).includes("The mix moves"),
+      "Monthly figure is missing its source-derived explanation");
+    console.log("PASS EDITORIAL HOME: balance totals, hydro subset, twelve month columns and gaps");
     await visible(page.locator("#welcomeCard"),"First-visit welcome");
     check(await page.locator("#main").isVisible(),"Splash cannot block content");
     await page.locator("#welcomeDismiss").click();
@@ -101,6 +113,23 @@ async function main(){
       check(new URL(page.url()).hash==="#"+name,"Incorrect hash route "+name);
     }
     await route("electricity");
+    check(await page.locator("#electricMonthlyArt .viz-month-column").count()===12,
+      "Detailed month comparison is incomplete");
+    check(await page.locator("#electricMonthlyTable tbody tr").count()===12,
+      "Exact monthly figures missing from the data table");
+    check(await page.locator("#hydroSeasonArt .viz-gap-guide").count()===11,
+      "Hydro and storage chronology must mark all eleven missing dates");
+    check(await page.locator("#hydroSeasonArt .viz-hydro-line").count()>1,
+      "Hydro line wrongly connects missing dates");
+    check(await page.locator("#hydroSeasonArt .viz-storage-line").count()>1,
+      "Storage line wrongly connects missing dates");
+    check(await page.locator("#hydroSeasonTable tbody tr").count()===354,
+      "Exact hydro and reservoir readings not exposed");
+    check((await page.locator("#electricMonthInsight").innerText()).includes("net imports"),
+      "Electricity month chart must explain the changing mix");
+    check((await page.locator("#hydroInsight").innerText()).includes("same reported date"),
+      "Hydro chart must contextualize units and the observed low storage date");
+    console.log("PASS EDITORIAL ELECTRICITY: twelve months, observed-day table and two gapped water series");
     await visible(page.locator("#energyChart svg"),"Daily observed electricity chart");
     check((await page.locator("#energyChartCaption").innerText()).includes("11 unverified"),
       "Chart obscures gaps");

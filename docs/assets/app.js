@@ -202,6 +202,246 @@ function statsHTML(items){
   return items.map(([value,label,note])=>'<div class="summary-stat"><strong>'+
     esc(value)+'</strong><span>'+esc(label)+'</span><small>'+esc(note)+'</small></div>').join("");
 }
+
+// Kerala2040 editorial charts. All coordinates come from published SLDC daily
+// observations. Decorative chapters are separate; no missing day is imputed.
+const monthNames=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const sumField=(rows,key)=>rows.reduce((total,row)=>total+Number(row[key]),0);
+const drawMU=(mu,places=2)=>fmt(mu/1000,places)+" TWh";
+function observedMonths(rows,baseline){
+  const start=baseline.expected_start||"2024-04-01";
+  const year=Number(start.slice(0,4)),month=Number(start.slice(5,7));
+  const missing=baseline.missing_days||[];
+  const groups=[];
+  for(let i=0;i<12;i++){
+    const date=new Date(Date.UTC(year,month-1+i,1));
+    const key=date.toISOString().slice(0,7);
+    const days=rows.filter(row=>row.date.slice(0,7)===key);
+    const gaps=missing.filter(day=>day.slice(0,7)===key);
+    const expected=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth()+1,0)).getUTCDate();
+    const total=sumField(days,"consumption_mu"),imports=sumField(days,"net_import_interface_mu");
+    const local=sumField(days,"internal_generation_mu");
+    groups.push({key,label:monthNames[date.getUTCMonth()],days,gaps,expected,
+      total,imports,local,mean:days.length?total/days.length:null,
+      meanImports:days.length?imports/days.length:null,
+      meanLocal:days.length?local/days.length:null});
+  }
+  return groups;
+}
+function drawBalanceArt(rows){
+  const total=sumField(rows,"consumption_mu"),imports=sumField(rows,"net_import_interface_mu");
+  const local=sumField(rows,"internal_generation_mu"),hydro=sumField(rows,"hydel_total_mu");
+  if(total<=0 || ![total,imports,local,hydro].every(Number.isFinite))
+    return '<p class="viz-unavailable">The observed balance is unavailable. No figure is drawn.</p>';
+  const impWidth=Math.min(100,Math.max(0,imports/total*100));
+  const localWidth=Math.max(0,100-impWidth);
+  const hydroWidth=Math.min(100,Math.max(0,hydro/local*100));
+  return '<div class="balance-lead"><span>RECORDED ELECTRICITY CONSUMPTION</span>'+
+    '<strong>'+drawMU(total)+'</strong><small>'+rows.length+
+    ' observed days · not a complete financial-year total</small></div>'+
+    '<div class="balance-track" role="img" aria-label="Of '+drawMU(total)+
+    ' recorded consumption, '+drawMU(imports)+' were net imports and '+drawMU(local)+
+    ' were generated inside Kerala">'+
+      '<span class="balance-import" style="width:'+impWidth.toFixed(3)+'%"></span>'+
+      '<span class="balance-local" style="width:'+localWidth.toFixed(3)+'%"></span>'+
+    '</div>'+
+    '<div class="balance-figures">'+
+      '<div><span class="viz-key import"></span><small>NET IMPORTS / INTERSTATE INTERFACES</small>'+
+      '<strong>'+fmt(imports/total*100,1)+'%</strong><span>'+drawMU(imports)+'</span></div>'+
+      '<div><span class="viz-key local"></span><small>GENERATED INSIDE KERALA</small>'+
+      '<strong>'+fmt(local/total*100,1)+'%</strong><span>'+drawMU(local)+'</span></div></div>'+
+    '<div class="balance-hydro"><div class="balance-hydro-text"><div><span class="viz-key hydro"></span>'+
+      '<strong>Inside the green part: hydropower</strong></div>'+
+      '<small>'+drawMU(hydro)+' · '+fmt(hydro/local*100,1)+
+      '% of recorded in-state generation, not an additional source of consumption</small></div>'+
+      '<div class="hydro-subtrack" role="img" aria-label="Hydro accounts for '+
+      fmt(hydro/local*100,1)+' percent of observed in-state generation">'+
+      '<span style="width:'+hydroWidth.toFixed(3)+'%"></span></div></div>';
+}
+function drawMonthlyArt(months){
+  const maximum=Math.max(1,...months.map(m=>m.mean||0));
+  const yBase=303,scale=204/maximum;
+  const grid=[0,.25,.5,.75,1].map(frac=>{
+    const y=(yBase-204*frac).toFixed(1);
+    return '<line x1="76" y1="'+y+'" x2="1103" y2="'+y+'" class="viz-grid"/>'+
+      '<text x="67" y="'+(Number(y)+4)+'" text-anchor="end" class="viz-axis">'+
+      esc(fmt(maximum*frac,0))+'</text>';
+  }).join("");
+  const bars=months.map((m,i)=>{
+    const x=93+i*85;
+    if(m.mean===null)return '<g><title>'+esc(m.key)+': no observations</title>'+
+      '<rect x="'+x+'" y="99" width="44" height="204" class="viz-empty-month"/>'+
+      '<text x="'+(x+22)+'" y="321" text-anchor="middle" class="viz-month">'+
+        esc(m.label)+'</text></g>';
+    const a=Math.max(0,m.meanImports*scale),b=Math.max(0,m.meanLocal*scale);
+    const yImp=yBase-a,yLocal=yImp-b;
+    return '<g class="viz-month-column"><title>'+esc(m.key)+': '+m.days.length+
+      '/'+m.expected+' reports. Mean observed day '+fmt(m.mean,2)+
+      ' MU: net imports '+fmt(m.meanImports,2)+
+      ', in-state generation '+fmt(m.meanLocal,2)+
+      '. Missing dates: '+(m.gaps.length?m.gaps.join(", "):"none")+'</title>'+
+      '<rect x="'+x+'" y="'+yImp.toFixed(2)+'" width="44" height="'+a.toFixed(2)+
+      '" class="viz-net-bar"/>'+
+      '<rect x="'+x+'" y="'+yLocal.toFixed(2)+'" width="44" height="'+b.toFixed(2)+
+      '" class="viz-local-bar"/>'+
+      (m.gaps.length?'<path d="M'+x+' 81h44" class="viz-gap-stroke"/>'+
+        '<text x="'+(x+22)+'" y="73" text-anchor="middle" class="viz-gap-label">'+
+        m.gaps.length+' gap'+(m.gaps.length===1?'':'s')+'</text>':'')+
+      '<text x="'+(x+22)+'" y="325" text-anchor="middle" class="viz-month">'+
+        esc(m.label)+'</text>'+
+      '<text x="'+(x+22)+'" y="346" text-anchor="middle" class="viz-month-count">'+
+        m.days.length+'/'+m.expected+'</text></g>';
+  }).join("");
+  return '<div class="viz-legend"><span><i class="viz-key import"></i>Net imports</span>'+
+    '<span><i class="viz-key local"></i>In-state generation</span>'+
+    '<span><i class="viz-key gap"></i>Missing original report</span></div>'+
+    '<div class="viz-scroll"><svg class="viz-month-svg" viewBox="0 0 1140 376" role="img" '+
+    'aria-label="Monthly mean observed-day electricity consumption, subdivided into net imports and in-state generation. Amber markers show missing reports." '+
+    'xmlns="http://www.w3.org/2000/svg"><title>Kerala electricity mix across twelve months</title>'+
+    '<desc>Height is mean observed daily consumption in MU/day. These are not complete monthly totals. Gaps are marked, not interpolated.</desc>'+
+    '<text x="76" y="23" class="viz-axis">MU/day · observed daily average</text>'+
+    grid+bars+'</svg></div><p class="viz-figure-note">SOURCE · SLDC FY2024–25 daily balance'+
+    ' · '+months.reduce((n,m)=>n+m.days.length,0)+'/'+
+    months.reduce((n,m)=>n+m.expected,0)+' dates observed'+
+    ' · gold dash = unresolved daily source report</p>';
+}
+function drawMonthlyTable(months){
+  const header='<table><thead><tr><th>Month</th><th>Days with reports</th>'+
+    '<th>Consumption, mean MU/day</th><th>Net imports, mean MU/day</th>'+
+    '<th>In-state, mean MU/day</th><th>Missing original dates</th></tr></thead><tbody>';
+  return header+months.map(m=>'<tr><th scope="row">'+esc(m.key)+'</th>'+
+    '<td>'+m.days.length+'/'+m.expected+'</td>'+
+    '<td>'+fmt(m.mean,2)+'</td><td>'+fmt(m.meanImports,2)+'</td>'+
+    '<td>'+fmt(m.meanLocal,2)+'</td>'+
+    '<td>'+(m.gaps.length?esc(m.gaps.join(", ")):"None")+'</td></tr>').join("")+
+    '</tbody></table>';
+}
+function drawHydroArt(rows,baseline){
+  if(!rows.length)return '<p class="viz-unavailable">No recorded hydro and storage days.</p>';
+  const start=Date.parse((baseline.expected_start||rows[0].date)+"T00:00:00Z");
+  const end=Date.parse((baseline.expected_end||rows[rows.length-1].date)+"T00:00:00Z");
+  const x=date=>74+1002*(Date.parse(date+"T00:00:00Z")-start)/Math.max(86400000,end-start);
+  const highest=Math.ceil(Math.max(...rows.map(r=>Number(r.hydel_total_mu)))/5)*5||5;
+  const yHydro=v=>274-165*Math.max(0,v)/highest;
+  const yWater=v=>520-150*Math.max(0,Math.min(100,v))/100;
+  const missing=baseline.missing_days||[];
+  const segments=key=>{
+    const paths=[];let part=[];
+    for(let i=0;i<rows.length;i++){
+      if(i && Date.parse(rows[i].date)-Date.parse(rows[i-1].date)>86400000){
+        if(part.length)paths.push(part);part=[];
+      }
+      const y=key==="hydel_total_mu"?yHydro(Number(rows[i][key])):yWater(Number(rows[i][key]));
+      part.push((part.length?'L':'M')+x(rows[i].date).toFixed(2)+','+y.toFixed(2));
+    }
+    if(part.length)paths.push(part);
+    return paths.map(d=>'<path d="'+d.join(' ')+'" class="'+
+      (key==="hydel_total_mu"?"viz-hydro-line":"viz-storage-line")+'"/>').join("");
+  };
+  const ticks=[0,.25,.5,.75,1].map(f=>{
+    const y1=yHydro(highest*f),y2=yWater(100*f);
+    return '<path d="M74 '+y1+'H1076M74 '+y2+'H1076" class="viz-grid"/>'+
+      '<text x="65" y="'+(y1+4)+'" text-anchor="end" class="viz-axis">'+fmt(highest*f,0)+'</text>'+
+      '<text x="65" y="'+(y2+4)+'" text-anchor="end" class="viz-axis">'+fmt(f*100,0)+'</text>';
+  }).join("");
+  const months=observedMonths(rows,baseline);
+  const labels=months.map(m=>{
+    const xx=x(m.key+"-01");
+    return '<path d="M'+xx+' 98V525" class="viz-month-guide"/>'+
+      '<text x="'+xx+'" y="550" class="viz-axis">'+esc(m.label)+'</text>';
+  }).join("");
+  const gapLines=missing.map(day=>{
+    const xx=x(day).toFixed(2);
+    return '<path d="M'+xx+' 96V525" class="viz-gap-guide">'+
+      '<title>Missing original daily report: '+esc(day)+'</title></path>';
+  }).join("");
+  const tooltipDots=rows.map((day,i)=>{
+    const xpoint=x(day.date).toFixed(2);
+    const yr=yHydro(Number(day.hydel_total_mu)).toFixed(2);
+    const ys=yWater(Number(day.storage_pct_energy_weighted)).toFixed(2);
+    return '<g class="viz-data-dots"><circle cx="'+xpoint+'" cy="'+yr+
+      '" r="2.2" class="viz-hydro-dot"><title>'+esc(day.date)+
+      ': '+fmt(day.hydel_total_mu,2)+' MU hydro generation</title></circle>'+
+      '<circle cx="'+xpoint+'" cy="'+ys+'" r="2.2" class="viz-storage-dot">'+
+      '<title>'+esc(day.date)+': '+fmt(day.storage_pct_energy_weighted,2)+
+      '% energy-weighted reservoir storage</title></circle></g>';
+  }).join("");
+  return '<div class="viz-legend"><span><i class="viz-key hydro"></i>Hydropower output · MU/day</span>'+
+    '<span><i class="viz-key storage"></i>Reservoir storage · %</span>'+
+    '<span><i class="viz-key gap"></i>Unobserved report date</span></div>'+
+    '<div class="viz-scroll"><svg class="viz-hydro-svg" viewBox="0 0 1130 579" role="img" '+
+    'aria-label="Hydropower generation and energy-weighted reservoir storage through FY2024–25. Two independent units, with broken lines at eleven missing original report dates." '+
+    'xmlns="http://www.w3.org/2000/svg"><title>Hydro and reservoir storage: the same observed chronology</title>'+
+    '<desc>Top line shows daily hydro electricity in MU per day. Lower line shows storage percent. Missing source dates break both lines; storage is not converted to generation.</desc>'+
+    '<text x="74" y="46" class="viz-panel-title">01 / ELECTRICITY FROM WATER</text>'+
+    '<text x="74" y="70" class="viz-panel-subtitle">Daily hydropower generation · MU/day</text>'+
+    '<text x="74" y="337" class="viz-panel-title">02 / WATER HELD IN RESERVOIRS</text>'+
+    '<text x="74" y="359" class="viz-panel-subtitle">Energy-weighted reservoir storage · %</text>'+
+    ticks+labels+gapLines+segments("hydel_total_mu")+
+    segments("storage_pct_energy_weighted")+tooltipDots+
+    '<text x="1076" y="576" text-anchor="end" class="viz-axis">FY2024–25 · observed days only</text>'+
+    '</svg></div><p class="viz-figure-note">SOURCE · Kerala SLDC daily hydro output and reservoir storage'+
+    ' · '+rows.length+'/'+baseline.expected_days+' reported dates'+
+    ' · missing reports remain blank</p>';
+}
+function drawHydroTable(rows){
+  return '<table><thead><tr><th>Date</th><th>Hydro generation (MU/day)</th>'+
+    '<th>Reservoir storage (energy-weighted %)</th></tr></thead><tbody>'+
+    rows.map(row=>'<tr><th scope="row">'+esc(row.date)+'</th>'+
+      '<td>'+fmt(row.hydel_total_mu,4)+'</td>'+
+      '<td>'+fmt(row.storage_pct_energy_weighted,3)+'</td></tr>').join("")+
+    '</tbody></table>';
+}
+function drawMonthlyInsight(months){
+  const complete=months.filter(m=>m.days.length&&m.total>0);
+  if(!complete.length)return "";
+  const ranked=complete.map(m=>({key:m.key,share:m.imports/m.total*100}))
+    .sort((a,b)=>a.share-b.share);
+  const low=ranked[0],high=ranked[ranked.length-1];
+  return '<span class="viz-insight-glyph" aria-hidden="true">↝</span>'+
+    '<p><strong>The mix moves.</strong> On reported days, the share recorded as net imports '+
+    'ranged from <b>'+fmt(low.share,1)+'% in '+esc(low.key)+'</b> to '+
+    '<b>'+fmt(high.share,1)+'% in '+esc(high.key)+'</b>. '+
+    'These are ratios of reported monthly energy, not twelve independently verified full-month totals.</p>';
+}
+function drawHydroInsight(rows){
+  const readings=rows.filter(row=>Number.isFinite(Number(row.storage_pct_energy_weighted))&&
+    Number.isFinite(Number(row.hydel_total_mu)));
+  if(!readings.length)return "";
+  const low=readings.reduce((a,b)=>Number(b.storage_pct_energy_weighted)<
+    Number(a.storage_pct_energy_weighted)?b:a);
+  return '<span class="viz-insight-glyph" aria-hidden="true">≈</span>'+
+    '<p><strong>Read the two panels together, not as one unit.</strong> The lowest '+
+    'recorded energy-weighted storage was <b>'+fmt(low.storage_pct_energy_weighted,1)+
+    '% on '+esc(low.date)+'</b>; on that same reported date, hydro output was '+
+    '<b>'+fmt(low.hydel_total_mu,2)+' MU</b>. This does not by itself establish '+
+    'why generation changed.</p>';
+}
+function renderEditorialHome(){
+  if(!state.site||!state.daily)return;
+  const months=observedMonths(state.daily.records,state.site.baseline);
+  const balance=$("#homeBalanceArt"),year=$("#homeMonthlyArt");
+  if(balance)balance.innerHTML=drawBalanceArt(state.daily.records);
+  if(year)year.innerHTML=drawMonthlyArt(months);
+  const homeInsight=$("#homeMonthlyInsight");
+  if(homeInsight)homeInsight.innerHTML=drawMonthlyInsight(months);
+}
+function renderEditorialElectricity(){
+  if(!state.site||!state.daily)return;
+  const rows=state.daily.records,baseline=state.site.baseline;
+  const months=observedMonths(rows,baseline);
+  const monthArt=$("#electricMonthlyArt"),monthTable=$("#electricMonthlyTable");
+  const hydroArt=$("#hydroSeasonArt"),hydroTable=$("#hydroSeasonTable");
+  if(monthArt)monthArt.innerHTML=drawMonthlyArt(months);
+  if(monthTable)monthTable.innerHTML=drawMonthlyTable(months);
+  const monthInsight=$("#electricMonthInsight");
+  if(monthInsight)monthInsight.innerHTML=drawMonthlyInsight(months);
+  if(hydroArt)hydroArt.innerHTML=drawHydroArt(rows,baseline);
+  if(hydroTable)hydroTable.innerHTML=drawHydroTable(rows);
+  const waterInsight=$("#hydroInsight");
+  if(waterInsight)waterInsight.innerHTML=drawHydroInsight(rows);
+}
+
 function renderHomepage(){
   const baseline=state.site.baseline;
   const rows=state.ledger.workstreams||[];
@@ -549,7 +789,7 @@ function renderSources(){
   ]);
 }
 function renderAll(){
-  renderHomepage();renderProvenance();renderElectricity();renderPathways();
+  renderHomepage();renderEditorialHome();renderProvenance();renderElectricity();renderEditorialElectricity();renderPathways();
   renderAtlas();renderIndustry();renderWorkbench();renderAudit();renderSources();
   bindRoutes();
 }

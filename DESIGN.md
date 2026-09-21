@@ -67,3 +67,26 @@ measured, what was audited, what is provisional and what remains unknown.
 - The small bottom-corner welcome card is dismissible, session-scoped and auto-dismisses. It never blocks the interface, focuses itself, changes body overflow, or delays evidence loading. Deep links and reduced-motion visitors skip it.
 - Editorial movement is gentle sun/rain, chapter-art appearance and an explicitly conceptual current between research themes. It is disabled for prefers-reduced-motion; without IntersectionObserver the content remains fully visible.
 - CairoSVG is a build-time-only dependency of research CI and pinned Pages. Public visitors do not run an image converter or retrieve remote art. No artwork or social thumbnail changes the scientific release classification.
+
+## Data-led visual storytelling (September 2026)
+
+The narrative is one continuous reading path for everybody: the observed state-wide
+balance, its monthly variation, then hydro output versus stored reservoir energy.
+An interpretive sentence and source scope accompany each visual; exact recorded
+values are expandable below rather than segregated into a separate "expert" mode.
+All SVG bars, lines, labels and annotations are generated from the admitted SLDC
+**354 observed FY2024–25 daily records** and published missing-date list. Monthly
+columns display **mean energy per observed day**, not fabricated complete-month
+totals. Hydro's 7.21 TWh is **within** the 8.03 TWh of in-state generation and is
+never added as a third energy source. Reservoir storage percentages are charted
+on a different vertical scale from hydropower MU/day. Break lines and amber gap
+marks preserve the 11 missing reports; the charts never interpolate them or imply
+an authenticated 8760-hour chronology, buildable land area or 2040 capacity mix.
+The source snapshot and research audit keep distinct dates and identities.
+
+The visualization layer uses first-party SVG and existing CSS theme variables,
+not a remote charting service. Every figure has a descriptive SVG title,
+accessible label, legend, units, data provenance, observational caveat and—on
+the detailed page—an exact observed-data HTML table. Motion is optional and
+disabled for reduced-motion preferences. Browser smoke verifies the graphics
+and both line breaks as rendered, while Node checks numerical reconciliation.
