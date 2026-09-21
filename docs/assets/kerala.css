@@ -440,3 +440,141 @@ th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}th{p
   .system-story.is-visible .system-current span{animation:none!important}
   .chapter-picture img,.chapter:hover .chapter-picture img,.chapter:focus-visible .chapter-picture img{transform:none!important;transition:none!important}
 }
+
+
+/* Energy stories: one intelligible visual narrative, with exact observations in
+   expandable tables. Colours mean quantities, never confidence or buildability. */
+.energy-editorial{padding-top:clamp(68px,9vw,135px);padding-bottom:clamp(65px,8vw,110px)}
+.energy-editorial-intro{display:grid;grid-template-columns:1.35fr .7fr;gap:clamp(22px,6vw,100px);
+  align-items:end;margin-bottom:32px}
+.energy-editorial-intro h2{margin:24px 0 0}
+.energy-editorial-intro>p{font-size:clamp(14px,1.3vw,17px);line-height:1.8;
+  color:var(--ink-soft);margin:0 0 7px;max-width:460px}
+.viz-card{background:var(--surface);border:1px solid var(--line);padding:clamp(20px,3.5vw,49px);
+  position:relative;margin:0;overflow:hidden}
+.viz-card:before{content:"";position:absolute;inset:0 0 auto;height:4px;
+  background:linear-gradient(90deg,var(--leaf) 0 26.2%,var(--gold) 26.2% 100%)}
+.viz-head{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;margin-bottom:24px}
+.viz-head h2,.viz-head h3{font:500 clamp(26px,3vw,44px)/1.14 var(--display);
+  letter-spacing:-.036em;margin:9px 0 0;color:var(--ink)}
+.viz-head h2{font-size:clamp(30px,3.7vw,52px)}
+.viz-kicker{font:600 10px/1.5 var(--mono);letter-spacing:.12em;color:var(--rust)}
+.viz-stamp{font:500 10px/1.5 var(--mono);letter-spacing:.025em;color:var(--ink-soft);
+  text-align:right;max-width:220px;border-left:1px solid var(--line);padding-left:18px}
+.viz-caption{font-size:12px;line-height:1.75;color:var(--ink-soft);
+  border-top:1px solid var(--line);margin:24px 0 0;padding:18px 0 0}
+.viz-caption strong{color:var(--ink)}
+.viz-caption em{font-style:normal;font-weight:700;color:var(--ink)}
+.viz-intro{max-width:780px;font-size:14px;line-height:1.75;color:var(--ink-soft);margin:0 0 26px}
+.viz-intro strong{color:var(--ink)}
+.viz-action{padding-top:17px}
+.viz-legend{display:flex;gap:clamp(14px,2vw,34px);align-items:center;flex-wrap:wrap;
+  margin:12px 0 14px;font:600 11px/1.4 var(--body);color:var(--ink)}
+.viz-legend>span{display:inline-flex;gap:9px;align-items:center}
+.viz-key{display:inline-block;width:12px;height:12px;flex:none;border-radius:2px}
+.viz-key.import{background:var(--gold)}
+.viz-key.local{background:var(--leaf-2)}
+.viz-key.hydro{background:var(--leaf-2)}
+.viz-key.storage{background:var(--water)}
+.viz-key.gap{background:repeating-linear-gradient(135deg,var(--rust) 0 2px,transparent 2px 5px);
+  border:1px solid var(--rust)}
+.viz-art{min-width:0}
+.viz-art>.viz-unavailable{padding:30px;background:var(--surface-2);color:var(--ink-soft)}
+.balance-lead{display:flex;flex-wrap:wrap;gap:9px 24px;align-items:baseline;margin:30px 0 20px}
+.balance-lead>span{font:600 11px var(--mono);color:var(--ink-soft);
+  letter-spacing:.08em;width:100%}
+.balance-lead strong{font:500 clamp(55px,8vw,110px)/.95 var(--display);
+  letter-spacing:-.065em;color:var(--ink)}
+.balance-lead small{font:500 11px/1.5 var(--mono);color:var(--ink-soft);max-width:200px}
+.balance-track{width:100%;height:clamp(38px,5.5vw,76px);display:flex;
+  overflow:hidden;background:var(--surface-2);border:1px solid var(--line);position:relative}
+.balance-import,.balance-local{height:100%;display:block;transition:width .65s ease}
+.balance-import{background:var(--gold)}
+.balance-local{background:var(--leaf-2)}
+.balance-figures{display:grid;grid-template-columns:1fr 1fr;gap:22px;
+  margin:18px 0 28px}
+.balance-figures>div{display:grid;grid-template-columns:16px 1fr;gap:4px 12px;align-items:start}
+.balance-figures .viz-key{margin-top:5px}
+.balance-figures small{font:600 10px/1.5 var(--mono);letter-spacing:.035em;color:var(--ink-soft)}
+.balance-figures strong{grid-column:2;font:500 clamp(37px,5vw,66px)/1.12 var(--display);
+  letter-spacing:-.045em;color:var(--ink);margin:6px 0}
+.balance-figures>div>span:last-child{grid-column:2;font:500 14px var(--mono);color:var(--ink-soft)}
+.balance-hydro{background:var(--surface-2);border-left:3px solid var(--leaf);
+  display:grid;grid-template-columns:1fr minmax(110px,31%);align-items:center;
+  gap:24px;padding:18px 22px}
+.balance-hydro-text>div{display:flex;gap:11px;align-items:center}
+.balance-hydro-text strong{font:600 14px/1.4 var(--body)}
+.balance-hydro-text small{display:block;padding:9px 0 0 23px;color:var(--ink-soft);
+  font:500 11px/1.7 var(--body)}
+.hydro-subtrack{height:15px;background:var(--line);overflow:hidden}
+.hydro-subtrack>span{height:100%;display:block;background:var(--leaf-2)}
+.viz-transition{display:flex;align-items:center;gap:24px;margin:32px 0;
+  color:var(--ink-soft);text-align:center}
+.viz-transition p{font:500 clamp(15px,1.5vw,19px)/1.65 var(--display);
+  max-width:600px;margin:0 auto}
+.viz-transition strong{color:var(--ink)}
+.viz-transition-line{display:block;flex:1;height:1px;background:var(--line)}
+.viz-scroll{width:100%;overflow-x:auto;overscroll-behavior-x:contain;
+  scrollbar-width:thin;scrollbar-color:var(--gold) var(--surface-2)}
+.viz-month-svg,.viz-hydro-svg{width:100%;display:block;min-width:710px;height:auto;
+  font-family:var(--body);overflow:visible}
+.viz-month-svg{min-width:710px}
+.viz-hydro-svg{min-width:770px}
+.viz-grid{stroke:var(--line);stroke-width:1;stroke-dasharray:3 6}
+.viz-axis{fill:var(--ink-soft);font:500 12px var(--mono)}
+.viz-month{fill:var(--ink);font:700 15px var(--body)}
+.viz-month-count{fill:var(--ink-soft);font:500 11px var(--mono)}
+.viz-month-column{transition:opacity .2s}
+.viz-month-column:hover{opacity:.73}
+.viz-net-bar{fill:var(--gold)}
+.viz-local-bar{fill:var(--leaf-2)}
+.viz-empty-month{fill:var(--surface-2);stroke:var(--line);stroke-dasharray:5 5}
+.viz-gap-label{fill:var(--rust);font:600 10px var(--mono)}
+.viz-gap-stroke{stroke:var(--rust);stroke-width:3;stroke-dasharray:4 3}
+.viz-figure-note{font:500 10px/1.65 var(--mono);color:var(--ink-soft);margin:7px 0 0}
+.viz-panel-title{fill:var(--ink);font:700 15px var(--body);letter-spacing:.04em}
+.viz-panel-subtitle{fill:var(--ink-soft);font:500 12px var(--body)}
+.viz-month-guide{stroke:var(--line);stroke-width:.7;stroke-dasharray:3 9;opacity:.65}
+.viz-gap-guide{stroke:var(--rust);stroke-width:1.5;stroke-dasharray:4 4;opacity:.68}
+.viz-hydro-line{stroke:var(--leaf-2);stroke-width:3;fill:none;stroke-linecap:round;
+  stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.viz-storage-line{stroke:var(--water);stroke-width:3;fill:none;stroke-linecap:round;
+  stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.viz-hydro-dot{fill:var(--leaf-2);stroke:var(--surface);stroke-width:.6}
+.viz-storage-dot{fill:var(--water);stroke:var(--surface);stroke-width:.6}
+.viz-data-dots circle:hover{r:5;stroke-width:2}
+.viz-electricity-story,.viz-water-story{margin-bottom:clamp(25px,3.5vw,52px)}
+.viz-electricity-story{border-top:4px solid var(--gold)}
+.viz-water-story{border-top:4px solid var(--water)}
+.viz-details{margin:24px 0 0}
+.viz-details summary{cursor:pointer;color:var(--ink)}
+.viz-details summary:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+.viz-electricity-story .viz-head,.viz-water-story .viz-head{margin-bottom:16px}
+.motion-ready .viz-card.is-visible .balance-track{animation:viz-track-enter .7s ease both}
+@keyframes viz-track-enter{from{clip-path:inset(0 100% 0 0)}
+  to{clip-path:inset(0 0 0 0)}}
+@media(max-width:900px){
+  .energy-editorial-intro{grid-template-columns:1fr;gap:20px}
+  .energy-editorial-intro>p{max-width:760px}
+}
+@media(max-width:640px){
+  .energy-editorial{padding-top:60px;padding-bottom:64px}
+  .viz-head{flex-direction:column;gap:10px}
+  .viz-stamp{border-left:0;border-top:1px solid var(--line);padding:9px 0 0;
+    text-align:left;max-width:none}
+  .balance-lead{margin:24px 0 16px}
+  .balance-lead strong{font-size:clamp(44px,11vw,70px)}
+  .balance-lead small{max-width:none}
+  .balance-figures{gap:16px}
+  .balance-figures strong{font-size:clamp(30px,8vw,49px)}
+  .balance-figures>div>span:last-child{font-size:12px}
+  .balance-hydro{grid-template-columns:1fr;gap:13px;padding:16px}
+  .viz-transition-line{display:none}
+  .viz-legend{gap:9px 19px}
+  .viz-legend>span{font-size:10px}
+  .viz-figure-note{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .balance-import,.balance-local,.viz-month-column,.viz-data-dots circle{transition:none!important}
+  .motion-ready .viz-card.is-visible .balance-track{animation:none!important}
+}
