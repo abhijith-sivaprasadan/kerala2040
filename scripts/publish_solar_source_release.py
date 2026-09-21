@@ -4,7 +4,7 @@ Replaces unsafe public-release workflow. The destination MUST be private.
 Private archival remains subject to applicable source usage/access terms.
 
 Create private archive repository with an initial README, authenticate with
-GitHub CLI on your computer, and place all 17 original files in one folder.
+GitHub CLI on your computer. Originals may be in any nested subfolders.
 
   python scripts/publish_solar_source_release.py --source-dir "E:/Solar"
   python scripts/restore_solar_source_release.py --dest "E:/Solar-restore-test"
@@ -17,7 +17,7 @@ from pathlib import Path
 
 from private_archive_utils import (
     PRIVATE_ARCHIVE,
-    assert_original,
+    find_originals_in_folders,
     create_or_check_release,
     ensure_private,
     upload_exact_asset,
@@ -40,13 +40,9 @@ def main() -> None:
         parser.error(f"Originals folder not found: {source_dir}")
     if len(assets) != 17:
         parser.error(f"Expected 17 original solar-batch files, got {len(assets)}")
-    # Verify private destination and ALL local originals BEFORE remote write.
+    # Verify private destination and ALL nested originals BEFORE remote write.
     branch = ensure_private(args.archive_repo)
-    for item in assets:
-        if Path(item["name"]).name != item["name"]:
-            raise ValueError(f"Unsafe source filename: {item['name']}")
-        assert_original(source_dir / item["name"], item["bytes"], item["sha256"])
-        print(f"VERIFIED local original: {item['name']}")
+    originals = find_originals_in_folders(source_dir, assets)
     tag = manifest["release_tag"]
     create_or_check_release(
         args.archive_repo, tag, branch,
@@ -54,7 +50,7 @@ def main() -> None:
     )
     for item in assets:
         upload_exact_asset(
-            args.archive_repo, tag, source_dir / item["name"],
+            args.archive_repo, tag, originals[item["name"]],
             item["bytes"], item["sha256"],
         )
     print(
