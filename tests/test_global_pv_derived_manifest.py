@@ -1,6 +1,7 @@
 """Invariants for the user-supplied 2020 global PV-derived original layers."""
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -45,3 +46,15 @@ def test_study_rasters_do_not_claim_kerala_or_model_readiness() -> None:
         assert 0 < layer["finite"] < window["pixel_count_per_layer"]
         assert layer["min"] <= layer["median"] <= layer["max"]
     assert "not" in qa["interpretation"]["model_use"].lower() or "pending" in qa["interpretation"]["model_use"].lower()
+
+
+def test_original_publisher_readme_is_byte_identical_to_uploaded_zip_member() -> None:
+    qa = json.loads(QA.read_text(encoding="utf-8"))
+    readme = ROOT / "references/source_originals/global_pv_potential_by_country_2020_README.txt"
+    expected = next(
+        member["sha256"]
+        for archive in qa["archives"]
+        for member in archive["members"]
+        if member["name"] == "README.txt"
+    )
+    assert hashlib.sha256(readme.read_bytes()).hexdigest() == expected
