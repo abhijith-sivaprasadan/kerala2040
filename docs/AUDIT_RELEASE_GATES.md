@@ -34,8 +34,13 @@ measurement. The 8,760-hour reconstructed chronology conserves source
 daily energy but has no measured interval observations. It cannot promote
 the "measured_interval" gate to passed.
 
-The committed ERA5 manifest reports five of ten expected files; it does
-not establish completed-year weather or verified power-generation profiles.
+The legacy committed ERA5 manifest still records the original five-of-ten
+acquisition attempt, but a separate 21 September 2026 source-QA record now
+verifies all 20 bounded FY2024-25 location-quarter artifacts across five
+representative Kerala points: 8,760 UTC hours per point and 43,800 point-hours
+overall. That closes the source-acquisition/chronology gap only. It does not
+validate statewide spatial representativeness, PV/wind conversion assumptions,
+or measured power-generation profiles.
 The GIS config is an acquisition *catalogue*. Earlier locally acquired
 official flood archives require byte-level retrieval, licensing/CRS
 inventory, overlay work and technology-specific capacity ceilings before
