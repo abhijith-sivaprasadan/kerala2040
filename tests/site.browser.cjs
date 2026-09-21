@@ -147,7 +147,7 @@ async function main(){
       "Hydro chart must contextualize units and the observed low storage date");
     await page.locator("#hydroSeasonArt").scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>
-      document.querySelector("#hydroSeasonArt")?.closest(".viz-card")?.classList.contains("is-visible"));
+      document.querySelector("#hydroSeasonArt")?.closest(".viz-water-story")?.classList.contains("is-visible"));
     await page.waitForFunction(()=>
       document.querySelector("#hydroSeasonArt .viz-hydro-svg")?.classList.contains("chart-animated"));
     const hydroPaths=await page.locator("#hydroSeasonArt .viz-hydro-line").evaluateAll(elements=>
