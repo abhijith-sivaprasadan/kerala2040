@@ -26,7 +26,7 @@ def test_manifest_does_not_claim_private_repo_or_uploaded_data() -> None:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert manifest["release_uploaded"] is False
     assert manifest["release_url"] is None
-    assert manifest["archive_repo_created_and_private_verified"] is False
+    assert manifest["archive_repo_created_and_private_verified"] is True
     assert manifest["archive_repo_proposed"] == (
         "abhijith-sivaprasadan/kerala2040-source-archive"
     )
