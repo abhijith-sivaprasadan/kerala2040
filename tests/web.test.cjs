@@ -255,3 +255,59 @@ test("custom illustration, icons and social thumbnail are source authored, not m
   assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
   assert.match(css,/\.system-story\.is-visible \.system-current span/);
 });
+
+
+test("energy visuals reconcile to the observed SLDC balance without adding hydro twice",()=>{
+  const c=context(),rows=read("daily-balance.json").records;
+  c.rows=rows;
+  const balance=vm.runInContext("drawBalanceArt(rows)",c);
+  assert.match(balance,/30\.67 TWh/);
+  assert.match(balance,/22\.64 TWh/);
+  assert.match(balance,/8\.03 TWh/);
+  assert.match(balance,/7\.21 TWh/);
+  assert.match(balance,/73\.8%/);
+  assert.match(balance,/Hydropower/);
+  assert.match(balance,/not an additional source/);
+  const sums=JSON.parse(vm.runInContext(
+    'JSON.stringify({total:sumField(rows,"consumption_mu"),imports:sumField(rows,"net_import_interface_mu"),local:sumField(rows,"internal_generation_mu"),hydro:sumField(rows,"hydel_total_mu")})',c));
+  assert.ok(Math.abs(sums.total-sums.imports-sums.local)<0.01);
+  assert.ok(sums.hydro<sums.local);
+});
+test("monthly charts use observed-day means, preserve all 11 missing SLDC dates",()=>{
+  const c=context(),daily=read("daily-balance.json"),site=read("site-data.json");
+  c.days=daily.records;c.scope=site.baseline;
+  const months=JSON.parse(vm.runInContext("JSON.stringify(observedMonths(days,scope))",c));
+  assert.equal(months.length,12);
+  assert.equal(months.reduce((n,m)=>n+m.days.length,0),354);
+  assert.equal(months.reduce((n,m)=>n+m.gaps.length,0),11);
+  assert.equal(months.reduce((n,m)=>n+m.expected,0),365);
+  assert.equal(months[0].key,"2024-04");
+  assert.equal(months[11].key,"2025-03");
+  assert.equal(months[4].gaps.length,1);
+  assert.equal(months[11].gaps.length,3);
+  for(const month of months){
+    assert.ok(Math.abs(month.mean-month.meanImports-month.meanLocal)<.001);
+    assert.equal(month.days.length+month.gaps.length,month.expected);
+  }
+  c.months=months;
+  const svg=vm.runInContext("drawMonthlyArt(months)",c);
+  assert.equal((svg.match(/class="viz-month-column"/g)||[]).length,12);
+  assert.equal((svg.match(/class="viz-gap-stroke"/g)||[]).length,7);
+  assert.match(svg,/not complete monthly totals/);
+  assert.match(svg,/354\/365 dates observed/);
+});
+test("hydro and reservoir are distinct gap-broken observed lines with different units",()=>{
+  const c=context(),daily=read("daily-balance.json"),site=read("site-data.json");
+  c.days=daily.records;c.scope=site.baseline;
+  const svg=vm.runInContext("drawHydroArt(days,scope)",c);
+  const segments=daily.records.reduce((n,row,i)=>n+(
+    i>0&&Date.parse(row.date)-Date.parse(daily.records[i-1].date)>86400000?1:0
+  ),1);
+  assert.equal((svg.match(/class="viz-hydro-line"/g)||[]).length,segments);
+  assert.equal((svg.match(/class="viz-storage-line"/g)||[]).length,segments);
+  assert.equal((svg.match(/class="viz-gap-guide"/g)||[]).length,11);
+  assert.match(svg,/MU per day/);
+  assert.match(svg,/storage percent/);
+  assert.match(svg,/354\/365 reported dates/);
+  assert.doesNotMatch(svg,/8760|forecast|potential_mw/);
+});
