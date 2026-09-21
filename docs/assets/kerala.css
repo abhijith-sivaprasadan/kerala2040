@@ -578,3 +578,13 @@ th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}th{p
   .balance-import,.balance-local,.viz-month-column,.viz-data-dots circle{transition:none!important}
   .motion-ready .viz-card.is-visible .balance-track{animation:none!important}
 }
+
+.viz-insight{display:grid;grid-template-columns:42px minmax(0,1fr);gap:13px;
+  align-items:start;margin:22px 0 0;padding:19px 23px;border-left:3px solid var(--gold);
+  background:var(--surface-2);color:var(--ink)}
+.viz-insight:empty{display:none}
+.viz-insight-glyph{font:500 27px/1 var(--display);color:var(--rust)}
+.viz-insight p{margin:0;font:400 clamp(13px,1.22vw,16px)/1.8 var(--body)}
+.viz-insight strong{font-weight:700}
+.viz-insight b{font-weight:700;color:var(--leaf)}
+html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
