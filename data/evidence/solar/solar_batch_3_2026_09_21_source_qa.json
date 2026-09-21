@@ -1,0 +1,313 @@
+{
+  "schema_version": 1,
+  "qa_date_utc": "2026-09-21",
+  "classification": "USER_SUPPLIED_ZIPS_SHA256_AND_MEMBER_CRC_PASS_GLOBAL_MASK_AND_INDIA_LTA_GIS_NOT_MODEL_READY",
+  "sources": {
+    "global_pv_masks": {
+      "publisher": "The World Bank / ESMAP / Solargis",
+      "study_vintage": "2020",
+      "landing_page": "https://globalsolaratlas.info/global-pv-potential-study",
+      "source_original_readme": "masks/README.txt",
+      "licence": "CC BY 4.0 plus mandatory mediation/arbitration addition in original README"
+    },
+    "india_gsa_tiff": {
+      "publisher": "Solargis / World Bank ESMAP",
+      "version": "Global Solar Atlas 2.0",
+      "source_metadata_date": "2019-10",
+      "long_term_solar_reference_years": "1999-2018",
+      "temp_reference_years": "1994-2018",
+      "landing_page": "https://globalsolaratlas.info/download/india",
+      "licence": "CC BY 4.0 with additional publisher terms in original ISO19139 PDF/XML"
+    }
+  },
+  "archives": [
+    {
+      "name": "global-PV-RASTER-DATA-LAYERS--GlobalSol masks(1).zip",
+      "bytes": 68394344,
+      "sha256": "18c63afb05374d6a764ce020a08efc857a275b2c3a0b8f3fe3364def596d9e8d",
+      "archive_member_count": 12,
+      "non_directory_members": 11,
+      "uncompressed_bytes": 86013632,
+      "zip_crc": "PASS_all_members",
+      "data_files": [
+        {
+          "name": "bulit-up_over50_mask.tif",
+          "bytes": 2801387,
+          "sha256": "724162532938b79071b4b2648f12353a48596a7c38218241eb36b3c3331340db"
+        },
+        {
+          "name": "forest-compact_mask.tif",
+          "bytes": 8759550,
+          "sha256": "307bd36166072d66c9d9691b739786429aadceff1788524b4a72f230f00d016f"
+        },
+        {
+          "name": "landcover_cropland_mask.tif",
+          "bytes": 19405467,
+          "sha256": "f669c6fed5b12b0e07dcb260f6ada68d12f2eabbd57a16186ccd97b2326d2c8f"
+        },
+        {
+          "name": "MASK_level1.tif",
+          "bytes": 10837152,
+          "sha256": "d7538689352f3c56263f6d166290ece5e32d92ad411abaa0be7bac60b531b79b"
+        },
+        {
+          "name": "MASK_level2.tif",
+          "bytes": 14575984,
+          "sha256": "a0655fdd8aba7cd19c5835028422d4824caaa246ea104573597961e8f3aeaf42"
+        },
+        {
+          "name": "population-clusters_with-buffer25km_mask.tif",
+          "bytes": 4302415,
+          "sha256": "de0a015b0d945861527b6a83fd15c5969111a752bac51f3daacbb61860c0cc46"
+        },
+        {
+          "name": "protected-areas-with-iucn-status_mask.tif",
+          "bytes": 4883675,
+          "sha256": "9e169d4f17c3db84b0a9aeb34b38093059a423e26f2fcdbe01c3bb479c388d92"
+        },
+        {
+          "name": "terrain_elevation-range-over300m-land_mask.tif",
+          "bytes": 7171827,
+          "sha256": "46f878e48fbad4555e9d32b61ebcb4fd4452afbab7156ba1c26b922e3cad36f3"
+        },
+        {
+          "name": "terrain_elevation-std-over60m-in-30arcsec-pixel-land_mask.tif",
+          "bytes": 9406998,
+          "sha256": "e6025105e7f63fc8a7b61712d49188e233e534c945865f468bc5b919f05ff3e9"
+        },
+        {
+          "name": "waterbodies_inside-buffer2km_mask.tif",
+          "bytes": 3867480,
+          "sha256": "c72d9c8f05d22751a31f8e21712904910167ac933b6237075a6a96c157eedd9f"
+        }
+      ],
+      "readme": {
+        "name": "masks/README.txt",
+        "bytes": 1697,
+        "sha256": "ec8733000668996f7d5ebd8d0317a4ea6c66efcb16b15976d5aa9da7798fb147"
+      }
+    },
+    {
+      "name": "monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla(1).zip",
+      "bytes": 238607175,
+      "sha256": "acd82ec4f62fcc8be4bf733ab35844abaf97e7f4898f8d0db2baea00cda6959f",
+      "archive_member_count": 49,
+      "non_directory_members": 48,
+      "uncompressed_bytes": 240580692,
+      "zip_crc": "PASS_all_members",
+      "data_files": [
+        {
+          "name": "PVOUT_01.tif",
+          "bytes": 21785592,
+          "sha256": "0399c4bccce8412076a7d408e26ea62d4f4faec509a91dd8671a62a95780049f"
+        },
+        {
+          "name": "PVOUT_02.tif",
+          "bytes": 20260884,
+          "sha256": "ffe1649284802bb12d490ed7633f023637cc0b5140538f6e3dd94b3a0d0bd71f"
+        },
+        {
+          "name": "PVOUT_03.tif",
+          "bytes": 19859208,
+          "sha256": "7cdd42167aa0d7e70d1b0584f5820cb050a2dfc8add6964f6b647b4318eae8eb"
+        },
+        {
+          "name": "PVOUT_04.tif",
+          "bytes": 17862154,
+          "sha256": "67a43dda0aed09dbe947fd73bc4c36bdd0dcb5a26a9a549654b544576b990b4e"
+        },
+        {
+          "name": "PVOUT_05.tif",
+          "bytes": 20345532,
+          "sha256": "db585072d49f0f1c3ccf3bcb518639a4c1505b4b434534d8766f2b1f74137563"
+        },
+        {
+          "name": "PVOUT_06.tif",
+          "bytes": 18318706,
+          "sha256": "d3d28af094aa881585e7b89de696aac747b237936bdc5992421ad9e9f5102cf9"
+        },
+        {
+          "name": "PVOUT_07.tif",
+          "bytes": 20336252,
+          "sha256": "4b0853e6f002fa21bb0471894e240d9023972d5039312df6c3f2ab2bb6bed5f2"
+        },
+        {
+          "name": "PVOUT_08.tif",
+          "bytes": 20413230,
+          "sha256": "c586ccace64c44e5a4a1c6c97c9142288dcc2c78b348d8843a6e30c744144808"
+        },
+        {
+          "name": "PVOUT_09.tif",
+          "bytes": 18655686,
+          "sha256": "ada3e2aa00e366d208a05d44357b9e5820b5f4f10c088b3a14dfc40758c76d55"
+        },
+        {
+          "name": "PVOUT_10.tif",
+          "bytes": 21181314,
+          "sha256": "16f07b10d557c03652e7e6c3388243b6fad551a693b3ea7b14b6c3b12abbe3a6"
+        },
+        {
+          "name": "PVOUT_11.tif",
+          "bytes": 18893772,
+          "sha256": "04deb76fe2811edb553336a74237325fd26f3db2dc216e19c58ceef911087f74"
+        },
+        {
+          "name": "PVOUT_12.tif",
+          "bytes": 21698410,
+          "sha256": "0268abf0c9802314a6c01c75691a68040938c6b30f7ea4161f0e378350cbafea"
+        }
+      ],
+      "note": "12 PVOUT_01..12 GeoTIFF plus each .tif.xml .tif.pdf .tif.aux.xml; no hours or actual 2024-25 observations"
+    },
+    {
+      "name": "New folder(1).zip",
+      "bytes": 270364831,
+      "sha256": "0bce95de5cae09b43f6784cba9d5696fb5f533bbbf8c373d9ae5bc8994efa71f",
+      "archive_member_count": 26,
+      "non_directory_members": 25,
+      "uncompressed_bytes": 272883770,
+      "zip_crc": "PASS_all_members",
+      "data_files": [
+        {
+          "name": "DIF.tif",
+          "bytes": 110573692,
+          "sha256": "faad7483a0af2601d59fc6950e2d4693b9bd915cc8ae4377453a8eedf4d4e5d4"
+        },
+        {
+          "name": "GHI.tif",
+          "bytes": 152881780,
+          "sha256": "b156aea28ce53049c99b9d44b8c6c77aca582de37b8f374fbc13fd77afec6169"
+        },
+        {
+          "name": "OPTA.tif",
+          "bytes": 162935,
+          "sha256": "6726eb6b45dd3233c84233d3623bb57cf5860a32ab8b08474ecc60199f0d8b47"
+        },
+        {
+          "name": "TEMP.tif",
+          "bytes": 8701374,
+          "sha256": "22e57530899e7228ad913a1fd71679401c88f39443979ffebbfd72134fb8c4bc"
+        }
+      ],
+      "note": "user-packaged folder; also contains 7 per-layer source sidecars but DNI/GTI/PVOUT .tif are in companion ZIP"
+    },
+    {
+      "name": "New folder (2)(1).zip",
+      "bytes": 384027406,
+      "sha256": "1c6b8076e893213fea362914801c318db4094f4357bfa980d2288f39e9467d4f",
+      "archive_member_count": 4,
+      "non_directory_members": 3,
+      "uncompressed_bytes": 385978250,
+      "zip_crc": "PASS_all_members",
+      "data_files": [
+        {
+          "name": "DNI.tif",
+          "bytes": 194634736,
+          "sha256": "061b6ac2282b71283bb84efe793447a66d5381336a98d08db85ff79a0ffab5e0"
+        },
+        {
+          "name": "GTI.tif",
+          "bytes": 172059564,
+          "sha256": "4257edaa8a385f2108af91d0d9aef3a8ae48d8d2627b72be0417f6d2d44a61d7"
+        },
+        {
+          "name": "PVOUT.tif",
+          "bytes": 19283950,
+          "sha256": "8f09393e357ecaf4eaad3abf86b4b7d1824fdf5fe3583c5a8845955737e57640"
+        }
+      ],
+      "note": "companion user-packaged source TIFFs; original publisher sidecars are in New folder(1).zip"
+    }
+  ],
+  "raster_properties": {
+    "mask_components": {
+      "crs": "EPSG:4326",
+      "grid_resolution_deg": [
+        0.008333333333333333,
+        0.008333333333333333
+      ],
+      "shape": [
+        21600,
+        43200
+      ],
+      "example": "forest-compact_mask.tif",
+      "classes": [
+        0,
+        1
+      ],
+      "comment": "NO legal status asserted by study mask"
+    },
+    "mask_composites": {
+      "crs": "EPSG:4326",
+      "grid_resolution_deg": [
+        0.008333333333333333,
+        0.008333333333333333
+      ],
+      "shape": [
+        15000,
+        43200
+      ],
+      "bounds_lonlat": [
+        -180,
+        -55,
+        180,
+        70
+      ],
+      "example": "MASK_level2.tif",
+      "dtype": "uint8",
+      "nodata": 255
+    },
+    "india_monthly_pvout": {
+      "crs": "EPSG:4326",
+      "shape": [
+        3840,
+        3840
+      ],
+      "bounds_lonlat": [
+        66,
+        6,
+        98,
+        38
+      ],
+      "resolution_arcsec": 30,
+      "dtype": "float32",
+      "nodata": 1.1754943508222875e-38,
+      "source_units": "kWh/kWp per calendar month averaged across 1999-2018; NOT daily kWh/kWp",
+      "source": "embedded ISO19139 PVOUT_01.tif.xml"
+    },
+    "india_annual": {
+      "crs": "EPSG:4326",
+      "bounds_lonlat": [
+        66,
+        6,
+        98,
+        38
+      ],
+      "layer_resolutions_arcsec": {
+        "GHI": 9,
+        "DIF": 9,
+        "DNI": 9,
+        "GTI": 9,
+        "PVOUT": 30,
+        "TEMP": 30,
+        "OPTA": 120
+      },
+      "sources": "embedded 2019 ISO19139 .tif.xml and .tif.pdf; GHI/DNI/DIF/GTI yearly kWh/m2, PVOUT yearly kWh/kWp, TEMP deg C"
+    }
+  },
+  "interpretation": {
+    "geography": "global mask data and entire India GSA products; none clipped to Kerala",
+    "semantics": "mask cells 0/1 numerically but study methodology required to interpret permitted/excluded layers and combination; do not use as Kerala statutory restrictions",
+    "overlap": "annual and monthly GSA GeoTIFF format equivalents overlap original prior India AAIGRID layer types; not independent empirical solar datasets",
+    "model_readiness": false,
+    "reproducible_remote_binary_storage": false,
+    "originals_redistribution_review": "must check GSA/World Bank dataset licence and preserve README, ISO PDFs/XML before public GitHub release",
+    "missing_for_model": [
+      "exact Kerala polygon clipping and original-grid edge handling",
+      "layer-specific CRS/nodata/units and completeness QA for full files",
+      "ERA5 FY2024-25 hourly PV conversion and independent partial station validation",
+      "legal land exclusion from authoritative Kerala agencies",
+      "future technology-specific PV, finance and grid constraints"
+    ]
+  }
+}
