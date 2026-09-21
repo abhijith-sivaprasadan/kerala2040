@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "reviewed_date": "2026-09-22",
+  "source_manifest": "data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json",
+  "wind_source_qa": "data/evidence/gis/niwe_150m_user_supplied_source_qa_2026_09_21.json",
+  "scope": "Six illustrative city-coordinate nearest cells and original NWIC FY2024-25 records; NOT a state polygon zonal analysis or measured statewide generation.",
+  "method": "Sample matching GSA India 2019 EPSG:4326 PVOUT rasters at point lon/lat and compare previously provided monthly-total and average-daily original TIFFs. Wind: nearest grid row in complete NIWE national 150m CSV. NWIC: date-filter 2024-04-01 inclusive to 2025-04-01 exclusive; group station and check numeric values and native timestamp differences.",
+  "solar_unit_reconciliation": {
+    "annual_total_over_daily_expected": 365.25,
+    "february_monthly_total_over_daily_expected": 28.25,
+    "other_monthly_total_over_daily_expected": "30 or 31 matching calendar month",
+    "observed": "All six annual PVOUT ratios 365.24991 to 365.25003, monthly ratios 30/31 or February ~28.25; annual totals vs summed twelve monthly totals within 0.0113% at six sample locations. February 28.25 represents leap-day average over 1999-2018, NOT 2025's 28-day February.",
+    "full_raster_checked": false,
+    "model_approval": false
+  },
+  "six_city_illustrative": [
+    {
+      "site": "Thiruvananthapuram",
+      "lon": 76.9366,
+      "lat": 8.5241,
+      "pvout_kWh_per_kWp_year": 1582.26,
+      "pvout_kWh_per_kWp_mean_day": 4.332,
+      "pvout_annual_vs_month_sum_pct": 0.0105,
+      "pvout_seasonality_max_min_month_avg_day": 1.427,
+      "niwe_mean_wind_m_s_150m": 4.674,
+      "niwe_wpd_w_m2_150m": 112.27,
+      "niwe_nearest_point_approx_km": 0.26
+    },
+    {
+      "site": "Kochi",
+      "lon": 76.2673,
+      "lat": 9.9312,
+      "pvout_kWh_per_kWp_year": 1575.32,
+      "pvout_kWh_per_kWp_mean_day": 4.313,
+      "pvout_annual_vs_month_sum_pct": -0.0047,
+      "pvout_seasonality_max_min_month_avg_day": 1.615,
+      "niwe_mean_wind_m_s_150m": 3.193,
+      "niwe_wpd_w_m2_150m": 36.858,
+      "niwe_nearest_point_approx_km": 0.2
+    },
+    {
+      "site": "Palakkad",
+      "lon": 76.6548,
+      "lat": 10.7867,
+      "pvout_kWh_per_kWp_year": 1534.05,
+      "pvout_kWh_per_kWp_mean_day": 4.2,
+      "pvout_annual_vs_month_sum_pct": 0.003,
+      "pvout_seasonality_max_min_month_avg_day": 1.811,
+      "niwe_mean_wind_m_s_150m": 7.879,
+      "niwe_wpd_w_m2_150m": 420.53,
+      "niwe_nearest_point_approx_km": 0.12
+    },
+    {
+      "site": "Idukki",
+      "lon": 76.9731,
+      "lat": 9.8494,
+      "pvout_kWh_per_kWp_year": 1472.69,
+      "pvout_kWh_per_kWp_mean_day": 4.032,
+      "pvout_annual_vs_month_sum_pct": -0.0088,
+      "pvout_seasonality_max_min_month_avg_day": 2.042,
+      "niwe_mean_wind_m_s_150m": 4.684,
+      "niwe_wpd_w_m2_150m": 133.21,
+      "niwe_nearest_point_approx_km": 0.12
+    },
+    {
+      "site": "Kozhikode",
+      "lon": 75.7804,
+      "lat": 11.2588,
+      "pvout_kWh_per_kWp_year": 1577.15,
+      "pvout_kWh_per_kWp_mean_day": 4.318,
+      "pvout_annual_vs_month_sum_pct": 0.007,
+      "pvout_seasonality_max_min_month_avg_day": 1.637,
+      "niwe_mean_wind_m_s_150m": 3.336,
+      "niwe_wpd_w_m2_150m": 45.116,
+      "niwe_nearest_point_approx_km": 0.2
+    },
+    {
+      "site": "Kannur",
+      "lon": 75.3704,
+      "lat": 11.8745,
+      "pvout_kWh_per_kWp_year": 1581.17,
+      "pvout_kWh_per_kWp_mean_day": 4.329,
+      "pvout_annual_vs_month_sum_pct": 0.0113,
+      "pvout_seasonality_max_min_month_avg_day": 1.7,
+      "niwe_mean_wind_m_s_150m": 3.494,
+      "niwe_wpd_w_m2_150m": 49.096,
+      "niwe_nearest_point_approx_km": 0.07
+    }
+  ],
+  "NWIC_FY2024_25": {
+    "solar": {
+      "csv_total_rows": 181115,
+      "fy_rows": 6007,
+      "fy_zeros": 6007,
+      "fy_nonzero": 0,
+      "fy_missing_numeric": 0,
+      "fy_station_rows": {
+        "AMBALAPUZHA": 5986,
+        "KULAMAVU": 21
+      },
+      "fy_value_status": "REJECT_UNUSABLE_AS_IRRADIANCE_VALIDATION_all_zero_daytime",
+      "historical_csv_nonzero_values_in_2021_22": 77341,
+      "frequency_observed": "predominantly 30 minutes, despite filename/hourly label"
+    },
+    "wind": {
+      "csv_total_rows": 217754,
+      "fy_rows": 10946,
+      "fy_station_rows": {
+        "AMBALAPUZHA": 5096,
+        "KULAMAVU": 5850
+      },
+      "fy_station_median_km_h": {
+        "AMBALAPUZHA": 1.5,
+        "KULAMAVU": 3.3
+      },
+      "fy_station_max_km_h": {
+        "AMBALAPUZHA": 12.7,
+        "KULAMAVU": 21
+      },
+      "frequency_observed": "predominantly 30 minutes, despite filename/hourly label",
+      "source_unit": "km/h",
+      "NIWE_height": "150m",
+      "instrument_height_unknown": true,
+      "timezone_unknown": true,
+      "complete_year": false
+    }
+  },
+  "floating_solar_from_user_supplied_NISE_2026_report": {
+    "classification": "publisher_2026_INDICATIVE_SCENARIO_not_site_permit",
+    "source_path_in_upload": "Solar.zip/Solar/NISE_floating potential_report_2026.pdf",
+    "source_page": "Table 6 (printed p.41) and Kerala annexure (printed pp.67-70)",
+    "Kerala_waterbody_area_km2": 219.02,
+    "Kerala_feasible_area_km2": 109.19,
+    "Kerala_feasible_scenario_GWp": 5.73,
+    "Kerala_20percent_area_scenario_km2": 42.29,
+    "Kerala_20percent_area_scenario_GWp": 2.22,
+    "data_qa_warning": "Kerala annexure includes multiple entries named 'Arabian Sea' among 'water body' records and repeat/odd landform labels; review source geometry and site eligibility before using 2.22 GWp as project cap."
+  },
+  "study_configuration": {
+    "source": "Global PV Power Potential by Country / World Bank ESMAP Solargis (2020), user uploaded PDF",
+    "base_PVOUT": "ground-mounted fixed optimum-tilt monofacial crystalline-Si project model; not roof/floating/bifacial/specific AC project",
+    "assumed_soiling_loss_pct": 3.5,
+    "other_losses_pct": 7.5,
+    "assumed_availability_pct": 100,
+    "simplified_lcoe_source_year_for_CAPEX": 2018,
+    "non_OECD_wacc_illustrative_pct": 10,
+    "degradation_first_year_pct": 0.8,
+    "degradation_later_years_pct": 0.5,
+    "meaning": "Study assumptions not calibrated Kerala2040 design inputs."
+  },
+  "data_readiness": {
+    "NIWE_national_source_acquired": true,
+    "GSA_India_long_term_source_acquired": true,
+    "ERA5_FY_hourly_source_QA_passed": true,
+    "NWIC_solar_baseline_valid": false,
+    "NWIC_wind_baseline_partial": true,
+    "Kerala_polygon_clipping_complete": false,
+    "legal_siting_screen_complete": false,
+    "offshore_resource_acquired": false,
+    "raw_17_assets_archived_in_public_GitHub_release": false,
+    "model_ready": false
+  }
+}
