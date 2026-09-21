@@ -1,0 +1,54 @@
+{
+  "classification": "EXACT_NWIC_KERALA_ONSHORE_RESOURCE_CLIPS_SOURCE_DERIVED_NOT_INSTALLABLE_MW_NOT_FY_GENERATION",
+  "date": "2026-09-22",
+  "originals_storage": "local_user_uploads_not_GitHub_release",
+  "derived_binary_storage": "downloadable_conversation_ZIP_NOT_committed_to_GitHub",
+  "derived_bundle_filename": "kerala2040_resource_clips_2026_09_22.zip",
+  "derived_bundle_sha256": "c387752ba391494c83fb407b67ee25699d197ae7c08fae47ba281d14f43d3652",
+  "derived_bundle_bytes": 5715157,
+  "source_boundary": {
+    "agency": "NWIC National Water Data Portal; original feature states Survey of India",
+    "landing_page": "https://nwdp.nwic.gov.in/dataset/state-boundary",
+    "original_sha256": "a932ea29e7afd0fea1e1068f3beeeadb760e6b2baae9783f5822bbefd4224ebd",
+    "original_crs": "EPSG:7755",
+    "output_crs": "EPSG:4326",
+    "bounds": [
+      74.86433401590513,
+      8.292707436852217,
+      77.41224235944739,
+      12.795602379977375
+    ]
+  },
+  "clip_rule": "Raster native-grid pixel centres, NIWE original coordinate point centres; strict inside state polygon; sea/offshore and neighbours excluded",
+  "NIWE": {
+    "source": "https://niwe.res.in/Open_data_Set/open_wind_dataset/11/",
+    "user_upload_SHA256": "54196bfa8dfa27295db7f71f100ac63c0b4a77d1dace4da2ae5f9ee2c869d849",
+    "national_source_rows": 19475568,
+    "inside_Kerala_points": 200692,
+    "median_150m_wind_speed_m_s": 3.91,
+    "p95_150m_speed_m_s": 7.766,
+    "median_150m_wpd_W_m2": 78.9255,
+    "redistribution_rights_unverified": true
+  },
+  "GSA": {
+    "source": "https://globalsolaratlas.info/download/india",
+    "attribution": "Global Solar Atlas 2.0 / Solargis / World Bank Group / ESMAP",
+    "source_vintage": "1999-2018 long-term",
+    "native_grid_PVOUT_cells": 46241,
+    "native_grid_GHI_cells": 513823,
+    "PVOUT_median_kWh_kWp_year": 1493.507,
+    "PVOUT_median_kWh_kWp_day": 4.089,
+    "GHI_median_kWh_m2_year": 1856.566,
+    "all_46241_annual_daily_ratio_365_25_checked": true
+  },
+  "model_ready": false,
+  "capacity_MW": null,
+  "offshore_assessed": false,
+  "code_path": "scripts/build_kerala_onshore_resource_clips.py",
+  "uncommitted_or_missing": [
+    "original source binaries",
+    "derived ZIP and native TIFF/PNG binaries in GitHub",
+    "licence authorization",
+    "legal siting and grid constraints"
+  ]
+}
