@@ -292,7 +292,11 @@
         "AMBALAPUZHA": 5986,
         "KULAMAVU": 21
       },
-      "unit": "W/m2"
+      "unit": "W/m2",
+      "all_values_zero": true,
+      "daytime_values_positive": 0,
+      "source_qa_status": "REJECT_FY2024_25_IRRADIANCE_VALIDATION_all_6007_samples_zero",
+      "native_time_step_minutes": 30
     },
     "wind": {
       "total_rows": 217754,
@@ -302,10 +306,12 @@
         "AMBALAPUZHA": 5096,
         "KULAMAVU": 5850
       },
-      "unit": "km/h"
+      "unit": "km/h",
+      "native_time_step_minutes": 30
     },
-    "caveat": "The filename date range is NOT actual complete coverage; observed timestamps cluster around May-Oct 2024 and Mar 2025. Timestamp timezone and sensor height not verified."
+    "caveat": "Critical correction after full numeric scan: FY2024-25 solar values are 6007/6007 zero (Ambalapuzha 5986, Kulamavu 21), including daytime; unusable as irradiance validation. Original provider calls telemetry 'hourly' but timestamps principally occur every 30 minutes. Wind 10946 in-FY records contain positive numeric values; sensor height/time zone and instrument status unverified. Historical 2021-22 solar contains nonzero values, not period-matched FY2024-25 validation."
   },
   "additional_batch_qa": "data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json",
-  "latest_batch_qa": "data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json"
+  "latest_batch_qa": "data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json",
+  "consolidated_analysis": "docs/SOLAR_WIND_CONSOLIDATED_ANALYSIS_2026_09_22.md"
 }
