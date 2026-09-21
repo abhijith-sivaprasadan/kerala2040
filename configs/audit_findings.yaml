@@ -178,7 +178,13 @@ findings:
       Remaining work is scientific model admission: define and validate the
       spatial selection/interpolation plus PV/wind transformations against
       appropriate measured generation/resource evidence before use in 2040 runs.
-    evidence: data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json
+      CRITICAL: acquired NWDP FY2024-25 solar radiation CSV has 6007/6007
+      all-zero values (including daytime) and must NOT be used as solar
+      validation. The 10946 NWDP wind values are only partial 30-minute
+      station measurements with height/timezone still unknown. GSA long-term
+      PVOUT climatology and NIWE 150m mean wind cannot stand in for
+      measured FY2024-25 power output.
+    evidence: docs/SOLAR_WIND_CONSOLIDATED_ANALYSIS_2026_09_22.md
   - id: technology_costs_finance
     priority: P0
     check: technology_costs
