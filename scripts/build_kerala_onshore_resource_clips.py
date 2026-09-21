@@ -146,21 +146,22 @@ def process(source_dir: Path, artifact_zip: Path, output: Path) -> dict:
     if hashlib.sha256(inner).hexdigest() != INNER_SHA:
         raise ValueError("Original NIWE member SHA mismatch")
     rows, source_rows = [], 0
-    with zipfile.ZipFile(io.BytesIO(inner)) as archive:
-        with archive.open("150m_Map_Data_A_to_G.csv") as stream:
-            for chunk in pd.read_csv(stream, chunksize=200_000):
-                source_rows += len(chunk)
-                lon = chunk["Longitude (E)"].to_numpy(dtype="float64")
-                lat = chunk["Latitude (N)"].to_numpy(dtype="float64")
-                in_box = (
-                    (lon >= geom.bounds[0]) & (lon <= geom.bounds[2]) &
-                    (lat >= geom.bounds[1]) & (lat <= geom.bounds[3])
-                )
-                if in_box.any():
-                    idx = np.flatnonzero(in_box)
-                    inside = contains_xy(geom, lon[idx], lat[idx])
-                    if inside.any():
-                        rows.append(chunk.iloc[idx[inside]])
+    with zipfile.ZipFile(io.BytesIO(inner)) as archive, archive.open(
+        "150m_Map_Data_A_to_G.csv"
+    ) as stream:
+        for chunk in pd.read_csv(stream, chunksize=200_000):
+            source_rows += len(chunk)
+            lon = chunk["Longitude (E)"].to_numpy(dtype="float64")
+            lat = chunk["Latitude (N)"].to_numpy(dtype="float64")
+            in_box = (
+                (lon >= geom.bounds[0]) & (lon <= geom.bounds[2]) &
+                (lat >= geom.bounds[1]) & (lat <= geom.bounds[3])
+            )
+            if in_box.any():
+                idx = np.flatnonzero(in_box)
+                inside = contains_xy(geom, lon[idx], lat[idx])
+                if inside.any():
+                    rows.append(chunk.iloc[idx[inside]])
     if source_rows != 19_475_568:
         raise ValueError(f"NIWE source row count changed: {source_rows}")
     if not rows:
