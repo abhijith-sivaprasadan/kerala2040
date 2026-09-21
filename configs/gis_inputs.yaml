@@ -117,14 +117,44 @@ layers:
     note: >-
       NWIA atlas is not an official current legal geometry; SWAK draft briefs
       and WIAMS portal are not final notification polygons. Keep all separate.
+  kerala_lris_land_resources:
+    source: Kerala Land Use Department / LRIS 2.0
+    landing_page: https://lris.kslub.kerala.gov.in/app/
+    data_access_faq: https://kslub.kerala.gov.in/?page_id=371&lang=en
+    source_discovery: docs/LRIS_NIWE_KMML_SOURCE_DISCOVERY_2026_09_21.md
+    expected_format: native_class_coded_vector_or_raster_plus_legend_and_reuse_permission
+    raw_path: data/external/gis/lris
+    role: complementary_local_land_use_paddy_wetland_soil_drainage_screening
+    acquisition_status: request_letter_and_possible_fee_required_no_native_files_acquired
+    note: >-
+      Portal renders local-area thematic overlays, not verified downloadable
+      native GIS data. Official FAQ requests a purpose-specific letter to the
+      Land Use Commissioner and describes payment at government-fixed rates.
+      Request full statewide scope or named district/localbody subsets, dates,
+      class IDs, CRS, scale, geometry and terms. The mapped Forest/Wetlands
+      class is NOT gazette-linked legal protected-area/wetland geometry and
+      is not a replacement for FY2024-25 NRSC native LULC.
+
   niwe_wind_atlas_150m:
     source: National Institute of Wind Energy
     landing_page: https://niwe.res.in/Open_data_Set/open_wind_dataset/
-    expected_format: national_archive
+    exact_dataset_page: https://niwe.res.in/Open_data_Set/open_wind_dataset/11/
+    visualization: https://maps.niwe.res.in/resource_map/map/150m/
+    source_discovery: docs/LRIS_NIWE_KMML_SOURCE_DISCOVERY_2026_09_21.md
+    expected_format: original_national_zip_with_csv_500m_grid_at_150m_height
+    advertised_archive_name: 150m_Map_Data_A_to_G.zip
+    advertised_unpacked_file_name: 150m_Map_Data_A_to_G.csv
     raw_path: data/external/gis/niwe/wind_atlas_150m
-    role: wind_resource_potential
-    acquisition_status: download_form_required
-    access_note: full archive is large and should not be mirrored to Git
+    role: wind_resource_potential_climatology_not_hourly_generation
+    acquisition_status: original_zip_available_via_named_consent_form_NOT_acquired
+    access_note: >-
+      Official listing advertises 240.30 MB ZIP containing 836.64 MB CSV;
+      150m is height, 500m is stated horizontal grid resolution. Named
+      download form requires an academic/research/educational use undertaking.
+      Do not bypass user consent or mirror raw data publicly without permission.
+      Actual source vintage is not stated. Preserve original ZIP hash, column
+      definitions, CRS, grid, licence, source vintage and Kerala spatial clip;
+      verify red-border wind pockets are actually in Kerala, not Tamil Nadu.
   western_ghats_esa:
     source: Ministry of Environment Forest and Climate Change
     landing_page: https://www.moef.gov.in/esa-notifications
