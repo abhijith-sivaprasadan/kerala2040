@@ -17,6 +17,7 @@ from kerala2040.gis_three_workstreams import audit_gis
 
 QA = "data/external/sldc_fy2024_25/qa_report.json"
 ERA5 = "public/era5-daily-manifest.json"
+ERA5_QA = "data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json"
 TECH = "configs/techno_economics.yaml"
 GIS = "configs/gis_inputs.yaml"
 LULC = "configs/lulc_native_acquisition_2024_25.yaml"
@@ -63,6 +64,7 @@ def _missing_costs(node: Any, prefix: str = "") -> list[str]:
 def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
     qa = _json(root, QA)
     era = _json(root, ERA5)
+    era_qa = _json(root, ERA5_QA)
     techno = _yaml(root, TECH)
     gis = _yaml(root, GIS)
 
@@ -93,14 +95,26 @@ def inspect_committed_evidence(root: Path) -> dict[str, dict[str, str]]:
     total = int(era["files_expected"])
     files = era["files"]
     if succeeded != len(files) or not 0 <= succeeded <= total:
-        raise ValueError("ERA5 manifest file counts inconsistent")
-    # Even a complete manifest is NOT independently calibrated power output.
+        raise ValueError("ERA5 legacy manifest file counts inconsistent")
+    if (
+        era_qa.get("classification") != "verified_reanalysis_source_not_model_ready"
+        or era_qa.get("full_year_source_qc_passed") is not True
+        or int(era_qa.get("representative_points", 0)) != 5
+        or int(era_qa.get("location_quarters_verified", 0)) != 20
+        or int(era_qa.get("hours_per_point", 0)) != 8760
+        or int(era_qa.get("point_hours_verified", 0)) != 43800
+    ):
+        raise ValueError("ERA5 full-year source QA summary is incomplete or inconsistent")
+    # Source acquisition/chronology is now verified, but renewable-resource
+    # transformation and model admission remain separate scientific checks.
     weather = _check(
-        STATUS_PARTIAL if succeeded else STATUS_BLOCKED,
-        f"{succeeded}/{total} ERA5 source files recorded. Weather-resource modelling "
-        "and measured generation validation are separate; the full-year profile "
-        "is not certified by this acquisition manifest.",
-        ERA5,
+        STATUS_PARTIAL,
+        "FY2024-25 ERA5 source acquisition passed byte-level and chronology QA at "
+        "5 representative points: 20/20 location-quarters, 8,760 UTC hours per "
+        "point and 43,800 point-hours overall. PV/wind conversion assumptions, "
+        "statewide spatial representativeness and measured-generation validation "
+        "remain unverified, so this check is not model-ready.",
+        ERA5_QA,
     )
     grid = techno["model_input_grid"]
     unresolved = _missing_costs(grid["technologies"], "technologies.")
