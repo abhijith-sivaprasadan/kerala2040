@@ -93,23 +93,40 @@ All rasters are **EPSG:4326, India 66–98°E and 6–38°N**. Irradiation has 9
 
 **Source:** [Global Solar Atlas 2.0 India download](https://globalsolaratlas.info/download/india) — Solargis, World Bank Group / ESMAP; original files dated October 2019. Attribution and usage conditions remain attached to the original ISO19139 metadata. This is an **alternative format/normalisation of previously supplied Global Solar Atlas climatology**, *not* independently measured FY2024–25 PV production, a new station series, or a commissioned project capacity estimate.
 
-## Storage in THIS repository, not another transient chat upload
+## Permanent raw source storage — PRIVATE archive only
 
-Standard GitHub file history is **not** a safe target for 317 MB, 272 MB, 465 MB, 489 MB and further up-to-384 MB originals (GitHub rejects normal >100 MB blobs). Do not commit these or 10 GB of unpacked `.asc` to Git history.
+**User decision (22 September 2026): private, not public.** The public
+`kerala2040` repository contains source provenance, attribution, SHA256
+and transformation code; original third-party ZIP/PDF bytes must go to a
+**separate PRIVATE** GitHub repository, tentatively
+`abhijith-sivaprasadan/kerala2040-source-archive`. This private repository
+is **not yet created or accessible**, and all 17 solar original assets plus
+the NIWE original remain **not uploaded**. Do not claim otherwise or point
+to the old planned public GitHub Release.
 
-The project now includes:
+Use the private-only
+[solar uploader](../scripts/publish_solar_source_release.py),
+[NIWE uploader and SHA256 restore](../scripts/publish_niwe_original_release.py),
+and [solar SHA256 restore](../scripts/restore_solar_source_release.py).
+Each refuses a public/missing destination. The accompanying
+[handoff guide](RENEWABLE_FIVE_STEP_HANDOFF_2026_09_22.md)
+contains private-repository setup and commands.
 
-- `data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json` — provider, SHA256, bytes, internal members and QA classification;
-- `scripts/publish_solar_source_release.ps1` — Windows/PowerShell checksum-gated upload to this repo's permanent Release asset storage **after public redistribution rights review**;
-- `scripts/restore_solar_source_release.py` — fetch every exact original from that same release, verify hashes and restore into ignored `data/external/raw/solar/source_2026_09_21`.
-
-Once uploaded and published, the project assets live under
-`https://github.com/abhijith-sivaprasadan/kerala2040/releases/tag/solar-source-2026-09-21`.
-**As of this note that link is only the intended destination; don't treat it as an available binary download or cite its assets until verified.** Release assets are hosted *with* the repository but are not versioned Git files; the manifest fixes identity independently of release tag/name.
+A public landing page does not authorize public re-hosting. A private
+archive also remains subject to source access/use terms. Keep it restricted
+to authorized users; never add account tokens or signed access URLs to
+this source manifest. GitHub private Release assets are hosted with the
+**separate private repository**, not tracked as Git blobs in public
+`kerala2040`. A local hash or matching remote size is insufficient:
+**download and verify the remote asset SHA256**, then change
+`release_uploaded` to true only after all 17 originals pass.
 
 ## After archiving
 
-1. Confirm remote Release assets' names/sizes and restore SHA256 before switching `release_uploaded` to true.
-2. Create a Kerala polygon clip from **the exact original GSA rasters** and document CRS/nodata/resolution/units and coast/border handling.
-3. Compare overlapping station periods against ERA5 with explicit time-zone and height conversions; avoid extrapolating two stations to statewide validation.
-4. Keep PV historical module-degradation sensitivity separate from measured solar resource, contemporary module classes and future battery technology assumptions.
+1. Verify the private repository really is private and initialized.
+2. Upload each SHA256-pinned original to its appropriate private Release.
+3. Restore and SHA256-verify every solar asset and NIWE `Wind.zip`.
+4. Produce additional exact NWIC Kerala polygon clips and refine
+   technology-specific and legal siting constraints.
+5. Compare available ERA5 profiles against valid independent observations;
+   the FY2024–25 all-zero NWDP solar series is not validation.
