@@ -17,16 +17,10 @@ The user chose a **private archive**, not public redistribution. The public
 has original filenames, byte sizes, provenance and SHA256 only;
 `release_uploaded` remains **false**. Separate original NIWE `Wind.zip` is
 also SHA256-pinned. The proposed private destination is
-`abhijith-sivaprasadan/kerala2040-source-archive`, which does **not yet exist**
-or has not been verified accessible/private. Do **not** upload raw originals
+[`abhijith-sivaprasadan/kerala2040-source-archive`](https://github.com/abhijith-sivaprasadan/kerala2040-source-archive), **verified PRIVATE with an initialized `main` branch and README on 22 September 2026**. No original binary assets have been uploaded yet. Do **not** upload raw originals
 or derived source extracts to public `kerala2040` Releases.
 
-**One-time user setup (GitHub UI):** create a **PRIVATE** repository named
-`kerala2040-source-archive` under `abhijith-sivaprasadan`, initialize it
-with a README so the default branch exists, and keep access limited to
-authorized people. Install and log in to [GitHub CLI](https://cli.github.com/)
-on the local machine; keep all 17 original solar-batch files together,
-named exactly as in the manifest, plus original `Wind.zip` separately.
+**Private repository is created and its visibility and `main` README verified.** Keep its access limited to authorized people. Install and log in to [GitHub CLI](https://cli.github.com/) on the local machine; keep all 17 original solar-batch files together, named exactly as in the manifest, plus original `Wind.zip` separately.
 
 Run from a current local checkout of public `kerala2040`:
 
