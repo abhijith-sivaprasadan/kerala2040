@@ -133,7 +133,7 @@ function animateObservedPaths(root){
   root.classList.add("chart-animated");
 }
 function animateVisibleArtwork(){
-  $$(".viz-card.is-visible svg").forEach(animateObservedPaths);
+  $$(".viz-card.is-visible svg, .viz-electricity-story.is-visible svg, .viz-water-story.is-visible svg").forEach(animateObservedPaths);
   if(state.route==="electricity")animateObservedPaths($("#energyChart svg"));
 }
 function setupMotion(){
@@ -143,14 +143,14 @@ function setupMotion(){
     entries.forEach(entry=>{
       if(entry.isIntersecting){
         entry.target.classList.add("is-visible");
-        if(entry.target.classList.contains("viz-card")){
+        if(entry.target.matches(".viz-card, .viz-electricity-story, .viz-water-story")){
           entry.target.querySelectorAll("svg").forEach(animateObservedPaths);
         }
         observer.unobserve(entry.target);
       }
     });
   },{threshold:0.14});
-  $$(".system-story, .chapter, .viz-card").forEach(element=>observer.observe(element));
+  $$(".system-story, .chapter, .viz-card, .viz-electricity-story, .viz-water-story").forEach(element=>observer.observe(element));
 }
 function go(route){
   const target=routeIds.includes(route)?route:"overview";
