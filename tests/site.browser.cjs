@@ -90,6 +90,8 @@ async function main(){
       "Homepage monthly comparison must contain twelve observed-period columns");
     check(await page.locator("#homeMonthlyArt .viz-gap-stroke").count()===7,
       "Seven months with unverified daily reports must visibly flag gaps");
+    check((await page.locator("#homeMonthlyInsight").innerText()).includes("The mix moves"),
+      "Monthly figure is missing its source-derived explanation");
     console.log("PASS EDITORIAL HOME: balance totals, hydro subset, twelve month columns and gaps");
     await visible(page.locator("#welcomeCard"),"First-visit welcome");
     check(await page.locator("#main").isVisible(),"Splash cannot block content");
@@ -123,6 +125,10 @@ async function main(){
       "Storage line wrongly connects missing dates");
     check(await page.locator("#hydroSeasonTable tbody tr").count()===354,
       "Exact hydro and reservoir readings not exposed");
+    check((await page.locator("#electricMonthInsight").innerText()).includes("net imports"),
+      "Electricity month chart must explain the changing mix");
+    check((await page.locator("#hydroInsight").innerText()).includes("same reported date"),
+      "Hydro chart must contextualize units and the observed low storage date");
     console.log("PASS EDITORIAL ELECTRICITY: twelve months, observed-day table and two gapped water series");
     await visible(page.locator("#energyChart svg"),"Daily observed electricity chart");
     check((await page.locator("#energyChartCaption").innerText()).includes("11 unverified"),
