@@ -1,0 +1,29 @@
+{
+  "classification": "verified_reanalysis_source_not_model_ready",
+  "verified_at_utc": "2026-09-21T17:47:47Z",
+  "verification_workflow_run_id": 35634190166,
+  "verification_workflow_url": "https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35634190166",
+  "verification_commit": "273f95afb1b305428233e5c57da5cf4ed432f107",
+  "source_recovery_runs": {
+    "apr_dec_2024": 35622527064,
+    "jan_mar_2025_reacquisition": 35623051780
+  },
+  "full_year_source_qc_passed": true,
+  "representative_points": 5,
+  "location_quarters_verified": 20,
+  "hours_per_point": 8760,
+  "point_hours_verified": 43800,
+  "variables_verified": ["t2m", "u10", "v10", "ssrd", "tp"],
+  "checks": [
+    "GitHub artifact count",
+    "retrieval manifest provenance",
+    "NetCDF component SHA-256 and byte size",
+    "original CDS ZIP SHA-256 and member identity",
+    "UTC hourly chronology without gaps or duplicates",
+    "variable identities and exact units",
+    "finite array values",
+    "source grid coordinates",
+    "stable grid geometry across quarters per point"
+  ],
+  "scope_warning": "This closes the FY2024-25 ERA5 representative-point source-acquisition and chronology gap only. It does not validate statewide renewable resource potential, PV/wind conversion assumptions, measured generation, or model admission."
+}
