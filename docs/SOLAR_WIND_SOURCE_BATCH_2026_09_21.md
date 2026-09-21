@@ -60,9 +60,26 @@ A deliberately broad **74–78°E × 8–13°N** sampling window reads sensibly,
 
 Publisher's **original README.txt** states CC BY 4.0 with an additional mandatory mediation/arbitration clause. Preserve it when distributing and check the [current terms of use](https://globalsolaratlas.info/support/terms-of-use). Attribution: **© 2020 The World Bank; data provided by Solargis, financed by ESMAP.**
 
+## Third source batch — World Bank masks + additional India GeoTIFFs (21 September 2026)
+
+Four further ZIPs were received, all individually SHA256-pinned and **all ZIP members CRC-tested**. Their source raster hashes, exact sizes, geospatial metadata and source links are preserved in [third-batch QA](../data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json). They are added to the same release manifest; it now records **14 solar-source files**. Original ZIP bytes are still **local conversation uploads, NOT hosted in GitHub or Releases**.
+
+| Original user-uploaded file | What is genuinely inside | Publisher / significance |
+|---|---|---|
+| `global-PV-RASTER-DATA-LAYERS--GlobalSol masks(1).zip` | Ten global binary GeoTIFF masks, original README | **© 2020 The World Bank; financed by ESMAP; Solargis data**, [Global PV Potential by Country](https://globalsolaratlas.info/global-pv-potential-study). Physical, land-cover, population and composite screened-area *proxies*, not legal Kerala exclusions. |
+| `monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla(1).zip` | Twelve monthly PVOUT GeoTIFFs and 36 original PDF/XML/aux metadata sidecars | [Global Solar Atlas India](https://globalsolaratlas.info/download/india), © 2019 Solargis; **1999–2018** reference; 30 arcsecond pixels. Monthly PVOUT = **kWh/kWp in that named calendar month**, not kWh/kWp/day or a measured 2024–25 month. |
+| `New folder(1).zip` | Annual India `DIF`, `GHI`, `OPTA`, `TEMP` TIFFs, plus original sidecars for the annual layers | User-packaged original GSA TIFFs; file title is **not a publisher product name**. |
+| `New folder (2)(1).zip` | Companion annual India `DNI`, `GTI`, `PVOUT` TIFFs | Completes seven-layer annual GeoTIFF set with the preceding ZIP. |
+
+**Grid fidelity:** the World Bank composite masks are global EPSG:4326 30 arcsecond GeoTIFFs, 43,200 columns × 15,000 rows (to 70°N); individual mask components extend farther north (21,600 rows). The original India GSA TIFFs are EPSG:4326 within 66–98°E and 6–38°N: `GHI/DNI/DIF/GTI` approximately **9 arcseconds**, `PVOUT/TEMP` **30 arcseconds**, and `OPTA` **120 arcseconds**. Monthly PVOUT is 30 arcseconds. Irradiation/PVOUT source years are **1999–2018**, while temperature metadata states **1994–2018**. **Do not resample all layers as though identical pixel sizes.**
+
+**Relationship to previous uploads:** these GeoTIFFs overlap the science content of the earlier India **AAIGRID** downloads; alternative format is valuable for reproducibility but does not constitute independent solar validation. The World Bank masking files are new original layers relative to previous downloads. They are useful for illustrating the difference between unscreened resource potential and globally screened resource, but no `MASK_level1`, `MASK_level2`, forest, population, or protected-areas map can substitute for actual current Kerala land-use, notification-linked conservation boundaries, land rights or grid connection feasibility.
+
+The global-masks publisher **original README is copied verbatim** under [original source READMEs](../references/source_originals/global_pv_potential_by_country_2020_MASKS_README.txt). It includes CC BY 4.0 attribution and an additional required mediation/arbitration provision. Data model admission remains blocked pending exact Kerala-boundary clipping, full nodata/geometry checks, external validation, technology and legal screens and suitable weather chronology.
+
 ## Storage in THIS repository, not another transient chat upload
 
-Standard GitHub file history is **not** a safe target for 317 MB, 272 MB, 465 MB and 489 MB originals (GitHub rejects normal >100 MB blobs). Do not commit these or 10 GB of unpacked `.asc` to Git history.
+Standard GitHub file history is **not** a safe target for 317 MB, 272 MB, 465 MB, 489 MB and further up-to-384 MB originals (GitHub rejects normal >100 MB blobs). Do not commit these or 10 GB of unpacked `.asc` to Git history.
 
 The project now includes:
 
