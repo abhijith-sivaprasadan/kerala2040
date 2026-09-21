@@ -78,6 +78,60 @@ def boundary(original: Path):
     return geom
 
 
+
+def _outline(ax, geom):
+    polygons = geom.geoms if geom.geom_type == "MultiPolygon" else [geom]
+    for polygon in polygons:
+        x, y = polygon.exterior.xy
+        ax.plot(x, y, color="black", linewidth=0.55)
+
+
+def _maps(output: Path, geom, wind: pd.DataFrame) -> None:
+    """Descriptive PNGs derived locally from exact clipped source files."""
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from rasterio.transform import array_bounds
+
+    for label in (
+        "PVOUT_yearly_total_kWh_kWp",
+        "GHI_yearly_total_kWh_m2",
+        "PVOUT_jul_avg_daily_kWh_kWp",
+    ):
+        with rasterio.open(output / f"{label}_Kerala_NWIC.tif") as src:
+            array = src.read(1)
+            west, south, east, north = array_bounds(
+                src.height, src.width, src.transform
+            )
+        fig, ax = plt.subplots(figsize=(6, 9))
+        plot = ax.imshow(
+            array, extent=(west, east, south, north),
+            origin="upper", interpolation="nearest", cmap="viridis",
+        )
+        _outline(ax, geom)
+        ax.set_aspect("equal")
+        ax.set_title(label.replace("_", " ") + "\nKerala source resource, NOT capacity")
+        fig.colorbar(plot, ax=ax, shrink=0.65)
+        fig.savefig(output / f"{label}_map.png", dpi=150, bbox_inches="tight")
+        plt.close(fig)
+    for field, name, unit in (
+        ("Wind Speed (m/s)", "NIWE_150m_wind_speed_Kerala_map.png", "m/s"),
+        ("Wind Power Density (W/sq.m)", "NIWE_150m_wind_density_Kerala_map.png", "W/m²"),
+    ):
+        fig, ax = plt.subplots(figsize=(6, 9))
+        plot = ax.scatter(
+            wind["Longitude (E)"], wind["Latitude (N)"],
+            c=wind[field], s=0.8, cmap="viridis", linewidths=0,
+            rasterized=True,
+        )
+        _outline(ax, geom)
+        ax.set_aspect("equal")
+        ax.set_title(f"NIWE 150m {field}\nKerala onshore, NOT capacity")
+        fig.colorbar(plot, ax=ax, shrink=0.65, label=unit)
+        fig.savefig(output / name, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+
 def process(source_dir: Path, artifact_zip: Path, output: Path) -> dict:
     output.mkdir(parents=True, exist_ok=True)
     geom = boundary(artifact_zip)
@@ -176,6 +230,7 @@ def process(source_dir: Path, artifact_zip: Path, output: Path) -> dict:
         "mean_wind_speed_m_s_median": float(wind["Wind Speed (m/s)"].median()),
         "NO_CUF_OR_BUILDABLE_MW_IN_SOURCE": True,
     }
+    _maps(output, geom, wind)
     (output / "kerala_resource_clip_qa.json").write_text(
         json.dumps(report, indent=2, allow_nan=False) + "\n"
     )
