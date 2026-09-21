@@ -72,6 +72,26 @@
       "publisher": "NCPRE IIT Bombay and NISE",
       "period": "2014 survey; report March 2016 rev2",
       "rights": "review_before_mirroring"
+    },
+    {
+      "name": "global-PVRASTER-DATA-LAYERS--GlobalSol derived 1(1).zip",
+      "bytes": 464979205,
+      "sha256": "a0ecc0ea090272d193a78948097502b1630bc5115a3a6fc18788546b8ecc02a2",
+      "publisher": "The World Bank / ESMAP / Solargis",
+      "source": "https://globalsolaratlas.info/global-pv-potential-study",
+      "kind": "global_2020_PVOUT_level2_and_seasonality_index",
+      "rights": "CC BY 4.0 with mandatory additional original README.txt terms; review before public release",
+      "source_qa": "data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json"
+    },
+    {
+      "name": "global-PVRASTER-DATA-LAYERS--GlobalSol derived 2(1).zip",
+      "bytes": 488937292,
+      "sha256": "cda80a105dc76b8e27bc02c227ed8ee1eae923c425d12143c419be709f558081",
+      "publisher": "The World Bank / ESMAP / Solargis",
+      "source": "https://globalsolaratlas.info/global-pv-potential-study",
+      "kind": "global_2020_PVOUT_level1_and_study_25yr_LCOE",
+      "rights": "CC BY 4.0 with mandatory additional original README.txt terms; review before public release",
+      "source_qa": "data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json"
     }
   ],
   "solar_zip_members": [
@@ -215,5 +235,6 @@
       "unit": "km/h"
     },
     "caveat": "The filename date range is NOT actual complete coverage; observed timestamps cluster around May-Oct 2024 and Mar 2025. Timestamp timezone and sensor height not verified."
-  }
+  },
+  "additional_batch_qa": "data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json"
 }
