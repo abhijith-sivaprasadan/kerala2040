@@ -21,6 +21,9 @@ Dashboard source lives in `docs/` and deploys through GitHub Pages.
 **https://kerala2040.github.io/**
 
 See [next steps and the release workflow](docs/NEXT_STEPS.md).
+For the P0 missing interval evidence, see the [private measured FY2024-25
+interval intake and fail-closed validator](docs/MEASURED_INTERVAL_INTAKE.md).
+The validator does **not** mean measured telemetry has been obtained.
 The website release is built from an immutable research commit recorded in its
 `SOURCE_COMMIT`. Its public `RELEASE_MANIFEST.json` identifies the research
 commit and evidence snapshot; the website is not the source of truth for development-only data.
