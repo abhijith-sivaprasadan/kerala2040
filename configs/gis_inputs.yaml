@@ -155,6 +155,28 @@ layers:
       mistake long-term averages for FY2024-25 hourly observations.
       GitHub release asset upload and public-redistribution review pending;
       do not claim permanent repository archival before remote verification.
+  global_pv_potential_study_derived_2020:
+    source: World Bank / ESMAP / Solargis
+    landing_page: https://globalsolaratlas.info/global-pv-potential-study
+    source_batch: docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md
+    original_sha_manifest: data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json
+    source_qa: data/evidence/solar/global_pv_derived_source_qa_2026_09_21.json
+    original_archive_names:
+      - global-PVRASTER-DATA-LAYERS--GlobalSol derived 1(1).zip
+      - global-PVRASTER-DATA-LAYERS--GlobalSol derived 2(1).zip
+    expected_format: global_EPSG4326_30_arcsecond_GeoTIFFs_plus_original_README
+    raw_path: data/external/raw/solar/source_2026_09_21
+    role: historic_global_study_sensitivity_and_spatial_crosscheck_not_Kerala_legal_siting_or_2026_LCOE
+    acquisition_status: user_supplied_2_ZIPs_SHA256_and_ZIP_CRC_verified_LOCAL_ONLY_NOT_GITHUB_BINARY_ARCHIVED
+    note: >-
+      2020 World Bank ESMAP/Solargis global PV study. Original TIFFs:
+      PVOUT_level1, PVOUT_level2, seasonality index, simplified
+      25-year LCOE. Raster CRS EPSG:4326 at 30 arcsecond resolution.
+      Level 1/2 are global-study physical and soft land-use screens
+      and are NOT authoritative Kerala legal exclusions or installable MW.
+      The historic LCOE is NOT current Kerala/2040 project economics.
+      Ten original source archives/files are registered for checksum-gated
+      GitHub Release upload; binaries have NOT yet been uploaded.
   nwic_kerala_solar_wind_station_observations:
     source: NWIC National Water Data Portal / Kerala Surface Water Department
     solar_landing_page: https://nwdp.nwic.gov.in/dataset/solar-radiation-telemetry-hourly-kerala-surface-water-department
