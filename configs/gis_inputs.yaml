@@ -144,17 +144,22 @@ layers:
     expected_format: original_national_zip_with_csv_500m_grid_at_150m_height
     advertised_archive_name: 150m_Map_Data_A_to_G.zip
     advertised_unpacked_file_name: 150m_Map_Data_A_to_G.csv
+    source_qa: data/evidence/gis/niwe_150m_user_supplied_source_qa_2026_09_21.json
     raw_path: data/external/gis/niwe/wind_atlas_150m
     role: wind_resource_potential_climatology_not_hourly_generation
-    acquisition_status: original_zip_available_via_named_consent_form_NOT_acquired
+    acquisition_status: user_supplied_original_NIWE_ZIP_hash_verified_full_CSV_QA_passed_NOT_repo_stored_NOT_Kerala_clipped
     access_note: >-
-      Official listing advertises 240.30 MB ZIP containing 836.64 MB CSV;
-      150m is height, 500m is stated horizontal grid resolution. Named
-      download form requires an academic/research/educational use undertaking.
-      Do not bypass user consent or mirror raw data publicly without permission.
-      Actual source vintage is not stated. Preserve original ZIP hash, column
-      definitions, CRS, grid, licence, source vintage and Kerala spatial clip;
-      verify red-border wind pockets are actually in Kerala, not Tamil Nadu.
+      User supplied Wind.zip with nested original NIWE national ZIP; original
+      hashes recorded, full 19,475,568-row seven-column CSV parsed without
+      missing/non-numeric fields. Height 150m; nominal grid 500m. Metadata
+      advertises wind direction/temperature/pressure/joint-frequency, but
+      ACTUAL CSV DOES NOT CONTAIN THESE FIELDS OR CUF. National source is
+      spatial climatology without a measurement period, not FY2024-25 hourly
+      generation. User's original archive has not been committed or uploaded
+      to GitHub. Reacquire official original when needed, verify research-use
+      permissions before redistribution, confirm CRS/vintage, and clip to
+      hash-verified NWIC Kerala polygon. Bounding box containing Tamil Nadu
+      and Karnataka must not be called Kerala. No installable MW inferred.
   western_ghats_esa:
     source: Ministry of Environment Forest and Climate Change
     landing_page: https://www.moef.gov.in/esa-notifications
