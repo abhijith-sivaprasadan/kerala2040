@@ -77,6 +77,22 @@ Four further ZIPs were received, all individually SHA256-pinned and **all ZIP me
 
 The global-masks publisher **original README is copied verbatim** under [original source READMEs](../references/source_originals/global_pv_potential_by_country_2020_MASKS_README.txt). It includes CC BY 4.0 attribution and an additional required mediation/arbitration provision. Data model admission remains blocked pending exact Kerala-boundary clipping, full nodata/geometry checks, external validation, technology and legal screens and suitable weather chronology.
 
+## Fourth source batch — average-daily GSA India GeoTIFFs (21 September 2026)
+
+Three additional Solargis / Global Solar Atlas 2.0 India archives were uploaded, and **all ZIP entries passed CRC**. Raw archive and TIFF member SHA256s, exact byte sizes, layer grid properties and XML caveats are in [batch-four source QA](../data/evidence/solar/solar_batch_4_2026_09_21_avg_daily_geotiff_qa.json). The common inventory now pins **17** source archives/files; GitHub Release binary archival remains *not completed*.
+
+| Original archive | Content | What is new relative to prior batches |
+|---|---|---|
+| `monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF(1).zip` | `PVOUT_01..12.tif` and monthly PDF/XML/aux sidecars | Long-term **average-daily** PV yield for each calendar month; previous monthly GeoTIFF batch was monthly **totals**. |
+| `India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF2(1).zip` | `DNI.tif`, `OPTA.tif`, `TEMP.tif` and annual sidecars for the seven layer names | DNI daily-average values; **OPTA and TEMP files are exact SHA256 byte duplicates** of batch-three TIFFs, not new observations. |
+| `India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF.zip` | `DIF.tif`, `GHI.tif`, `GTI.tif`, `PVOUT.tif` | Long-term annual-mean *daily-average* irradiation/PV output counterparts to prior yearly-total TIFFs. |
+
+**Semantics caveat that must survive normalization:** ZIP names explicitly say `AvgDailyTotals`; observed values near Kerala in a non-Kerala-only rectangle are ~3–6 PVOUT kWh/kWp/day and ~3–6 irradiation kWh/m²/day, whereas previously acquired yearly/monthly totals use the corresponding full-period convention. However, the ZIP's original ISO19139 XML still describes monthly PVOUT as “longterm monthly average ... in kWh/kWp” and annual GHI/DNI/PVOUT as “longterm yearly average ... in kWh/m² or kWh/kWp,” **without explicitly writing “per day”**. Thus **daily normalization is supported by the product filenames and numerical magnitude, but needs direct matching-cell numerical confirmation against the yearly/monthly-total originals before model use**. Do not silently use the XML's bare yearly/monthly wording as a per-calendar-month total for this distinct dataset. The PDF/XML sidecars are preserved in the originals.
+
+All rasters are **EPSG:4326, India 66–98°E and 6–38°N**. Irradiation has 9-arcsecond grid resolution; PVOUT and TEMP 30 arcsecond, OPTA 120 arcsecond. Irradiation/PVOUT long-term period is **1999–2018**; temperature **1994–2018**. A broad 74–78°E × 8–13°N QA window includes land outside Kerala and the sea, so its numeric sample must not be presented as statewide metrics.
+
+**Source:** [Global Solar Atlas 2.0 India download](https://globalsolaratlas.info/download/india) — Solargis, World Bank Group / ESMAP; original files dated October 2019. Attribution and usage conditions remain attached to the original ISO19139 metadata. This is an **alternative format/normalisation of previously supplied Global Solar Atlas climatology**, *not* independently measured FY2024–25 PV production, a new station series, or a commissioned project capacity estimate.
+
 ## Storage in THIS repository, not another transient chat upload
 
 Standard GitHub file history is **not** a safe target for 317 MB, 272 MB, 465 MB, 489 MB and further up-to-384 MB originals (GitHub rejects normal >100 MB blobs). Do not commit these or 10 GB of unpacked `.asc` to Git history.
