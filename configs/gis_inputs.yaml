@@ -177,6 +177,67 @@ layers:
       The historic LCOE is NOT current Kerala/2040 project economics.
       Ten original source archives/files are registered for checksum-gated
       GitHub Release upload; binaries have NOT yet been uploaded.
+  global_pv_2020_screening_masks:
+    source: World Bank / ESMAP / Solargis
+    landing_page: https://globalsolaratlas.info/global-pv-potential-study
+    source_batch: docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md
+    source_qa: data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json
+    original_sha_manifest: data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json
+    original_archive_name: global-PV-RASTER-DATA-LAYERS--GlobalSol masks(1).zip
+    expected_format: original_global_binary_GeoTIFF_masks_plus_README
+    raw_path: data/external/raw/solar/source_2026_09_21
+    role: World_Bank_2020_global_study_screening_comparison_NOT_Kerala_statutory_exclusions
+    acquisition_status: original_ZIP_user_supplied_SHA256_CRC_and_inner_TIFF_hashes_passed_NOT_GitHub_binary_archived
+    note: >-
+      Ten original global masks: physical/terrain, forest, cropland, water
+      and population proxies, IUCN-status protected-area proxy and study
+      composites MASK_level1 and MASK_level2. At 30 arcsecond EPSG:4326,
+      composite and component rasters have different latitudinal coverage.
+      Study mask classes 0/1 need publisher-method interpretation.
+      No mask is a notified current Kerala forest, wetland or land-use
+      exclusion. Preserve masks' original World Bank CC BY README and
+      additional licence wording. Source archive remains local, NOT in
+      GitHub releases.
+  global_solar_atlas_india_monthly_pvout_geotiff:
+    source: Global Solar Atlas 2.0 / Solargis / World Bank ESMAP
+    landing_page: https://globalsolaratlas.info/download/india
+    source_batch: docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md
+    source_qa: data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json
+    original_sha_manifest: data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json
+    original_archive_name: monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla(1).zip
+    expected_format: 12_native_GeoTIFF_PVOUT_months_with_ISO19139_PDF_XML_and_aux_metadata
+    raw_path: data/external/raw/solar/source_2026_09_21
+    role: 1999_2018_long_term_monthly_PV_yield_climatology_NOT_FY2024_25_hourly_generation
+    acquisition_status: original_ZIP_user_supplied_SHA256_CRC_and_inner_TIFF_hashes_passed_NOT_GitHub_binary_archived
+    note: >-
+      PVOUT_01..12 TIFF monthly averages in kWh/kWp per named calendar
+      month, 1999-2018, not daily yield or FY2024-25 observed output.
+      Original EPSG:4326 India 30 arcsecond rasters, 3840x3840,
+      full sidecar PDF/XML preserved inside ZIP. Analogous science
+      source to previously acquired AAIGRID monthly products, not
+      an independent measured time series. Needs Kerala clip and QA.
+  global_solar_atlas_india_annual_geotiff:
+    source: Global Solar Atlas 2.0 / Solargis / World Bank ESMAP
+    landing_page: https://globalsolaratlas.info/download/india
+    source_batch: docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md
+    source_qa: data/evidence/solar/solar_batch_3_2026_09_21_source_qa.json
+    original_sha_manifest: data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json
+    original_archive_names:
+      - New folder(1).zip
+      - New folder (2)(1).zip
+    expected_format: seven_India_GeoTIFFs_and_original_ISO19139_sidecars_split_across_two_user_packaged_ZIPs
+    raw_path: data/external/raw/solar/source_2026_09_21
+    role: long_term_annual_GHI_DNI_DIF_GTI_PVOUT_temperature_tilt_NOT_observed_2024_25
+    acquisition_status: seven_TIFFs_hash_and_ZIP_CRC_passed_NOT_GitHub_binary_archived
+    note: >-
+      Two user-packaged ZIPs jointly contain seven original GSA TIFFs:
+      DIF,GHI,OPTA,TEMP and DNI,GTI,PVOUT. Original metadata sidecars
+      in first ZIP describe both groups. EPSG:4326, 9 arcsecond for
+      irradiation, 30 arcsecond PVOUT and TEMP, 120 arcsecond OPTA.
+      Irradiation and PVOUT reference 1999-2018; TEMP 1994-2018.
+      Annual totals are not FY2024-25 hourly chronology or PV
+      measurements. Underlying source overlaps prior AAIGRID
+      equivalents and is not independent model validation.
   nwic_kerala_solar_wind_station_observations:
     source: NWIC National Water Data Portal / Kerala Surface Water Department
     solar_landing_page: https://nwdp.nwic.gov.in/dataset/solar-radiation-telemetry-hourly-kerala-surface-water-department
