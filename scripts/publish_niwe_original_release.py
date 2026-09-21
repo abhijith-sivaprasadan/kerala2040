@@ -4,6 +4,7 @@ No public redistribution flag or public Release is supported. Private source
 archival is still subject to NIWE's download/use terms; never grant archive
 access to others without verifying permission.
 
+  python scripts/publish_niwe_original_release.py --wind-dir "E:/Kerala2040"
   python scripts/publish_niwe_original_release.py --wind-zip "E:/Wind.zip"
   python scripts/publish_niwe_original_release.py --verify --dest "E:/wind-restore"
 """
@@ -18,6 +19,7 @@ from pathlib import Path
 from private_archive_utils import (
     PRIVATE_ARCHIVE,
     assert_original,
+    find_originals_in_folders,
     create_or_check_release,
     ensure_private,
     restore_exact_asset,
@@ -34,6 +36,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--wind-zip", type=Path, help="Upload original Wind.zip")
+    mode.add_argument(
+        "--wind-dir", type=Path,
+        help="Find original Wind.zip recursively under this folder",
+    )
     mode.add_argument("--verify", action="store_true", help="Restore and verify SHA256")
     parser.add_argument("--dest", type=Path, help="Restore into this new/empty folder")
     parser.add_argument("--archive-repo", default=PRIVATE_ARCHIVE)
@@ -50,8 +56,14 @@ def main() -> None:
         print("PRIVATE NIWE original restore verified by SHA256")
         return
 
-    assert args.wind_zip is not None
-    original = args.wind_zip.resolve()
+    if args.wind_dir is not None:
+        original = find_originals_in_folders(
+            args.wind_dir.resolve(),
+            [{"name": "Wind.zip", "bytes": WIND_BYTES, "sha256": WIND_SHA}],
+        )["Wind.zip"]
+    else:
+        assert args.wind_zip is not None
+        original = args.wind_zip.resolve()
     if original.name != "Wind.zip":
         parser.error("The pinned original must be named Wind.zip")
     assert_original(original, WIND_BYTES, WIND_SHA)
