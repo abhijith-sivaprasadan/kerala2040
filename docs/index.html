@@ -150,6 +150,32 @@
         </div>
       </section>
 
+
+      <section class="energy-editorial section-wrap" aria-labelledby="energyStoryTitle">
+        <div class="energy-editorial-intro">
+          <div><div class="section-eyebrow"><span class="number">02</span> THE ELECTRICITY STORY / വൈദ്യുതി</div>
+            <h2 id="energyStoryTitle" class="display-title">Where Kerala's electricity<br><em>comes from.</em></h2>
+          </div>
+          <p>Start with one question: when Kerala uses electricity, how much is generated inside the state, and how much crosses the state boundary? Read each figure as part of the same observed-day story, rather than a separate dashboard.</p>
+        </div>
+        <figure class="viz-card viz-balance" aria-labelledby="homeBalanceTitle">
+          <div class="viz-head"><div><span class="viz-kicker">FIGURE 01 / THE OBSERVED BALANCE</span>
+            <h3 id="homeBalanceTitle">An electricity system connected to its neighbours.</h3></div>
+            <span class="viz-stamp">FY 2024–25 · available daily reports only</span></div>
+          <div id="homeBalanceArt" class="viz-art" aria-live="polite">Loading the observed electricity balance…</div>
+          <figcaption class="viz-caption"><strong>How to read this:</strong> two parts of one recorded total. Hydro is part of in-state generation; it is <em>not</em> a third slice added to the total. “Imports” means net electricity recorded at the state interfaces, not Kerala's maximum import capability.</figcaption>
+        </figure>
+        <div class="viz-transition"><span class="viz-transition-line" aria-hidden="true"></span><p>That is the total across the days we have. <strong>But Kerala's electricity mix does not stay the same throughout the year.</strong></p><span class="viz-transition-line" aria-hidden="true"></span></div>
+        <figure class="viz-card viz-seasons" aria-labelledby="homeSeasonTitle">
+          <div class="viz-head"><div><span class="viz-kicker">FIGURE 02 / THROUGH THE YEAR</span>
+            <h3 id="homeSeasonTitle">The balance changes month by month.</h3></div>
+            <span class="viz-stamp">Each bar = an average observed day in that month</span></div>
+          <div id="homeMonthlyArt" class="viz-art" aria-live="polite">Loading monthly observed-day comparisons…</div>
+          <figcaption class="viz-caption">Bars use the same scale and divide reported consumption into recorded net imports and in-state generation. An amber marker means at least one original daily report is missing for that month—not zero demand. Monthly averages are <strong>not</strong> full-month or full-year totals.</figcaption>
+          <div class="viz-action"><button type="button" data-route="electricity" class="text-button">Follow the daily records, hydro and water storage →</button></div>
+        </figure>
+      </section>
+
       <section class="current-strip" aria-labelledby="snapshotTitle">
         <div class="section-wrap"><div class="section-title-line"><div><div class="section-eyebrow light"><span class="number">02</span> THE STARTING POINT / ഇപ്പോൾ</div><h2 id="snapshotTitle">What the data says <em>today.</em></h2></div><p>One audited historical window. No interpolated missing days. No 2040 predictions disguised as observations.</p></div>
           <div id="headlineMetrics" class="numbers-grid" aria-live="polite">Loading the observed series…</div>
@@ -176,7 +202,27 @@
     </section>
 
     <section class="view" data-view="electricity" aria-labelledby="electricTitle"><div class="page-head"><div class="section-wrap"><div class="section-eyebrow light"><span class="number">01</span> വൈദ്യുതി / OBSERVED ELECTRICITY</div><h1 id="electricTitle">How Kerala <em>keeps the lights on.</em></h1><p>Start with recorded daily electricity consumption, in-state generation, net imports and hydropower. Different statistics have different boundaries; missing days remain missing.</p></div></div>
-      <div class="section-wrap page-content"><div id="electricitySummary" class="chapter-summary"></div><section class="content-panel" aria-labelledby="balanceTitle"><div class="panel-header"><div><div class="section-eyebrow">OBSERVED-DAY SERIES</div><h2 id="balanceTitle">Follow the daily balance.</h2></div><div class="field-controls"><label for="energyMetric">Series<select id="energyMetric"><option value="consumption_mu">Consumption</option><option value="net_import_interface_mu">Net imports</option><option value="internal_generation_mu">In-state generation</option><option value="hydel_total_mu">Hydro generation</option></select></label><label for="energyMonth">Period<select id="energyMonth"><option value="all">All available days</option></select></label></div></div><div id="energyChart" class="energy-chart" role="img" aria-label="Observed daily electricity balance trend"></div><p id="energyChartCaption" class="caption"></p><details class="data-details"><summary>Inspect exact observed records</summary><div id="energyTable" class="table-scroll"></div></details><div class="panel-actions"><button type="button" id="downloadObserved" class="button button-dark">Download displayed observations ↓</button><a href="data/sldc-station-evidence.json">Station-level evidence JSON ↗</a></div></section>
+      <div class="section-wrap page-content"><div id="electricitySummary" class="chapter-summary"></div>
+      <section class="content-panel viz-electricity-story" aria-labelledby="monthStoryTitle">
+        <div class="viz-head"><div><span class="viz-kicker">FIGURE 03 / ELECTRICITY, MONTH BY MONTH</span>
+          <h2 id="monthStoryTitle">A year is not twelve identical months.</h2></div>
+          <span class="viz-stamp">MU/day · mean of observed reports in each month</span></div>
+        <p class="viz-intro">Height shows how much electricity Kerala used on an average <em>recorded day</em>; the colours show where it came from. A month with missing reports remains visibly incomplete. This is energy over a day, not instantaneous grid power.</p>
+        <div id="electricMonthlyArt" class="viz-art" aria-live="polite">Loading monthly visualisation…</div>
+        <details class="data-details viz-details"><summary>Read the exact monthly figures and missing dates</summary><div id="electricMonthlyTable" class="table-scroll"></div></details>
+        <p class="viz-caption">An observed-day average is used so months of different lengths can be compared on the same axis. Missing days are not filled. No percentage here implies a verified year-end result.</p>
+      </section>
+      <section class="content-panel viz-water-story" aria-labelledby="hydroStoryTitle">
+        <div class="viz-head"><div><span class="viz-kicker">FIGURE 04 / WATER AND ELECTRICITY</span>
+          <h2 id="hydroStoryTitle">Stored water and generated electricity are related—but not the same thing.</h2></div>
+          <span class="viz-stamp">Two scales · the same observed dates</span></div>
+        <p class="viz-intro">Hydropower is electricity produced during a day. Reservoir storage is an energy-weighted snapshot of the water available in the monitored reservoirs. The charts share a timeline, but <strong>MU/day and % must not be read as the same unit</strong>. A visible break indicates a missing original daily report.</p>
+        <div id="hydroSeasonArt" class="viz-art" aria-live="polite">Loading hydro and storage observations…</div>
+        <details class="data-details viz-details"><summary>Inspect water and hydro readings by observed date</summary><div id="hydroSeasonTable" class="table-scroll"></div></details>
+        <p class="viz-caption">Observed Kerala SLDC daily hydro generation and energy-weighted reservoir storage percentage. A visual relationship is not a causal dispatch model or a guarantee of future hydro output.</p>
+      </section>
+
+<section class="content-panel" aria-labelledby="balanceTitle"><div class="panel-header"><div><div class="section-eyebrow">OBSERVED-DAY SERIES</div><h2 id="balanceTitle">Follow the daily balance.</h2></div><div class="field-controls"><label for="energyMetric">Series<select id="energyMetric"><option value="consumption_mu">Consumption</option><option value="net_import_interface_mu">Net imports</option><option value="internal_generation_mu">In-state generation</option><option value="hydel_total_mu">Hydro generation</option></select></label><label for="energyMonth">Period<select id="energyMonth"><option value="all">All available days</option></select></label></div></div><div id="energyChart" class="energy-chart" role="img" aria-label="Observed daily electricity balance trend"></div><p id="energyChartCaption" class="caption"></p><details class="data-details"><summary>Inspect exact observed records</summary><div id="energyTable" class="table-scroll"></div></details><div class="panel-actions"><button type="button" id="downloadObserved" class="button button-dark">Download displayed observations ↓</button><a href="data/sldc-station-evidence.json">Station-level evidence JSON ↗</a></div></section>
       <section class="story-split"><div><div class="section-eyebrow">THE INTERPRETATION</div><h2 class="display-title">Dependence is a <em>system question.</em></h2></div><div><p>Daily energy imports, transfer capacity and contracted power are not interchangeable. The project separates these quantities before examining storage, hydro flexibility, demand management or new generation.</p><p>One year of observations is not enough to establish an hourly dispatch model. Read the missing-date and interval-data limits before using these numbers for planning.</p><button data-route="audit" type="button" class="text-button">See what historical evidence is missing →</button></div></section><div id="electricityResearch" class="research-inline"></div></div>
     </section>
 
