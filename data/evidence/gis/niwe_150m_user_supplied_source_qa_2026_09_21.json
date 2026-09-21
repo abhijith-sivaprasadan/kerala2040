@@ -1,0 +1,83 @@
+{
+  "classification": "user_supplied_NIWE_150m_national_source_verified_structure_NOT_Kerala_clipped_or_model_ready",
+  "reviewed_at_utc": "2026-09-21",
+  "source_url": "https://niwe.res.in/Open_data_Set/open_wind_dataset/11/",
+  "supplied_archive": "Wind.zip",
+  "supplied_archive_bytes": 422482328,
+  "supplied_archive_sha256": "54196bfa8dfa27295db7f71f100ac63c0b4a77d1dace4da2ae5f9ee2c869d849",
+  "source_member": "Wind/150m_Map_Data_A_to_G.zip",
+  "source_member_bytes": 251971340,
+  "source_member_sha256": "f166450c3ea591b5b346f9cd27899b10b6f18ce9cf441c98388c6f0e98d44b38",
+  "source_csv": "150m_Map_Data_A_to_G.csv",
+  "source_csv_uncompressed_bytes": 877276846,
+  "source_csv_sha256": "88a1071e6226bdaeda59dcdc459528fb82ff6f8c4770138b479f56ccd97c7a57",
+  "source_metadata": "metadata_150m.txt",
+  "source_metadata_sha256": "0c6dac863c2363d4fc01f3ef37a4f422996f277ece36a52b9a2047030052c488",
+  "national_rows": 19475568,
+  "exact_columns": [
+    "Longitude (E)",
+    "Latitude (N)",
+    "Wind Speed (m/s)",
+    "Weibull A (m/s)",
+    "Weibull k",
+    "Air Density (kg/m3)",
+    "Wind Power Density (W/sq.m)"
+  ],
+  "all_columns_numeric_nans_or_parse_failures": 0,
+  "national_minmax": {
+    "longitude_deg": [
+      68.07,
+      97.47
+    ],
+    "latitude_deg": [
+      6.566,
+      37.154
+    ],
+    "wind_speed_m_s": [
+      0.556,
+      14.237
+    ],
+    "weibull_a_m_s": [
+      0.623,
+      16.053
+    ],
+    "weibull_k": [
+      0.702,
+      3.208
+    ],
+    "air_density_kg_m3": [
+      0.573,
+      1.171
+    ],
+    "wind_power_density_w_m2": [
+      0.204,
+      6501.1
+    ]
+  },
+  "metadata_height_m_above_ground": 150,
+  "metadata_nominal_horizontal_grid_m": 500,
+  "crs_verified": false,
+  "measurement_period_available": false,
+  "time_series_available": false,
+  "browser_map_cuf_columns_in_csv": false,
+  "metadata_describes_more_parameters_than_csv": true,
+  "screening_rectangle_NOT_Kerala_polygon": {
+    "west": 74.5,
+    "south": 8,
+    "east": 78.5,
+    "north": 13,
+    "source_points": 818936,
+    "duplicate_lonlat_pairs": 0,
+    "warning": "Includes Tamil Nadu/Karnataka; no Kerala state-specific statistics or capacity may be derived from this rectangle."
+  },
+  "kerala_boundary_polygon_applied": false,
+  "source_original_redistribution_permission_verified": false,
+  "source_bytes_committed_to_public_repository": false,
+  "model_ready": false,
+  "pending": [
+    "Obtain/reverify original dated NWIC Kerala polygon and clip coordinate points; source CRS requires confirmation",
+    "Review NIWE permitted storage and redistribution terms",
+    "Check source vintage and compare 150 m atlas to FY2024–25 ERA5 with site observations",
+    "Check technology-specific ecological/grid feasibility and turbine performance assumptions"
+  ]
+}
