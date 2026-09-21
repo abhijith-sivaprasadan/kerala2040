@@ -266,7 +266,7 @@ test("energy visuals reconcile to the observed SLDC balance without adding hydro
   assert.match(balance,/8\.03 TWh/);
   assert.match(balance,/7\.21 TWh/);
   assert.match(balance,/73\.8%/);
-  assert.match(balance,/Hydropower/);
+  assert.match(balance,/hydropower/i);
   assert.match(balance,/not an additional source/);
   const sums=JSON.parse(vm.runInContext(
     'JSON.stringify({total:sumField(rows,"consumption_mu"),imports:sumField(rows,"net_import_interface_mu"),local:sumField(rows,"internal_generation_mu"),hydro:sumField(rows,"hydel_total_mu")})',c));
