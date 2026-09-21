@@ -132,6 +132,24 @@ Optuna · SHAP.
 Post-CET modules may add SWAT+, InVEST, Marxan, Brightway, LEAP, IDA ICE,
 OpenDSS, SAM and WEC-Sim where their specific questions justify them.
 
+## Solar and wind original source batch (September 2026)
+
+The [solar/wind original-source ledger](docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md)
+records user-supplied original India Global Solar Atlas GIS ZIPs, Kerala
+NWIC telemetry CSVs and PV research reports. Exact original and inner-ZIP
+SHA256 checksums, publisher links, units and limits are in the
+[source manifest](data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json).
+
+**The raw uploaded ZIP/PDF bytes are not yet hosted in this GitHub repository.**
+For large files, use the checksum-gated
+[GitHub Release publisher](scripts/publish_solar_source_release.py) after
+checking third-party public redistribution rights. Once a release is
+actually uploaded and verified, the
+[restore script](scripts/restore_solar_source_release.py) retrieves the
+same originals from GitHub Releases without relying on transient chat uploads.
+Neither source acquisition nor a long-term solar raster is automatic
+model admission.
+
 ## Reproducibility and data policy
 
 Every model/data run should record git commit, config, source IDs and retrieval
