@@ -153,15 +153,17 @@ findings:
     priority: P1
     check: gis_model_ready
     acquisition: >-
-      NIWE now lists an actual 150 m wind-atlas ZIP containing a national
-      500 m-grid CSV, behind a named academic/research-use consent form.
-      Exact official dataset and access conditions are recorded in the GIS
-      registry; original archive is NOT yet acquired or licensed for public
-      redistribution. On receipt verify original hash/columns, source vintage,
-      spatial clip to Kerala and turbine conversion assumptions. The NIWE map
-      is climatological resource screening, not FY2024-25 generation or
-      verified developable wind capacity.
-    evidence: docs/LRIS_NIWE_KMML_SOURCE_DISCOVERY_2026_09_21.md
+      User-supplied NIWE 150m original national ZIP is now SHA256-verified:
+      full 19,475,568-row CSV parsed with all seven actual numeric columns
+      present. This closes NIWE national *source acquisition and basic file QA*
+      but original bytes are NOT in the repository; research-use/redistribution
+      terms must be checked. Outstanding: use a hash-verified NWIC Kerala
+      polygon to clip points (not the multi-state bounding box), confirm
+      source vintage/CRS, quality-check spatial wind results against appropriate
+      observations, apply turbine curves and legal/grid siting constraints.
+      The CSV provides no CUF, time series, wind direction or joint frequencies.
+      Do not assert FY2024-25 hourly generation or developable capacity.
+    evidence: data/evidence/gis/niwe_150m_user_supplied_source_qa_2026_09_21.json
   - id: substations_lines_geospatial
     priority: P1
     check: gis_model_ready
