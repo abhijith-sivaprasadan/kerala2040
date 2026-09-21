@@ -40,7 +40,7 @@ def test_study_rasters_do_not_claim_kerala_or_model_readiness() -> None:
     window = rasters["south_india_sanity_window"]
     assert window["bounds_lonlat"] == [74, 8, 78, 13]
     assert window["pixel_count_per_layer"] == 288000
-    assert "NOT" in window["WARNING"]
+    assert "cannot be reported as Kerala statistics" in window["WARNING"]
     assert len(window["layers"]) == 4
     for layer in window["layers"]:
         assert 0 < layer["finite"] < window["pixel_count_per_layer"]
