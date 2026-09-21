@@ -59,8 +59,12 @@ def sha256(path: Path) -> str:
 
 
 def original_boundary(artifact: Path):
-    with zipfile.ZipFile(artifact) as wrapper:
-        raw = wrapper.read("nwic_original/nwic_original_state_boundary_download")
+    member = "nwic_original/nwic_original_state_boundary_download"
+    if artifact.is_dir():
+        raw = (artifact / member).read_bytes()
+    else:
+        with zipfile.ZipFile(artifact) as wrapper:
+            raw = wrapper.read(member) if member in wrapper.namelist() else artifact.read_bytes()
     if hashlib.sha256(raw).hexdigest() != BOUNDARY_SHA:
         raise ValueError("NWIC official original boundary hash mismatch")
     with zipfile.ZipFile(io.BytesIO(raw)) as original:
