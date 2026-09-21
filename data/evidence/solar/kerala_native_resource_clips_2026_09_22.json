@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-09-22",
+  "classification": "EXACT_NWIC_BOUNDARY_KERALA_ONLY_DESCRIPTIVE_RESOURCE_CLIPS_NOT_MODEL_READY_NOT_BUILDABLE_CAPACITY",
+  "NWIC_original_url": "https://nwdp.nwic.gov.in/dataset/state-boundary",
+  "NWIC_original_zip_sha256": "a932ea29e7afd0fea1e1068f3beeeadb760e6b2baae9783f5822bbefd4224ebd",
+  "NWIC_source_crs": "EPSG:7755",
+  "output_crs": "EPSG:4326",
+  "Kerala_bounds_wgs84": [
+    74.86433401590513,
+    8.292707436852217,
+    77.41224235944739,
+    12.795602379977375
+  ],
+  "boundary_qa": "Original 20,809,092-byte NWIC ZIP restored from previously archived GitHub Actions artifact 10607870273; exact SHA-256 matched source evidence; geometry valid and state_name Kerala; source feature says Survey of India. Boundary source redistribution terms unresolved; derived vector not pushed to public GitHub.",
+  "NIWE_source": "https://niwe.res.in/Open_data_Set/open_wind_dataset/11/",
+  "NIWE_user_Wind_zip_sha256": "54196bfa8dfa27295db7f71f100ac63c0b4a77d1dace4da2ae5f9ee2c869d849",
+  "NIWE_original_nested_zip_sha256": "f166450c3ea591b5b346f9cd27899b10b6f18ce9cf441c98388c6f0e98d44b38",
+  "NIWE_national_rows_already_source_QA_verified": 19475568,
+  "NIWE_inside_exact_Kerala_polygon_point_centres": 200692,
+  "NIWE_150m_wind_m_s": {
+    "min": 1.365,
+    "p05": 2.414,
+    "median": 3.91,
+    "p95": 7.766,
+    "max": 11.549
+  },
+  "NIWE_150m_power_density_W_m2": {
+    "min": 4.693,
+    "median": 78.9255,
+    "p95": 511.4345,
+    "max": 2348.2
+  },
+  "NIWE_exact_clip_compressed_csv_sha256": "364808dd40751bd5f3e131e86127dbdab73168d1830a682002de5a4c6fdd0dee",
+  "GSA_source": "https://globalsolaratlas.info/download/india",
+  "GSA_attribution": "Global Solar Atlas 2.0, Solargis, World Bank Group, ESMAP",
+  "GSA_solar_climatology": "PVOUT and irradiation long-term 1999–2018 (not FY2024–25 measurements)",
+  "GSA_onshore_GHI_9arcsec_valid_pixel_centres": 513823,
+  "GSA_onshore_GHI_kWh_m2_year_median": 1856.566,
+  "GSA_onshore_PVOUT_30arcsec_valid_pixel_centres": 46241,
+  "GSA_onshore_PVOUT_kWh_kWp_year": {
+    "min": 1112.186,
+    "median": 1493.507,
+    "max": 1617.692
+  },
+  "GSA_onshore_PVOUT_average_daily_kWh_kWp_median": 4.089,
+  "GSA_onshore_Feb_average_daily_kWh_kWp_median": 5.212,
+  "GSA_onshore_Jul_average_daily_kWh_kWp_median": 2.941,
+  "PVOUT_annual_over_daily_full_kerala_clipped_cells": {
+    "count": 46241,
+    "expected": 365.25,
+    "median": 365.25,
+    "max_abs_error": 0.00018310546875,
+    "pct_within_0_02": 100
+  },
+  "output_derived_zip_name": "kerala2040_resource_clips_2026_09_22.zip",
+  "output_derived_zip_size_bytes": 5715157,
+  "output_derived_zip_sha256": "c387752ba391494c83fb407b67ee25699d197ae7c08fae47ba281d14f43d3652",
+  "output_derived_zip_storage": "conversation working container ONLY; not remotely attached to public repo",
+  "all_17_original_solar_binaries_archived_in_GitHub": false,
+  "NIWE_original_binary_archived_in_GitHub": false,
+  "NIWE_right_to_publicly_redistribute_derived_data_verified": false,
+  "scientific_limits": [
+    "These are native-grid pixel-centre/point-centre clips, not a land-eligible area calculation.",
+    "Wind CSV is climatology, without a power curve, CUF or hourly observations.",
+    "Solar PVOUT represents source assumed large fixed-tilt system, not current real generation or all PV types.",
+    "Only onshore NWIC Kerala state polygon; offshore unassessed.",
+    "Unweighted pixel medians are descriptive; not area-weighted, capacity-weighted or proposed capacity.",
+    "No legal forest, wetland, watershed or grid masks applied.",
+    "Only a subset of original solar layers was clipped (annual GHI and PVOUT, daily PVOUT, Feb/Jul); global Level1/Level2 study masks not yet modeled."
+  ],
+  "science_model_admitted": false
+}
