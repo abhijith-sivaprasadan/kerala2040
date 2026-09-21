@@ -90,8 +90,11 @@ findings:
       ISRO describes a signed institutional MoU for native LULC250K data.
       No original Kerala class-coded raster, exact legend, CRS, source hash,
       permission or statewide geometry has been secured. Pursue authorised
-      native data and finer district SISDP 10K where available; WMS imagery
-      cannot be counted as categorical raster or legal siting.
+      native data and finer district SISDP 10K where available. Kerala LRIS
+      is a complementary district/local-body data lead; official FAQ says
+      native datasets require a letter and possible invoice/payment, not a
+      presumed free WFS. WMS imagery cannot be counted as categorical raster
+      or legal siting.
     evidence: docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md
   - id: elevation_dem
     priority: P1
@@ -148,8 +151,16 @@ findings:
   - id: niwe_wind_resource
     priority: P1
     check: gis_model_ready
-    acquisition: NIWE wind raster, metadata, usage terms and turbine conversion assumptions.
-    evidence: configs/gis_inputs.yaml
+    acquisition: >-
+      NIWE now lists an actual 150 m wind-atlas ZIP containing a national
+      500 m-grid CSV, behind a named academic/research-use consent form.
+      Exact official dataset and access conditions are recorded in the GIS
+      registry; original archive is NOT yet acquired or licensed for public
+      redistribution. On receipt verify original hash/columns, source vintage,
+      spatial clip to Kerala and turbine conversion assumptions. The NIWE map
+      is climatological resource screening, not FY2024-25 generation or
+      verified developable wind capacity.
+    evidence: docs/LRIS_NIWE_KMML_SOURCE_DISCOVERY_2026_09_21.md
   - id: substations_lines_geospatial
     priority: P1
     check: gis_model_ready
