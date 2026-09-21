@@ -1,0 +1,94 @@
+name: Verify ERA5 FY2024-25 recovered source artifacts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/era5-full-year-source-qa.yml"
+      - "scripts/verify_era5_source_artifacts.py"
+      - "tests/test_era5_source_artifacts.py"
+  workflow_dispatch:
+    inputs:
+      recovery_2024_run_id:
+        description: "Workflow run containing the 15 Apr-Dec 2024 source artifacts"
+        required: true
+        default: "35622527064"
+        type: string
+      recovery_2025_run_id:
+        description: "Workflow run containing the five Jan-Mar 2025 reacquisition artifacts"
+        required: true
+        default: "35623051780"
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  full-year-source-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deterministic ERA5 source QA dependencies
+        run: python -m pip install -e '.[era5]'
+
+      - name: Download all 15 recovered Apr-Dec 2024 source artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.recovery_2024_run_id || '35622527064' }}
+          pattern: era5-*-2024-*_to_2024-*-SOURCE-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2024
+          merge-multiple: false
+
+      - name: Download all five Jan-Mar 2025 reacquisition artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.recovery_2025_run_id || '35623051780' }}
+          pattern: era5-*-2025-01_to_2025-03-REACQUIRED-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2025
+          merge-multiple: false
+
+      - name: Require exactly 20 independent location-quarter artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t manifests < <(
+            find results/acquisition/era5/full-year-input               -type f -name retrieval_attempt.json -print | sort
+          )
+          echo "Found ${#manifests[@]} retrieval manifests"
+          printf '%s\n' "${manifests[@]}"
+          test "${#manifests[@]}" -eq 20
+
+      - name: Verify hashes, original provider ZIPs, UTC hours, variables, units and stable grids
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t artifacts < <(
+            find results/acquisition/era5/full-year-input               -type f -name retrieval_attempt.json -printf '%h\n' | sort -u
+          )
+          python scripts/verify_era5_source_artifacts.py "${artifacts[@]}"             --require-full-year             --output results/acquisition/era5/source_qa.json
+
+      - name: Show full-year ERA5 source QA result
+        run: cat results/acquisition/era5/source_qa.json
+
+      - name: Preserve reviewed QA report
+        uses: actions/upload-artifact@v4
+        with:
+          name: era5-fy2024-25-source-qa
+          retention-days: 90
+          if-no-files-found: error
+          path: results/acquisition/era5/source_qa.json
+
+# This proves source-byte integrity and complete representative-point chronology only.
+# It does not admit ERA5 into the energy model, estimate renewable capacity, or
+# validate a statewide PV/wind generation profile.
