@@ -100,7 +100,7 @@ All rasters are **EPSG:4326, India 66–98°E and 6–38°N**. Irradiation has 9
 and transformation code; original third-party ZIP/PDF bytes must go to a
 **separate PRIVATE** GitHub repository, tentatively
 `abhijith-sivaprasadan/kerala2040-source-archive`. This private repository
-is **not yet created or accessible**, and all 17 solar original assets plus
+is **created, verified PRIVATE, and initialized on `main` with a README**, but all 17 solar original assets plus
 the NIWE original remain **not uploaded**. Do not claim otherwise or point
 to the old planned public GitHub Release.
 
