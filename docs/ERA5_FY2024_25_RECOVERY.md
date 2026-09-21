@@ -30,3 +30,20 @@ The new manifest counts NetCDF *components* in `files_succeeded` and request win
 4. Verify reuse and republication conditions; then publish source provenance and coverage through a separate reviewed admission. Weather observation/reanalysis is not measured Kerala solar/wind generation, and representative point boxes do **not** demonstrate an eligible statewide renewable capacity.
 
 The 17 research-audit findings and scientific release gates remain unchanged by a retrieval attempt.
+
+
+## Source-byte accessibility and spatial QA
+
+The [separate January–March 2025 reacquisition workflow](../.github/workflows/era5-legacy-quarter-recovery.yml) recovered all **five** locations in separate review-only artifacts. Its actual source bytes are new retrievals; do not replace or claim verification of the *old* five raw hashes merely because the corresponding months have been reacquired. In particular, the provider now supplies a two-member ZIP where the old manifest recorded single NetCDF hashes. Keep both provenance generations distinguishable.
+
+Kannur's bounded area intersects a **2 × 2 ERA5 0.25° grid** (latitudes 12.00/11.75°, longitudes 75.25/75.50°); several other representative-point requests return only one cell. The source manifests preserve actual grid coordinates. No downstream code may treat the Kannur box as a single point without an explicit, documented selection/interpolation method.
+
+The deterministic source-artifact validator, [`scripts/verify_era5_source_artifacts.py`](../scripts/verify_era5_source_artifacts.py), inspects the **original ZIP**, extracted member hashes, each NetCDF's actual UTC hourly coordinates, all five variable IDs and exact units, finite array values, and grid dimensions/coordinates. Install `pip install -e '.[era5]'` and run:
+
+```bash
+python scripts/verify_era5_source_artifacts.py /path/to/downloaded/era5-*.zip \
+  --require-full-year \
+  --output results/acquisition/era5/source_qa.json
+```
+
+The full-year gate requires **20 unique location-quarters, 8,760 UTC hours per location, 43,800 location-hours overall and stable sampling grids across quarters**. This is a *source-byte/chronology* check, not a validation of renewable generation models or statewide resource potential. Original source artifacts have a 90-day Actions retention window; preserve legally redistributable provenance outside ephemeral CI artifacts if longer-term source-byte reproducibility is required.
