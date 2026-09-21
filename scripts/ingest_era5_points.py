@@ -12,6 +12,9 @@ import argparse
 import hashlib
 import json
 import os
+import re
+import shutil
+import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -63,6 +66,52 @@ def valid_netcdf(path: Path) -> bool:
     return any(signature.startswith(magic) for magic in NETCDF_SIGNATURES)
 
 
+
+def unpack_cds_netcdfs(target: Path) -> tuple[list[tuple[Path, str | None]], Path | None]:
+    """Preserve a CDS multi-stream ZIP and extract only genuine NetCDF members.
+
+    ERA5 CDS separates instantaneous (t2m/u10/v10) and accumulated (ssrd/tp)
+    fields into independent NetCDFs even with download_format=unarchived.
+    Never treat the ZIP itself as NetCDF and never overwrite the original bytes.
+    """
+    if valid_netcdf(target):
+        return [(target, None)], None
+    if not zipfile.is_zipfile(target):
+        raise ValueError("CDS output is not NetCDF or a readable ZIP of NetCDFs")
+
+    extracted: list[tuple[Path, str | None]] = []
+    try:
+        with zipfile.ZipFile(target) as bundle:
+            members = [member for member in bundle.infolist() if not member.is_dir()]
+            if not 1 <= len(members) <= 8:
+                raise ValueError("CDS ZIP contains no files or too many members")
+            seen: set[str] = set()
+            for member in members:
+                # Ignore remote paths entirely: construct each destination ourselves.
+                basename = member.filename.replace("\\\\", "/").split("/")[-1]
+                if (not basename.lower().endswith(".nc")
+                        or not 4096 <= member.file_size <= 500_000_000):
+                    raise ValueError(f"Unexpected CDS ZIP member: {basename}")
+                safe_name = re.sub(r"[^A-Za-z0-9_.-]", "_", basename)[:110]
+                if not safe_name or safe_name in seen:
+                    raise ValueError("Duplicate or unsafe CDS ZIP member")
+                seen.add(safe_name)
+                destination = target.with_name(f"{target.stem}__{safe_name}")
+                extracted.append((destination, member.filename))
+                with bundle.open(member) as incoming, destination.open("wb") as outgoing:
+                    shutil.copyfileobj(incoming, outgoing)
+                if not valid_netcdf(destination):
+                    raise ValueError(f"Invalid NetCDF inside CDS ZIP: {basename}")
+        # Both source archive and extracted components belong to the artifact.
+        original_archive = target.with_suffix(".zip")
+        original_archive.unlink(missing_ok=True)
+        target.replace(original_archive)
+        return extracted, original_archive
+    except Exception:
+        for destination, _ in extracted:
+            destination.unlink(missing_ok=True)
+        raise
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--raw-dir", type=Path, default=Path("data/raw/era5"))
@@ -97,6 +146,7 @@ def main() -> int:
 
     fallbacks: list[dict[str, str]] = []
     completed_windows = 0
+    source_windows_succeeded = 0
     requests_sent = 0
 
     for point, lat, lon, label, year, months in requests:
@@ -112,14 +162,23 @@ def main() -> int:
                 target.unlink(missing_ok=True)
                 requests_sent += 1
                 client.retrieve(DATASET, request_for(lat, lon, year, chunk_months), str(target))
-                if not valid_netcdf(target):
-                    raise ValueError("CDS output is empty, truncated or not NetCDF/HDF5")
-                files.append({
-                    "point": point, "latitude": lat, "longitude": lon,
-                    "period": chunk_label, "selected_quarter": label,
-                    "months": chunk_months, "path": str(target),
-                    "bytes": target.stat().st_size, "sha256": sha256(target),
-                })
+                components, archive = unpack_cds_netcdfs(target)
+                archive_metadata = ({
+                    "source_archive_path": str(archive),
+                    "source_archive_bytes": archive.stat().st_size,
+                    "source_archive_sha256": sha256(archive),
+                } if archive else {})
+                source_windows_succeeded += 1
+                for component, member in components:
+                    files.append({
+                        "point": point, "latitude": lat, "longitude": lon,
+                        "period": chunk_label, "selected_quarter": label,
+                        "months": chunk_months, "path": str(component),
+                        "bytes": component.stat().st_size,
+                        "sha256": sha256(component),
+                        "source_archive_member": member,
+                        **archive_metadata,
+                    })
             except Exception as exc:  # noqa: BLE001 - retain per-request evidence
                 # Keep unexpected CDS response bytes for diagnosis. In particular,
                 # an HTTP-200 ZIP/GRIB/HTML response must not be silently deleted.
@@ -182,12 +241,15 @@ def main() -> int:
         "selection": {"points": args.points, "periods": args.periods,
                       "max_requests": args.max_requests},
         "files_attempted": len(requests),
-        "files_succeeded": len(files),
+        "files_succeeded": len(files),  # NetCDF members; may exceed request windows
+        "source_windows_succeeded": source_windows_succeeded,
         "windows_completed": completed_windows,
         "source_requests_sent": requests_sent,
         "oversized_window_fallbacks": fallbacks,
-        "files_expected": expected,
+        "files_expected": expected,  # Original 20 source-window slots, not NetCDF count
         "files_not_attempted": expected - len(requests),
+        "file_count_note": ("One CDS source window can contain multiple NetCDF files; "
+                            "source windows and NetCDF components are separate counts."),
         "files": files,
         "failures": failures,
         "scope_warning": (
@@ -200,6 +262,7 @@ def main() -> int:
     args.manifest.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({
         "files_succeeded": len(files), "windows_completed": completed_windows,
+        "source_windows_succeeded": source_windows_succeeded,
         "source_requests_sent": requests_sent, "files_attempted": len(requests),
         "files_expected": expected, "failures": len(failures),
         "manifest": str(args.manifest),
