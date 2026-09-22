@@ -58,6 +58,78 @@ def stats(values: np.ndarray) -> dict:
     }
 
 
+def threshold_diagnostics(speed: np.ndarray, slope: np.ndarray) -> list[dict]:
+    """Sensitivity counts among centres with finite slope, never eligible sites."""
+    if speed.shape != slope.shape:
+        raise ValueError("Wind speed and slope sample lengths differ")
+    valid = np.isfinite(slope)
+    denominator = int(valid.sum())
+    rows = []
+    for minimum_speed in (5.0, 6.0, 7.0, 8.0):
+        for maximum_slope in (5.0, 10.0, 15.0, 20.0):
+            count = int(np.count_nonzero(
+                valid & (speed >= minimum_speed) & (slope <= maximum_slope)
+            ))
+            rows.append({
+                "minimum_150m_wind_speed_m_s_inclusive": minimum_speed,
+                "maximum_DSM_surface_slope_degrees_inclusive": maximum_slope,
+                "matching_point_centres": count,
+                "percentage_of_slope_available_point_centres": (
+                    round(100 * count / denominator, 3) if denominator else None
+                ),
+            })
+    return rows
+
+
+def render_private_maps(frame: pd.DataFrame, slope: np.ndarray | None,
+                        out_dir: Path) -> dict:
+    """Draw private descriptive point maps, never GIS exclusions or MW estimates."""
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    lon = frame[FIELDS[0]].to_numpy(dtype="float64")
+    lat = frame[FIELDS[1]].to_numpy(dtype="float64")
+    definitions = [
+        ("NIWE_150m_kerala_wind_speed_PRIVATE.png", "Wind Speed (m/s)", "m/s"),
+        ("NIWE_150m_kerala_wind_density_PRIVATE.png",
+         "Wind Power Density (W/sq.m)", "W/m²"),
+    ]
+    if slope is not None:
+        if slope.shape != lon.shape:
+            raise ValueError("Slope and wind point counts differ")
+        definitions.append(("NIWE_150m_kerala_DSM_slope_PRIVATE.png", None, "degrees"))
+
+    output = {}
+    for name, field, unit in definitions:
+        values = slope if field is None else frame[field].to_numpy(dtype="float64")
+        assert values is not None
+        finite = np.isfinite(values)
+        fig, ax = plt.subplots(figsize=(7, 9))
+        try:
+            scatter = ax.scatter(
+                lon[finite], lat[finite], c=values[finite], s=0.9,
+                linewidths=0, rasterized=True,
+            )
+            ax.set_aspect("equal")
+            ax.set_xlabel("Longitude (°E)")
+            ax.set_ylabel("Latitude (°N)")
+            ax.set_title("Kerala NWIC-clipped NIWE point centres: " + unit +
+                         "\\nDescriptive only · NOT eligible area or capacity")
+            fig.colorbar(scatter, ax=ax, label=unit, shrink=0.65)
+            destination = out_dir / name
+            fig.savefig(destination, dpi=160, bbox_inches="tight")
+            output[name] = {"sha256": sha256(destination),
+                            "mapped_finite_point_centres": int(finite.sum())}
+        finally:
+            plt.close(fig)
+    return {"derived_maps_local_private_only": True,
+            "public_redistribution_rights_verified": False,
+            "files": output}
+
+
 def read_clip(path: Path, expected_rows: int) -> pd.DataFrame:
     frame = pd.read_csv(path, compression="infer")
     if tuple(frame.columns) != FIELDS:
@@ -168,6 +240,13 @@ def analyze(
             "joint_speed_by_slope_point_counts": joint,
             "joint_speed_edges_m_s": list(SPEED_EDGES[:-1]) + [None],
             "joint_slope_edges_degrees": list(SLOPE_EDGES),
+            "wind_speed_slope_threshold_sensitivity": threshold_diagnostics(
+                speed, degree
+            ),
+            "threshold_sensitivity_interpretation": (
+                "Physical descriptive combinations only: not forest/wetland "
+                "rights, wind turbine yield, viable area, layout or legal eligibility."
+            ),
             "not_a_technology_specific_setback_or_legal_screen": True,
         }
     return result
@@ -181,15 +260,25 @@ def main() -> int:
                         help="Local PRIVATE or public-safe aggregate JSON; no raw rows")
     parser.add_argument("--slope-degrees", type=Path,
                         help="Optional independent CRS-aware raster; verify units first")
+    parser.add_argument("--map-dir", type=Path,
+                        help="Optional LOCAL PRIVATE PNG point maps; check NIWE licence "
+                             "before public redistribution")
     parser.add_argument("--allow-repacked-clip", action="store_true",
                         help="Explicitly accept non-pinned compressed bytes")
     args = parser.parse_args()
     if args.out.resolve() == args.niwe_clip.resolve():
         parser.error("Do not overwrite source clip")
+    if args.map_dir and args.map_dir.resolve() == args.niwe_clip.parent.resolve():
+        parser.error("Choose a separate private map directory, not the source directory")
     report = analyze(
         args.niwe_clip, allow_repacked_clip=args.allow_repacked_clip,
         slope=args.slope_degrees,
     )
+    if args.map_dir is not None:
+        # The analysis verifies the compressed hash and row count before map rendering.
+        frame = read_clip(args.niwe_clip, report["point_centres"])
+        degree = sample_slope(args.slope_degrees, frame) if args.slope_degrees else None
+        report["private_maps"] = render_private_maps(frame, degree, args.map_dir)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n",
                         encoding="utf-8")
