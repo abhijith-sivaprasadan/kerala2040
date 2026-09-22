@@ -50,6 +50,18 @@ or signed download URLs). The private repo is a separate storage location:
 the public research repo carries code, source links, hashes and reproducibility
 instructions without exposing third-party raw bytes.
 
+## Private archive organization
+
+The source archive now has a [private collection catalogue](https://github.com/abhijith-sivaprasadan/kerala2040-source-archive/blob/main/CATALOG.md)
+with five source-specific guides, a [machine-readable asset inventory](https://github.com/abhijith-sivaprasadan/kerala2040-source-archive/blob/main/catalog/2026-09-22-five-folder-inventory.json)
+and a [clean-machine restore guide](https://github.com/abhijith-sivaprasadan/kerala2040-source-archive/blob/main/RESTORE.md).
+The verified nine ZIP parts and original internal paths were left unchanged.
+The public restore script now pins the manifest SHA256
+`7412ef75f5af87ef220a92148e0af16f9c1286e66687c5bf2a815e39f9de3666`;
+`--reference-manifest` remains supported but is optional for this exact release.
+These are storage and navigation changes only, not solar/wind model-admission
+evidence. Private links require an authorized GitHub account.
+
 ## Private archive completion — 22 September 2026
 
 **Completed for the five-folder snapshot, not the 17 originally downloaded
