@@ -1,0 +1,730 @@
+{
+  "classification": "LONG_TERM_GSA_INDIA_NATIVE_RASTER_INTERNAL_UNIT_QA_NOT_MODEL_ADMITTED",
+  "source": "Global Solar Atlas India 2.0 / Solargis / World Bank Group / ESMAP",
+  "coverage": "India raster matched source cells; NOT exact Kerala clip",
+  "source_vintage": "1999-2018 long-term; not FY2024-25 production",
+  "source_folders": {
+    "period_totals": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF",
+    "average_daily": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF"
+  },
+  "months_days": [
+    31,
+    28.25,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31
+  ],
+  "annual_days": 365.25,
+  "unit_tolerance_pct": 0.2,
+  "native_cell_windows_checked": 64,
+  "annual_valid_positive_cells": 8796068,
+  "source_tiffs": {
+    "period_totals_annual": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/New folder/New folder (2)/PVOUT.tif",
+      "bytes": 19283950,
+      "sha256": "8f09393e357ecaf4eaad3abf86b4b7d1824fdf5fe3583c5a8845955737e57640",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_01": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_01.tif",
+      "bytes": 21785592,
+      "sha256": "0399c4bccce8412076a7d408e26ea62d4f4faec509a91dd8671a62a95780049f",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_02": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_02.tif",
+      "bytes": 20260884,
+      "sha256": "ffe1649284802bb12d490ed7633f023637cc0b5140538f6e3dd94b3a0d0bd71f",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_03": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_03.tif",
+      "bytes": 19859208,
+      "sha256": "7cdd42167aa0d7e70d1b0584f5820cb050a2dfc8add6964f6b647b4318eae8eb",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_04": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_04.tif",
+      "bytes": 17862154,
+      "sha256": "67a43dda0aed09dbe947fd73bc4c36bdd0dcb5a26a9a549654b544576b990b4e",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_05": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_05.tif",
+      "bytes": 20345532,
+      "sha256": "db585072d49f0f1c3ccf3bcb518639a4c1505b4b434534d8766f2b1f74137563",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_06": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_06.tif",
+      "bytes": 18318706,
+      "sha256": "d3d28af094aa881585e7b89de696aac747b237936bdc5992421ad9e9f5102cf9",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_07": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_07.tif",
+      "bytes": 20336252,
+      "sha256": "4b0853e6f002fa21bb0471894e240d9023972d5039312df6c3f2ab2bb6bed5f2",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_08": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_08.tif",
+      "bytes": 20413230,
+      "sha256": "c586ccace64c44e5a4a1c6c97c9142288dcc2c78b348d8843a6e30c744144808",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_09": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_09.tif",
+      "bytes": 18655686,
+      "sha256": "ada3e2aa00e366d208a05d44357b9e5820b5f4f10c088b3a14dfc40758c76d55",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_10": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_10.tif",
+      "bytes": 21181314,
+      "sha256": "16f07b10d557c03652e7e6c3388243b6fad551a693b3ea7b14b6c3b12abbe3a6",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_11": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_11.tif",
+      "bytes": 18893772,
+      "sha256": "04deb76fe2811edb553336a74237325fd26f3db2dc216e19c58ceef911087f74",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "period_totals_month_12": {
+      "relative_to_source_root": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_YearlyMonthlyTotals_GlobalSolarAtla/PVOUT_12.tif",
+      "bytes": 21698410,
+      "sha256": "0268abf0c9802314a6c01c75691a68040938c6b30f7ea4161f0e378350cbafea",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": 1.1754943508222875e-38
+    },
+    "average_daily_annual": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT.tif",
+      "bytes": 17898570,
+      "sha256": "aa5d58c6f290673bbd629fdc9c05c3b1be179086b6a91ac25524cac737103434",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_01": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_01.tif",
+      "bytes": 19967804,
+      "sha256": "1fa5886bc91d74dd98728ed1fc8b75bb2d5c875d4da09deae5ebf20e0b55105d",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_02": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_02.tif",
+      "bytes": 19024498,
+      "sha256": "baa7ed65e0c224d8f54e1d0f0bbaf0023bf67f461bd218078b3b46466a4af06d",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_03": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_03.tif",
+      "bytes": 18345292,
+      "sha256": "a1d1a34a7dcc78ec323b0b3e39eb2bb59d4dede05fd040cc9ee23d09f4f25042",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_04": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_04.tif",
+      "bytes": 18265460,
+      "sha256": "4e6e747235c7632d06141c9eb448047ad16d11c5fc86914c5a446fa80d4b2741",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_05": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_05.tif",
+      "bytes": 18695062,
+      "sha256": "d7d3430d37d9b6a1674c21e17352de7c2e8e09edfe93ee9c9678e2caec5112ea",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_06": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_06.tif",
+      "bytes": 19037904,
+      "sha256": "207ce7f404c659f56e467e7ebc00b3ca36b108306ba82f71a2940bba10016f75",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_07": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_07.tif",
+      "bytes": 18907934,
+      "sha256": "9e1b1cfbefbb60ea5896e18075f54bc6898338b3f2c0b666d743fde00cc90f04",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_08": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_08.tif",
+      "bytes": 18955814,
+      "sha256": "589d8345aecbe27572090fd611c8cc4d894fccdd196bc30cac726aecf1678d5d",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_09": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_09.tif",
+      "bytes": 19246542,
+      "sha256": "43b99605d5a270479899d3d39e7961b727489f131144e3e6212a9f04b33214f4",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_10": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_10.tif",
+      "bytes": 19319184,
+      "sha256": "7aa56b66990254fb1925df83c14dd1a60d57af9eb1bde32a5bc771bd18210433",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_11": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_11.tif",
+      "bytes": 19279684,
+      "sha256": "e3dc99c19b4d31e2a3d8b7e74aafb2ee8fcc50caa3046ced88961c983fc2a091",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    },
+    "average_daily_month_12": {
+      "relative_to_source_root": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/India_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/monthlyIndia_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT_12.tif",
+      "bytes": 19855522,
+      "sha256": "a06d569944fd3d2880d7519730bcbc0389b3cd900a4458513ed8438ceb64da6d",
+      "crs": "EPSG:4326",
+      "grid_shape": [
+        3840,
+        3840
+      ],
+      "transform": [
+        0.008333333333333333,
+        0,
+        66,
+        0,
+        -0.008333333333333333,
+        38,
+        0,
+        0,
+        1
+      ],
+      "nodata": "NaN"
+    }
+  },
+  "checks": {
+    "annual_over_mean_day": {
+      "expected_days": 365.25,
+      "matched_positive_cells": 8796068,
+      "source_valid_mask_mismatches": 0,
+      "cells_exceeding_tolerance": 0,
+      "max_absolute_relative_error_pct": 0.000087798853150511,
+      "mean_absolute_relative_error_pct": 0.000016004977446691326
+    },
+    "annual_vs_sum_of_12_months": {
+      "expected_days": null,
+      "matched_positive_cells": 8796068,
+      "source_valid_mask_mismatches": 0,
+      "cells_exceeding_tolerance": 0,
+      "max_absolute_relative_error_pct": 0.02933478721446653,
+      "mean_absolute_relative_error_pct": 0.005689729821252305
+    },
+    "monthly_total_over_mean_day": {
+      "10": {
+        "expected_days": 31,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011404859747596767,
+        "mean_absolute_relative_error_pct": 0.0000035766764432370813
+      },
+      "11": {
+        "expected_days": 30,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011073785072892082,
+        "mean_absolute_relative_error_pct": 0.0000031940279235046847
+      },
+      "12": {
+        "expected_days": 31,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011404859747596767,
+        "mean_absolute_relative_error_pct": 0.0000035083710727594805
+      },
+      "01": {
+        "expected_days": 31,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011404859747596767,
+        "mean_absolute_relative_error_pct": 0.0000035318719947274428
+      },
+      "02": {
+        "expected_days": 28.25,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.002972595050009929,
+        "mean_absolute_relative_error_pct": 0.00019037495726430557
+      },
+      "03": {
+        "expected_days": 31,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011404859747596767,
+        "mean_absolute_relative_error_pct": 0.000003570279619612674
+      },
+      "04": {
+        "expected_days": 30,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011073785072892082,
+        "mean_absolute_relative_error_pct": 0.0000033093072849806795
+      },
+      "05": {
+        "expected_days": 31,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011404859747596767,
+        "mean_absolute_relative_error_pct": 0.0000036769274620758118
+      },
+      "06": {
+        "expected_days": 30,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011073785072892082,
+        "mean_absolute_relative_error_pct": 0.0000029120664857424798
+      },
+      "07": {
+        "expected_days": 31,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011404859747596767,
+        "mean_absolute_relative_error_pct": 0.0000033230127874956076
+      },
+      "08": {
+        "expected_days": 31,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011404859747596767,
+        "mean_absolute_relative_error_pct": 0.000003295012774299048
+      },
+      "09": {
+        "expected_days": 30,
+        "matched_positive_cells": 8796068,
+        "source_valid_mask_mismatches": 0,
+        "cells_exceeding_tolerance": 0,
+        "max_absolute_relative_error_pct": 0.000011073785072892082,
+        "mean_absolute_relative_error_pct": 0.0000029722584338627846
+      }
+    }
+  },
+  "passed": true,
+  "failed_checks": [],
+  "model_admitted": false,
+  "feasible_capacity_MW": null,
+  "warnings": [
+    "GSA annual/day ratio is a 365.25-day long-term climatological normalisation",
+    "February monthly/day ratio is 28.25, not February 2025's 28 days",
+    "Matching GSA alternative formats is not independent real-world validation",
+    "A passing result is not Kerala spatial suitability or verified buildable capacity"
+  ],
+  "evidence_context": "User-executed local source TIFF audit; reviewed from uploaded JSON, not independently rerun on binary TIFFs",
+  "historical_reference": "Local Windows execution 2026-09-22; 26 source PVOUT GeoTIFFs, five-folder private archive"
+}
