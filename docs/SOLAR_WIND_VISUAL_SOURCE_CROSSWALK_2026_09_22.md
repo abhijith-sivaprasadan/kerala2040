@@ -62,6 +62,13 @@ The report states nominal **0.019 km² per MW** (PDF p.72). This cannot be used 
 
 ## 3. NIWE 120 m and 150 m: no transposing numbers
 
+The corresponding [machine-readable, page-scoped NIWE 120 m Kerala evidence](../data/evidence/solar/niwe_120m_2019_report_kerala_2026_09_22.json)
+records the 2019 study's CUF and land-class cross-tabulations, distinct
+March-2019 greenfield number, published wind-speed validation, exclusion
+assumptions and separate coarse offshore method. It is a **publisher-attributed
+benchmark**, not a newly derived eligible capacity or NIWE 150 m grid audit.
+
+
 Official [NIWE 120 m atlas publisher page](https://niwe.res.in/Open_data_Set/technical_report/19/) describes **500 m spatial modelling, 406 measurement-site corroborations** and an illustrative land-exclusion/capacity assessment. The user-attached **77-page 120 m report** [NIWE publication page](https://niwe.res.in/Open_data_Set/technical_report/19/) has Kerala **2,311 MW** in the **>25% CUF** state-wise atlas table (PDF pp.14, 39), split by CUF band into **366 / 193 / 180 / 359 / 1,213 MW** (25–28 / 28–30 / 30–32 / 32–35 / >35%). **This is an attributed 2019 modelled 120 m planning estimate, not a new local reanalysis or allowed build-out.** The attached PDF's selected maps, table images and figures have now been inspected.
 
 **What the actual PDF images establish:**
