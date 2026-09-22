@@ -1,16 +1,22 @@
 """Synthetic regression checks; not Kerala evidence."""
 from __future__ import annotations
 
+import importlib.util
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import pytest
 
-from scripts.audit_kerala_niwe_resource import (
-    FIELDS,
-    analyze,
-    histogram,
-    read_clip,
-)
+SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "audit_kerala_niwe_resource.py"
+SPEC = importlib.util.spec_from_file_location("audit_kerala_niwe_resource", SCRIPT)
+assert SPEC is not None and SPEC.loader is not None
+MODULE = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(MODULE)
+FIELDS = MODULE.FIELDS
+analyze = MODULE.analyze
+histogram = MODULE.histogram
+read_clip = MODULE.read_clip
 
 
 def sample_clip(tmp_path):
