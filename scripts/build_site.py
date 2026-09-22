@@ -315,7 +315,9 @@ def build_site(root: Path, output: Path) -> None:
     shutil.copy2(root / "docs/assets/mark.svg", assets / "mark.svg")
     # Curated vector chapter artwork, not legacy chart libraries or GIS files.
     artwork = ("icons.svg", "chapter-electric.svg", "chapter-land.svg",
-               "chapter-pathways.svg", "chapter-industry.svg")
+               "chapter-pathways.svg", "chapter-industry.svg",
+               "wind-district-normalized-20260923.svg",
+               "wind-terrain-sensitivity-20260923.svg")
     for name in artwork:
         shutil.copy2(root / "docs/assets" / name, assets / name)
     # Social providers require a real PNG, not an SVG thumbnail or a browser
