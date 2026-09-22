@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "verified_date": "2026-09-22",
+  "classification": "FIVE_USER_DOWNLOADED_FOLDER_SNAPSHOTS_PRIVATE_ARCHIVED_AND_INDEPENDENTLY_SHA256_RESTORED_NOT_ORIGINAL_PROVIDER_ZIP_ARCHIVES",
+  "archive": {
+    "repository_full_name": "abhijith-sivaprasadan/kerala2040-source-archive",
+    "visibility": "private",
+    "release_tag": "renewable-five-folder-snapshot-2026-09-22",
+    "draft": false,
+    "url": "https://github.com/abhijith-sivaprasadan/kerala2040-source-archive/releases/tag/renewable-five-folder-snapshot-2026-09-22",
+    "upload_parts": 9,
+    "manifest_assets": 1,
+    "remote_asset_count": 10,
+    "remote_asset_size_bytes_total": 4929971654,
+    "remote_assets": [
+      {
+        "name": "global-pv-potential-study-raster-data-layers-globalsolaratlas.snapshot.zip.part0001",
+        "bytes": 805306368,
+        "digest_sha256": "8abc006fee99871939c16560894929ea2cf2745f9d436d1886d4ed78e8df7012"
+      },
+      {
+        "name": "global-pv-potential-study-raster-data-layers-globalsolaratlas.snapshot.zip.part0002",
+        "bytes": 805306368,
+        "digest_sha256": "b7d6de6ec386e9d155ad5015626355ee3ce2d632a0b1501f4e2044419e01e35f"
+      },
+      {
+        "name": "global-pv-potential-study-raster-data-layers-globalsolaratlas.snapshot.zip.part0003",
+        "bytes": 366359841,
+        "digest_sha256": "cf988fb009f28d59b5e4a70f1251b5ebf36283040f4e1eddd25f58a2e3a7cebd"
+      },
+      {
+        "name": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF.snapshot.zip.part0001",
+        "bytes": 805306368,
+        "digest_sha256": "242e07e1d75d2313a36e7ee78774b4470826fcb4a76edb5b3fdf6e4e4ac5dffb"
+      },
+      {
+        "name": "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF.snapshot.zip.part0002",
+        "bytes": 45065346,
+        "digest_sha256": "4e3b285b1dc9626e05a6e3671ed2f1299c587b7fb39ab146bf655225290e3fdb"
+      },
+      {
+        "name": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF.snapshot.zip.part0001",
+        "bytes": 805306368,
+        "digest_sha256": "ba16c376d1ccb87e7af1693312d923ec84a0ec2e4c77806958ec96d0e6cf0318"
+      },
+      {
+        "name": "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF.snapshot.zip.part0002",
+        "bytes": 742453442,
+        "digest_sha256": "479fbf92a408e668d17ec0023b7cb42d21289ebc54755045c5370df4b70683ba"
+      },
+      {
+        "name": "renewable-five-folders-manifest.json",
+        "bytes": 79836,
+        "digest_sha256": "7412ef75f5af87ef220a92148e0af16f9c1286e66687c5bf2a815e39f9de3666"
+      },
+      {
+        "name": "Solar.snapshot.zip.part0001",
+        "bytes": 132045575,
+        "digest_sha256": "6beb411683865d13dbcc90208c84e2dd6e9e6c3e38b40bac73bd77d60ade2ffe"
+      },
+      {
+        "name": "Wind.snapshot.zip.part0001",
+        "bytes": 422742142,
+        "digest_sha256": "21165bd3c6169ac46ea8b19df401778fbcab3a5775793f3dd481e1b80912f0ea"
+      }
+    ]
+  },
+  "source_folders": [
+    "global-pv-potential-study-raster-data-layers-globalsolaratlas",
+    "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF",
+    "India_GISdata_LTAym_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF",
+    "Wind",
+    "Solar"
+  ],
+  "restoration": {
+    "status": "PASS_REPORTED_FROM_USER_EXECUTION_LOG",
+    "verification_procedure": "Five folder ZIP64 snapshots split into nine .part assets; downloaded to fresh restore staging folder, part SHA256 verified, ZIP reassembled, archive SHA256 and each nested member SHA256 verified against trusted LOCAL preparation manifest; final exact success: SUCCESS: all five PRIVATE folder snapshots and EVERY nested file SHA256 verified.",
+    "remote_asset_presence_and_sha256_metadata": "independently checked via GitHub connected account; 10/10 assets state uploaded and sha256 metadata provided",
+    "restored_binary_bytes_accessible_to_assistant": false
+  },
+  "originals_manifest_separate": "data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json",
+  "original_17_provider_archives_fully_restored": false,
+  "original_17_release_uploaded_flag_must_remain_false": true,
+  "privacy_note": "The private repo is not public; do not expose raw third-party source ZIP/TIFF/PDF or private access links or credentials in the public repository. A repacked extracted folder preserves component bytes and paths, not byte-identical original container ZIP bytes.",
+  "model_admitted": false
+}
