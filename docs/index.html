@@ -261,10 +261,31 @@
       </div>
       <div id="districtSourceSummary" class="district-summary" aria-live="polite">Loading the NWIC administrative partition…</div>
       <div class="district-controls"><label for="districtChoice">Select a district / ജില്ല</label>
-        <select id="districtChoice" aria-controls="districtMetrics districtThresholds"><option value="">Loading the district register…</option></select>
+        <select id="districtChoice" aria-controls="districtMetrics districtThresholds districtNormalized"><option value="">Loading the district register…</option></select>
       </div>
       <div id="districtMetrics" class="district-metrics" aria-live="polite"></div>
       <div id="districtThresholds" class="district-thresholds" aria-live="polite"></div>
+      <div id="districtNormalized" class="district-normalized" aria-live="polite">Loading normalized terrain sensitivity…</div>
+      <section class="wind-figures-gallery" aria-labelledby="windPhase1ResultTitle">
+        <div class="section-eyebrow">FIELD RESULT / 2026.09.23 / കാറ്റ്</div>
+        <h3 id="windPhase1ResultTitle" class="display-title">Wind phase 1. <em>Question answered.</em></h3>
+        <p>District-normalized source-point subsets show how hypothetical slope limits change the interpretation of NIWE 150 m modelled wind. The figures below show <strong>not permitted wind sites or buildable MW</strong>. Click to view the scalable vector graphics.</p>
+        <div class="wind-figure-links">
+          <figure>
+            <a href="assets/wind-district-normalized-20260923.svg" target="_blank" rel="noopener noreferrer" aria-label="Open full size district-normalized descriptive NIWE and DSM figure">
+              <img src="assets/wind-district-normalized-20260923.svg" loading="lazy" decoding="async" width="1350" height="1115" alt="All 14 NWIC Kerala districts, alphabetically: percentage of finite-DSM-slope NIWE point centres with modelled wind speed at least 7 metres per second and sampled surface slope no more than 10 degrees. Palakkad 27.50%, Idukki 8.08%. Not eligible wind-farm sites.">
+            </a>
+            <figcaption>01 / All 14 districts · finite-slope-denominator shares, not land percentages. <a href="assets/wind-district-normalized-20260923.svg" target="_blank" rel="noopener noreferrer">View vector ↗</a></figcaption>
+          </figure>
+          <figure>
+            <a href="assets/wind-terrain-sensitivity-20260923.svg" target="_blank" rel="noopener noreferrer" aria-label="Open full size wind terrain sensitivity response figure">
+              <img src="assets/wind-terrain-sensitivity-20260923.svg" loading="lazy" decoding="async" width="1330" height="860" alt="Line chart of the retained percentage of the 20-degree reference point-centre subset for Palakkad, Idukki and Kerala at modelled wind at least 7 metres per second. At 5 degrees, 70.49%, 19.55% and 49.28% respectively.">
+            </a>
+            <figcaption>02 / Holding wind ≥7 m/s · slope-threshold change relative only to each ≤20° reference. <a href="assets/wind-terrain-sensitivity-20260923.svg" target="_blank" rel="noopener noreferrer">View vector ↗</a></figcaption>
+          </figure>
+        </div>
+        <p class="caption"><a href="https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/docs/WIND_PHASE1_DISTRICT_NORMALIZED_CLOSEOUT_2026_09_23.md" target="_blank" rel="noopener noreferrer">Read the completed wind phase 1 report, methods, missing-data accounting and open gates ↗</a></p>
+      </section>
       <h3 class="subsection-title">All 14 district observations · alphabetical, not a suitability ranking</h3>
       <p class="caption">Choose any row to inspect the 16 hypothetical speed/slope combinations. Counts vary with source polygon boundaries; comparisons use the same NWIC district source.</p>
       <div id="districtOverview" class="district-overview" aria-label="District source resource summary"></div>
