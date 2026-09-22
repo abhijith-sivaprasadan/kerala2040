@@ -143,7 +143,7 @@ def audit(source_root: Path, output: Path, tolerance_pct: float = 0.2) -> dict:
                     min(WINDOW, annual.height - row),
                 )
 
-                def read(label: str):
+                def read(label: str, region=region):
                     data = opened[label].read(1, window=region, masked=True)
                     values = data.astype("float64").filled(np.nan)
                     good = (
