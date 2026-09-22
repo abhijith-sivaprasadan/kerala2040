@@ -1,0 +1,159 @@
+{
+  "classification": "NIWE_150M_KERALA_DESCRIPTIVE_RESOURCE_TERRAIN_NOT_CAPACITY",
+  "reviewed_date": "2026-09-22",
+  "execution": "real national NIWE source clipped to independently recovered exact NWIC Kerala geometry, combined with original-derived GLO-90 DSM slope; private derived data retained outside git",
+  "provenance": {
+    "original_NIWE_inner_zip_sha256": "f166450c3ea591b5b346f9cd27899b10b6f18ce9cf441c98388c6f0e98d44b38",
+    "original_NIWE_uncompressed_CSV_sha256": "88a1071e6226bdaeda59dcdc459528fb82ff6f8c4770138b479f56ccd97c7a57",
+    "original_NWIC_state_boundary_zip_sha256": "a932ea29e7afd0fea1e1068f3beeeadb760e6b2baae9783f5822bbefd4224ebd",
+    "original_NWIC_crs": "EPSG:7755",
+    "reprojected_boundary_crs": "EPSG:4326",
+    "original_NIWE_coordinate_CRS_independently_certified": false,
+    "derived_DSM_surface_slope_raster_sha256": "72551921c99eb563abe37c9502d4e4c592c3be667f31459296c90e48be9436f7",
+    "slope_grid_crs": "EPSG:32643",
+    "slope_unit": "degrees",
+    "terrain_type": "Copernicus GLO-90 DSM, not bare-earth DTM",
+    "newly_rebuilt_deterministic_gzip_clip_sha256": "dd9d00e67da0dac3a9258daad18c35f71075815f7b64cea4b290a36c6e9b9634",
+    "newly_rebuilt_uncompressed_clip_CSV_sha256": "7c299f7c0cc1dfd08355d39c3d283bf88cfbf0ed8c10cddf6789a26e24800d4e",
+    "prior_clip_gzip_sha256": "364808dd40751bd5f3e131e86127dbdab73168d1830a682002de5a4c6fdd0dee",
+    "prior_clip_compressed_bytes_match": false,
+    "new_clip_compression": "gzip compresslevel=7; header mtime=0; filename empty",
+    "prior_compressed_clip_bytes_not_available_to_compare_uncompressed_hash": true,
+    "exact_Kerala_geometry_check_for_all_rebuilt_rows": true,
+    "vectorized_raster_sample_checked_against_rasterio_sample": "64/64 point samples agree"
+  },
+  "national_rows": 19475568,
+  "Kerala_point_centres": 200692,
+  "wind_speed_at_150m_m_s": {
+    "minimum": 1.365,
+    "p05": 2.414,
+    "median": 3.91,
+    "p95": 7.766,
+    "maximum": 11.549,
+    "bin_edges": [
+      0,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      10,
+      null
+    ],
+    "bin_counts": [
+      34402,
+      71355,
+      37270,
+      28760,
+      12521,
+      7845,
+      8086,
+      453
+    ]
+  },
+  "wind_power_density_W_per_m2": {
+    "minimum": 4.693,
+    "p05": 24.269,
+    "median": 78.9255,
+    "p95": 511.4345,
+    "maximum": 2348.2,
+    "bin_edges": [
+      0,
+      50,
+      100,
+      200,
+      300,
+      500,
+      800,
+      null
+    ],
+    "bin_counts": [
+      59946,
+      51670,
+      45798,
+      15846,
+      16673,
+      7854,
+      2905
+    ]
+  },
+  "slope": {
+    "finite_point_centres": 199853,
+    "missing_point_centres": 839,
+    "minimum_degrees": 0,
+    "p05_degrees": 0.4465467035770416,
+    "median_degrees": 4.960902690887451,
+    "p95_degrees": 26.20087890624999,
+    "maximum_degrees": 65.40543365478516,
+    "bin_edges_degrees": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      30,
+      45,
+      90.000001
+    ],
+    "bin_counts": [
+      100433,
+      41817,
+      20871,
+      14408,
+      17012,
+      5055,
+      257
+    ]
+  },
+  "physical_threshold_sensitivity": {
+    "minimum_150m_speed_m_s_inclusive": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "maximum_DSM_slope_degrees_inclusive": [
+      5,
+      10,
+      15,
+      20
+    ],
+    "matching_point_centre_counts_in_row_column_order": [
+      [
+        22279,
+        34290,
+        41980,
+        47959
+      ],
+      [
+        9684,
+        14642,
+        18971,
+        22625
+      ],
+      [
+        6263,
+        8637,
+        10757,
+        12710
+      ],
+      [
+        3593,
+        4691,
+        5654,
+        6554
+      ]
+    ],
+    "denominator_for_percentages": 199853,
+    "thresholds_are_scenario_assumptions_not_siting_rules": true
+  },
+  "permitted_interpretation": "descriptive resource/terrain point counts and statistical sensitivity only",
+  "source_raw_rows_in_public_repo": false,
+  "NIWE_derived_maps_in_public_repo": false,
+  "site_eligibility_verified": false,
+  "candidate_area_km2": null,
+  "feasible_capacity_MW": null,
+  "hourly_power_generation_validated": false,
+  "model_admitted": false
+}
