@@ -30,7 +30,7 @@ const repoFile = value => {
     REPO+"/blob/main/"+path : "";
 };
 const state={site:null,daily:null,audit:null,ledger:null,route:"overview",month:"all",
-  metric:"consumption_mu",scenario:null,theme:"kasavu"};
+  metric:"consumption_mu",scenario:null,theme:"kasavu",district:null};
 const gatesRequired=["ecological_capacity_ceiling","techno_economic_2040"];
 const routeIds=["overview","electricity","pathways","atlas","industry","workbench","audit","data"];
 
@@ -208,6 +208,13 @@ function bindInteractions(){
   $("#auditSearch")?.addEventListener("input",renderFindings);
   $("#auditPriority")?.addEventListener("change",renderFindings);
   $("#sourceSearch")?.addEventListener("input",renderSources);
+  $("#districtChoice")?.addEventListener("change",event=>{
+    state.district=event.target.value;renderDistrictDetail();
+  });
+  $("#districtOverview")?.addEventListener("click",event=>{
+    const button=event.target.closest?.("[data-district]");
+    if(button){state.district=button.dataset.district;renderDistrictDetail();}
+  });
   $("#spatialPipeline")?.addEventListener("click",e=>{
     const button=e.target.closest("[data-layer]");
     if(!button)return;
@@ -774,6 +781,60 @@ function renderWindTerrain(){
     ' centres. No km² or MW inferred.</p></figure></div>'+
     '<p class="caption">Source: NIWE original 150 m national CSV clipped with original NWIC Kerala polygon and joined to verified GLO-90 DSM slope; reviewed '+esc(w.reviewed_date)+'. Raw NIWE geometry and maps are not redistributed here.</p>';
 }
+function renderDistrictDetail(){
+  const dataset=state.ledger?.nwic_district;
+  const metrics=$("#districtMetrics"),thresholds=$("#districtThresholds");
+  if(!dataset || !metrics || !thresholds)return;
+  const row=dataset.districts.find(x=>x.district===state.district)||dataset.districts[0];
+  if(!row)return;
+  state.district=row.district;
+  const selection=$("#districtChoice");if(selection)selection.value=row.district;
+  metrics.innerHTML='<div class="district-selected-label"><span class="section-eyebrow">DISTRICT SELECTED / ജില്ല</span>'+
+    '<h3>'+esc(row.district)+'</h3><small>NWIC source-defined district, descriptive point-centre subset</small></div>'+
+    '<div class="district-kpi"><strong>'+fmt(row.point_centres,0)+'</strong><span>NIWE point centres</span></div>'+
+    '<div class="district-kpi"><strong>'+fmt(row.wind_speed_median_m_s,2)+' <em>m/s</em></strong><span>Median modelled wind at 150 m</span></div>'+
+    '<div class="district-kpi"><strong>'+fmt(row.slope_median_degrees,2)+'°</strong><span>Median GLO-90 DSM surface slope</span></div>'+
+    '<div class="district-kpi"><strong>'+fmt(row.slope_finite,0)+'</strong><span>Finite slope samples · '+fmt(row.slope_missing,0)+' missing</span></div>';
+  const a=dataset.hypothetical_thresholds;
+  thresholds.innerHTML='<div class="district-matrix-heading"><h3>Wind × surface slope · '+esc(row.district)+'</h3>'+
+    '<p>Numbers are modelled source-point centres. Wind threshold is inclusive; slope is measured on the DSM surface, not turbine-foundation ground. This matrix cannot establish available land or wind-farm MW.</p></div>'+
+    '<div class="wind-table-wrap"><table><caption>Hypothetical point-centre counts in '+esc(row.district)+
+    ' · speed ≥ and slope ≤; not eligible sites</caption><thead><tr><th scope="col">Wind ≥ / slope ≤</th>'+
+    a.max_DSM_surface_slope_degrees_inclusive.map(x=>'<th scope="col">'+esc(x)+'°</th>').join('')+
+    '</tr></thead><tbody>'+row.threshold_matrix.map((counts,i)=>
+       '<tr><th scope="row">≥'+esc(a.min_modelled_150m_wind_speed_m_s_inclusive[i])+
+       ' m/s</th>'+counts.map(n=>'<td>'+fmt(n,0)+'</td>').join('')+'</tr>'
+    ).join('')+'</tbody></table></div><p class="caption">Finite slope denominator: '+
+    fmt(row.slope_finite,0)+' of '+fmt(row.point_centres,0)+
+    ' NIWE centres. Hypothetical thresholds are not adopted engineering criteria.</p>';
+}
+function renderDistrictExplorer(){
+  const dataset=state.ledger?.nwic_district;
+  const summary=$("#districtSourceSummary"),selector=$("#districtChoice"),overview=$("#districtOverview");
+  if(!summary || !selector || !overview)return;
+  if(!dataset){summary.textContent="NWIC district aggregate is not in this research snapshot.";return;}
+  const a=dataset.point_assignment;
+  summary.innerHTML='<span><strong>'+fmt(a.uniquely_assigned,0)+'</strong><small>Assigned NWIC source centres</small></span>'+
+    '<span><strong>'+fmt(a.unassigned,0)+'</strong><small>Unassigned centres</small></span>'+
+    '<span><strong>'+fmt(a.ambiguous,0)+'</strong><small>Multi-district centres</small></span>'+
+    '<span><strong>'+fmt(a.slope_missing,0)+'</strong><small>Missing DSM slope samples</small></span>';
+  selector.innerHTML=dataset.districts.map(x=>'<option value="'+esc(x.district)+'">'+esc(x.district)+'</option>').join('');
+  if(!dataset.districts.some(x=>x.district===state.district)){
+    state.district=dataset.districts[0]?.district||null;
+  }
+  const maxSpeed=12;
+  overview.innerHTML='<table><caption>Alphabetical NWIC district comparison · NIWE resource centre counts, not available area or MW</caption>'+
+    '<thead><tr><th scope="col">District</th><th scope="col">NIWE centres</th>'+
+    '<th scope="col">Median wind at 150 m</th><th scope="col">Median surface slope</th></tr></thead><tbody>'+
+    dataset.districts.map(x=>'<tr><th scope="row"><button type="button" data-district="'+esc(x.district)+'">'+
+      esc(x.district)+' ↗</button></th><td>'+fmt(x.point_centres,0)+'</td>'+
+      '<td><div class="district-speed-track" aria-hidden="true"><span style="width:'+
+      Math.min(100,100*x.wind_speed_median_m_s/maxSpeed).toFixed(1)+'%"></span></div>'+
+      '<strong>'+fmt(x.wind_speed_median_m_s,2)+' m/s</strong></td><td>'+
+      fmt(x.slope_median_degrees,2)+'°</td></tr>'
+    ).join('')+'</tbody></table>';
+  renderDistrictDetail();
+}
 function renderLrisEvidence(){
   const box=$("#lrisEvidence"),l=state.ledger.lris;
   if(!box)return;
@@ -940,7 +1001,7 @@ function renderSources(){
 }
 function renderAll(){
   renderHomepage();renderEditorialHome();renderProvenance();renderElectricity();renderEditorialElectricity();renderPathways();
-  renderWindTerrain();renderLrisEvidence();renderAtlas();renderIndustry();renderWorkbench();renderAudit();renderSources();
+  renderWindTerrain();renderDistrictExplorer();renderLrisEvidence();renderAtlas();renderIndustry();renderWorkbench();renderAudit();renderSources();
   bindRoutes();
 }
 async function init(){
