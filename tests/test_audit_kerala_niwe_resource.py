@@ -6,7 +6,10 @@ import pandas as pd
 import pytest
 
 from scripts.audit_kerala_niwe_resource import (
-    FIELDS, analyze, histogram, read_clip,
+    FIELDS,
+    analyze,
+    histogram,
+    read_clip,
 )
 
 
