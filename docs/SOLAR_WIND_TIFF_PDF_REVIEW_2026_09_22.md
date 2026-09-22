@@ -5,6 +5,26 @@ visual review of every PDF page are **not yet reported as complete**. Source
 storage was already independently restored from the PRIVATE archive.
 This document does not grant source licensing or admit data into the model.
 
+## Local execution update — user report, 22 September 2026
+
+The user ran the inspection workflows against the five downloaded folders in
+a dedicated Python 3.11.9 environment. Terminal output reports:
+
+| Local execution step | Reported result | What it establishes |
+|---|---:|---|
+| Source GeoTIFF media inspection | **52/52 TIFFs, 0 errors** | Source TIFFs opened and their sampled previews/metadata were written locally. Not all native pixels were scanned by this particular media-inspection script. |
+| PDF rendering | **66/66 PDFs; 2,945 pages, 0 errors after TIFF-only rerun** | All report pages were rendered locally and retained in the page contact-sheet index. Pages have **not** thereby been visually interpreted. |
+| GSA period-total versus mean-daily/full-month PVOUT native-raster audit | **PASS; 8,796,068 valid positive annual cells; 64 native raster windows** | The locally executed source consistency checks passed at the script's default 0.2% tolerance. This is GSA India raster QA, **not** a Kerala-only count, independent physical validation, model admission or eligible capacity. |
+
+The user-generated `renewable_media_inventory.json` and
+`gsa_pvout_full_raster_qa.json` have **not yet been received in this
+conversation or committed to the repository**. Thus individual layer
+statistics, nodata-mask discrepancy counts, exact source TIFF SHA256s and
+per-check error distributions remain **awaiting report inspection**. This
+section records observed terminal output, not an independent rerun of the
+source binaries by the repository or a review of 2,945 page images. No raw
+third-party TIFF/PDF/contact-sheet bytes are published.
+
 ## Purpose
 
 The GSA, NIWE, NISE and World Bank materials contain actual numerical rasters,
