@@ -1,9 +1,12 @@
 # Renewable source-media review: GeoTIFF pixels and individual PDF pages
 
-**State:** reproducible QA tooling committed; full five-folder run and human
-visual review of every PDF page are **not yet reported as complete**. Source
-storage was already independently restored from the PRIVATE archive.
-This document does not grant source licensing or admit data into the model.
+**State:** the user's five-folder TIFF inventory, PDF-page rendering, and
+all-India 26-layer GSA PVOUT unit audit have completed. The uploaded JSON
+reports have been reviewed and the GSA numerical QA committed. **Visual
+interpretation of the rendered PDF pages, the inside-ZIP NIWE raster audit,
+and scientific model admission remain outstanding.** Source storage was
+already independently restored from the PRIVATE archive. This document
+does not grant source licensing or admit data into the model.
 
 ## Local execution update — user report, 22 September 2026
 
@@ -16,14 +19,14 @@ a dedicated Python 3.11.9 environment. Terminal output reports:
 | PDF rendering | **66/66 PDFs; 2,945 pages, 0 errors after TIFF-only rerun** | All report pages were rendered locally and retained in the page contact-sheet index. Pages have **not** thereby been visually interpreted. |
 | GSA period-total versus mean-daily/full-month PVOUT native-raster audit | **PASS; 8,796,068 valid positive annual cells; 64 native raster windows** | The locally executed source consistency checks passed at the script's default 0.2% tolerance. This is GSA India raster QA, **not** a Kerala-only count, independent physical validation, model admission or eligible capacity. |
 
-The user-generated `renewable_media_inventory.json` and
-`gsa_pvout_full_raster_qa.json` have **not yet been received in this
-conversation or committed to the repository**. Thus individual layer
-statistics, nodata-mask discrepancy counts, exact source TIFF SHA256s and
-per-check error distributions remain **awaiting report inspection**. This
-section records observed terminal output, not an independent rerun of the
-source binaries by the repository or a review of 2,945 page images. No raw
-third-party TIFF/PDF/contact-sheet bytes are published.
+The user's two JSON reports were subsequently received and examined.
+The exact GSA raster audit with provenance-context fields was committed
+[here](../data/evidence/solar/gsa_pvout_full_raster_qa_2026_09_22.json),
+and the source-media inventory was reviewed without publishing raw TIFF/PDF
+data or any rendered contact sheets. The figures remain from the user's
+local Windows execution; the private raster binaries were **not
+independently reprocessed here**, and 2,945 rendered pages are **not**
+2,945 visually interpreted pages. See the detailed report inspection below.
 
 ## Uploaded QA reports reviewed — 22 September 2026
 
