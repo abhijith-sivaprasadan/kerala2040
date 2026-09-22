@@ -1,188 +1,147 @@
-# Kerala 2040
+<div align="center">
 
-**Energy Sovereignty, Ecological Resilience and Fiscal Feasibility**
+![Kerala2040 — our land, our energy future](docs/assets/social-card.svg)
 
-> **v1.0.0 — Data Platform / Historical Foundation.** This release provides
-> source-labelled historical evidence, reproducible ingestion and a public dashboard.
-> It is **not** a validated 2040 capacity-expansion or policy model.
-> See [release notes](docs/releases/v1.0.0.md) for the scope and limitations.
+# Kerala2040
 
-Kerala 2040 is an independent, reproducible energy-systems research project
-asking how Kerala can reduce structural electricity-import dependence and
-hydrological vulnerability while remaining strongly interconnected with India,
-protecting ecological carrying capacity, staying within realistic fiscal
-constraints, and creating value through storage, circular industry and
-intelligent grids.
+**കേരളത്തിന്റെ ഊർജഭാവി · Our land. Our energy future.**
 
-## Public dashboard
+*An open, evidence-first research project on Kerala’s electricity system, energy resilience and possible pathways to 2040.*
 
-Dashboard source lives in `docs/` and deploys through GitHub Pages.
+[Explore the website](https://kerala2040.github.io/) · [Methodology](docs/methodology.md) · [Evidence](docs/evidence_register.md) · [Next steps](docs/NEXT_STEPS.md)
 
-**https://kerala2040.github.io/**
+</div>
 
-See [next steps and the release workflow](docs/NEXT_STEPS.md).
-For the P0 missing interval evidence, see the [private measured FY2024-25
-interval intake and fail-closed validator](docs/MEASURED_INTERVAL_INTAKE.md).
-The validator does **not** mean measured telemetry has been obtained.
-The website release is built from an immutable research commit recorded in its
-`SOURCE_COMMIT`. Its public `RELEASE_MANIFEST.json` identifies the research
-commit and evidence snapshot; the website is not the source of truth for development-only data.
+---
 
-## v1.0 connected data layer
+## The question
 
-The first operational release connects:
+**What would it take for Kerala to meet its future energy needs more reliably, affordably and sustainably—while remaining connected to India's grid, protecting land and water, and making investment financially credible?**
 
-- **Kerala SLDC** public system statistics, including historical dates through
-  the site's date form;
-- **NASA POWER Hourly API** with explicit UTC/India timestamps and missing-value
-  handling;
-- **data.gov.in OGD API** through a generic credentialed/paginated client;
-- **NITI ICED** as a discovery/download layer without pretending an undocumented
-  API exists.
+Kerala2040 investigates electricity demand, in-state generation, interstate imports, hydro and monsoon exposure, solar, wind, storage, grid flexibility, ecological constraints and financing. It starts with a defensible historical system account before comparing possible 2030–2040 pathways. Energy sovereignty here means *less forced dependence and more resilience*, **not** electricity autarky.
 
-See [`docs/data_connectivity_v1.md`](docs/data_connectivity_v1.md).
+This is independent research by [Abhijith Sivaprasadan](https://github.com/abhijith-sivaprasadan). It is **not an official Government of Kerala, KSEBL or SLDC forecast, policy recommendation or approved development plan**.
 
-## Current modelling foundation
+## Explore the project
 
-The repository now distinguishes an **observed daily replay** from provisional
-chronological proxies. The FY2024-25 PyPSA replay uses Kerala SLDC observed daily
-energy and Kerala State Planning Board/KSEBL installed-capacity references; it
-does not consume the reconstructed 8,760-hour load proxy. Weather-derived solar
-and wind availability are explicitly labelled proxy resource profiles, not
-measured Kerala generation.
+| Start here | What it answers |
+|---|---|
+| **[Public research experience](https://kerala2040.github.io/)** | A Kerala-rooted guide through the energy question, observed evidence, maps, scenarios and open questions. |
+| **[Research methodology](docs/methodology.md)** | How sources become constraints, calibrated models and explicit scenario comparisons. |
+| **[Evidence and provenance](docs/PROVENANCE_CORE_RULES.md)** | What counts as observed, reported, reanalysis, derived, proxy or external-study evidence. |
+| **[Research plan](docs/research_plan.md)** | Work packages spanning demand, hydro, renewables, grid, ecology, circular industry and finance. |
+| **[Readiness and missing inputs](docs/AUDIT_RELEASE_GATES.md)** | Why source acquisition or a solver run alone does not make a 2040 result defensible. |
+| **[Release notes](docs/releases/v1.0.1.md)** | The historical-data publication and its precise limitations. |
 
-Hydro diagnostics, official-accounting reconciliation, the generator inventory,
-2040 scenario dimensions, techno-economic source registry and GIS acquisition
-manifest are reproducible workflows. Numerical 2040 optimisation remains blocked
-until unresolved inputs are sourced.
+The [website](https://kerala2040.github.io/) is a *published, pinned evidence snapshot*. The `main` branch is ongoing research and may contain newer analysis than the deployed website; the site's `SOURCE_COMMIT` and `RELEASE_MANIFEST.json` identify its exact source version. Do not mistake development-only results for published findings.
 
-See [`docs/PROVENANCE_CORE_RULES.md`](docs/PROVENANCE_CORE_RULES.md).
+## What has actually been established?
 
-```bash
-python -m venv .venv
-# Linux/macOS
-source .venv/bin/activate
-# Windows PowerShell: .venv\Scripts\Activate.ps1
+*Research status: 22 September 2026. Source coverage and scientific model readiness are separate things.*
 
-pip install -e ".[dev]"
+| Area | Current evidence | Not yet established |
+|---|---|---|
+| **Electricity baseline** | 354 observed SLDC daily dates in FY2024–25; observed-day source-attribution PyPSA replay. [Daily model](docs/OBSERVED_DAILY_PYPSA.md). | The 11 missing dates; measured continuous statewide hourly / 15-minute load and interchange; calibrated hourly dispatch. |
+| **Weather** | ERA5 source/chronology QA for five representative locations × 8,760 UTC hours = 43,800 point-hours. [Source QA](data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json). | Validated statewide weather-to-generation modelling. |
+| **Solar** | Exact-boundary native-grid Kerala resource clips: 46,241 GSA PVOUT cell centres and 513,823 GHI cell centres. [Clip QA](data/evidence/solar/kerala_native_resource_clips_2026_09_22.json). | Measured FY2024–25 PV validation and rooftop/ground/floating buildable MW. |
+| **Wind** | 200,692 NIWE 150 m atlas point centres inside NWIC Kerala polygon. [Clip QA](data/evidence/solar/kerala_native_resource_clips_2026_09_22.json). | Site/turbine-validated yield, legally eligible onshore capacity or offshore resource assessment. |
+| **Hydro, grid and land** | Source inventories, diagnostics and reproducible audits. | Verified reservoir cascades/operations, transfer ratings and technology-specific statutory GIS screens. |
+| **2040 scenarios** | Source-labelled benchmark pathways and explicitly proxy-labelled PyPSA sensitivities. [Limitations](docs/PYPSA_2040_PROXY_SCREENING.md). | Calibrated least-cost, reliable or permitted 2040 build-out. |
 
-# Live connectivity
-python scripts/source_healthcheck.py --strict-core
+**Available data are not automatically approved model inputs.** In the downloaded NWDP FY2024–25 solar series, **6,007 of 6,007 values were zero, including daytime**: it cannot validate PV output. Five-point ERA5-to-PV/wind hourly results are illustrative *proxies*, not measured generation or Kerala-wide predictions. No defensible buildable solar/wind MW is currently claimed. See the [renewables handoff](docs/RENEWABLE_FIVE_STEP_HANDOFF_2026_09_22.md) and [capacity gates](data/evidence/solar/solar_wind_feasible_capacity_gates_2026_09_22.json).
 
-# One known SLDC date
-python scripts/ingest_sldc_daily.py --start 2026-09-16 --end 2026-09-16
-
-# One day of historical weather at Kochi
-python scripts/ingest_weather.py \
-  --start 2025-04-01 --end 2025-04-01 \
-  --lat 9.9312 --lon 76.2673 --name kochi
-```
-
-## CET 2026 MVP
-
-The CET release path still targets:
-
-- a calibrated historical Kerala electricity balance and 8,760-hour baseline;
-- 2040 demand scenarios and uncertainty bounds;
-- PyPSA + HiGHS capacity/dispatch scenarios;
-- hydro/climate and import stress tests;
-- storage and grid-flexibility analysis;
-- initial GIS ecological constraints;
-- explicit public-finance/federal/private financing splits;
-- one circular-industry case study;
-- reproducible poster figures.
-
-## Scientific rules
-
-1. No capacity without a resource constraint.
-2. No resource without an ecological constraint.
-3. No project without a grid constraint.
-4. No grid solution without a reliability test.
-5. No infrastructure pathway without a financing source.
-6. No waste-to-value claim without a mass balance.
-7. No 2040 conclusion without uncertainty analysis.
-8. Interconnection is an asset; the project studies sovereignty and resilience, not autarky.
-9. Observed data, sourced assumptions and scenario choices remain distinguishable.
-10. No 2040 conclusion before the historical calibration gate passes.
-11. Every model-facing dataset states its classification and source; proxy,
-    synthetic, derived and scenario-assumption data are never presented as observations.
-
-## Repository layout
+## How the research is designed
 
 ```text
-configs/        model, source and scenario configuration
-data/           local/raw/processed data guidance (raw data mostly gitignored)
-references/     source catalogue and provenance metadata
-src/            reusable Python package
-scripts/        command-line research workflows
-tests/          deterministic parser/model tests
-notebooks/      exploratory analysis only; production logic belongs in src/
-results/        generated scenario outputs
-figures/        generated publication/poster figures
-reports/        CET poster and longer reports
-docs/           methodology, source connectivity, decisions and assumptions
+Source files + source permissions + provenance
+                    │
+                    ▼
+       Acquisition → byte/units/time QA
+                    │
+                    ▼
+       Historical electricity reconciliation
+                    │
+         ┌──────────┴──────────┐
+         ▼                     ▼
+   Weather & resource     Hydro & land/grid
+   conversion checks      spatial constraints
+         └──────────┬──────────┘
+                    ▼
+          Calibrated system model
+                    │
+                    ▼
+   2040 scenario, reliability & cost tests
+                    │
+                    ▼
+     Ecological + fiscal trade-off reporting
 ```
 
-## Core stack
+The direction of travel is *evidence → validation → constraints → model → uncertainty*. Missing source fields stay missing; they are not silently replaced by convenient numbers. See the [provenance contract](docs/PROVENANCE_CORE_RULES.md) and [methodology](docs/methodology.md).
 
-Python · pandas · xarray · DuckDB · PyArrow/Parquet · PyPSA · HiGHS ·
-pandapower · GeoPandas · Rasterio · QGIS · scikit-learn · LightGBM/XGBoost ·
-Optuna · SHAP.
+## Solar and wind: a dedicated research track
 
-Post-CET modules may add SWAT+, InVEST, Marxan, Brightway, LEAP, IDA ICE,
-OpenDSS, SAM and WEC-Sim where their specific questions justify them.
+The September 2026 acquisition includes Global Solar Atlas India rasters, the NIWE wind atlas, solar studies and selected NWDP telemetry. The official NWIC Kerala state geometry is used for **descriptive native-grid, pixel-/point-centre clips**; clipping does not establish legal site eligibility. Five representative-point FY2024–25 ERA5 profiles are a **sensitivity exercise**, not validated generation.
 
-## Solar and wind original source batch (September 2026)
+Five downloaded source-folder trees have been uploaded to and independently SHA-256-restored from a **separate private archive**. Public records retain provenance and asset hashes, **not the third-party raw data**:
 
-The [source ledger](docs/SOLAR_WIND_SOURCE_BATCH_2026_09_21.md)
-records original GSA GIS ZIPs, NWDP telemetry, PV studies and the separate
-NIWE wind atlas. Exact original file sizes, SHA256s and publisher references
-are in the [solar manifest](data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json)
-and [NIWE source QA](data/evidence/gis/niwe_150m_user_supplied_source_qa_2026_09_21.json).
+- [What is archived and what was verified](data/evidence/solar/renewable_five_folder_private_archive_2026_09_22.json)
+- [Solar and wind source interpretation](docs/SOLAR_WIND_CONSOLIDATED_ANALYSIS_2026_09_22.md)
+- [Kerala-native resource clipping](docs/KERALA_NATIVE_RENEWABLE_RESOURCE_CLIPS_2026_09_22.md)
+- [Resource-to-capacity constraints](data/evidence/solar/solar_wind_feasible_capacity_gates_2026_09_22.json)
+- [Reproducible five-folder archival workflow](scripts/archive_renewable_folders_private.py)
 
-**Private originals, public science:** the user chose a SEPARATE PRIVATE
-`kerala2040-source-archive` repository for third-party binary ZIPs/PDFs.
-The private repository is **created, initialized and verified private**. The
-**five extracted Downloads folders are now uploaded and independently SHA256-restored**
-([private asset inventory and verification ledger](data/evidence/solar/renewable_five_folder_private_archive_2026_09_22.json)). Exact archival of all 17 historical original provider ZIP/PDF byte streams remains a **separate uncompleted check**. Upload and restore are privacy-checked and
-SHA256-gated: [solar uploader](scripts/publish_solar_source_release.py),
-[restore tool](scripts/restore_solar_source_release.py),
-and [NIWE original uploader/restorer](scripts/publish_niwe_original_release.py).
-See [one-time user setup](docs/RENEWABLE_FIVE_STEP_HANDOFF_2026_09_22.md).
-If only the five extracted Downloads folders remain, use the
-[private five-folder snapshot workflow](scripts/archive_renewable_folders_private.py):
-it verifies every nested file, splits large ZIP64 snapshots into upload parts
-and performs an independent SHA256 restore. Such snapshots are **not**
-byte-identical to the earlier original provider ZIPs.
-The public repository will retain source citations and hashes, not raw
-third-party data; private access does not supersede publisher use conditions.
+Folder snapshots preserve nested *file bytes and hierarchy*. They do **not** prove that all 17 separately inventoried historic publisher-original ZIP/PDF byte streams were independently archived. The separate [exact-original manifest](data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json) retains that distinction. Storage integrity does not grant redistribution rights or model admission.
 
-## September 2026 solar and wind progress
+## Run the research code
 
-The [five-step renewable workstream handoff](docs/RENEWABLE_FIVE_STEP_HANDOFF_2026_09_22.md)
-distinguishes exact Kerala-only descriptive clips, 43,800 site-hour
-**UNVALIDATED** weather-to-generation sensitivity proxies, blocked
-technology-specific buildable MW, model admission gates, and source binary
-storage with the five source folders successfully archived in the private
-repository. The **five folder snapshots** are verified private Release assets;
-the original 17-file byte-identical manifest and separate derived clipped
-ZIP/GeoTIFF/PNG exports remain unarchived. Manifests and processing code are committed.
-No numerical Kerala buildable renewable MW or validated 2040 renewable
-generation result is claimed.
+**Supported Python: 3.11–3.12.** These commands run from the public repository root; do not publish third-party source binaries or API tokens.
 
-## Reproducibility and data policy
+```powershell
+git clone https://github.com/abhijith-sivaprasadan/kerala2040.git
+cd kerala2040
 
-Every model/data run should record git commit, config, source IDs and retrieval
-dates, raw-response hashes where appropriate, solver/package versions, explicit
-assumptions and output checks.
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
 
-Do not commit confidential utility data, personal data, security-sensitive
-network information, credentials, or third-party datasets whose licences forbid
-redistribution. Commit acquisition code, metadata, schemas and derived results
-instead.
+python scripts/check_readiness.py
+python scripts/build_site.py --check
+python -m pytest
+```
 
-## Immediate hard gate
+For GIS work, install the optional geospatial dependencies:
 
-Build an authoritative historical Kerala electricity dataset and reproduce
-official demand/consumption, internal generation, imports and peak behaviour
-before interpreting any 2040 optimisation.
+```powershell
+python -m pip install -e ".[dev,geo]"
+```
+
+Build and preview the website:
+
+```powershell
+python scripts/build_site.py --output _site
+python -m http.server 5173 --directory _site --bind 127.0.0.1
+```
+
+Open **http://127.0.0.1:5173/**, not `docs/index.html` as a file URL. For ingestion examples, see [next steps](docs/NEXT_STEPS.md) and [data connectivity](docs/data_connectivity_v1.md). Acquisition workflows may need network access, source permissions or local originals.
+
+### Repository guide
+
+| Location | Purpose |
+|---|---|
+| [`docs/`](docs/) | Public site source, methods, audits, figures and research handoffs |
+| [`data/evidence/`](data/evidence/) | Versioned, source-qualified QA and evidence summaries |
+| [`scripts/`](scripts/) | Acquisition, reconciliation, GIS, model and archive workflows |
+| [`src/kerala2040/`](src/kerala2040/) | Reusable implementation |
+| [`configs/`](configs/) | Source definitions, assumptions and release gates |
+| [`tests/`](tests/) | Parser, integrity, scientific-contract and site checks |
+| [`results/`](results/) | Locally generated model runs and figures; not automatically released |
+
+## Contribute, cite, and reuse
+
+Useful contributions include primary-source provenance, reproducible corrections, tests, Kerala-specific input data **with verified access terms**, and scrutiny of assumptions or units. Read [CONTRIBUTING.md](CONTRIBUTING.md) and [the decision log](docs/decision_log.md). Do not commit personal information, restricted network data or raw third-party files to the public repository.
+
+Code is licensed under [MIT](LICENSE); **that licence does not relicense third-party datasets, imagery, reports or other attributed source material**. Cite the specific tagged research release using [CITATION.cff](CITATION.cff) and, where applicable, the upstream data publishers.
+
+---
+
+*Kerala2040 is built to make assumptions and unknowns inspectable—not to replace them with a single confident 2040 number.*
