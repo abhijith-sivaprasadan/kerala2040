@@ -840,14 +840,18 @@ function renderLrisEvidence(){
   if(!box)return;
   if(!l){box.textContent="LRIS investigation not present in this evidence snapshot.";return;}
   const d=state.ledger.district_qa;
-  const districtNote=d?'<div class="decision-banner blocked"><strong>District boundary QA: '+fmt(d.unassigned_point_centres,0)+' points unresolved</strong>'+
-    '<p>Of '+fmt(d.original_point_centres,0)+' original NWIC-clipped NIWE centres, '+fmt(d.unique_district_point_centres,0)+
-    ' are uniquely inside an LRIS district. The remaining '+fmt(d.unassigned_point_centres,0)+
-    ' are unassigned—not allocated to a nearest district. Their '+fmt(d.unassigned_slope_finite,0)+
-    ' finite / '+fmt(d.unassigned_slope_missing,0)+' missing DSM slope samples remain in the statewide totals. '+
-    'District comparison is incomplete until independently sourced administrative geometry reconciles.</p>'+
-    '<p class="caption"><a target="_blank" rel="noopener noreferrer" href="'+REPO+
-    '/blob/main/docs/NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md">Read boundary source QA ↗</a></p></div>':"";
+  const nwic=state.ledger.nwic_district;
+  const districtNote=d?'<div class="decision-banner"><strong>Historic LRIS district-boundary discrepancy: '+
+    fmt(d.unassigned_point_centres,0)+' NIWE centres</strong>'+
+    '<p>The LRIS polygons covered '+fmt(d.unique_district_point_centres,0)+' of '+
+    fmt(d.original_point_centres,0)+' original NWIC-state-clipped resource centres. '+
+    (nwic?'The independently supplied original NWIC district dataset now uniquely assigns all '+
+      fmt(nwic.point_assignment.uniquely_assigned,0)+
+      ' points across 14 districts; zero remain unassigned. This closes the descriptive '+
+      'administrative partition, <strong>not land eligibility.</strong>':
+      'The LRIS residual remains unresolved until a second district source is checked.')+
+    '</p><p class="caption"><a target="_blank" rel="noopener noreferrer" href="'+REPO+
+    '/blob/main/docs/NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md">Read historic LRIS QA ↗</a></p></div>':"";
   box.innerHTML=districtNote+'<p>LRIS advertises land use, roads, slope and waterbodies across <b>'+fmt(l.district_count,0)+
     ' districts</b>. Browser-observed district/block/local-body GeoJSON, level-based category summaries and WMS map images are useful for contextual checks. <strong>They are not the underlying native land-use vector layer.</strong></p>'+
     '<div class="lris-status"><span><b>WFS check</b><small>'+esc(l.wfs_result)+'</small></span>'+
