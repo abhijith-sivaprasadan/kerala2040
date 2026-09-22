@@ -58,14 +58,14 @@ def start_metric(expected_days: float | None = None) -> dict:
         "expected_days": expected_days,
         "matched_positive_cells": 0,
         "source_valid_mask_mismatches": 0,
-        "cells_exceeding_0_2pct_tolerance": 0,
+        "cells_exceeding_tolerance": 0,
         "max_absolute_relative_error_pct": 0.0,
         "mean_absolute_relative_error_pct": None,
         "_sum_absolute_relative_error_pct": 0.0,
     }
 
 
-def compare_arrays(metric: dict, actual, expected, valid_a, valid_b) -> None:
+def compare_arrays(metric: dict, actual, expected, valid_a, valid_b, tolerance_pct=0.2) -> None:
     """Update a streaming accumulator; no full-India raster stack in RAM."""
     import numpy as np
 
@@ -83,7 +83,7 @@ def compare_arrays(metric: dict, actual, expected, valid_a, valid_b) -> None:
         metric["max_absolute_relative_error_pct"], float(rel.max())
     )
     metric["_sum_absolute_relative_error_pct"] += float(rel.sum())
-    metric["cells_exceeding_0_2pct_tolerance"] += int((rel > 0.2).sum())
+    metric["cells_exceeding_tolerance"] += int((rel > tolerance_pct).sum())
 
 
 def audit(source_root: Path, output: Path, tolerance_pct: float = 0.2) -> dict:
@@ -129,7 +129,9 @@ def audit(source_root: Path, output: Path, tolerance_pct: float = 0.2) -> dict:
             source_info[label]["crs"] = str(src.crs)
             source_info[label]["grid_shape"] = [src.height, src.width]
             source_info[label]["transform"] = tuple(src.transform)
-            source_info[label]["nodata"] = src.nodata
+            source_info[label]["nodata"] = (
+                "NaN" if src.nodata is not None and np.isnan(src.nodata) else src.nodata
+            )
         annual_positive = 0
         windows = 0
         for row in range(0, annual.height, WINDOW):
@@ -143,7 +145,7 @@ def audit(source_root: Path, output: Path, tolerance_pct: float = 0.2) -> dict:
 
                 def read(label: str):
                     data = opened[label].read(1, window=region, masked=True)
-                    values = np.ma.filled(data, np.nan).astype("float64")
+                    values = data.astype("float64").filled(np.nan)
                     good = ~np.ma.getmaskarray(data) & np.isfinite(values) & (values > 0)
                     return values, good
 
@@ -152,7 +154,7 @@ def audit(source_root: Path, output: Path, tolerance_pct: float = 0.2) -> dict:
                 annual_positive += int(year_good.sum())
                 compare_arrays(
                     metrics["annual_over_mean_day"],
-                    year, day * ANNUAL_DAYS, year_good, day_good,
+                    year, day * ANNUAL_DAYS, year_good, day_good, tolerance_pct,
                 )
                 month_sum = np.zeros_like(year)
                 all_month_good = np.ones_like(year_good, dtype=bool)
@@ -163,13 +165,13 @@ def audit(source_root: Path, output: Path, tolerance_pct: float = 0.2) -> dict:
                     compare_arrays(
                         metrics["monthly_total_over_mean_day"][key],
                         total, mean_day * MONTH_DAYS[month - 1],
-                        total_good, mean_good,
+                        total_good, mean_good, tolerance_pct,
                     )
                     all_month_good &= total_good
                     month_sum += np.where(total_good, total, 0)
                 compare_arrays(
                     metrics["annual_vs_sum_of_12_months"],
-                    year, month_sum, year_good, all_month_good,
+                    year, month_sum, year_good, all_month_good, tolerance_pct,
                 )
     failed = []
     for name, metric in [
@@ -187,15 +189,10 @@ def audit(source_root: Path, output: Path, tolerance_pct: float = 0.2) -> dict:
             )
         else:
             metric.pop("_sum_absolute_relative_error_pct")
-        metric["cells_exceeding_tolerance"] = (
-            metric.pop("cells_exceeding_0_2pct_tolerance")
-            if tolerance_pct == 0.2
-            else None
-        )
         if (
             n == 0
             or metric["source_valid_mask_mismatches"]
-            or metric["max_absolute_relative_error_pct"] > tolerance_pct
+            or metric["cells_exceeding_tolerance"] > 0
         ):
             failed.append(name)
     report = {
