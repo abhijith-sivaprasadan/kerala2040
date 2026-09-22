@@ -49,6 +49,9 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     lris = _json(
         root, "data/evidence/gis/lris_public_services_discovery_2026_09_22.json"
     )
+    district_qa = _json(
+        root, "data/evidence/gis/niwe_lris_district_partition_qa_2026_09_22.json"
+    )
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -92,6 +95,23 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     assert lris["wfs"]["verified_vector_export"] is False
     assert lris["rights_and_data_limits"]["vector_land_use_exclusions_acquired"] is False
     assert lris["model_admitted"] is False
+    assert district_qa["classification"] == (
+        "NIWE_NWIC_KERALA_LRIS_DISTRICT_PARTITION_INCOMPLETE_DESCRIPTIVE_QA_NOT_GIS_ADMISSION"
+    )
+    part = district_qa["point_assignment"]
+    terrain_partition = district_qa["terrain_samples"]
+    assert part["original_nwic_kerala_niwe_centres"] == wind["Kerala_point_centres"]
+    assert part["uniquely_matched_to_LRIS_district"] == 200_362
+    assert part["not_in_any_LRIS_district"] == 330 and part["multi_district"] == 0
+    assert part["uniquely_matched_to_LRIS_district"] + part["not_in_any_LRIS_district"] == wind["Kerala_point_centres"]
+    assert terrain_partition["LRIS_district_assigned_finite"] + terrain_partition["outside_LRIS_finite"] == wind["slope"]["finite_point_centres"]
+    assert terrain_partition["LRIS_district_assigned_missing"] + terrain_partition["outside_LRIS_missing"] == wind["slope"]["missing_point_centres"]
+    assert district_qa["checks"]["all_source_points_reconciled_with_explicit_unassigned_bucket"]
+    assert district_qa["checks"]["all_16_threshold_counts_reconcile_with_unassigned"]
+    assert district_qa["checks"]["all_200692_centres_placed_in_LRIS_district"] is False
+    assert district_qa["ready_for_complete_district_publication"] is False
+    assert district_qa["eligible_area_km2"] is None and district_qa["feasible_capacity_MW"] is None
+    assert district_qa["model_admitted"] is False
 
     workstreams = [
         {
@@ -166,17 +186,21 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
             ),
             "completed": (
                 "Pinned-original NIWE and NWIC polygon clip; actual DSM slope join, "
-                "16 descriptive wind/slope threshold combinations and aggregate source QA."
+                "16 descriptive wind/slope threshold combinations and aggregate source QA; "
+                "LRIS 14-district pilot matches 200,362 points and holds 330 unassigned."
             ),
             "blocked": (
                 "No notified land/ESZ/wetland polygons, turbine layout/production calibration, "
-                "access rights or verified grid hosting. Point counts are not km² or MW."
+                "access rights or verified grid hosting. NWIC–LRIS district geometry "
+                "leaves 330 of 200,692 wind points unassigned; no full district explorer. "
+                "Point counts are not km² or MW."
             ),
             "action": "Join authorised, source-dated land geometry and verified connection corridors.",
             "route": "atlas",
             "evidence": [
                 {"label": "Executed wind × terrain report", "href": ROOT + "docs/NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md"},
                 {"label": "Aggregate source QA", "href": ROOT + "data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json"},
+                {"label": "District source-boundary QA", "href": ROOT + "docs/NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md"},
             ],
         },
         {
@@ -188,12 +212,13 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
                 "Observed administrative GeoJSON, category-area summaries and WMS imagery; "
                 "the tested public WFS explicitly reports disabled."
             ),
-            "completed": "Browser-stage endpoints, Level 1/2 schemas, published WMS identity and WFS exception documented.",
+            "completed": "Browser-stage endpoints, Level 1/2 schemas, published WMS identity and WFS exception documented; 14-district LRIS static GeoJSON audited against NWIC wind points.",
             "blocked": "Underlying class-coded land-use polygons, source vintage/CRS/rights and statutory land boundaries not acquired.",
             "action": "Seek the authorised native land-use vectors and independently notified legal layers.",
             "route": "atlas",
             "evidence": [
                 {"label": "LRIS source/service evidence", "href": ROOT + "data/evidence/gis/lris_public_services_discovery_2026_09_22.json"},
+                {"label": "District geometry mismatch QA", "href": ROOT + "data/evidence/gis/niwe_lris_district_partition_qa_2026_09_22.json"},
             ],
         },
         {
@@ -321,6 +346,22 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         "eligible_area_sq_km": None,
         "potential_mw": None,
         "workstreams": workstreams,
+        "district_qa": {
+            "classification": district_qa["classification"],
+            "original_point_centres": part["original_nwic_kerala_niwe_centres"],
+            "unique_district_point_centres": part["uniquely_matched_to_LRIS_district"],
+            "unassigned_point_centres": part["not_in_any_LRIS_district"],
+            "ambiguous_point_centres": part["multi_district"],
+            "matched_slope_finite": terrain_partition["LRIS_district_assigned_finite"],
+            "unassigned_slope_finite": terrain_partition["outside_LRIS_finite"],
+            "unassigned_slope_missing": terrain_partition["outside_LRIS_missing"],
+            "statewide_population_reconciles_with_unassigned": True,
+            "complete_district_partition": False,
+            "district_publication_ready": False,
+            "eligible_area_km2": None,
+            "feasible_capacity_MW": None,
+            "model_admitted": False,
+        },
         "wind_terrain": {
             "classification": wind["classification"],
             "reviewed_date": wind["reviewed_date"],

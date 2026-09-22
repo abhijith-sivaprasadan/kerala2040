@@ -108,6 +108,19 @@ def validate_bundle(public: Path) -> dict:
                 or lris.get("legal_exclusion_verified") is not False
                 or lris.get("model_admitted") is not False):
             raise ValueError("LRIS portal evidence was incorrectly promoted to legal GIS")
+    if "research_ledger" in files:
+        district = read(files["research_ledger"]).get("district_qa")
+        if (not district
+                or district.get("original_point_centres") != 200_692
+                or district.get("unique_district_point_centres") != 200_362
+                or district.get("unassigned_point_centres") != 330
+                or district.get("ambiguous_point_centres") != 0
+                or district.get("complete_district_partition") is not False
+                or district.get("district_publication_ready") is not False
+                or district.get("eligible_area_km2") is not None
+                or district.get("feasible_capacity_MW") is not None
+                or district.get("model_admitted") is not False):
+            raise ValueError("LRIS district boundary gap incorrectly packaged as complete GIS")
     if "research_results" in files:
         research = read(files["research_results"])
         if research != site.get("research_results"):

@@ -1,0 +1,58 @@
+{
+  "classification": "NIWE_NWIC_KERALA_LRIS_DISTRICT_PARTITION_INCOMPLETE_DESCRIPTIVE_QA_NOT_GIS_ADMISSION",
+  "reviewed_date": "2026-09-22",
+  "source": {
+    "lris_public_static_district_geojson": "/app/assets/geojson/Kerala_districts.geojson",
+    "lris_original_sha256": "8160600c7ac025574e32d636bd2aef81a4b6bc6225b55de8f6965953b6cb56fb",
+    "lris_geojson_feature_count": 14,
+    "lris_geometry_all_valid": true,
+    "lris_source_crs": "OGC:CRS84, longitude-latitude",
+    "lris_name_field": "DISTRICT",
+    "niwe_original_verified_deterministic_kerala_clip_sha256": "dd9d00e67da0dac3a9258daad18c35f71075815f7b64cea4b290a36c6e9b9634",
+    "glo90_dsm_slope_sha256": "72551921c99eb563abe37c9502d4e4c592c3be667f31459296c90e48be9436f7"
+  },
+  "point_assignment": {
+    "original_nwic_kerala_niwe_centres": 200692,
+    "uniquely_matched_to_LRIS_district": 200362,
+    "not_in_any_LRIS_district": 330,
+    "multi_district": 0,
+    "unassigned_nearest_distance_UTM43_m_approx": {
+      "median": 37.2153892,
+      "p95": 324.733808,
+      "max": 1120.4275,
+      "within_100m": 274,
+      "within_1000m": 329,
+      "method": "diagnostic_only_not_point_assignment"
+    }
+  },
+  "terrain_samples": {
+    "LRIS_district_assigned_finite": 199759,
+    "LRIS_district_assigned_missing": 603,
+    "outside_LRIS_finite": 94,
+    "outside_LRIS_missing": 236,
+    "statewide_finite": 199853,
+    "statewide_missing": 839
+  },
+  "example_hypothetical_threshold": {
+    "minimum_modelled_wind_speed_m_s": 7,
+    "maximum_DSM_surface_slope_degrees": 10,
+    "all_NWIC_kerala_points": 8637,
+    "LRIS_district_assigned_points": 8627,
+    "outside_LRIS_points": 10,
+    "interpretation": "descriptive resource point centres, not land area or turbine sites"
+  },
+  "checks": {
+    "fourteen_valid_polygons": true,
+    "originals_hash_match": true,
+    "all_200692_centres_placed_in_LRIS_district": false,
+    "all_source_points_reconciled_with_explicit_unassigned_bucket": true,
+    "speed_power_slope_histograms_reconcile_with_unassigned": true,
+    "all_16_threshold_counts_reconcile_with_unassigned": true
+  },
+  "next_source": "Original NWIC District Boundary GeoJSON from the same NWIC portal family as the state polygon",
+  "source_year_and_reuse_rights_verified": false,
+  "ready_for_complete_district_publication": false,
+  "eligible_area_km2": null,
+  "feasible_capacity_MW": null,
+  "model_admitted": false
+}
