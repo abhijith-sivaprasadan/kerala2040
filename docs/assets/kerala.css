@@ -781,3 +781,26 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
   .district-controls select{width:100%}
 }
 \n.district-overview,.district-thresholds,.district-thresholds .wind-table-wrap{min-width:0;max-width:100%}\n
+/* Completed *descriptive* wind phase 1: readable source-denominated results,
+   not maps of legal land eligibility or wind-farm engineering sites. */
+.district-normalized{margin:22px 0 30px;padding:clamp(16px,2.5vw,28px);background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--leaf)}
+.district-normalized h3{font:500 clamp(22px,2.5vw,32px)/1.22 var(--display);margin:8px 0}
+.district-normalized p{font-size:12px;line-height:1.75;color:var(--ink-soft);max-width:950px}
+.wind-normalized-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:18px 0}
+.wind-normalized-metrics span{min-width:0;background:var(--surface);padding:16px 12px;border:1px solid var(--line);display:flex;flex-direction:column;gap:5px}
+.wind-normalized-metrics small{font:500 11px/1.45 var(--mono);color:var(--ink-soft)}
+.wind-normalized-metrics strong{font:600 clamp(22px,2.4vw,33px)/1.15 var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.wind-normalized-metrics em{font:500 11px/1.5 var(--mono);color:var(--ink-soft);font-style:normal}
+.wind-figures-gallery{margin:28px 0;border-top:1px solid var(--line);padding-top:26px}
+.wind-figures-gallery h3{font:500 clamp(28px,3.7vw,47px)/1.13 var(--display);margin:9px 0}
+.wind-figures-gallery h3 em{color:var(--rust)}
+.wind-figures-gallery>p{font-size:13px;line-height:1.7;color:var(--ink-soft)}
+.wind-figure-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:20px 0}
+.wind-figure-links figure{margin:0;min-width:0;border:1px solid var(--line);background:#fffdfa;padding:10px}
+.wind-figure-links img{display:block;width:100%;height:auto;max-width:100%}
+.wind-figure-links figcaption{font:500 11px/1.7 var(--mono);color:#263d30;padding:12px 5px 4px}
+.wind-figure-links a{color:#255b43}
+@media(max-width:740px){
+ .wind-normalized-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .wind-figure-links{grid-template-columns:1fr}
+}
