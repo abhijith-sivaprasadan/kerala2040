@@ -83,9 +83,13 @@ def test_slope_sampling_and_thresholds_with_real_geo_tiff_fixture(tmp_path):
     sampled = MODULE.sample_slope(slope_path, frame)
     assert np.allclose(sampled[:2], [4.0, 12.0])
     assert np.isnan(sampled[2])
+    with pytest.raises(ValueError, match="Slope SHA256"):
+        analyze(path, expected_rows=3, allow_repacked_clip=True, slope=slope_path)
     report = analyze(path, expected_rows=3, allow_repacked_clip=True,
-                     slope=slope_path)
+                     slope=slope_path, allow_unpinned_slope=True)
     terrain = report["terrain"]
+    assert terrain["matches_verified_2026_09_20_GLO90_slope_tiff"] is False
+    assert terrain["non_pinned_slope_explicitly_allowed"] is True
     assert terrain["available_point_centres"] == 2
     assert terrain["missing_point_centres"] == 1
     assert sum(row["point_centres"] for row in terrain["slope_classes_degrees"]) == 2
