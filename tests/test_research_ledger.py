@@ -85,3 +85,27 @@ def test_incomplete_district_partition_cannot_look_like_complete_gis():
     assert d["district_publication_ready"] is False
     assert d["eligible_area_km2"] is None and d["feasible_capacity_MW"] is None
     assert d["model_admitted"] is False
+
+
+def test_nwic_partition_reconciles_all_districts_without_admitting_wind_capacity():
+    ledger = build_ledger(ROOT)
+    record = ledger["nwic_district"]
+    population = record["point_assignment"]
+    districts = record["districts"]
+    assert len(districts) == 14
+    assert population["source_points"] == population["uniquely_assigned"] == 200_692
+    assert population["unassigned"] == population["ambiguous"] == 0
+    assert population["slope_finite"] == 199_853
+    assert population["slope_missing"] == 839
+    assert sum(d["point_centres"] for d in districts) == 200_692
+    assert sum(d["slope_finite"] for d in districts) == 199_853
+    assert sum(d["slope_missing"] for d in districts) == 839
+    assert sum(d["delta_point_centres_vs_LRIS"] for d in districts) == 330
+    assert sum(d["threshold_matrix"][2][1] for d in districts) == 8_637
+    assert record["source"]["source_reuse_rights_verified"] is False
+    assert record["legal_ecology_screens_verified"] is False
+    assert record["eligible_area_km2"] is None
+    assert record["feasible_capacity_MW"] is None
+    assert record["model_admitted"] is False
+    # Retain old LRIS QA as historic comparison, not a live NWIC partition blocker.
+    assert ledger["district_qa"]["unassigned_point_centres"] == 330
