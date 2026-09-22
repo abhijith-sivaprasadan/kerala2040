@@ -143,7 +143,7 @@ test("GIS workstream is not a point-to-polygon or eligible capacity publication"
   const c=context();
   assert.deepEqual(vm.runInContext("spatialIds",c).join(","),
     "wind,boundary,lris,lulc,landslide,forest,wetlands");
-  assert.match(vm.runInContext("labelStage(\"validated_source\")",c),/model gate open/);
+  assert.match(vm.runInContext("labelStage(\"validated_source\")",c),/model admission separate/);
   assert.match(vm.runInContext("labelStage(\"blocked\")",c),/Missing critical/);
   const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
   assert.match(html,/not a GIS map or legal boundary/);
