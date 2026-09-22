@@ -94,7 +94,11 @@
     "local_detailed_csv": "wb_kl_reservoir_gsa_overlay.csv (private user-facing result, NOT committed to public Git)",
     "validation": "direct binary ZIP and TIFF analysis in conversation environment",
     "model_admitted": false,
-    "source_zip_sha256": "b9a7f5199ec235f96ca02a246c3530720a981b5e5fb1fa9fa6d0f759f6126324"
+    "source_zip_sha256": "b9a7f5199ec235f96ca02a246c3530720a981b5e5fb1fa9fa6d0f759f6126324",
+    "previous_full_raster_QA_PVOUT_SHA256_MATCH": true,
+    "previous_full_raster_QA_reference": "data/evidence/solar/gsa_pvout_full_raster_qa_2026_09_22.json",
+    "PVOUT_TIFF_SHA256": "aa5d58c6f290673bbd629fdc9c05c3b1be179086b6a91ac25524cac737103434",
+    "GHI_TIFF_SHA256": "68581aa945544caf3b3dcec7cc414454036d18d7a2fc575a8df47629a582f01d"
   },
   "nise_2026": {
     "source": "Solar/NISE_floating potential_report_2026.pdf",
