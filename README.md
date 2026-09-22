@@ -89,6 +89,7 @@ Five downloaded source-folder trees have been uploaded to and independently SHA-
 - [Kerala-native resource clipping](docs/KERALA_NATIVE_RENEWABLE_RESOURCE_CLIPS_2026_09_22.md)
 - [Resource-to-capacity constraints](data/evidence/solar/solar_wind_feasible_capacity_gates_2026_09_22.json)
 - [Reproducible five-folder archival workflow](scripts/archive_renewable_folders_private.py)
+- [GeoTIFF pixel checks and every-page PDF visual review](docs/SOLAR_WIND_TIFF_PDF_REVIEW_2026_09_22.md)
 
 Folder snapshots preserve nested *file bytes and hierarchy*. They do **not** prove that all 17 separately inventoried historic publisher-original ZIP/PDF byte streams were independently archived. The separate [exact-original manifest](data/evidence/solar/solar_batch_2026_09_21_originals_manifest.json) retains that distinction. Storage integrity does not grant redistribution rights or model admission.
 
