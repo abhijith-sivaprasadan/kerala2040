@@ -226,6 +226,23 @@ def main() -> int:
     root, out = args.source_root.resolve(), args.out_dir.resolve()
     if out == root or out.is_relative_to(root):
         parser.error("Output must be OUTSIDE the original source tree")
+    # Fail BEFORE rendering thousands of PDF pages if TIFF dependencies are absent.
+    if not args.pdf_only:
+        import importlib.util
+
+        missing = [
+            name for name in ("numpy", "rasterio", "PIL")
+            if importlib.util.find_spec(name) is None
+        ]
+        if missing:
+            parser.error(
+                "TIFF inspection requires missing packages "
+                + ", ".join(missing)
+                + "; use Python 3.11/3.12 with "
+                'python -m pip install -e ".[dev,geo]" '
+                'and python -m pip install "pillow>=10,<12". '
+                "Already rendered PDFs can be preserved with --tiff-only."
+            )
     out.mkdir(parents=True, exist_ok=True)
     pdfs = [] if args.tiff_only else find_files(root, {".pdf"})
     tiffs = [] if args.pdf_only else find_files(root, {".tif", ".tiff"})
@@ -240,6 +257,25 @@ def main() -> int:
         "failures": [],
         "model_admitted": False,
     }
+    # A partial rerun should not erase the 2,945 already-rendered PDF page
+    # records or the TIFF inventory built on a previous pass.
+    previous = out / "renewable_media_inventory.json"
+    if (args.tiff_only or args.pdf_only) and previous.is_file():
+        old = json.loads(previous.read_text(encoding="utf-8"))
+        if old.get("source_root") != str(root):
+            parser.error("Existing media inventory belongs to a different source root")
+        if args.tiff_only:
+            result["pdfs"] = old.get("pdfs", [])
+            result["failures"] = [
+                row for row in old.get("failures", [])
+                if row.get("file", "").lower().endswith(".pdf")
+            ]
+        else:
+            result["tiffs"] = old.get("tiffs", [])
+            result["failures"] = [
+                row for row in old.get("failures", [])
+                if row.get("file", "").lower().endswith((".tif", ".tiff"))
+            ]
     try:
         for file in tiffs:
             try:
@@ -300,8 +336,10 @@ def main() -> int:
                 )
         (out / "index.html").write_text("\n".join(rows), encoding="utf-8")
     print(
-        f"MEDIA QA: {len(result['tiffs'])}/{len(tiffs)} TIFFs; "
-        f"{len(result['pdfs'])}/{len(pdfs)} PDFs, "
+        f"MEDIA QA: {len(result['tiffs'])} TIFFs "
+        f"({len(tiffs)} inspected this run); "
+        f"{len(result['pdfs'])} PDFs "
+        f"({len(pdfs)} rendered this run), "
         f"{sum(p['page_count'] for p in result['pdfs'])} rendered pages; "
         f"{len(result['failures'])} errors; open {out / 'index.html'}",
         flush=True,
