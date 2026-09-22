@@ -237,7 +237,21 @@ async function main(){
       "Palakkad actual source-point sensitivity count absent");
     check((await page.locator("#lrisEvidence").innerText()).includes(
       "zero remain unassigned"),"Historic LRIS gap must be labelled resolved by NWIC");
-    console.log("PASS atlas: statewide wind, 14 live NWIC district selectors, Palakkad matrix and historic LRIS QA");
+    check((await page.locator("#districtNormalized").innerText()).includes("27.50%"),
+      "Palakkad denominator-normalized wind/terrain share absent");
+    check((await page.locator("#districtNormalized").innerText()).includes("23,020") ||
+      (await page.locator("#districtNormalized").innerText()).includes("23,020".replace(",","")),
+      "Palakkad finite DSM denominator missing");
+    await page.locator("#districtChoice").selectOption("Idukki");
+    check((await page.locator("#districtNormalized").innerText()).includes("8.08%"),
+      "Idukki normalized source-point fraction absent");
+    for(const file of ["wind-district-normalized-20260923.svg",
+                       "wind-terrain-sensitivity-20260923.svg"]){
+      const response=await page.request.get(base+"assets/"+file);
+      check(response.status()===200,"Source-safe vector figure missing: "+file);
+      check((await response.text()).includes("<svg"),"Figure is not SVG: "+file);
+    }
+    console.log("PASS atlas: 14 district selectors, normalized wind phase 1, vector poster figures and historic LRIS QA");
 
     await route("industry");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
