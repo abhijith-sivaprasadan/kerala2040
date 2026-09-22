@@ -52,6 +52,9 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     district_qa = _json(
         root, "data/evidence/gis/niwe_lris_district_partition_qa_2026_09_22.json"
     )
+    nwic_district = _json(
+        root, "data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json"
+    )
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -112,6 +115,40 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     assert district_qa["ready_for_complete_district_publication"] is False
     assert district_qa["eligible_area_km2"] is None and district_qa["feasible_capacity_MW"] is None
     assert district_qa["model_admitted"] is False
+
+    assert nwic_district["classification"] == (
+        "NIWE_NWIC_14_DISTRICT_DESCRIPTIVE_POINT_PARTITION_NOT_CAPACITY"
+    )
+    nd = nwic_district["point_assignment"]
+    nr = nwic_district["districts"]
+    assert len(nr) == 14 and len({row["district"] for row in nr}) == 14
+    assert nd["source_points"] == nd["uniquely_assigned"] == wind["Kerala_point_centres"]
+    assert nd["unassigned"] == nd["ambiguous"] == 0
+    assert nd["complete_descriptive_partition"] is True
+    assert nd["slope_finite"] == wind["slope"]["finite_point_centres"]
+    assert nd["slope_missing"] == wind["slope"]["missing_point_centres"]
+    assert sum(row["point_centres"] for row in nr) == nd["source_points"]
+    assert sum(row["slope_finite"] for row in nr) == nd["slope_finite"]
+    assert sum(row["slope_missing"] for row in nr) == nd["slope_missing"]
+    assert sum(row["delta_point_centres_vs_LRIS"] for row in nr) == 330
+    assert all(
+        len(row["threshold_matrix"]) == 4
+        and all(len(t) == 4 for t in row["threshold_matrix"])
+        and row["slope_finite"] + row["slope_missing"] == row["point_centres"]
+        for row in nr
+    )
+    assert all(
+        sum(row["threshold_matrix"][i][j] for row in nr)
+        == wind["physical_threshold_sensitivity"][
+            "matching_point_centre_counts_in_row_column_order"
+        ][i][j]
+        for i in range(4) for j in range(4)
+    )
+    assert nwic_district["source"]["source_reuse_rights_verified"] is False
+    assert nwic_district["legal_ecology_screens_verified"] is False
+    assert nwic_district["eligible_area_km2"] is None
+    assert nwic_district["feasible_capacity_MW"] is None
+    assert nwic_district["model_admitted"] is False
 
     workstreams = [
         {
@@ -187,20 +224,22 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
             "completed": (
                 "Pinned-original NIWE and NWIC polygon clip; actual DSM slope join, "
                 "16 descriptive wind/slope threshold combinations and aggregate source QA; "
-                "LRIS 14-district pilot matches 200,362 points and holds 330 unassigned."
+                "NWIC original 14-district partition assigns all 200,692 points exactly once."
             ),
             "blocked": (
                 "No notified land/ESZ/wetland polygons, turbine layout/production calibration, "
-                "access rights or verified grid hosting. NWIC–LRIS district geometry "
-                "leaves 330 of 200,692 wind points unassigned; no full district explorer. "
-                "Point counts are not km² or MW."
+                "access rights or verified grid hosting. Historic LRIS geometry left "
+                "330 points unassigned, but original NWIC districts close the descriptive "
+                "partition. Point counts are not km² or MW."
             ),
             "action": "Join authorised, source-dated land geometry and verified connection corridors.",
             "route": "atlas",
             "evidence": [
                 {"label": "Executed wind × terrain report", "href": ROOT + "docs/NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md"},
                 {"label": "Aggregate source QA", "href": ROOT + "data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json"},
-                {"label": "District source-boundary QA", "href": ROOT + "docs/NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md"},
+                {"label": "NWIC district real-data analysis", "href": ROOT + "docs/NIWE_NWIC_DISTRICT_WIND_TERRAIN_RESULT_2026_09_22.md"},
+                {"label": "NWIC district aggregate", "href": ROOT + "data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json"},
+                {"label": "Historic LRIS boundary mismatch", "href": ROOT + "docs/NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md"},
             ],
         },
         {
@@ -212,9 +251,9 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
                 "Observed administrative GeoJSON, category-area summaries and WMS imagery; "
                 "the tested public WFS explicitly reports disabled."
             ),
-            "completed": "Browser-stage endpoints, Level 1/2 schemas, published WMS identity and WFS exception documented; 14-district LRIS static GeoJSON audited against NWIC wind points.",
+            "completed": "Public service discovery and historic LRIS 330-point geometry mismatch audited; a separate original NWIC district source now closes the descriptive partition.",
             "blocked": "Underlying class-coded land-use polygons, source vintage/CRS/rights and statutory land boundaries not acquired.",
-            "action": "Seek the authorised native land-use vectors and independently notified legal layers.",
+            "action": "Seek authorised native class-coded land-use vectors and independently notified legal layers; review NWIC source-vintage and use terms.",
             "route": "atlas",
             "evidence": [
                 {"label": "LRIS source/service evidence", "href": ROOT + "data/evidence/gis/lris_public_services_discovery_2026_09_22.json"},
@@ -346,6 +385,7 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         "eligible_area_sq_km": None,
         "potential_mw": None,
         "workstreams": workstreams,
+        "nwic_district": nwic_district,
         "district_qa": {
             "classification": district_qa["classification"],
             "original_point_centres": part["original_nwic_kerala_niwe_centres"],
