@@ -29,6 +29,12 @@ It checks a future genuinely sourced export; no full FY2024-25 measured
 interval source has arrived, and running the validator does not unlock the
 historical-calibration or 2040 release gates.
 
+## Renewable KPI handoff · 23 September 2026
+
+**Wind phase 1 is frozen for the CET poster.** Its [research question, quantitative conclusion and takeaway](WIND_PHASE1_DISTRICT_NORMALIZED_CLOSEOUT_2026_09_23.md) are source-qualified; do not reopen the wind resource screen to invent capacity or legal eligibility. The next bounded renewable KPI is [solar phase 1](SOLAR_PHASE1_KPI_SCOPE_2026_09_23.md): verify the original long-term Global Solar Atlas PVOUT pixels and NWIC district boundaries; derive a complete 14-district source-pixel partition and **paired per-pixel** seasonal sensitivity with missing-cell accounting. The existing 46,241 native PVOUT centres and long-term unweighted annual median 1,493.507 kWh/kWp are source-clip evidence, not a completed district/monthly solar analysis or installed capacity.
+
+This work runs **alongside**, rather than displaces, the P0 measured interval-demand and interchange acquisition needed for a validated 2040 model.
+
 ## Your next actions, in order
 
 1. **Confirm the CET submission date and freeze the scope.** Make the first release
