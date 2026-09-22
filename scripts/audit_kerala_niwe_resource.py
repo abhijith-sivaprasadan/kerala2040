@@ -117,7 +117,7 @@ def render_private_maps(frame: pd.DataFrame, slope: np.ndarray | None,
             ax.set_xlabel("Longitude (°E)")
             ax.set_ylabel("Latitude (°N)")
             ax.set_title("Kerala NWIC-clipped NIWE point centres: " + unit +
-                         "\\nDescriptive only · NOT eligible area or capacity")
+                         " · Descriptive only · NOT eligible area or capacity")
             fig.colorbar(scatter, ax=ax, label=unit, shrink=0.65)
             destination = out_dir / name
             fig.savefig(destination, dpi=160, bbox_inches="tight")
