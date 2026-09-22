@@ -50,6 +50,28 @@ or signed download URLs). The private repo is a separate storage location:
 the public research repo carries code, source links, hashes and reproducibility
 instructions without exposing third-party raw bytes.
 
+## Private archive completion — 22 September 2026
+
+**Completed for the five-folder snapshot, not the 17 originally downloaded
+provider ZIP/PDF byte streams.** The user ran the five-folder packager and
+GitHub Release upload on their Windows computer, followed by an independent
+download into a fresh restore directory. The final output was
+`SUCCESS: all five PRIVATE folder snapshots and EVERY nested file SHA256 verified.`
+GitHub's authenticated API independently confirms the destination repository
+remains **private** and the release contains all **nine upload parts plus the
+checksum manifest**, each in `uploaded` state with SHA256 metadata. See the
+[public inventory of private release asset hashes and QA](
+../data/evidence/solar/renewable_five_folder_private_archive_2026_09_22.json).
+
+Private release tag: `renewable-five-folder-snapshot-2026-09-22`. This
+privately stores all five extracted Downloads folder trees and their nested
+files; files that are source ZIPs within those folders retain their bytes.
+Repacked folder snapshots are not asserted to be byte-identical with all 17
+original historical ZIP/PDF downloads. The separate `release_uploaded` flag
+for those 17 specifically remains **false** until the exact provider-original
+bytes are independently archived/restored. This storage milestone does not
+change any solar/wind generation validation, buildable MW or 2040 model gate.
+
 ## Preferred archival path for the five extracted Downloads folders
 
 The source owner has confirmed these **five existing folders**, not necessarily
