@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "source": {
+    "publisher": "National Institute of Wind Energy (NIWE)",
+    "report": "India's Wind Potential Atlas at 120m agl",
+    "publication": "2019-10",
+    "user_supplied_original": "Wind/India_Wind_Potential_Atlas_at_120m_agl.pdf",
+    "source_sha256": "b717b017dfbb8cf5fcc068dcd73407baf06ae5277974d23b475d40edb130efdc",
+    "report_pdf_pages": 77,
+    "publisher_url": "https://niwe.res.in/Open_data_Set/technical_report/19/"
+  },
+  "classification": "ATTRIBUTED_2019_120M_INDICATIVE_ONSHORE_PLANNING_STUDY_NOT_KERALA2040_FEASIBLE_CAPACITY",
+  "geography": "Kerala, India (published state tabulation)",
+  "height_m_agl": 120,
+  "spatial_resolution_m": 500,
+  "reference_wind_reanalysis_period": "2005-2014 NCEP/CFSR",
+  "land_cover_reference": "NRSC land cover July 2012–May 2013, as reported in annexure",
+  "measurement_corroboration": {
+    "stations_india": 406,
+    "reported_mean_absolute_percentage_error_wind_speed_pct": 5,
+    "scatter_plot_slope": 0.9788,
+    "scatter_plot_r_squared": 0.7185,
+    "limitation": "National wind speed validation, not Kerala turbine-energy or new NIWE 150m grid validation",
+    "pdf_pages": [
+      48,
+      49
+    ]
+  },
+  "base_case": {
+    "name": "WA120-80:30:5",
+    "minimum_p50_cuf_pct_strictly_greater_than": 25,
+    "assumed_turbine_nominal_MW": 2,
+    "assumed_rotor_diameter_m": 110,
+    "assumed_turbine_spacing": "5D x 7D",
+    "installable_power_density_MW_per_km2": 5,
+    "land_availability_assumptions_pct": {
+      "wasteland": 80,
+      "cultivable": 30,
+      "forest": 5
+    },
+    "note": "Land assumptions and generic power curve are study parameters, not legal permissions, current OEM turbine study or current Kerala land rights",
+    "pdf_pages": [
+      24,
+      27,
+      29,
+      32,
+      34
+    ]
+  },
+  "kerala": {
+    "study_installable_MW": 2311,
+    "by_p50_cuf_band_MW": {
+      "25_28": 366,
+      "28_30": 193,
+      "30_32": 180,
+      "32_35": 359,
+      "above_35": 1213
+    },
+    "by_study_land_class_MW": {
+      "wasteland": 474,
+      "cultivable": 1495,
+      "forest": 342
+    },
+    "greenfield_study_MW": 2297,
+    "greenfield_vs_total_delta_MW": 14,
+    "greenfield_date": "Existing turbine parcels as of March 2019, per original report",
+    "warning": "CUF and land splits are two views of SAME 2311 MW, not additive. Forest class does not confer construction rights. Greenfield estimate is not 2026 uncommitted capacity.",
+    "pdf_pages": [
+      14,
+      34,
+      39,
+      43
+    ]
+  },
+  "exclusions": {
+    "terrain_elevation_gt_m": 1500,
+    "slope_gt_degrees": 20,
+    "protected_area_buffer_m": 1000,
+    "airport_circular_mask_m": 10000,
+    "waterbody_large_buffer_m": 500,
+    "roads_buffers_depend_on_class": true,
+    "settlements_buffers_depend_on_area": true,
+    "provenance": "Study-specific 2019 screening thresholds and vintage; NOT verified current Kerala statutory GIS."
+  },
+  "offshore": {
+    "geography": "India EEZ, coarse national satellite illustration; not Kerala site eligibility",
+    "source": "QuikSCAT",
+    "source_period": "1999-11 through 2009-10",
+    "angular_resolution_degrees": 0.25,
+    "observed_satellite_wind_height_m": 10,
+    "extrapolated_height_m": 120,
+    "power_law_exponent": 0.11,
+    "weibull_k_assumed": 2,
+    "kerala_offshore_feasible_MW": null,
+    "note": "Not an independent, measured, present-day Kerala offshore resource map, and NOT the NIWE onshore 150m source ZIP",
+    "pdf_pages": [
+      50,
+      51,
+      52
+    ]
+  },
+  "separate_150m_dataset": {
+    "source": "Wind/150m_Map_Data_A_to_G.zip",
+    "not_interchangeable_with_120m_2019_capacity_table": true,
+    "height_m_agl": 150,
+    "comparison_or_transfer": "DO_NOT_TRANSPOSE_OR_ADD",
+    "requires": "Original ZIP inner layer schema, coordinates, separate height/period/source check and independent local suitability/connection screening"
+  },
+  "decision": {
+    "publisher_study_benchmark_only": true,
+    "kerala2040_feasible_MW": null,
+    "kerala2040_offshore_feasible_MW": null,
+    "model_admitted": false,
+    "source_page_images_inspected": "Selected original PDF pages, not all 77 pages",
+    "published_report_citation": "NIWE (2019), 120m atlas physical PDF pages 14,24,28-29,34-35,37-39,43,48-49,50-52"
+  }
+}
