@@ -67,7 +67,7 @@ async function loadPlatformData(){
   return state;
 }
 function labelStage(phase){
-  return {validated_source:"Source coverage verified · model gate open",
+  return {validated_source:"Source QA verified · model admission separate",
     partial:"Partial evidence",blocked:"Missing critical evidence"}[phase]||"Not verified";
 }
 function stageClass(phase){return phase==="validated_source"?"verified":phase==="partial"?"partial":"blocked"}
