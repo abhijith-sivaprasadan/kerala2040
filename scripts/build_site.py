@@ -121,6 +121,29 @@ def validate_bundle(public: Path) -> dict:
                 or district.get("feasible_capacity_MW") is not None
                 or district.get("model_admitted") is not False):
             raise ValueError("LRIS district boundary gap incorrectly packaged as complete GIS")
+    if "research_ledger" in files:
+        district = read(files["research_ledger"]).get("nwic_district")
+        if (not district
+                or district.get("classification") !=
+                "NIWE_NWIC_14_DISTRICT_DESCRIPTIVE_POINT_PARTITION_NOT_CAPACITY"):
+            raise ValueError("NWIC district aggregate absent from pinned research snapshot")
+        assignment = district.get("point_assignment", {})
+        rows = district.get("districts", [])
+        if (assignment.get("source_points") != 200_692
+                or assignment.get("uniquely_assigned") != 200_692
+                or assignment.get("unassigned") != 0
+                or assignment.get("ambiguous") != 0
+                or assignment.get("complete_descriptive_partition") is not True
+                or len(rows) != 14
+                or len({row["district"] for row in rows}) != 14
+                or sum(row["point_centres"] for row in rows) != 200_692
+                or sum(row["slope_finite"] for row in rows) != 199_853
+                or sum(row["slope_missing"] for row in rows) != 839
+                or district.get("eligible_area_km2") is not None
+                or district.get("feasible_capacity_MW") is not None
+                or district.get("model_admitted") is not False
+                or district.get("source", {}).get("source_reuse_rights_verified") is not False):
+            raise ValueError("NWIC district bundle incomplete or incorrectly promoted to eligible capacity")
     if "research_results" in files:
         research = read(files["research_results"])
         if research != site.get("research_results"):
