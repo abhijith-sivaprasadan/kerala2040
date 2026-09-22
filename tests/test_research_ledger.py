@@ -109,3 +109,28 @@ def test_nwic_partition_reconciles_all_districts_without_admitting_wind_capacity
     assert record["model_admitted"] is False
     # Retain old LRIS QA as historic comparison, not a live NWIC partition blocker.
     assert ledger["district_qa"]["unassigned_point_centres"] == 330
+
+
+def test_wind_phase1_is_closed_only_as_descriptive_analysis():
+    ledger = build_ledger(ROOT)
+    phase = ledger["wind_phase1"]
+    normalized = phase["normalized"]
+    assert phase["descriptive_wind_phase1_complete"] is True
+    assert ledger["reviewed_date"] >= "2026-09-23"
+    assert normalized["statewide"]["source_point_centres"] == 200_692
+    assert normalized["statewide"]["finite_DSM_slope_point_centres"] == 199_853
+    assert normalized["statewide"]["missing_DSM_slope_point_centres"] == 839
+    assert normalized["qa"]["all_16_threshold_cell_counts_reconciled"]
+    assert len(normalized["districts"]) == 14
+    case = normalized["spotlight_descriptive_example"]
+    assert case["statewide_matching_point_centres"] == 8637
+    assert case["palakkad_matching_point_centres"] == 6330
+    assert case["idukki_matching_point_centres"] == 1804
+    assert phase["site_eligibility_verified"] is False
+    assert phase["source_reuse_rights_verified"] is False
+    assert phase["eligible_area_km2"] is None
+    assert phase["feasible_capacity_MW"] is None
+    assert phase["model_admitted"] is False
+    rows = {row["id"]: row for row in ledger["workstreams"]}
+    assert rows["wind"]["phase"] == "validated_source"
+    assert "model gate closed" in rows["wind"]["label"]
