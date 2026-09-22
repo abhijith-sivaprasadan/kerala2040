@@ -142,8 +142,9 @@ and [NIWE source QA](data/evidence/gis/niwe_150m_user_supplied_source_qa_2026_09
 
 **Private originals, public science:** the user chose a SEPARATE PRIVATE
 `kerala2040-source-archive` repository for third-party binary ZIPs/PDFs.
-The private repository is **created, initialized and verified private**; the
-original binary files have **not yet been uploaded or restored remotely**. Upload and restore are privacy-checked and
+The private repository is **created, initialized and verified private**. The
+**five extracted Downloads folders are now uploaded and independently SHA256-restored**
+([private asset inventory and verification ledger](data/evidence/solar/renewable_five_folder_private_archive_2026_09_22.json)). Exact archival of all 17 historical original provider ZIP/PDF byte streams remains a **separate uncompleted check**. Upload and restore are privacy-checked and
 SHA256-gated: [solar uploader](scripts/publish_solar_source_release.py),
 [restore tool](scripts/restore_solar_source_release.py),
 and [NIWE original uploader/restorer](scripts/publish_niwe_original_release.py).
@@ -162,9 +163,10 @@ The [five-step renewable workstream handoff](docs/RENEWABLE_FIVE_STEP_HANDOFF_20
 distinguishes exact Kerala-only descriptive clips, 43,800 site-hour
 **UNVALIDATED** weather-to-generation sensitivity proxies, blocked
 technology-specific buildable MW, model admission gates, and source binary
-storage requiring an authenticated rights-reviewed upload. The original
-datasets and derived ZIP/GeoTIFF/PNG bytes are **not yet hosted as verified
-permanent PRIVATE GitHub Release assets**; manifests and processing code are committed.
+storage with the five source folders successfully archived in the private
+repository. The **five folder snapshots** are verified private Release assets;
+the original 17-file byte-identical manifest and separate derived clipped
+ZIP/GeoTIFF/PNG exports remain unarchived. Manifests and processing code are committed.
 No numerical Kerala buildable renewable MW or validated 2040 renewable
 generation result is claimed.
 
