@@ -93,14 +93,18 @@ def test_missing_one_folder_fails_without_github(tmp_path: Path) -> None:
     assert "Missing/unsafe source folder" in (p.stdout + p.stderr)
 
 
-def test_verify_requires_local_trusted_manifest(tmp_path: Path) -> None:
-    p = subprocess.run(
-        [sys.executable, str(SCRIPT), "--verify",
-         "--staging-dir", str(tmp_path / "new-stage")],
-        check=False, text=True, capture_output=True,
+def test_disaster_restore_uses_pinned_trusted_manifest() -> None:
+    module = runpy.run_path(str(SCRIPT))
+    assert module["PINNED_MANIFEST_SHA256"] == (
+        "7412ef75f5af87ef220a92148e0af16f9c1286e66687c5bf2a815e39f9de3666"
     )
-    assert p.returncode != 0
-    assert "--reference-manifest" in p.stderr
+    # No local reference is required; verify() checks this pinned SHA256
+    # before trusting and downloading any archive parts.
+    import inspect
+
+    source = inspect.getsource(module["verify"])
+    assert "expected_hash = PINNED_MANIFEST_SHA256" in source
+    assert "sha256(local_manifest) != expected_hash" in source
 
 
 def test_symlink_is_refused(tmp_path: Path) -> None:
