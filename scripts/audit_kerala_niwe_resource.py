@@ -173,11 +173,20 @@ def sample_slope(slope_path: Path, frame: pd.DataFrame) -> np.ndarray:
         xs, ys = transform.transform(
             frame[FIELDS[0]].to_numpy(), frame[FIELDS[1]].to_numpy()
         )
-        points = zip(xs, ys, strict=True)
-        samples = np.fromiter(
-            (float(sample[0]) if not np.ma.is_masked(sample[0]) else np.nan
-             for sample in src.sample(points, masked=True)),
-            dtype="float64", count=len(frame),
+        # Read the pinned 90 m DSM slope grid once, then index all points.
+        # Rasterio.sample incurs per-point window IO and is prohibitively slow
+        # for the ~200,000 Kerala NIWE point centres.
+        inverse = ~src.transform
+        cols = np.floor(inverse.a * xs + inverse.b * ys + inverse.c).astype("int64")
+        rows = np.floor(inverse.d * xs + inverse.e * ys + inverse.f).astype("int64")
+        in_grid = (
+            (cols >= 0) & (cols < src.width) &
+            (rows >= 0) & (rows < src.height)
+        )
+        samples = np.full(len(frame), np.nan, dtype="float64")
+        grid = src.read(1, masked=True)
+        samples[in_grid] = np.ma.filled(
+            grid[rows[in_grid], cols[in_grid]], np.nan
         )
     samples[~np.isfinite(samples)] = np.nan
     if np.any((samples[np.isfinite(samples)] < 0)
