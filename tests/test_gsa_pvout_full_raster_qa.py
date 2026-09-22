@@ -82,16 +82,22 @@ def test_full_raster_synthetic_source_roundtrip(tmp_path: Path) -> None:
         parent.mkdir(parents=True)
         with rasterio.open(parent / "PVOUT.tif", "w", **profile) as dst:
             dst.write(
-                annual_day * (365.25 if kind == "period_totals" else 1), 1
+                np.where(
+                    annual_day == -9999, -9999,
+                    annual_day * (365.25 if kind == "period_totals" else 1),
+                ), 1
             )
         for month in range(1, 13):
             with rasterio.open(
                 parent / f"PVOUT_{month:02d}.tif", "w", **profile
             ) as dst:
                 dst.write(
-                    annual_day * (
-                        module.MONTH_DAYS[month - 1]
-                        if kind == "period_totals" else 1
+                    np.where(
+                        annual_day == -9999, -9999,
+                        annual_day * (
+                            module.MONTH_DAYS[month - 1]
+                            if kind == "period_totals" else 1
+                        ),
                     ),
                     1,
                 )
