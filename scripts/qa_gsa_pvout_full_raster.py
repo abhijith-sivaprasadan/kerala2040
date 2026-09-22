@@ -1,4 +1,4 @@
-"""Audit GSA India native PVOUT rasters: annual vs daily and all 12 months.
+r"""Audit GSA India native PVOUT rasters: annual vs daily and all 12 months.
 
 This is an internal-consistency QA of published long-term source layers;
 NOT Kerala-only spatial eligibility, FY2024-25 measurements, or model admission.
@@ -146,7 +146,11 @@ def audit(source_root: Path, output: Path, tolerance_pct: float = 0.2) -> dict:
                 def read(label: str):
                     data = opened[label].read(1, window=region, masked=True)
                     values = data.astype("float64").filled(np.nan)
-                    good = ~np.ma.getmaskarray(data) & np.isfinite(values) & (values > 0)
+                    good = (
+                        ~np.ma.getmaskarray(data)
+                        & np.isfinite(values)
+                        & (values > 0)
+                    )
                     return values, good
 
                 year, year_good = read("period_totals_annual")
