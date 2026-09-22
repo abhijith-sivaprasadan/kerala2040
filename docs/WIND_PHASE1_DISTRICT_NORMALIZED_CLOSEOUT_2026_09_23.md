@@ -4,6 +4,22 @@
 
 The poster-suitable question is: **How sensitive is the district distribution of modelled Kerala onshore wind-resource *point centres* to hypothetical terrain-slope limits?** This report adds district-normalized comparisons to the already completed [NIWE 150 m × DSM statewide analysis](NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md) and [14-district NWIC partition](NIWE_NWIC_DISTRICT_WIND_TERRAIN_RESULT_2026_09_22.md). All values originate from the committed [NWIC 14-district aggregate](../data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json) and this report's [normalized derivative](../data/evidence/gis/niwe_nwic_district_normalized_wind_terrain_2026_09_23.json). No statistical interpolation, invented suitability class or conversion of point-centre counts into square kilometres is used.
 
+## Frozen poster wording — research question and conclusion
+
+**Research question (wind phase 1):**
+
+> How sensitive is the spatial distribution of Kerala’s modelled 150 m onshore wind resource to surface-slope constraints, when evaluated across all 14 districts using consistent administrative boundaries?
+
+**Conclusion (poster-ready):**
+
+> Kerala’s modelled onshore wind-resource distribution is sensitive to the terrain threshold applied. Of 200,692 NIWE resource-point centres assigned uniquely to Kerala’s 14 NWIC districts, 199,853 had valid GLO-90 digital surface-slope samples. Under an illustrative threshold of wind speed ≥7 m/s and slope ≤10°, 8,637 centres matched statewide—4.32% of centres with valid slope. The corresponding within-district shares were 27.50% in Palakkad and 8.08% in Idukki. Tightening the slope limit from ≤20° to ≤5° retained 70.49% of Palakkad’s reference subset but 19.55% of Idukki’s. **Thus, wind-speed information alone does not capture the geographical sensitivity introduced by terrain.** These descriptive results do not establish legally eligible sites, developable area, electricity generation or feasible installed capacity.
+
+**One-sentence poster takeaway:**
+
+> Terrain assumptions materially change how Kerala’s modelled wind resource is distributed across districts, making wind-speed-only screening insufficient for interpreting spatial resource patterns.
+
+*Scope:* the slope limits are **hypothetical descriptive sensitivities**, not legally or technically adopted siting constraints; the ≤5°/≤20° percentages each refer only to the district’s **≥7 m/s, ≤20° reference subset**, not every windy point. Keep `feasible_capacity_MW=null` and `model_admitted=false`.
+
 ## Research method and denominators
 
 - Original NIWE national seven-column 150 m atlas → exact original NWIC Kerala state polygon → **200,692 NIWE source point centres**. Resource is *modelled* mean wind speed at 150 m, **not measured hourly wind or produced electricity**.
