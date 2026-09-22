@@ -407,7 +407,7 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         raise ValueError("Research ledger lacks evidence or limit")
     return {
         "classification": "dated_repository_research_progress_NOT_geospatial_or_model_readiness",
-        "reviewed_date": max(gis["review_date"], wind["reviewed_date"], lris["reviewed_date"]),
+        "reviewed_date": max(gis["review_date"], wind["reviewed_date"], lris["reviewed_date"], wind_normalized["reviewed_date"]),
         "scope": "Kerala, historical FY2024-25 and planning horizon 2040",
         "audit_finding_count": audit["finding_count"],
         "audit_open_findings": audit["open_findings"],
