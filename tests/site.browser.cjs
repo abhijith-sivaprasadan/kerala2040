@@ -218,7 +218,7 @@ async function main(){
     await visible(page.locator("#layer-forest"),"Forest verification detail");
     check((await page.locator("#layer-forest").innerText()).includes("Next verifiable step"),
       "Spatial layer has no follow-up");
-    check((await page.locator("#windTerrainEvidence").innerText()).includes("200,692"),
+    check((await page.locator("#windTerrainEvidence").innerText()).includes("2,00,692"),
       "Executed NIWE resource analysis missing on published atlas");
     check((await page.locator("#windTerrainEvidence").innerText()).includes("8,637"),
       "Wind × DSM sensitivity matrix missing");
