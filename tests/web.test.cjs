@@ -199,11 +199,35 @@ test("district QA banner preserves the unassigned boundary gap rather than inven
     complete_district_partition:false,district_publication_ready:false,
     model_admitted:false,feasible_capacity_MW:null
   };
+  c.science.nwic_district=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json"),"utf8"));
   vm.runInContext("state.ledger=science;renderLrisEvidence()",c);
-  assert.match(box.innerHTML,/330 points unresolved/);
-  assert.match(box.innerHTML,/not allocated to a nearest district/);
-  assert.match(box.innerHTML,/District comparison is incomplete/);
+  assert.match(box.innerHTML,/Historic LRIS district-boundary discrepancy/);
+  assert.match(box.innerHTML,/now uniquely assigns all/);
+  assert.match(box.innerHTML,/zero remain unassigned/);
   assert.equal(c.science.district_qa.model_admitted,false);
+});
+
+test("NWIC district explorer uses the verified 14-district aggregate, not invented GIS",()=>{
+  const elements={};
+  function el(selector){
+    return elements[selector] ||= {innerHTML:"",textContent:"",value:"",addEventListener:()=>{}};
+  }
+  const c=context({document:{querySelector:el,querySelectorAll:()=>[]}});
+  const source=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json"),"utf8"));
+  c.science=ledger();
+  c.science.nwic_district=source;
+  vm.runInContext("state.ledger=science;renderDistrictExplorer()",c);
+  assert.match(elements["#districtSourceSummary"].innerHTML,/2,00,692/);
+  assert.match(elements["#districtSourceSummary"].innerHTML,/Unassigned centres/);
+  assert.match(elements["#districtOverview"].innerHTML,/Palakkad/);
+  assert.match(elements["#districtThresholds"].innerHTML,/not eligible sites/);
+  vm.runInContext("state.district='Palakkad';renderDistrictDetail()",c);
+  assert.match(elements["#districtMetrics"].innerHTML,/6.41/);
+  assert.match(elements["#districtThresholds"].innerHTML,/6,330/);
+  assert.equal(c.science.nwic_district.feasible_capacity_MW,null);
+  assert.equal(c.science.nwic_district.model_admitted,false);
 });
 
 test("all eight research pages render against one real observed-data snapshot",()=>{

@@ -224,7 +224,20 @@ async function main(){
       "Wind × DSM sensitivity matrix missing");
     check((await page.locator("#lrisEvidence").innerText()).includes("Service WFS is disabled"),
       "LRIS limitation absent from site");
-    console.log("PASS atlas: seven layers, wind histogram, threshold table and LRIS status");
+    check((await page.locator("#districtSourceSummary").innerText()).includes("2,00,692"),
+      "Complete NWIC point partition missing on site");
+    check((await page.locator("#districtSourceSummary").innerText()).includes("Unassigned centres"),
+      "District QA coverage lacks unassigned population label");
+    check(await page.locator("#districtChoice option").count()===14,
+      "Exactly fourteen original NWIC districts must be selectable");
+    await page.locator("#districtChoice").selectOption("Palakkad");
+    check((await page.locator("#districtMetrics").innerText()).includes("6.41"),
+      "Palakkad modelled source wind median absent");
+    check((await page.locator("#districtThresholds").innerText()).includes("6,330"),
+      "Palakkad actual source-point sensitivity count absent");
+    check((await page.locator("#lrisEvidence").innerText()).includes(
+      "zero remain unassigned"),"Historic LRIS gap must be labelled resolved by NWIC");
+    console.log("PASS atlas: statewide wind, 14 live NWIC district selectors, Palakkad matrix and historic LRIS QA");
 
     await route("industry");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
