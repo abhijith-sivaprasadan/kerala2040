@@ -252,7 +252,7 @@ def main() -> int:
         for file in pdfs:
             try:
                 result["pdfs"].append(pdf_record(file, root, out, args.dpi))
-            except Exception as error:
+            except Exception as error:  # noqa: BLE001 - isolate source-file failures
                 result["failures"].append({
                     "file": file.relative_to(root).as_posix(),
                     "error": f"{type(error).__name__}: {error}",
