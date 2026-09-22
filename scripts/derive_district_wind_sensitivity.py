@@ -22,7 +22,7 @@ def build(source: dict) -> dict:
     totals = limits["all_districts_point_counts"]
     rows = source["districts"]
     if (len(rows) != 14 or len({r["district"] for r in rows}) != 14
-            or a["source_points"] != a["uniquely_assigned"] != 200_692):
+            or a["source_points"] != 200_692 or a["uniquely_assigned"] != 200_692):
         raise ValueError("NWIC source population/partition incomplete")
     if a["unassigned"] or a["ambiguous"] or not a["complete_descriptive_partition"]:
         raise ValueError("Cannot normalize an incomplete NWIC district partition")
