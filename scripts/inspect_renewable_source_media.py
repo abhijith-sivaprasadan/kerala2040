@@ -244,7 +244,7 @@ def main() -> int:
         for file in tiffs:
             try:
                 result["tiffs"].append(tiff_record(file, root, out))
-            except Exception as error:
+            except Exception as error:  # noqa: BLE001 - isolate source-file failures
                 result["failures"].append({
                     "file": file.relative_to(root).as_posix(),
                     "error": f"{type(error).__name__}: {error}",
@@ -267,8 +267,10 @@ def main() -> int:
             "<!doctype html><meta charset='utf-8'>",
             "<title>Kerala2040 private source-media index</title>",
             "<h1>Kerala2040 local visual source review</h1>",
-            "<p>PDF pages are rendered without OCR; contact sheets are "
-            "previews, not conclusions. TIFF statistics are sampled.</p>",
+            (
+                "<p>PDF pages are rendered without OCR; contact sheets are "
+                "previews, not conclusions. TIFF statistics are sampled.</p>"
+            ),
         ]
         for pdf in result["pdfs"]:
             rows.append(
