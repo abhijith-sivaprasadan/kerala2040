@@ -112,7 +112,7 @@ def test_private_point_maps_are_created_but_not_admitted(tmp_path):
     assert len(manifest["files"]) == 3
     for name, item in manifest["files"].items():
         assert (tmp_path / "private_media" / name).read_bytes()[:8] == (
-            b"\\x89PNG\\r\\n\\x1a\\n"
+            bytes([137, 80, 78, 71, 13, 10])
         )
         assert len(item["sha256"]) == 64
     assert (tmp_path / "private_media" /
