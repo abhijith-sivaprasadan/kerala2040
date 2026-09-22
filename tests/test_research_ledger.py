@@ -68,3 +68,20 @@ def test_executed_wind_and_lris_are_descriptive_not_eligible_capacity():
     assert ledger["lris"]["native_land_use_geometry_acquired"] is False
     assert ledger["lris"]["legal_exclusion_verified"] is False
     assert ledger["lris"]["model_admitted"] is False
+
+
+def test_incomplete_district_partition_cannot_look_like_complete_gis():
+    ledger = build_ledger(ROOT)
+    d = ledger["district_qa"]
+    assert d["original_point_centres"] == 200_692
+    assert d["unique_district_point_centres"] == 200_362
+    assert d["unassigned_point_centres"] == 330
+    assert d["ambiguous_point_centres"] == 0
+    assert d["unique_district_point_centres"] + d["unassigned_point_centres"] == d["original_point_centres"]
+    assert d["matched_slope_finite"] + d["unassigned_slope_finite"] == 199_853
+    assert d["unassigned_slope_missing"] == 236
+    assert d["statewide_population_reconciles_with_unassigned"] is True
+    assert d["complete_district_partition"] is False
+    assert d["district_publication_ready"] is False
+    assert d["eligible_area_km2"] is None and d["feasible_capacity_MW"] is None
+    assert d["model_admitted"] is False
