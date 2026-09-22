@@ -187,6 +187,25 @@ test("wind and LRIS visuals use only committed descriptive evidence and preserve
   assert.match(html,/id="lrisEvidence"/);
 });
 
+test("district QA banner preserves the unassigned boundary gap rather than inventing a district",()=>{
+  let box={innerHTML:"",textContent:""};
+  const c=context({document:{querySelector:()=>box,querySelectorAll:()=>[]}});
+  c.science=ledger();
+  c.science.lris={district_count:14,wfs_result:"Service WFS is disabled"};
+  c.science.district_qa={
+    original_point_centres:200692,unique_district_point_centres:200362,
+    unassigned_point_centres:330,ambiguous_point_centres:0,
+    unassigned_slope_finite:94,unassigned_slope_missing:236,
+    complete_district_partition:false,district_publication_ready:false,
+    model_admitted:false,feasible_capacity_MW:null
+  };
+  vm.runInContext("state.ledger=science;renderLrisEvidence()",c);
+  assert.match(box.innerHTML,/330 points unresolved/);
+  assert.match(box.innerHTML,/not allocated to a nearest district/);
+  assert.match(box.innerHTML,/district partition/i);
+  assert.equal(c.science.district_qa.model_admitted,false);
+});
+
 test("all eight research pages render against one real observed-data snapshot",()=>{
   const elements={};
   function el(selector){
