@@ -17,8 +17,6 @@ import html
 import json
 from pathlib import Path
 
-from private_archive_utils import ensure_private
-
 FOLDERS = (
     "global-pv-potential-study-raster-data-layers-globalsolaratlas",
     "India_GISdata_LTAym_YearlyMonthlyTotals_GlobalSolarAtlas-v2_GEOTIFF",
