@@ -13,14 +13,17 @@ import zipfile
 from pathlib import Path
 
 import numpy as np
+from audit_kerala_niwe_resource import (
+    FIELDS,
+    PINNED_GLO90_SLOPE_SHA256,
+    read_clip,
+    sample_slope,
+    stats,
+)
 from pyproj import Transformer
 from shapely import contains_xy, intersects_xy, prepare
 from shapely.geometry import shape
 from shapely.ops import transform
-
-from audit_kerala_niwe_resource import (
-    FIELDS, PINNED_GLO90_SLOPE_SHA256, read_clip, sample_slope, stats,
-)
 
 ZIP_SHA256 = "44c734cc72139f2447dcebfe2791cac862dc5ba265e158912d797cf3410d5c37"
 MEMBER = "district_nwic.GeoJSON"
