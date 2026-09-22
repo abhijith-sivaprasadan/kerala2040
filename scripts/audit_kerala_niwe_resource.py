@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 
 PINNED_CLIP_SHA256 = "364808dd40751bd5f3e131e86127dbdab73168d1830a682002de5a4c6fdd0dee"
+PINNED_GLO90_SLOPE_SHA256 = "72551921c99eb563abe37c9502d4e4c592c3be667f31459296c90e48be9436f7"
 EXPECTED_KERALA_ROWS = 200_692
 FIELDS = (
     "Longitude (E)", "Latitude (N)", "Wind Speed (m/s)",
@@ -188,6 +189,7 @@ def sample_slope(slope_path: Path, frame: pd.DataFrame) -> np.ndarray:
 def analyze(
     clip: Path, *, expected_rows: int = EXPECTED_KERALA_ROWS,
     allow_repacked_clip: bool = False, slope: Path | None = None,
+    allow_unpinned_slope: bool = False,
 ) -> dict:
     source_hash = sha256(clip)
     hash_match = source_hash == PINNED_CLIP_SHA256
@@ -224,13 +226,25 @@ def analyze(
         "model_admitted": False,
     }
     if slope is not None:
+        slope_hash = sha256(slope)
+        matches_pinned_slope = slope_hash == PINNED_GLO90_SLOPE_SHA256
+        if not matches_pinned_slope and not allow_unpinned_slope:
+            raise ValueError(
+                "Slope SHA256 differs from recovered 2026-09-20 GLO-90 "
+                "slope TIFF. Use --allow-unpinned-slope ONLY after independent "
+                "CRS, slope-unit and provenance QA."
+            )
         degree = sample_slope(slope, frame)
         finite = np.isfinite(degree)
         joint = np.histogram2d(
             speed[finite], degree[finite], bins=[SPEED_EDGES, SLOPE_EDGES],
         )[0].astype(int).tolist()
         result["terrain"] = {
-            "raster_sha256": sha256(slope),
+            "raster_sha256": slope_hash,
+            "matches_verified_2026_09_20_GLO90_slope_tiff": matches_pinned_slope,
+            "non_pinned_slope_explicitly_allowed": (
+                not matches_pinned_slope and allow_unpinned_slope
+            ),
             "assumed_unit": "degrees; caller must independently verify source units",
             "surface_type": "source-defined; GLO-90 DSM is not a bare-earth DTM",
             "available_point_centres": int(finite.sum()),
@@ -260,6 +274,8 @@ def main() -> int:
                         help="Local PRIVATE or public-safe aggregate JSON; no raw rows")
     parser.add_argument("--slope-degrees", type=Path,
                         help="Optional independent CRS-aware raster; verify units first")
+    parser.add_argument("--allow-unpinned-slope", action="store_true",
+                        help="Use another degree-slope raster ONLY after independent QA")
     parser.add_argument("--map-dir", type=Path,
                         help="Optional LOCAL PRIVATE PNG point maps; check NIWE licence "
                              "before public redistribution")
@@ -272,7 +288,7 @@ def main() -> int:
         parser.error("Choose a separate private map directory, not the source directory")
     report = analyze(
         args.niwe_clip, allow_repacked_clip=args.allow_repacked_clip,
-        slope=args.slope_degrees,
+        slope=args.slope_degrees, allow_unpinned_slope=args.allow_unpinned_slope,
     )
     if args.map_dir is not None:
         # The analysis verifies the compressed hash and row count before map rendering.
