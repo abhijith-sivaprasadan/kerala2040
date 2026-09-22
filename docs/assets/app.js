@@ -781,6 +781,31 @@ function renderWindTerrain(){
     ' centres. No km² or MW inferred.</p></figure></div>'+
     '<p class="caption">Source: NIWE original 150 m national CSV clipped with original NWIC Kerala polygon and joined to verified GLO-90 DSM slope; reviewed '+esc(w.reviewed_date)+'. Raw NIWE geometry and maps are not redistributed here.</p>';
 }
+function renderDistrictNormalized(){
+  const box=$("#districtNormalized");
+  const d=state.ledger?.wind_phase1?.normalized;
+  if(!box)return;
+  if(!d){box.textContent="Normalized descriptive sensitivity is not in this research snapshot.";return;}
+  const row=d.districts.find(r=>r.district===state.district);
+  if(!row){box.textContent="District not found in normalized NWIC evidence.";return;}
+  const source=row.counts[2],share=row.percent_of_district_valid_slope_centres[2],
+        reference=row.retention_relative_to_max20_slope_same_min_speed[2];
+  box.innerHTML='<div class="section-eyebrow">NORMALIZED RESEARCH RESULT / NO MW</div>'+
+    '<h3>'+esc(row.district)+': wind ≥7 m/s across illustrative DSM slope limits</h3>'+
+    '<p>Percentage denominator: '+fmt(row.valid_slope_point_centres,0)+
+    ' source centres with <em>finite sampled surface slope</em> in this NWIC district. '+
+    fmt(row.missing_slope_point_centres,0)+
+    ' missing-slope centres are reported but never treated as below the threshold.</p>'+
+    '<div class="wind-normalized-metrics">'+source.map((count,i)=>
+      '<span><small>DSM slope ≤'+esc(d.thresholds.maximum_DSM_surface_slope_degrees_inclusive[i])+
+      '°</small><strong>'+fmt(share[i],2)+'%</strong><em>'+fmt(count,0)+
+      ' point centres</em></span>').join('')+'</div>'+
+    '<p class="caption">Relative to this district’s ≥7 m/s and ≤20° reference ('+
+    fmt(source[3],0)+' centres), its ≤5° subset is '+
+    (reference[0]===null?'undefined (empty reference)':fmt(reference[0],2)+'%')+
+    '. This reference is <strong>not all windy sites</strong>, nor a land-area denominator. '+
+    'Physical, statutory, land-rights, generation and grid filters remain open.</p>';
+}
 function renderDistrictDetail(){
   const dataset=state.ledger?.nwic_district;
   const metrics=$("#districtMetrics"),thresholds=$("#districtThresholds");
@@ -807,6 +832,7 @@ function renderDistrictDetail(){
     ).join('')+'</tbody></table></div><p class="caption">Finite slope denominator: '+
     fmt(row.slope_finite,0)+' of '+fmt(row.point_centres,0)+
     ' NIWE centres. Hypothetical thresholds are not adopted engineering criteria.</p>';
+  renderDistrictNormalized();
 }
 function renderDistrictExplorer(){
   const dataset=state.ledger?.nwic_district;

@@ -1,0 +1,1705 @@
+{
+  "classification": "NIWE_NWIC_DISTRICT_NORMALIZED_DESCRIPTIVE_WIND_TERRAIN_SENSITIVITY_NOT_SUITABILITY",
+  "reviewed_date": "2026-09-23",
+  "input_evidence_path": "data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json",
+  "source": {
+    "NWIC_district_original_zip_sha256": "44c734cc72139f2447dcebfe2791cac862dc5ba265e158912d797cf3410d5c37",
+    "NWIC_district_original_GeoJSON_sha256": "2b27a478e24d8c51b0655e74ce3f4f880e75c752e4597550d6fc925ed06ac201",
+    "original_country_features": 733,
+    "selected_Kerala_district_features": 14,
+    "source_CRS": "EPSG:7755",
+    "source_agency_attribute": "Survey of India (SOI)",
+    "source_vintage_verified": false,
+    "source_reuse_rights_verified": false,
+    "original_boundaries_in_public_repo": false,
+    "NIWE_clipped_original_derived_SHA256": "dd9d00e67da0dac3a9258daad18c35f71075815f7b64cea4b290a36c6e9b9634",
+    "GLO90_DSM_slope_SHA256": "72551921c99eb563abe37c9502d4e4c592c3be667f31459296c90e48be9436f7",
+    "NIWE_point_rows_in_public_repo": false
+  },
+  "interpretation": {
+    "thresholds": "Hypothetical NIWE 150 m modelled wind >= row minimum and GLO-90 DSM surface slope <= column maximum; not accepted siting criteria",
+    "percent_of_district_valid_slope_centres": "count/finite sampled slope NIWE point centres in same NWIC district; denominator excludes missing slope samples",
+    "percent_of_statewide_matching_centres": "district count/statewide threshold-matching centres; geographic share of a hypothetical point subset not capacity share",
+    "retention_relative_to_max20_slope_same_min_speed": "count at selected slope maximum / count at <=20 degrees for the same wind minimum, only if the <=20 reference count is nonzero; NOT fraction of all windy points; null for empty reference",
+    "valid_slope_selection_not_random": "Missing slopes are reported and excluded, not inferred",
+    "scope": "No district ranking, eligible area, legal exclusions, physical sites, layout, turbine yield, grid capacity or MW."
+  },
+  "thresholds": {
+    "minimum_modelled_wind_speed_150m_m_s_inclusive": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "maximum_DSM_surface_slope_degrees_inclusive": [
+      5,
+      10,
+      15,
+      20
+    ]
+  },
+  "statewide": {
+    "source_point_centres": 200692,
+    "finite_DSM_slope_point_centres": 199853,
+    "missing_DSM_slope_point_centres": 839,
+    "threshold_count_matrix": [
+      [
+        22279,
+        34290,
+        41980,
+        47959
+      ],
+      [
+        9684,
+        14642,
+        18971,
+        22625
+      ],
+      [
+        6263,
+        8637,
+        10757,
+        12710
+      ],
+      [
+        3593,
+        4691,
+        5654,
+        6554
+      ]
+    ],
+    "threshold_pct_of_valid_slope_centres": [
+      [
+        11.1477,
+        17.1576,
+        21.0054,
+        23.9971
+      ],
+      [
+        4.8456,
+        7.3264,
+        9.4925,
+        11.3208
+      ],
+      [
+        3.1338,
+        4.3217,
+        5.3825,
+        6.3597
+      ],
+      [
+        1.7978,
+        2.3472,
+        2.8291,
+        3.2794
+      ]
+    ]
+  },
+  "districts": [
+    {
+      "district": "Alappuzha",
+      "niwe_point_centres": 7318,
+      "valid_slope_point_centres": 7280,
+      "missing_slope_point_centres": 38,
+      "missing_slope_pct_of_all_centres": 0.5193,
+      "median_modelled_150m_speed_m_s": 3.342,
+      "median_DSM_surface_slope_degrees": 0.6965,
+      "counts": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "district": "Ernakulam",
+      "niwe_point_centres": 15770,
+      "valid_slope_point_centres": 15735,
+      "missing_slope_point_centres": 35,
+      "missing_slope_pct_of_all_centres": 0.2219,
+      "median_modelled_150m_speed_m_s": 2.961,
+      "median_DSM_surface_slope_degrees": 3.1927,
+      "counts": [
+        [
+          4,
+          11,
+          20,
+          30
+        ],
+        [
+          4,
+          8,
+          14,
+          21
+        ],
+        [
+          4,
+          7,
+          11,
+          13
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          0.0254,
+          0.0699,
+          0.1271,
+          0.1907
+        ],
+        [
+          0.0254,
+          0.0508,
+          0.089,
+          0.1335
+        ],
+        [
+          0.0254,
+          0.0445,
+          0.0699,
+          0.0826
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          0.018,
+          0.0321,
+          0.0476,
+          0.0626
+        ],
+        [
+          0.0413,
+          0.0546,
+          0.0738,
+          0.0928
+        ],
+        [
+          0.0639,
+          0.081,
+          0.1023,
+          0.1023
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          13.3333,
+          36.6667,
+          66.6667,
+          100
+        ],
+        [
+          19.0476,
+          38.0952,
+          66.6667,
+          100
+        ],
+        [
+          30.7692,
+          53.8462,
+          84.6154,
+          100
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "district": "Idukki",
+      "niwe_point_centres": 22448,
+      "valid_slope_point_centres": 22328,
+      "missing_slope_point_centres": 120,
+      "missing_slope_pct_of_all_centres": 0.5346,
+      "median_modelled_150m_speed_m_s": 5.5675,
+      "median_DSM_surface_slope_degrees": 12.7611,
+      "counts": [
+        [
+          2050,
+          5500,
+          8587,
+          10977
+        ],
+        [
+          1315,
+          3627,
+          5570,
+          7042
+        ],
+        [
+          663,
+          1804,
+          2698,
+          3392
+        ],
+        [
+          427,
+          1114,
+          1557,
+          1892
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          9.1813,
+          24.6327,
+          38.4584,
+          49.1625
+        ],
+        [
+          5.8895,
+          16.2442,
+          24.9463,
+          31.5389
+        ],
+        [
+          2.9694,
+          8.0795,
+          12.0835,
+          15.1917
+        ],
+        [
+          1.9124,
+          4.9893,
+          6.9733,
+          8.4737
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          9.2015,
+          16.0397,
+          20.455,
+          22.8883
+        ],
+        [
+          13.5791,
+          24.7712,
+          29.3606,
+          31.1249
+        ],
+        [
+          10.586,
+          20.8869,
+          25.0813,
+          26.6876
+        ],
+        [
+          11.8842,
+          23.7476,
+          27.538,
+          28.8679
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          18.6754,
+          50.1048,
+          78.2272,
+          100
+        ],
+        [
+          18.6737,
+          51.5053,
+          79.0968,
+          100
+        ],
+        [
+          19.546,
+          53.184,
+          79.5401,
+          100
+        ],
+        [
+          22.5687,
+          58.8795,
+          82.2939,
+          100
+        ]
+      ]
+    },
+    {
+      "district": "Kannur",
+      "niwe_point_centres": 15358,
+      "valid_slope_point_centres": 15280,
+      "missing_slope_point_centres": 78,
+      "missing_slope_pct_of_all_centres": 0.5079,
+      "median_modelled_150m_speed_m_s": 3.321,
+      "median_DSM_surface_slope_degrees": 4.9822,
+      "counts": [
+        [
+          3,
+          16,
+          42,
+          72
+        ],
+        [
+          1,
+          5,
+          17,
+          36
+        ],
+        [
+          0,
+          0,
+          3,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          0.0196,
+          0.1047,
+          0.2749,
+          0.4712
+        ],
+        [
+          0.0065,
+          0.0327,
+          0.1113,
+          0.2356
+        ],
+        [
+          0,
+          0,
+          0.0196,
+          0.0458
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          0.0135,
+          0.0467,
+          0.1,
+          0.1501
+        ],
+        [
+          0.0103,
+          0.0341,
+          0.0896,
+          0.1591
+        ],
+        [
+          0,
+          0,
+          0.0279,
+          0.0551
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          4.1667,
+          22.2222,
+          58.3333,
+          100
+        ],
+        [
+          2.7778,
+          13.8889,
+          47.2222,
+          100
+        ],
+        [
+          0,
+          0,
+          42.8571,
+          100
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "district": "Kasaragod",
+      "niwe_point_centres": 10337,
+      "valid_slope_point_centres": 10210,
+      "missing_slope_point_centres": 127,
+      "missing_slope_pct_of_all_centres": 1.2286,
+      "median_modelled_150m_speed_m_s": 3.821,
+      "median_DSM_surface_slope_degrees": 4.9992,
+      "counts": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "district": "Kollam",
+      "niwe_point_centres": 12818,
+      "valid_slope_point_centres": 12771,
+      "missing_slope_point_centres": 47,
+      "missing_slope_pct_of_all_centres": 0.3667,
+      "median_modelled_150m_speed_m_s": 4.8915,
+      "median_DSM_surface_slope_degrees": 4.6465,
+      "counts": [
+        [
+          1955,
+          3334,
+          3996,
+          4584
+        ],
+        [
+          188,
+          463,
+          801,
+          1185
+        ],
+        [
+          51,
+          191,
+          382,
+          594
+        ],
+        [
+          21,
+          84,
+          182,
+          290
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          15.3081,
+          26.106,
+          31.2896,
+          35.8938
+        ],
+        [
+          1.4721,
+          3.6254,
+          6.272,
+          9.2788
+        ],
+        [
+          0.3993,
+          1.4956,
+          2.9912,
+          4.6512
+        ],
+        [
+          0.1644,
+          0.6577,
+          1.4251,
+          2.2708
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          8.7751,
+          9.723,
+          9.5188,
+          9.5582
+        ],
+        [
+          1.9413,
+          3.1621,
+          4.2222,
+          5.2376
+        ],
+        [
+          0.8143,
+          2.2114,
+          3.5512,
+          4.6735
+        ],
+        [
+          0.5845,
+          1.7907,
+          3.219,
+          4.4248
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          42.6483,
+          72.7312,
+          87.1728,
+          100
+        ],
+        [
+          15.865,
+          39.0717,
+          67.5949,
+          100
+        ],
+        [
+          8.5859,
+          32.1549,
+          64.3098,
+          100
+        ],
+        [
+          7.2414,
+          28.9655,
+          62.7586,
+          100
+        ]
+      ]
+    },
+    {
+      "district": "Kottayam",
+      "niwe_point_centres": 11358,
+      "valid_slope_point_centres": 11358,
+      "missing_slope_point_centres": 0,
+      "missing_slope_pct_of_all_centres": 0,
+      "median_modelled_150m_speed_m_s": 3.004,
+      "median_DSM_surface_slope_degrees": 4.1832,
+      "counts": [
+        [
+          12,
+          22,
+          32,
+          45
+        ],
+        [
+          4,
+          5,
+          6,
+          8
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          0.1057,
+          0.1937,
+          0.2817,
+          0.3962
+        ],
+        [
+          0.0352,
+          0.044,
+          0.0528,
+          0.0704
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          0.0539,
+          0.0642,
+          0.0762,
+          0.0938
+        ],
+        [
+          0.0413,
+          0.0341,
+          0.0316,
+          0.0354
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          26.6667,
+          48.8889,
+          71.1111,
+          100
+        ],
+        [
+          50,
+          62.5,
+          75,
+          100
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "district": "Kozhikode",
+      "niwe_point_centres": 12144,
+      "valid_slope_point_centres": 12101,
+      "missing_slope_point_centres": 43,
+      "missing_slope_pct_of_all_centres": 0.3541,
+      "median_modelled_150m_speed_m_s": 3.092,
+      "median_DSM_surface_slope_degrees": 4.6866,
+      "counts": [
+        [
+          3,
+          18,
+          41,
+          72
+        ],
+        [
+          0,
+          1,
+          5,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          0.0248,
+          0.1487,
+          0.3388,
+          0.595
+        ],
+        [
+          0,
+          0.0083,
+          0.0413,
+          0.1157
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          0.0135,
+          0.0525,
+          0.0977,
+          0.1501
+        ],
+        [
+          0,
+          0.0068,
+          0.0264,
+          0.0619
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          4.1667,
+          25,
+          56.9444,
+          100
+        ],
+        [
+          0,
+          7.1429,
+          35.7143,
+          100
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "district": "Malappuram",
+      "niwe_point_centres": 18390,
+      "valid_slope_point_centres": 18330,
+      "missing_slope_point_centres": 60,
+      "missing_slope_pct_of_all_centres": 0.3263,
+      "median_modelled_150m_speed_m_s": 3.705,
+      "median_DSM_surface_slope_degrees": 4.501,
+      "counts": [
+        [
+          81,
+          111,
+          135,
+          162
+        ],
+        [
+          1,
+          1,
+          5,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          0.4419,
+          0.6056,
+          0.7365,
+          0.8838
+        ],
+        [
+          0.0055,
+          0.0055,
+          0.0273,
+          0.0382
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          0.3636,
+          0.3237,
+          0.3216,
+          0.3378
+        ],
+        [
+          0.0103,
+          0.0068,
+          0.0264,
+          0.0309
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          50,
+          68.5185,
+          83.3333,
+          100
+        ],
+        [
+          14.2857,
+          14.2857,
+          71.4286,
+          100
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "district": "Palakkad",
+      "niwe_point_centres": 23117,
+      "valid_slope_point_centres": 23020,
+      "missing_slope_point_centres": 97,
+      "missing_slope_pct_of_all_centres": 0.4196,
+      "median_modelled_150m_speed_m_s": 6.412,
+      "median_DSM_surface_slope_degrees": 4.2932,
+      "counts": [
+        [
+          10201,
+          12731,
+          14281,
+          15591
+        ],
+        [
+          7380,
+          8741,
+          9877,
+          10883
+        ],
+        [
+          5465,
+          6330,
+          7072,
+          7753
+        ],
+        [
+          3127,
+          3408,
+          3709,
+          3982
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          44.3136,
+          55.3041,
+          62.0374,
+          67.7281
+        ],
+        [
+          32.0591,
+          37.9713,
+          42.9062,
+          47.2763
+        ],
+        [
+          23.7402,
+          27.4978,
+          30.7211,
+          33.6794
+        ],
+        [
+          13.5838,
+          14.8045,
+          16.1121,
+          17.298
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          45.7875,
+          37.1274,
+          34.0186,
+          32.509
+        ],
+        [
+          76.2082,
+          59.6981,
+          52.0637,
+          48.1017
+        ],
+        [
+          87.2585,
+          73.2893,
+          65.7432,
+          60.9992
+        ],
+        [
+          87.0303,
+          72.6498,
+          65.5996,
+          60.7568
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          65.4288,
+          81.6561,
+          91.5977,
+          100
+        ],
+        [
+          67.8122,
+          80.3179,
+          90.7562,
+          100
+        ],
+        [
+          70.4888,
+          81.6458,
+          91.2163,
+          100
+        ],
+        [
+          78.5284,
+          85.5851,
+          93.1441,
+          100
+        ]
+      ]
+    },
+    {
+      "district": "Pathanamthitta",
+      "niwe_point_centres": 13637,
+      "valid_slope_point_centres": 13619,
+      "missing_slope_point_centres": 18,
+      "missing_slope_pct_of_all_centres": 0.132,
+      "median_modelled_150m_speed_m_s": 3.734,
+      "median_DSM_surface_slope_degrees": 9.521,
+      "counts": [
+        [
+          253,
+          852,
+          1506,
+          2186
+        ],
+        [
+          147,
+          490,
+          861,
+          1276
+        ],
+        [
+          64,
+          228,
+          426,
+          691
+        ],
+        [
+          17,
+          67,
+          157,
+          309
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          1.8577,
+          6.256,
+          11.0581,
+          16.0511
+        ],
+        [
+          1.0794,
+          3.5979,
+          6.3221,
+          9.3693
+        ],
+        [
+          0.4699,
+          1.6741,
+          3.128,
+          5.0738
+        ],
+        [
+          0.1248,
+          0.492,
+          1.1528,
+          2.2689
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          1.1356,
+          2.4847,
+          3.5874,
+          4.5581
+        ],
+        [
+          1.518,
+          3.3465,
+          4.5385,
+          5.6398
+        ],
+        [
+          1.0219,
+          2.6398,
+          3.9602,
+          5.4367
+        ],
+        [
+          0.4731,
+          1.4283,
+          2.7768,
+          4.7147
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          11.5737,
+          38.9753,
+          68.893,
+          100
+        ],
+        [
+          11.5204,
+          38.4013,
+          67.4765,
+          100
+        ],
+        [
+          9.2619,
+          32.9957,
+          61.6498,
+          100
+        ],
+        [
+          5.5016,
+          21.6828,
+          50.8091,
+          100
+        ]
+      ]
+    },
+    {
+      "district": "Thiruvananthapuram",
+      "niwe_point_centres": 11257,
+      "valid_slope_point_centres": 11169,
+      "missing_slope_point_centres": 88,
+      "missing_slope_pct_of_all_centres": 0.7817,
+      "median_modelled_150m_speed_m_s": 4.83,
+      "median_DSM_surface_slope_degrees": 4.4437,
+      "counts": [
+        [
+          1777,
+          2672,
+          3042,
+          3303
+        ],
+        [
+          66,
+          208,
+          389,
+          539
+        ],
+        [
+          13,
+          63,
+          139,
+          213
+        ],
+        [
+          1,
+          18,
+          49,
+          81
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          15.9101,
+          23.9234,
+          27.2361,
+          29.5729
+        ],
+        [
+          0.5909,
+          1.8623,
+          3.4829,
+          4.8259
+        ],
+        [
+          0.1164,
+          0.5641,
+          1.2445,
+          1.9071
+        ],
+        [
+          0.009,
+          0.1612,
+          0.4387,
+          0.7252
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          7.9761,
+          7.7924,
+          7.2463,
+          6.8871
+        ],
+        [
+          0.6815,
+          1.4206,
+          2.0505,
+          2.3823
+        ],
+        [
+          0.2076,
+          0.7294,
+          1.2922,
+          1.6758
+        ],
+        [
+          0.0278,
+          0.3837,
+          0.8666,
+          1.2359
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          53.7996,
+          80.8962,
+          92.0981,
+          100
+        ],
+        [
+          12.2449,
+          38.59,
+          72.1707,
+          100
+        ],
+        [
+          6.1033,
+          29.5775,
+          65.2582,
+          100
+        ],
+        [
+          1.2346,
+          22.2222,
+          60.4938,
+          100
+        ]
+      ]
+    },
+    {
+      "district": "Thrissur",
+      "niwe_point_centres": 15671,
+      "valid_slope_point_centres": 15641,
+      "missing_slope_point_centres": 30,
+      "missing_slope_pct_of_all_centres": 0.1914,
+      "median_modelled_150m_speed_m_s": 4.865,
+      "median_DSM_surface_slope_degrees": 3.0395,
+      "counts": [
+        [
+          4230,
+          5574,
+          6230,
+          6563
+        ],
+        [
+          533,
+          913,
+          1083,
+          1147
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          27.0443,
+          35.6371,
+          39.8312,
+          41.9602
+        ],
+        [
+          3.4077,
+          5.8372,
+          6.9241,
+          7.3333
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          18.9865,
+          16.2555,
+          14.8404,
+          13.6846
+        ],
+        [
+          5.5039,
+          6.2355,
+          5.7087,
+          5.0696
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          64.4522,
+          84.9307,
+          94.9261,
+          100
+        ],
+        [
+          46.469,
+          79.599,
+          94.4202,
+          100
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    },
+    {
+      "district": "Wayanad",
+      "niwe_point_centres": 11069,
+      "valid_slope_point_centres": 11011,
+      "missing_slope_point_centres": 58,
+      "missing_slope_pct_of_all_centres": 0.524,
+      "median_modelled_150m_speed_m_s": 4.894,
+      "median_DSM_surface_slope_degrees": 6.268,
+      "counts": [
+        [
+          1710,
+          3449,
+          4068,
+          4374
+        ],
+        [
+          45,
+          180,
+          343,
+          467
+        ],
+        [
+          3,
+          14,
+          26,
+          47
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_district_valid_slope_centres": [
+        [
+          15.5299,
+          31.3232,
+          36.9449,
+          39.7239
+        ],
+        [
+          0.4087,
+          1.6347,
+          3.1151,
+          4.2412
+        ],
+        [
+          0.0272,
+          0.1271,
+          0.2361,
+          0.4268
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "percent_of_statewide_matching_centres": [
+        [
+          7.6754,
+          10.0583,
+          9.6903,
+          9.1203
+        ],
+        [
+          0.4647,
+          1.2293,
+          1.808,
+          2.0641
+        ],
+        [
+          0.0479,
+          0.1621,
+          0.2417,
+          0.3698
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "retention_relative_to_max20_slope_same_min_speed": [
+        [
+          39.0947,
+          78.8523,
+          93.0041,
+          100
+        ],
+        [
+          9.636,
+          38.5439,
+          73.4475,
+          100
+        ],
+        [
+          6.383,
+          29.7872,
+          55.3191,
+          100
+        ],
+        [
+          null,
+          null,
+          null,
+          null
+        ]
+      ]
+    }
+  ],
+  "spotlight_descriptive_example": {
+    "wind_min_m_s": 7,
+    "max_DSM_slope_degrees": 10,
+    "statewide_matching_point_centres": 8637,
+    "statewide_pct_of_valid_slope_centres": 4.3217,
+    "palakkad_matching_point_centres": 6330,
+    "palakkad_pct_of_district_valid_slope_centres": 27.4978,
+    "idukki_matching_point_centres": 1804,
+    "idukki_pct_of_district_valid_slope_centres": 8.0795
+  },
+  "qa": {
+    "district_count": 14,
+    "source_point_centres_reconciled": true,
+    "valid_slope_reconciled": true,
+    "missing_slope_reconciled": true,
+    "all_16_threshold_cell_counts_reconciled": true,
+    "district_boundaries_NWIC_not_LRIS": true
+  },
+  "source_reuse_rights_verified": false,
+  "eligible_area_km2": null,
+  "feasible_capacity_MW": null,
+  "hourly_generation_validated": false,
+  "model_admitted": false
+}
