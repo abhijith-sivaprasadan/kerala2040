@@ -144,6 +144,28 @@ def validate_bundle(public: Path) -> dict:
                 or district.get("model_admitted") is not False
                 or district.get("source", {}).get("source_reuse_rights_verified") is not False):
             raise ValueError("NWIC district bundle incomplete or incorrectly promoted to eligible capacity")
+    if "research_ledger" in files:
+        wind_phase = read(files["research_ledger"]).get("wind_phase1", {})
+        normalized = wind_phase.get("normalized", {})
+        example = normalized.get("spotlight_descriptive_example", {})
+        if (wind_phase.get("descriptive_wind_phase1_complete") is not True
+                or normalized.get("classification") !=
+                "NIWE_NWIC_DISTRICT_NORMALIZED_DESCRIPTIVE_WIND_TERRAIN_SENSITIVITY_NOT_SUITABILITY"
+                or normalized.get("qa", {}).get("all_16_threshold_cell_counts_reconciled") is not True
+                or normalized.get("statewide", {}).get("source_point_centres") != 200_692
+                or normalized.get("statewide", {}).get("finite_DSM_slope_point_centres") != 199_853
+                or len(normalized.get("districts", [])) != 14
+                or example.get("statewide_matching_point_centres") != 8_637
+                or example.get("palakkad_matching_point_centres") != 6_330
+                or example.get("idukki_matching_point_centres") != 1_804
+                or normalized.get("source_reuse_rights_verified") is not False
+                or normalized.get("eligible_area_km2") is not None
+                or normalized.get("feasible_capacity_MW") is not None
+                or normalized.get("model_admitted") is not False
+                or wind_phase.get("site_eligibility_verified") is not False
+                or wind_phase.get("feasible_capacity_MW") is not None
+                or wind_phase.get("model_admitted") is not False):
+            raise ValueError("Wind descriptive phase 1 was not reproducible or was promoted to capacity")
     if "research_results" in files:
         research = read(files["research_results"])
         if research != site.get("research_results"):
