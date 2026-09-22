@@ -230,6 +230,40 @@ test("NWIC district explorer uses the verified 14-district aggregate, not invent
   assert.equal(c.science.nwic_district.model_admitted,false);
 });
 
+test("wind phase 1 renders correct slope-available denominators and no MW",()=>{
+  const elements={};
+  const el=selector=>elements[selector] ||= {innerHTML:"",textContent:"",value:""};
+  const c=context({document:{querySelector:el,querySelectorAll:()=>[]}});
+  c.science=ledger();
+  const normalized=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/gis/niwe_nwic_district_normalized_wind_terrain_2026_09_23.json"),"utf8"));
+  c.science.wind_phase1={
+    descriptive_wind_phase1_complete:true,
+    normalized,feasible_capacity_MW:null,model_admitted:false
+  };
+  vm.runInContext("state.ledger=science;state.district='Palakkad';renderDistrictNormalized()",c);
+  const p=elements["#districtNormalized"].innerHTML;
+  assert.match(p,/23,020/);
+  assert.match(p,/27\.50%/);
+  assert.match(p,/6,330 point centres/);
+  assert.match(p,/70\.49%/);
+  assert.match(p,/not all windy sites/);
+  vm.runInContext("state.district='Idukki';renderDistrictNormalized()",c);
+  const i=elements["#districtNormalized"].innerHTML;
+  assert.match(i,/22,328/);
+  assert.match(i,/8\.08%/);
+  assert.match(i,/1,804 point centres/);
+  assert.match(i,/19\.55%/);
+  vm.runInContext("state.district='Alappuzha';renderDistrictNormalized()",c);
+  assert.match(elements["#districtNormalized"].innerHTML,/undefined \(empty reference\)/);
+  assert.equal(normalized.model_admitted,false);
+  assert.equal(normalized.feasible_capacity_MW,null);
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  assert.match(html,/id="districtNormalized"/);
+  assert.match(html,/wind-district-normalized-20260923.svg/);
+  assert.match(html,/wind-terrain-sensitivity-20260923.svg/);
+});
+
 test("all eight research pages render against one real observed-data snapshot",()=>{
   const elements={};
   function el(selector){
