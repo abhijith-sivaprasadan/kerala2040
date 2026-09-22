@@ -1,0 +1,587 @@
+{
+  "classification": "NIWE_NWIC_14_DISTRICT_DESCRIPTIVE_POINT_PARTITION_NOT_CAPACITY",
+  "reviewed_date": "2026-09-22",
+  "source": {
+    "NWIC_district_original_zip_sha256": "44c734cc72139f2447dcebfe2791cac862dc5ba265e158912d797cf3410d5c37",
+    "NWIC_district_original_GeoJSON_sha256": "2b27a478e24d8c51b0655e74ce3f4f880e75c752e4597550d6fc925ed06ac201",
+    "original_country_features": 733,
+    "selected_Kerala_district_features": 14,
+    "source_CRS": "EPSG:7755",
+    "source_agency_attribute": "Survey of India (SOI)",
+    "source_vintage_verified": false,
+    "source_reuse_rights_verified": false,
+    "original_boundaries_in_public_repo": false,
+    "NIWE_clipped_original_derived_SHA256": "dd9d00e67da0dac3a9258daad18c35f71075815f7b64cea4b290a36c6e9b9634",
+    "GLO90_DSM_slope_SHA256": "72551921c99eb563abe37c9502d4e4c592c3be667f31459296c90e48be9436f7",
+    "NIWE_point_rows_in_public_repo": false
+  },
+  "point_assignment": {
+    "source_points": 200692,
+    "uniquely_assigned": 200692,
+    "unassigned": 0,
+    "ambiguous": 0,
+    "slope_finite": 199853,
+    "slope_missing": 839,
+    "complete_descriptive_partition": true,
+    "source_use_verified": false
+  },
+  "comparison_to_LRIS": {
+    "LRIS_uniquely_assigned": 200362,
+    "LRIS_unassigned": 330,
+    "LRIS_ambiguous": 0,
+    "delta_counts_include_differences_in_polygon_boundaries": true
+  },
+  "hypothetical_thresholds": {
+    "min_modelled_150m_wind_speed_m_s_inclusive": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "max_DSM_surface_slope_degrees_inclusive": [
+      5,
+      10,
+      15,
+      20
+    ],
+    "all_districts_point_counts": [
+      [
+        22279,
+        34290,
+        41980,
+        47959
+      ],
+      [
+        9684,
+        14642,
+        18971,
+        22625
+      ],
+      [
+        6263,
+        8637,
+        10757,
+        12710
+      ],
+      [
+        3593,
+        4691,
+        5654,
+        6554
+      ]
+    ],
+    "not_eligibility_criteria": true
+  },
+  "districts": [
+    {
+      "district": "Alappuzha",
+      "point_centres": 7318,
+      "slope_finite": 7280,
+      "slope_missing": 38,
+      "wind_speed_median_m_s": 3.342,
+      "slope_median_degrees": 0.6965,
+      "wind_speed_p95_m_s": 3.864,
+      "delta_point_centres_vs_LRIS": 26,
+      "threshold_matrix": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "district": "Ernakulam",
+      "point_centres": 15770,
+      "slope_finite": 15735,
+      "slope_missing": 35,
+      "wind_speed_median_m_s": 2.961,
+      "slope_median_degrees": 3.1927,
+      "wind_speed_p95_m_s": 3.301,
+      "delta_point_centres_vs_LRIS": 708,
+      "threshold_matrix": [
+        [
+          4,
+          11,
+          20,
+          30
+        ],
+        [
+          4,
+          8,
+          14,
+          21
+        ],
+        [
+          4,
+          7,
+          11,
+          13
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "district": "Idukki",
+      "point_centres": 22448,
+      "slope_finite": 22328,
+      "slope_missing": 120,
+      "wind_speed_median_m_s": 5.5675,
+      "slope_median_degrees": 12.7611,
+      "wind_speed_p95_m_s": 8.7473,
+      "delta_point_centres_vs_LRIS": -930,
+      "threshold_matrix": [
+        [
+          2050,
+          5500,
+          8587,
+          10977
+        ],
+        [
+          1315,
+          3627,
+          5570,
+          7042
+        ],
+        [
+          663,
+          1804,
+          2698,
+          3392
+        ],
+        [
+          427,
+          1114,
+          1557,
+          1892
+        ]
+      ]
+    },
+    {
+      "district": "Kannur",
+      "point_centres": 15358,
+      "slope_finite": 15280,
+      "slope_missing": 78,
+      "wind_speed_median_m_s": 3.321,
+      "slope_median_degrees": 4.9822,
+      "wind_speed_p95_m_s": 4.043,
+      "delta_point_centres_vs_LRIS": 20,
+      "threshold_matrix": [
+        [
+          3,
+          16,
+          42,
+          72
+        ],
+        [
+          1,
+          5,
+          17,
+          36
+        ],
+        [
+          0,
+          0,
+          3,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "district": "Kasaragod",
+      "point_centres": 10337,
+      "slope_finite": 10210,
+      "slope_missing": 127,
+      "wind_speed_median_m_s": 3.821,
+      "slope_median_degrees": 4.9992,
+      "wind_speed_p95_m_s": 4.076,
+      "delta_point_centres_vs_LRIS": 51,
+      "threshold_matrix": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "district": "Kollam",
+      "point_centres": 12818,
+      "slope_finite": 12771,
+      "slope_missing": 47,
+      "wind_speed_median_m_s": 4.8915,
+      "slope_median_degrees": 4.6465,
+      "wind_speed_p95_m_s": 8.0984,
+      "delta_point_centres_vs_LRIS": 76,
+      "threshold_matrix": [
+        [
+          1955,
+          3334,
+          3996,
+          4584
+        ],
+        [
+          188,
+          463,
+          801,
+          1185
+        ],
+        [
+          51,
+          191,
+          382,
+          594
+        ],
+        [
+          21,
+          84,
+          182,
+          290
+        ]
+      ]
+    },
+    {
+      "district": "Kottayam",
+      "point_centres": 11358,
+      "slope_finite": 11358,
+      "slope_missing": 0,
+      "wind_speed_median_m_s": 3.004,
+      "slope_median_degrees": 4.1832,
+      "wind_speed_p95_m_s": 3.4264,
+      "delta_point_centres_vs_LRIS": -37,
+      "threshold_matrix": [
+        [
+          12,
+          22,
+          32,
+          45
+        ],
+        [
+          4,
+          5,
+          6,
+          8
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "district": "Kozhikode",
+      "point_centres": 12144,
+      "slope_finite": 12101,
+      "slope_missing": 43,
+      "wind_speed_median_m_s": 3.092,
+      "slope_median_degrees": 4.6866,
+      "wind_speed_p95_m_s": 3.9679,
+      "delta_point_centres_vs_LRIS": -13,
+      "threshold_matrix": [
+        [
+          3,
+          18,
+          41,
+          72
+        ],
+        [
+          0,
+          1,
+          5,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "district": "Malappuram",
+      "point_centres": 18390,
+      "slope_finite": 18330,
+      "slope_missing": 60,
+      "wind_speed_median_m_s": 3.705,
+      "slope_median_degrees": 4.501,
+      "wind_speed_p95_m_s": 4.812,
+      "delta_point_centres_vs_LRIS": 10,
+      "threshold_matrix": [
+        [
+          81,
+          111,
+          135,
+          162
+        ],
+        [
+          1,
+          1,
+          5,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "district": "Palakkad",
+      "point_centres": 23117,
+      "slope_finite": 23020,
+      "slope_missing": 97,
+      "wind_speed_median_m_s": 6.412,
+      "slope_median_degrees": 4.2932,
+      "wind_speed_p95_m_s": 8.876,
+      "delta_point_centres_vs_LRIS": 64,
+      "threshold_matrix": [
+        [
+          10201,
+          12731,
+          14281,
+          15591
+        ],
+        [
+          7380,
+          8741,
+          9877,
+          10883
+        ],
+        [
+          5465,
+          6330,
+          7072,
+          7753
+        ],
+        [
+          3127,
+          3408,
+          3709,
+          3982
+        ]
+      ]
+    },
+    {
+      "district": "Pathanamthitta",
+      "point_centres": 13637,
+      "slope_finite": 13619,
+      "slope_missing": 18,
+      "wind_speed_median_m_s": 3.734,
+      "slope_median_degrees": 9.521,
+      "wind_speed_p95_m_s": 7.7488,
+      "delta_point_centres_vs_LRIS": 254,
+      "threshold_matrix": [
+        [
+          253,
+          852,
+          1506,
+          2186
+        ],
+        [
+          147,
+          490,
+          861,
+          1276
+        ],
+        [
+          64,
+          228,
+          426,
+          691
+        ],
+        [
+          17,
+          67,
+          157,
+          309
+        ]
+      ]
+    },
+    {
+      "district": "Thiruvananthapuram",
+      "point_centres": 11257,
+      "slope_finite": 11169,
+      "slope_missing": 88,
+      "wind_speed_median_m_s": 4.83,
+      "slope_median_degrees": 4.4437,
+      "wind_speed_p95_m_s": 6.7452,
+      "delta_point_centres_vs_LRIS": 17,
+      "threshold_matrix": [
+        [
+          1777,
+          2672,
+          3042,
+          3303
+        ],
+        [
+          66,
+          208,
+          389,
+          539
+        ],
+        [
+          13,
+          63,
+          139,
+          213
+        ],
+        [
+          1,
+          18,
+          49,
+          81
+        ]
+      ]
+    },
+    {
+      "district": "Thrissur",
+      "point_centres": 15671,
+      "slope_finite": 15641,
+      "slope_missing": 30,
+      "wind_speed_median_m_s": 4.865,
+      "slope_median_degrees": 3.0395,
+      "wind_speed_p95_m_s": 6.21,
+      "delta_point_centres_vs_LRIS": 44,
+      "threshold_matrix": [
+        [
+          4230,
+          5574,
+          6230,
+          6563
+        ],
+        [
+          533,
+          913,
+          1083,
+          1147
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "district": "Wayanad",
+      "point_centres": 11069,
+      "slope_finite": 11011,
+      "slope_missing": 58,
+      "wind_speed_median_m_s": 4.894,
+      "slope_median_degrees": 6.268,
+      "wind_speed_p95_m_s": 6.0796,
+      "delta_point_centres_vs_LRIS": 40,
+      "threshold_matrix": [
+        [
+          1710,
+          3449,
+          4068,
+          4374
+        ],
+        [
+          45,
+          180,
+          343,
+          467
+        ],
+        [
+          3,
+          14,
+          26,
+          47
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  ],
+  "eligible_area_km2": null,
+  "feasible_capacity_MW": null,
+  "hourly_generation_validated": false,
+  "legal_ecology_screens_verified": false,
+  "model_admitted": false,
+  "caveat": "Descriptive modelled 150 m wind point counts × DSM surface slope by NWIC administrative geometry; no km², physical turbine pads, legal boundaries, grid hosting, actual generation or MW."
+}
