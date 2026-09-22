@@ -1,6 +1,6 @@
 # NIWE 150 m Kerala resource and terrain: next reproducible operation
 
-**Status: audited workflow and private map generator added; NIWE × slope real-data run pending.** The original 150 m source QA already verified the nested ZIP and seven-column, 19,475,568-row national CSV. The exact NWIC Kerala polygon clip already yielded 200,692 point centres. This script takes that EXISTING clip rather than reading 19 million records again.
+**Status: SUPERSEDED AS A PENDING CHECKLIST.** The source-hash-verified real-data NIWE × GLO-90 join was executed on 22 September 2026. See [executed result, hashes, threshold table and updated local commands](NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md). The original pre-execution instructions below remain as historical context; the earlier pinned gzip hash is not the deterministic reconstructed clip's hash. The original 150 m source QA already verified the nested ZIP and seven-column, 19,475,568-row national CSV. The exact NWIC Kerala polygon clip already yielded 200,692 point centres. This script takes that EXISTING clip rather than reading 19 million records again.
 
 ## Independent publisher checks, 22 September 2026
 
@@ -20,7 +20,7 @@ Optional: pass `--slope-degrees 'E:\path\to\slope.tif'` only after confirming th
 
 The local JSON provides wind-speed, power-density, Weibull and optional slope/joint classes, counting **point centres**, not geodesic land area. It deliberately records `candidate_area_km2: null`, `feasible_capacity_MW: null`, and `model_admitted: false`. No technology-specific turbine layout, forest/wetland notification, land rights, measured yield, actual network headroom, or capacity expansion follows from a histogram.
 
-Do not alter the five verified private source snapshots, the published pinned website, or the 2040 model-admission flags. The PR contains code and synthetic tests, not results of a completed real NIWE/slope run.
+Do not alter the five verified private source snapshots, the published pinned website, or the 2040 model-admission flags. The PR now also contains the executed REAL NIWE/slope aggregate report; do not confuse the earlier pending status with the completed descriptive resource/terrain run.
 
 ## NIWE × GLO-90 sensitivity and private point maps
 
@@ -49,4 +49,4 @@ The slope TIFF's default SHA256 must equal `72551921c99eb563abe37c9502d4e4c592c3
 
 The NIWE compressed clip hash must equal `364808dd40751bd5f3e131e86127dbdab73168d1830a682002de5a4c6fdd0dee` by default; mismatch aborts. The 16 speed (≥5/6/7/8 m/s) × slope (≤5/10/15/20°) combinations count only matched **point centres with finite slope**. Every row also gives its percentage of *slope-available point centres*, not Kerala land area. They are an **assumption sensitivity**, not endorsed turbine screening rules. The JSON records slope missingness and full SHA256, and the PNGs have private/local-only filenames and hashes. Do not commit/distribute these NIWE-derived images before resolving source permissions. These thresholds cannot yield area or MW without spatial land accounting, legally grounded exclusions, layout, wind generation performance and transmission constraints.
 
-If the compressed clip from the earlier local conversation container is unavailable, recover it from your locally saved `kerala2040_resource_clips_2026_09_22.zip` if present. This ZIP was **not** recorded as backed up to the remote public GitHub repo. Do not cite its output as an executed wind × slope run until the exact compressed clip is independently recovered and sampled.
+**Updated 22 September:** the exact national inner NIWE ZIP was uploaded, the independently verified original NWIC boundary was recovered from GitHub Actions, and the clip was rebuilt with deterministic gzip headers. The previous compressed clip hash intentionally does not match this rebuilt file: use the independently verified original-source QA and the documented `--allow-repacked-clip` flag. The descriptive NIWE × slope run is now complete; see the result report linked above.
