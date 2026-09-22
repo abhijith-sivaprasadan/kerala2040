@@ -731,7 +731,7 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
 
 /* Source-reconciled NWIC district explorer. All artwork is aggregate, not GIS
    boundary geometry or a map of eligible wind installations. */
-.district-evidence{border:1px solid var(--line);border-top:6px solid var(--gold);background:var(--surface);padding:clamp(22px,3.5vw,47px);margin:28px 0 34px}
+.district-evidence{border:1px solid var(--line);border-top:6px solid var(--gold);background:var(--surface);padding:clamp(22px,3.5vw,47px);margin:28px 0 34px;min-width:0;max-width:100%;overflow-x:clip}
 .district-heading{display:flex;justify-content:space-between;align-items:end;gap:25px}
 .district-heading>div{max-width:700px}
 .district-heading h2{font:500 clamp(31px,4vw,56px)/1.1 var(--display);letter-spacing:-.025em;margin:12px 0}
@@ -780,3 +780,4 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
   .district-controls{align-items:stretch;flex-direction:column;gap:9px}
   .district-controls select{width:100%}
 }
+\n.district-overview,.district-thresholds,.district-thresholds .wind-table-wrap{min-width:0;max-width:100%}\n
