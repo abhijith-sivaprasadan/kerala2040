@@ -67,7 +67,7 @@ async function loadPlatformData(){
   return state;
 }
 function labelStage(phase){
-  return {validated_source:"Source coverage verified · model gate open",
+  return {validated_source:"Source QA verified · model admission separate",
     partial:"Partial evidence",blocked:"Missing critical evidence"}[phase]||"Not verified";
 }
 function stageClass(phase){return phase==="validated_source"?"verified":phase==="partial"?"partial":"blocked"}
@@ -491,9 +491,16 @@ function renderHomepage(){
   const origin=$("#dataOrigin");
   if(origin)origin.textContent="Observed bundle "+(t?t.slice(0,10):"undated")+
     " · Research audit "+(state.ledger.reviewed_date||"undated");
+  const latest=$("#latestWindNote");
+  const wind=state.ledger.wind_terrain;
+  if(latest && wind){
+    latest.innerHTML='<span><b>'+fmt(wind.point_centres,0)+'</b><small>NIWE Kerala resource centres</small></span>'+
+      '<span><b>'+fmt(wind.speed_m_s.median,2)+' m/s</b><small>Median modelled wind, 150 m</small></span>'+
+      '<span><b>'+fmt(wind.slope.finite_point_centres,0)+'</b><small>Valid slope samples · NOT sites</small></span>';
+  }
   const target=$("#homeResearchLedger");
   if(target){
-    const ids=["electricity","boundary","landslide","forest","wetlands","modelling"];
+    const ids=["electricity","wind","boundary","lris","landslide","forest","wetlands","modelling"];
     target.innerHTML=ids.map(id=>rows.find(item=>item.id===id)).filter(Boolean)
       .map(item=>'<article class="note-row"><span>'+esc(labelStage(item.phase))+
         '</span><h3>'+esc(item.title)+'</h3><p>'+esc(item.summary)+'</p>'+
@@ -730,7 +737,56 @@ function renderPathways(){
       '</article>';
   }).join("");
 }
-const spatialIds=["boundary","lulc","landslide","forest","wetlands"];
+function renderWindTerrain(){
+  const root=$("#windTerrainEvidence"),w=state.ledger.wind_terrain;
+  if(!root)return;
+  if(!w){root.textContent="The executed wind audit is not in this evidence snapshot.";return;}
+  const h=w.speed_m_s, t=w.slope, a=w.sensitivity;
+  const speedLabels=["<3","3–4","4–5","5–6","6–7","7–8","8–10","≥10"];
+  const max=Math.max(...h.bin_counts);
+  const histogram=h.bin_counts.map((count,i)=>
+    '<div class="wind-bar-row"><span>'+esc(speedLabels[i])+'</span>'+
+    '<div class="wind-bar-track"><span style="width:'+
+    (100*count/max).toFixed(2)+'%"></span></div><b>'+fmt(count,0)+'</b></div>'
+  ).join("");
+  const table=a.matching_point_centre_counts_in_row_column_order.map((counts,i)=>
+    '<tr><th scope="row">≥'+esc(a.minimum_150m_speed_m_s_inclusive[i])+' m/s</th>'+
+    counts.map(count=>'<td>'+fmt(count,0)+'</td>').join("")+'</tr>'
+  ).join("");
+  root.innerHTML=
+    '<div class="wind-stat-grid">'+
+    '<div><small>INSIDE THE NWIC KERALA POLYGON</small><strong>'+fmt(w.point_centres,0)+'</strong><span>NIWE 150 m point centres</span></div>'+
+    '<div><small>MEDIAN MODELLED WIND SPEED</small><strong>'+fmt(h.median,2)+' <em>m/s</em></strong><span>150 m AGL, long-term resource atlas</span></div>'+
+    '<div><small>MEDIAN WIND POWER DENSITY</small><strong>'+fmt(w.wind_power_density_w_m2.median,2)+' <em>W/m²</em></strong><span>Modelled resource, not produced power</span></div>'+
+    '<div><small>DSM SLOPE SAMPLES</small><strong>'+fmt(t.finite_point_centres,0)+'</strong><span>'+fmt(t.missing_point_centres,0)+' absent · median '+fmt(t.median_degrees,2)+'°</span></div>'+
+    '</div>'+
+    '<div class="wind-figures"><figure class="wind-histogram"><figcaption>'+
+    '<span class="section-eyebrow">DISTRIBUTION 01 / SOURCE POINTS</span>'+
+    '<h3>Modelled wind speed at 150 m</h3><p>Each bar counts NIWE source centres inside the original Kerala polygon, not area or turbine pads.</p></figcaption>'+
+    '<div class="wind-bar-list">'+histogram+'</div><small class="wind-axis-caption">Wind-speed class (m/s) · number of point centres</small></figure>'+
+    '<figure class="wind-matrix"><figcaption><span class="section-eyebrow">SENSITIVITY 02 / TERRAIN</span>'+
+    '<h3>Wind speed × surface slope</h3><p>Hypothetical thresholds only. Rows are minimum wind speed; columns are maximum DSM slope. Cells are point counts with valid sampled slope.</p></figcaption>'+
+    '<div class="wind-table-wrap"><table><caption>Point-centre counts by hypothetical wind-speed and GLO-90 DSM slope thresholds; not eligible sites</caption>'+
+    '<thead><tr><th scope="col">Wind ≥ / slope ≤</th>'+
+    a.maximum_DSM_slope_degrees_inclusive.map(deg=>'<th scope="col">'+esc(deg)+'°</th>').join("")+
+    '</tr></thead><tbody>'+table+'</tbody></table></div>'+
+    '<p class="wind-table-foot">Slope-available denominator: '+fmt(a.denominator_for_percentages,0)+
+    ' centres. No km² or MW inferred.</p></figure></div>'+
+    '<p class="caption">Source: NIWE original 150 m national CSV clipped with original NWIC Kerala polygon and joined to verified GLO-90 DSM slope; reviewed '+esc(w.reviewed_date)+'. Raw NIWE geometry and maps are not redistributed here.</p>';
+}
+function renderLrisEvidence(){
+  const box=$("#lrisEvidence"),l=state.ledger.lris;
+  if(!box)return;
+  if(!l){box.textContent="LRIS investigation not present in this evidence snapshot.";return;}
+  box.innerHTML='<p>LRIS advertises land use, roads, slope and waterbodies across <b>'+fmt(l.district_count,0)+
+    ' districts</b>. Browser-observed district/block/local-body GeoJSON, level-based category summaries and WMS map images are useful for contextual checks. <strong>They are not the underlying native land-use vector layer.</strong></p>'+
+    '<div class="lris-status"><span><b>WFS check</b><small>'+esc(l.wfs_result)+'</small></span>'+
+    '<span><b>Original land-use polygons</b><small>Not acquired or independently QA-verified</small></span>'+
+    '<span><b>Legal forest / ESZ / paddy</b><small>Notification-linked boundaries still missing</small></span></div>'+
+    '<p class="caption">A disabled public WFS does not prove that the data cannot be supplied through another authorised route. See the <a href="'+REPO+
+    '/blob/main/data/evidence/gis/lris_public_services_discovery_2026_09_22.json" target="_blank" rel="noopener noreferrer">source-scoped service inventory ↗</a>.</p>';
+}
+const spatialIds=["wind","boundary","lris","lulc","landslide","forest","wetlands"];
 function renderAtlas(){
   const records=spatialIds.map(id=>state.ledger.workstreams.find(x=>x.id===id)).filter(Boolean);
   const box=$("#spatialPipeline");if(!box)return;
@@ -875,7 +931,7 @@ function renderSources(){
 }
 function renderAll(){
   renderHomepage();renderEditorialHome();renderProvenance();renderElectricity();renderEditorialElectricity();renderPathways();
-  renderAtlas();renderIndustry();renderWorkbench();renderAudit();renderSources();
+  renderWindTerrain();renderLrisEvidence();renderAtlas();renderIndustry();renderWorkbench();renderAudit();renderSources();
   bindRoutes();
 }
 async function init(){

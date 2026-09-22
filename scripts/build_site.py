@@ -90,6 +90,24 @@ def validate_bundle(public: Path) -> dict:
             if (ledger["audit_finding_count"] != audit["finding_count"]
                     or ledger["audit_open_findings"] != audit["open_findings"]):
                 raise ValueError("Research ledger and audited finding counts disagree")
+        wind = ledger.get("wind_terrain")
+        if (not wind
+                or wind.get("classification") != "NIWE_150M_KERALA_DESCRIPTIVE_RESOURCE_TERRAIN_NOT_CAPACITY"
+                or wind.get("point_centres") != 200_692
+                or wind.get("slope", {}).get("finite_point_centres") != 199_853
+                or wind.get("slope", {}).get("missing_point_centres") != 839
+                or sum(wind.get("speed_m_s", {}).get("bin_counts", [])) != 200_692
+                or wind.get("candidate_area_km2") is not None
+                or wind.get("feasible_capacity_MW") is not None
+                or wind.get("model_admitted") is not False):
+            raise ValueError("Executed wind evidence is absent, inconsistent or promoted to capacity")
+        lris = ledger.get("lris")
+        if (not lris or lris.get("classification") !=
+                "LRIS_PUBLIC_PORTAL_DISCOVERY_NOT_STATUTORY_GIS_OR_SITE_ELIGIBILITY"
+                or lris.get("native_land_use_geometry_acquired") is not False
+                or lris.get("legal_exclusion_verified") is not False
+                or lris.get("model_admitted") is not False):
+            raise ValueError("LRIS portal evidence was incorrectly promoted to legal GIS")
     if "research_results" in files:
         research = read(files["research_results"])
         if research != site.get("research_results"):

@@ -660,3 +660,71 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
     animation:none!important;transform:none!important;opacity:1!important
   }
 }
+
+
+/* The evidence update is built from the audited ledger: resource counts,
+   not a copied NIWE map, ecological exclusion polygon or installed MW. */
+.fresh-findings{display:grid;grid-template-columns:150px minmax(0,1fr) 170px;align-items:center;gap:clamp(18px,3vw,42px);padding-block:38px;border-bottom:1px solid var(--line)}
+.fresh-findings-mark{border:1px solid var(--gold);background:var(--deep);color:var(--gold-light);padding:20px 14px;min-height:122px;display:flex;flex-direction:column;justify-content:space-between;font:600 32px var(--display)}
+.fresh-findings-mark span{font:500 10px/1.6 var(--mono);letter-spacing:.05em}
+.fresh-findings-copy h2{font:500 clamp(29px,3.4vw,51px)/1.09 var(--display);letter-spacing:-.03em;margin:9px 0}
+.fresh-findings-copy h2 em{color:var(--rust)}
+.fresh-findings-copy p{color:var(--ink-soft);font-size:13px;line-height:1.7;max-width:720px}
+.fresh-findings-metrics{display:flex;flex-wrap:wrap;gap:12px 26px;margin-top:15px}
+.fresh-findings-metrics span{display:grid;gap:1px;padding-right:20px;border-right:1px solid var(--line)}
+.fresh-findings-metrics b{font:600 22px/1.2 var(--display);font-variant-numeric:tabular-nums}
+.fresh-findings-metrics small{font:500 10px/1.4 var(--mono);color:var(--ink-soft)}
+.fresh-findings-action{justify-self:end;text-align:left;line-height:1.5}
+.wind-evidence{margin:26px 0 34px;background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--leaf);padding:clamp(20px,3.5vw,48px)}
+.wind-evidence-heading{display:flex;align-items:end;justify-content:space-between;gap:22px}
+.wind-evidence-heading>div{max-width:690px}
+.wind-evidence-heading h2{margin:12px 0;font:500 clamp(30px,4vw,54px)/1.1 var(--display)}
+.wind-evidence-heading h2 em{color:var(--rust)}
+.wind-evidence-heading p,.lris-evidence p{color:var(--ink-soft);font-size:13px;line-height:1.7}
+.wind-evidence-heading>a{font-size:12px;line-height:1.6;font-weight:700;color:var(--rust);max-width:170px}
+.wind-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:28px;background:var(--line);border:1px solid var(--line)}
+.wind-stat-grid>div{min-width:0;padding:22px 15px;background:var(--paper);display:flex;flex-direction:column;gap:8px}
+.wind-stat-grid small{color:var(--rust);font:600 10px/1.5 var(--mono)}
+.wind-stat-grid strong{color:var(--ink);font:600 clamp(23px,2.6vw,38px)/1.15 var(--display);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.wind-stat-grid strong em{font:500 14px var(--mono)}
+.wind-stat-grid span{font-size:11px;color:var(--ink-soft);line-height:1.5}
+.wind-figures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:17px 0}
+.wind-figures figure{margin:0;padding:clamp(16px,2.3vw,29px);border:1px solid var(--line);min-width:0;background:var(--paper)}
+.wind-figures figcaption h3{font:500 clamp(22px,2.4vw,32px)/1.2 var(--display);margin:12px 0 7px}
+.wind-figures figcaption p{font-size:12px;line-height:1.65;min-height:60px;color:var(--ink-soft)}
+.wind-bar-list{display:grid;gap:10px;margin-top:22px}
+.wind-bar-row{display:grid;grid-template-columns:46px minmax(0,1fr) 65px;gap:9px;align-items:center;font:500 11px var(--mono);font-variant-numeric:tabular-nums}
+.wind-bar-row>b{font-weight:600;text-align:right}
+.wind-bar-track{height:13px;background:var(--surface-2);border:1px solid var(--line)}
+.wind-bar-track>span{height:100%;display:block;background:var(--leaf);min-width:1px}
+.wind-bar-row:nth-child(n+5) .wind-bar-track>span{background:var(--rust)}
+.wind-axis-caption,.wind-table-foot{display:block;margin-top:16px;color:var(--ink-soft);font:500 10px/1.65 var(--mono)}
+.wind-table-wrap{overflow-x:auto;margin-top:23px}
+.wind-matrix table{min-width:400px;font:500 11px var(--mono)}
+.wind-matrix caption{text-align:left;font:500 10px/1.5 var(--mono);color:var(--ink-soft);margin-bottom:9px}
+.wind-matrix th,.wind-matrix td{padding:12px 9px;border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.wind-matrix th{white-space:nowrap}
+.wind-matrix td{text-align:right;background:var(--surface-2)}
+.wind-evidence-caveat{border-left:4px solid var(--rust);padding:13px 17px;background:var(--surface-2);color:var(--ink-soft);font-size:12px;line-height:1.75}
+.wind-evidence-caveat strong{color:var(--ink)}
+.lris-evidence{margin:0 0 28px;border:1px solid var(--line);padding:clamp(20px,3vw,36px);background:var(--surface-2)}
+.lris-evidence h2{font:500 clamp(28px,3.3vw,43px)/1.2 var(--display);margin:12px 0}
+.lris-evidence h2 em{color:var(--rust)}
+.lris-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}
+.lris-status span{padding:14px;border:1px solid var(--line);background:var(--surface);display:grid;gap:6px}
+.lris-status b{font-size:12px}
+.lris-status small{font:500 11px/1.6 var(--mono);color:var(--ink-soft)}
+.lris-evidence .caption a{color:var(--rust)}
+@media(max-width:1050px){
+ .fresh-findings{grid-template-columns:115px minmax(0,1fr)}
+ .fresh-findings-action{grid-column:2;justify-self:start}
+ .wind-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:740px){
+ .fresh-findings{grid-template-columns:1fr}
+ .fresh-findings-mark{min-height:0;flex-direction:row;align-items:center;padding:11px 15px}
+ .fresh-findings-action{grid-column:1}
+ .wind-evidence-heading{display:block}
+ .wind-figures{grid-template-columns:1fr}
+ .lris-status{grid-template-columns:1fr}
+}

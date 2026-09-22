@@ -35,6 +35,14 @@ This is independent research by [Abhijith Sivaprasadan](https://github.com/abhij
 
 The [website](https://kerala2040.github.io/) is a *published, pinned evidence snapshot*. The `main` branch is ongoing research and may contain newer analysis than the deployed website; the site's `SOURCE_COMMIT` and `RELEASE_MANIFEST.json` identify its exact source version. Do not mistake development-only results for published findings.
 
+## Latest verified milestone · 22 September 2026
+
+**The NIWE 150 m Kerala wind-resource × GLO-90 surface-terrain analysis has been executed on real, hash-verified inputs.** From 19,475,568 national atlas rows, the original NWIC Kerala polygon selects **200,692** onshore resource point centres; the modelled wind-speed median is **3.91 m/s at 150 m**. Sampling the independently derived 90 m GLO-90 DSM slope yields **199,853** finite slope results and **839** missing samples. The median sampled DSM slope is **4.96°**.
+
+A 16-combination wind-speed × surface-slope matrix and point-count histogram are now documented in the [executed result](docs/NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md) and [machine-readable audit](data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json), with a [reproducible original-source clip rebuild](scripts/rebuild_kerala_niwe_clip_from_originals.py). **These are modelled resource-point statistics—not legally eligible land, wind-farm layouts, actual generation, km² or MW.** Private source rows and NIWE-derived maps are not republished in this public repo.
+
+**LRIS 2.0 reconnaissance** identified an all-district layer catalogue; browser-served district/block/local-body GeoJSON; Level 1/2 land-use, roads and slope *summary* JSON; and GeoServer WMS map images. The tested standard WFS endpoint returned **“Service WFS is disabled.”** This does not disprove other authorised GIS access; no underlying land-use polygons or notification-linked forest/paddy/ESZ exclusions have been acquired from LRIS. See [the source-scoped LRIS inventory](data/evidence/gis/lris_public_services_discovery_2026_09_22.json).
+
 ## What has actually been established?
 
 *Research status: 22 September 2026. Source coverage and scientific model readiness are separate things.*
@@ -44,8 +52,8 @@ The [website](https://kerala2040.github.io/) is a *published, pinned evidence sn
 | **Electricity baseline** | 354 observed SLDC daily dates in FY2024–25; observed-day source-attribution PyPSA replay. [Daily model](docs/OBSERVED_DAILY_PYPSA.md). | The 11 missing dates; measured continuous statewide hourly / 15-minute load and interchange; calibrated hourly dispatch. |
 | **Weather** | ERA5 source/chronology QA for five representative locations × 8,760 UTC hours = 43,800 point-hours. [Source QA](data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json). | Validated statewide weather-to-generation modelling. |
 | **Solar** | Exact-boundary native-grid Kerala resource clips: 46,241 GSA PVOUT cell centres and 513,823 GHI cell centres. [Clip QA](data/evidence/solar/kerala_native_resource_clips_2026_09_22.json). | Measured FY2024–25 PV validation and rooftop/ground/floating buildable MW. |
-| **Wind** | 200,692 NIWE 150 m atlas point centres inside NWIC Kerala polygon. [Clip QA](data/evidence/solar/kerala_native_resource_clips_2026_09_22.json). | Site/turbine-validated yield, legally eligible onshore capacity or offshore resource assessment. |
-| **Hydro, grid and land** | Source inventories, diagnostics and reproducible audits. | Verified reservoir cascades/operations, transfer ratings and technology-specific statutory GIS screens. |
+| **Wind** | Completed real NIWE 150 m × GLO-90 DSM slope join: **200,692** Kerala resource centres, **199,853** valid slope samples, median modelled speed **3.91 m/s**. [Executed result](docs/NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md). | Legally eligible sites, turbine layout, actual hourly yield, buildable MW, grid evacuation and offshore resource assessment. |
+| **Hydro, grid and land** | Source inventories, terrain/hazard QA and LRIS public-service discovery, including the tested disabled WFS route. [LRIS evidence](data/evidence/gis/lris_public_services_discovery_2026_09_22.json). | Verified reservoir cascades/operations, connection-point hosting capacity and notification-linked, technology-specific statutory GIS screens. |
 | **2040 scenarios** | Source-labelled benchmark pathways and explicitly proxy-labelled PyPSA sensitivities. [Limitations](docs/PYPSA_2040_PROXY_SCREENING.md). | Calibrated least-cost, reliable or permitted 2040 build-out. |
 
 **Available data are not automatically approved model inputs.** In the downloaded NWDP FY2024–25 solar series, **6,007 of 6,007 values were zero, including daytime**: it cannot validate PV output. Five-point ERA5-to-PV/wind hourly results are illustrative *proxies*, not measured generation or Kerala-wide predictions. No defensible buildable solar/wind MW is currently claimed. See the [renewables handoff](docs/RENEWABLE_FIVE_STEP_HANDOFF_2026_09_22.md) and [capacity gates](data/evidence/solar/solar_wind_feasible_capacity_gates_2026_09_22.json).
@@ -87,6 +95,9 @@ Five downloaded source-folder trees have been uploaded to and independently SHA-
 - [What is archived and what was verified](data/evidence/solar/renewable_five_folder_private_archive_2026_09_22.json)
 - [Solar and wind source interpretation](docs/SOLAR_WIND_CONSOLIDATED_ANALYSIS_2026_09_22.md)
 - [Kerala-native resource clipping](docs/KERALA_NATIVE_RENEWABLE_RESOURCE_CLIPS_2026_09_22.md)
+- [Executed NIWE wind × DSM slope analysis](docs/NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md)
+- [NIWE × slope public-safe aggregate results](data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json)
+- [LRIS 2.0 public-service discovery and disabled WFS record](data/evidence/gis/lris_public_services_discovery_2026_09_22.json)
 - [Resource-to-capacity constraints](data/evidence/solar/solar_wind_feasible_capacity_gates_2026_09_22.json)
 - [Reproducible five-folder archival workflow](scripts/archive_renewable_folders_private.py)
 - [GeoTIFF pixel checks and every-page PDF visual review](docs/SOLAR_WIND_TIFF_PDF_REVIEW_2026_09_22.md)

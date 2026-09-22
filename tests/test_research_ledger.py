@@ -16,7 +16,7 @@ def test_workbench_ledger_is_a_fail_closed_index():
     assert ledger["classification"] == (
         "dated_repository_research_progress_NOT_geospatial_or_model_readiness"
     )
-    assert len(ledger["workstreams"]) == 11
+    assert len(ledger["workstreams"]) == 13
     assert ledger["ecological_capacity_ceiling_ready"] is False
     assert ledger["eligible_area_sq_km"] is None
     assert ledger["potential_mw"] is None
@@ -24,7 +24,7 @@ def test_workbench_ledger_is_a_fail_closed_index():
     assert ledger["release_gates"]["techno_economic_2040"]["passed"] is False
     assert ledger["audit_open_findings"] == ledger["audit_finding_count"]
     ids = {row["id"] for row in ledger["workstreams"]}
-    assert ids == {"electricity", "generators", "hydro", "grid", "lulc",
+    assert ids == {"electricity", "generators", "hydro", "grid", "wind", "lris", "lulc",
                    "boundary", "landslide", "forest", "wetlands", "industry", "modelling"}
     assert all(row["evidence"] and row["blocked"] for row in ledger["workstreams"])
 
@@ -47,3 +47,24 @@ def test_ledger_rejects_false_model_readiness():
     audit["release_gates"]["techno_economic_2040"]["blocking_checks"] = []
     with pytest.raises(AssertionError):
         build_ledger(ROOT, audit)
+
+
+def test_executed_wind_and_lris_are_descriptive_not_eligible_capacity():
+    ledger = build_ledger(ROOT)
+    w = ledger["wind_terrain"]
+    assert w["point_centres"] == 200_692
+    assert w["slope"]["finite_point_centres"] == 199_853
+    assert w["slope"]["missing_point_centres"] == 839
+    assert w["speed_m_s"]["median"] == 3.91
+    assert w["wind_power_density_w_m2"]["median"] == 78.9255
+    matrix = w["sensitivity"]["matching_point_centre_counts_in_row_column_order"]
+    assert matrix[2][1] == 8_637
+    assert w["sensitivity"]["denominator_for_percentages"] == 199_853
+    assert w["candidate_area_km2"] is None
+    assert w["feasible_capacity_MW"] is None
+    assert w["model_admitted"] is False
+    assert ledger["lris"]["district_count"] == 14
+    assert ledger["lris"]["wfs_result"] == "Service WFS is disabled"
+    assert ledger["lris"]["native_land_use_geometry_acquired"] is False
+    assert ledger["lris"]["legal_exclusion_verified"] is False
+    assert ledger["lris"]["model_admitted"] is False

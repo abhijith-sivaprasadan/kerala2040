@@ -210,21 +210,27 @@ async function main(){
     console.log("PASS pathways: options and explicitly unsolved specification download");
 
     await route("atlas");
-    check(await page.locator("#spatialPipeline [data-layer]").count()===5,
-      "All five spatial evidence layers must load");
+    check(await page.locator("#spatialPipeline [data-layer]").count()===7,
+      "All seven spatial evidence layers must load");
     const forest=page.locator('#spatialPipeline [data-layer="forest"]');
     await forest.click();
     check(await forest.getAttribute("aria-expanded")==="true","Forest layer did not expand");
     await visible(page.locator("#layer-forest"),"Forest verification detail");
     check((await page.locator("#layer-forest").innerText()).includes("Next verifiable step"),
       "Spatial layer has no follow-up");
-    console.log("PASS atlas: five layers and source-limited details");
+    check((await page.locator("#windTerrainEvidence").innerText()).includes("2,00,692"),
+      "Executed NIWE resource analysis missing on published atlas");
+    check((await page.locator("#windTerrainEvidence").innerText()).includes("8,637"),
+      "Wind × DSM sensitivity matrix missing");
+    check((await page.locator("#lrisEvidence").innerText()).includes("Service WFS is disabled"),
+      "LRIS limitation absent from site");
+    console.log("PASS atlas: seven layers, wind histogram, threshold table and LRIS status");
 
     await route("industry");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
     await route("workbench");
-    check(await page.locator(".research-item").count()===11,
-      "All eleven research streams must render");
+    check(await page.locator(".research-item").count()===13,
+      "All thirteen research streams must render");
     await page.locator("#workbenchSearch").fill("forest");
     check(await page.locator(".research-item").count()>=1,
       "Research filtering not functional");
@@ -299,7 +305,7 @@ async function main(){
     check(failed.length===0,"Missing first-party assets: "+failed.join(" | "));
     console.log("PASS mobile, reduced motion, deep link, no overflow, no console/page failures");
     console.log("BROWSER_SMOKE_PASS="+JSON.stringify({
-      routes:8,researchStreams:11,spatialLayers:5,downloadLinks:await downloads.count(),
+      routes:8,researchStreams:13,spatialLayers:7,downloadLinks:await downloads.count(),
       screenshotDirectory:artifactDir,sourceCommit:expected||"local-branch-build"}));
     await deep.close();await ctx.close();
   }finally{

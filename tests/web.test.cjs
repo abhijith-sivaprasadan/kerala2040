@@ -142,12 +142,49 @@ test("scenario download stays an unsolved specification with separate commit ide
 test("GIS workstream is not a point-to-polygon or eligible capacity publication",()=>{
   const c=context();
   assert.deepEqual(vm.runInContext("spatialIds",c).join(","),
-    "boundary,lulc,landslide,forest,wetlands");
-  assert.match(vm.runInContext("labelStage(\"validated_source\")",c),/model gate open/);
+    "wind,boundary,lris,lulc,landslide,forest,wetlands");
+  assert.match(vm.runInContext("labelStage(\"validated_source\")",c),/model admission separate/);
   assert.match(vm.runInContext("labelStage(\"blocked\")",c),/Missing critical/);
   const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
   assert.match(html,/not a GIS map or legal boundary/);
   assert.match(html,/No buildable-land or MW estimate has been established/);
+});
+
+test("wind and LRIS visuals use only committed descriptive evidence and preserve null MW",()=>{
+  const elements={};
+  const el=selector=>elements[selector] ||= {innerHTML:"",textContent:""};
+  const c=context({document:{querySelector:el,querySelectorAll:()=>[]}});
+  const wind=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json"),"utf8"));
+  const science=ledger();
+  science.wind_terrain={
+    classification:wind.classification,reviewed_date:wind.reviewed_date,
+    point_centres:wind.Kerala_point_centres,
+    speed_m_s:wind.wind_speed_at_150m_m_s,
+    wind_power_density_w_m2:wind.wind_power_density_W_per_m2,
+    slope:wind.slope,sensitivity:wind.physical_threshold_sensitivity,
+    candidate_area_km2:wind.candidate_area_km2,
+    feasible_capacity_MW:wind.feasible_capacity_MW,
+    model_admitted:wind.model_admitted
+  };
+  science.lris={district_count:14,wfs_result:"Service WFS is disabled",
+    native_land_use_geometry_acquired:false,legal_exclusion_verified:false,
+    model_admitted:false};
+  c.science=science;
+  vm.runInContext("state.ledger=science;renderWindTerrain();renderLrisEvidence()",c);
+  const windHTML=elements["#windTerrainEvidence"].innerHTML;
+  const lrisHTML=elements["#lrisEvidence"].innerHTML;
+  assert.match(windHTML,/2,00,692/);
+  assert.match(windHTML,/1,99,853/);
+  assert.match(windHTML,/8,637/);
+  assert.match(windHTML,/No km² or MW inferred/);
+  assert.match(lrisHTML,/Service WFS is disabled/);
+  assert.match(lrisHTML,/Not acquired or independently QA-verified/);
+  assert.equal(science.wind_terrain.feasible_capacity_MW,null);
+  assert.equal(science.lris.legal_exclusion_verified,false);
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  assert.match(html,/id="windTerrainEvidence"/);
+  assert.match(html,/id="lrisEvidence"/);
 });
 
 test("all eight research pages render against one real observed-data snapshot",()=>{

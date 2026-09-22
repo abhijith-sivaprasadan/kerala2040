@@ -1,0 +1,90 @@
+{
+  "classification": "LRIS_PUBLIC_PORTAL_DISCOVERY_NOT_STATUTORY_GIS_OR_SITE_ELIGIBILITY",
+  "reviewed_date": "2026-09-22",
+  "geography": "Kerala LRIS 2.0; browser pilot in Kollam, WMS screenshot inspected for Kannur land use level 1",
+  "site": "https://lris.kslub.kerala.gov.in/app/",
+  "observed_sources": [
+    {
+      "path": "/app/layers.json",
+      "type": "district_layer_catalogue",
+      "district_count": 14,
+      "includes_each_district": [
+        "landuse",
+        "roads",
+        "slope",
+        "waterbodies"
+      ],
+      "geometry": false
+    },
+    {
+      "path": "/app/assets/geojson/Kerala_districts.geojson",
+      "type": "administrative_boundary_geojson",
+      "http_status_during_browser_capture": 200,
+      "bytes_declared": 6000847,
+      "raw_file_independently_acquired_and_geometry_QA": false
+    },
+    {
+      "path": "/app/assets/geojson/Kerala_blocks.geojson",
+      "type": "administrative_boundary_geojson",
+      "http_status_during_browser_capture": 200,
+      "bytes_declared": 26800744,
+      "raw_file_independently_acquired_and_geometry_QA": false
+    },
+    {
+      "path": "/app/assets/geojson/Kerala_localbodies.geojson",
+      "type": "administrative_boundary_geojson",
+      "http_status_during_browser_capture": 200,
+      "bytes_declared": 52062999,
+      "raw_file_independently_acquired_and_geometry_QA": false
+    },
+    {
+      "path": "/app/includes/getLanduseData.php",
+      "method": "POST",
+      "scope": "Kollam selected in manual probe",
+      "data_description": "7 Level 1 or 33 Level 2 category summaries with area, perc, unit and color; no GeoJSON geometry in captured shape",
+      "level1_category_count": 7,
+      "level2_category_count": 33
+    },
+    {
+      "path": "/app/includes/getRoadsData.php",
+      "method": "POST",
+      "scope": "Kollam",
+      "category_count": 4,
+      "data_description": "category summaries not road-line geometry"
+    },
+    {
+      "path": "/app/includes/getSlopeData.php",
+      "method": "POST",
+      "scope": "Kollam",
+      "category_count": 6,
+      "data_description": "category summaries not a slope raster"
+    }
+  ],
+  "observed_map_service": {
+    "host": "gis.duk.ac.in",
+    "path": "/wlris/gwc/service/wms",
+    "service": "WMS",
+    "request": "GetMap",
+    "observed_layer": "LRIS_shp:landuse_kannur",
+    "observed_style": "LRIS_shp:landuse_kannur_level_1",
+    "output_format": "image/png",
+    "crs": "EPSG:3857",
+    "classification": "rendered_cached_imagery_not_vector_geometry"
+  },
+  "wfs": {
+    "standard_path_tested": "/wlris/wfs",
+    "result": "ServiceUnavailable",
+    "exception_text_user_observed": "Service WFS is disabled",
+    "verified_vector_export": false,
+    "other_official_export_routes_exhaustively_checked": false
+  },
+  "rights_and_data_limits": {
+    "source_vintage_verified": false,
+    "redistribution_rights_verified": false,
+    "statutory_forest_paddy_wetland_ESZ_boundaries_verified": false,
+    "vector_land_use_exclusions_acquired": false,
+    "site_eligibility_verified": false
+  },
+  "next_action": "Acquire authentic full-coverage native land-use polygons or categorical raster with legend, year, CRS, licence, scale and QA; separately request notification-linked legal boundaries.",
+  "model_admitted": false
+}

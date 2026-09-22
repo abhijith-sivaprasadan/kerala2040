@@ -43,6 +43,12 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     forest_source = _json(
         root, "data/evidence/gis/forest_protected_area_source_audit_2026_09_20.json"
     )
+    wind = _json(
+        root, "data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json"
+    )
+    lris = _json(
+        root, "data/evidence/gis/lris_public_services_discovery_2026_09_22.json"
+    )
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -65,6 +71,27 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     assert model["eligible_area_sq_km"] is None and model["potential_mw"] is None
     assert not gates["ecological_capacity_ceiling"]["passed"]
     assert not gates["techno_economic_2040"]["passed"]
+
+    assert wind["classification"] == "NIWE_150M_KERALA_DESCRIPTIVE_RESOURCE_TERRAIN_NOT_CAPACITY"
+    assert wind["Kerala_point_centres"] == 200_692
+    assert wind["slope"]["finite_point_centres"] + wind["slope"]["missing_point_centres"] == wind["Kerala_point_centres"]
+    assert sum(wind["wind_speed_at_150m_m_s"]["bin_counts"]) == wind["Kerala_point_centres"]
+    assert sum(wind["slope"]["bin_counts"]) == wind["slope"]["finite_point_centres"]
+    sensitivity = wind["physical_threshold_sensitivity"]
+    assert len(sensitivity["minimum_150m_speed_m_s_inclusive"]) == 4
+    assert len(sensitivity["maximum_DSM_slope_degrees_inclusive"]) == 4
+    assert len(sensitivity["matching_point_centre_counts_in_row_column_order"]) == 4
+    assert all(
+        len(row) == 4 and all(0 <= value <= wind["slope"]["finite_point_centres"] for value in row)
+        for row in sensitivity["matching_point_centre_counts_in_row_column_order"]
+    )
+    assert sensitivity["denominator_for_percentages"] == wind["slope"]["finite_point_centres"]
+    assert (wind["candidate_area_km2"] is None and wind["feasible_capacity_MW"] is None
+            and wind["model_admitted"] is False and wind["site_eligibility_verified"] is False)
+    assert lris["classification"] == "LRIS_PUBLIC_PORTAL_DISCOVERY_NOT_STATUTORY_GIS_OR_SITE_ELIGIBILITY"
+    assert lris["wfs"]["verified_vector_export"] is False
+    assert lris["rights_and_data_limits"]["vector_land_use_exclusions_acquired"] is False
+    assert lris["model_admitted"] is False
 
     workstreams = [
         {
@@ -129,16 +156,58 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
             ],
         },
         {
+            "id": "wind", "title": "Onshore wind resource × terrain",
+            "phase": "partial", "label": "Resource/terrain join executed; sites unresolved",
+            "metric": f'{wind["Kerala_point_centres"]:,}',
+            "unit": "NIWE 150 m Kerala resource point centres",
+            "summary": (
+                f'Median modelled 150 m wind speed {wind["wind_speed_at_150m_m_s"]["median"]:.2f} m/s; '
+                f'{wind["slope"]["finite_point_centres"]:,} points have sampled GLO-90 DSM slope.'
+            ),
+            "completed": (
+                "Pinned-original NIWE and NWIC polygon clip; actual DSM slope join, "
+                "16 descriptive wind/slope threshold combinations and aggregate source QA."
+            ),
+            "blocked": (
+                "No notified land/ESZ/wetland polygons, turbine layout/production calibration, "
+                "access rights or verified grid hosting. Point counts are not km² or MW."
+            ),
+            "action": "Join authorised, source-dated land geometry and verified connection corridors.",
+            "route": "atlas",
+            "evidence": [
+                {"label": "Executed wind × terrain report", "href": ROOT + "docs/NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md"},
+                {"label": "Aggregate source QA", "href": ROOT + "data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json"},
+            ],
+        },
+        {
+            "id": "lris", "title": "LRIS 2.0 land-use service discovery",
+            "phase": "partial", "label": "Public portal categories; no source vectors",
+            "metric": "14",
+            "unit": "districts advertising land use, roads, slope and water",
+            "summary": (
+                "Observed administrative GeoJSON, category-area summaries and WMS imagery; "
+                "the tested public WFS explicitly reports disabled."
+            ),
+            "completed": "Browser-stage endpoints, Level 1/2 schemas, published WMS identity and WFS exception documented.",
+            "blocked": "Underlying class-coded land-use polygons, source vintage/CRS/rights and statutory land boundaries not acquired.",
+            "action": "Seek the authorised native land-use vectors and independently notified legal layers.",
+            "route": "atlas",
+            "evidence": [
+                {"label": "LRIS source/service evidence", "href": ROOT + "data/evidence/gis/lris_public_services_discovery_2026_09_22.json"},
+            ],
+        },
+        {
             "id": "lulc", "title": "Land use & land cover",
             "phase": "blocked", "label": "Native class-coded raster not acquired",
             "metric": "0",
             "unit": "verified current native Kerala rasters",
             "summary": "The FY2024–25 Bhuvan visual theme is not a native categorical layer or legal forest map.",
-            "completed": "NRSC/Bhuvan source paths, scale and exact legend requirements documented.",
-            "blocked": "No hash-verified native raster, full class legend, CRS, coverage QA or use rights.",
+            "completed": "NRSC/Bhuvan source paths and LRIS public service discovery; no native class-coded GIS admitted.",
+            "blocked": "No hash-verified native raster/vector, full class legend, CRS, coverage QA or use rights; LRIS WFS tested disabled.",
             "action": "Acquire authorised original LULC and validate class codes before land screening.",
             "route": "atlas",
             "evidence": [
+                {"label": "LRIS service inventory", "href": ROOT + "data/evidence/gis/lris_public_services_discovery_2026_09_22.json"},
                 {"label": "NRSC LULC audit", "href": ROOT + "docs/NRSC_LULC_NATIVE_ACQUISITION_AUDIT.md"},
                 {"label": "LULC register", "href": ROOT + "configs/lulc_native_acquisition_2024_25.yaml"},
             ],
@@ -240,7 +309,7 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         raise ValueError("Research ledger lacks evidence or limit")
     return {
         "classification": "dated_repository_research_progress_NOT_geospatial_or_model_readiness",
-        "reviewed_date": gis["review_date"],
+        "reviewed_date": max(gis["review_date"], wind["reviewed_date"], lris["reviewed_date"]),
         "scope": "Kerala, historical FY2024-25 and planning horizon 2040",
         "audit_finding_count": audit["finding_count"],
         "audit_open_findings": audit["open_findings"],
@@ -252,6 +321,28 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         "eligible_area_sq_km": None,
         "potential_mw": None,
         "workstreams": workstreams,
+        "wind_terrain": {
+            "classification": wind["classification"],
+            "reviewed_date": wind["reviewed_date"],
+            "point_centres": wind["Kerala_point_centres"],
+            "source_height_m": 150,
+            "source_nominal_grid_m": 500,
+            "speed_m_s": wind["wind_speed_at_150m_m_s"],
+            "wind_power_density_w_m2": wind["wind_power_density_W_per_m2"],
+            "slope": wind["slope"],
+            "sensitivity": sensitivity,
+            "candidate_area_km2": wind["candidate_area_km2"],
+            "feasible_capacity_MW": wind["feasible_capacity_MW"],
+            "model_admitted": wind["model_admitted"],
+        },
+        "lris": {
+            "classification": lris["classification"],
+            "district_count": 14,
+            "wfs_result": lris["wfs"]["exception_text_user_observed"],
+            "native_land_use_geometry_acquired": False,
+            "legal_exclusion_verified": False,
+            "model_admitted": False,
+        },
         "caution": (
             "An acquired file, successful workflow or candidate repaired shape is "
             "not an independently accepted legal boundary, measured chronology "
