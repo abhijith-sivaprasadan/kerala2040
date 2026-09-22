@@ -8,7 +8,7 @@ archive is split into 768 MiB parts for robust Release uploads.
 Windows example (from the public kerala2040 checkout):
   python scripts/archive_renewable_folders_private.py --source-root "$env:USERPROFILE\Downloads" --staging-dir "E:\kerala-staging"
   python scripts/archive_renewable_folders_private.py --staging-dir "E:\kerala-staging" --upload
-  python scripts/archive_renewable_folders_private.py --staging-dir "E:\kerala-restore" --verify --reference-manifest "E:\kerala-staging\renewable-five-folders-manifest.json"
+  python scripts/archive_renewable_folders_private.py --staging-dir "E:\kerala-restore" --verify
 Requires gh auth login, PRIVATE archive repo with initialized default branch.
 """
 from __future__ import annotations
@@ -38,6 +38,8 @@ FOLDERS = (
 )
 TAG = "renewable-five-folder-snapshot-2026-09-22"
 MANIFEST_NAME = "renewable-five-folders-manifest.json"
+# Pinned from the verified 2026-09-22 private release, not a remote self-claim.
+PINNED_MANIFEST_SHA256 = "7412ef75f5af87ef220a92148e0af16f9c1286e66687c5bf2a815e39f9de3666"
 PART_BYTES = 768 * 1024 * 1024
 BUFFER = 4 * 1024 * 1024
 
@@ -256,7 +258,7 @@ def upload(stage: Path, repo: str) -> None:
     print("Uploaded five folder snapshots to PRIVATE Release. Run --verify to test download.")
 
 
-def verify(stage: Path, repo: str, reference_manifest: Path) -> None:
+def verify(stage: Path, repo: str, reference_manifest: Path | None = None) -> None:
     ensure_private(repo)
     stage.mkdir(parents=True, exist_ok=True)
     # Manifest is remote, not silently reused from local source folders.
@@ -272,10 +274,18 @@ def verify(stage: Path, repo: str, reference_manifest: Path) -> None:
         "release", "download", TAG, "--repo", repo, "--dir", str(stage),
         "--pattern", MANIFEST_NAME, capture=False,
     )
-    if not reference_manifest.is_file():
-        raise FileNotFoundError(f"Trusted source manifest missing: {reference_manifest}")
-    if sha256(local_manifest) != sha256(reference_manifest):
-        raise ValueError("Remote manifest differs from LOCAL trusted preparation manifest")
+    if reference_manifest is not None:
+        if not reference_manifest.is_file():
+            raise FileNotFoundError(f"Trusted source manifest missing: {reference_manifest}")
+        expected_hash = sha256(reference_manifest)
+        if expected_hash != PINNED_MANIFEST_SHA256:
+            raise ValueError("Local reference manifest differs from pinned release SHA256")
+    else:
+        # Disaster recovery: staging folder may have been lost. Trust ONLY the
+        # version-controlled manifest digest pinned after the first clean restore.
+        expected_hash = PINNED_MANIFEST_SHA256
+    if sha256(local_manifest) != expected_hash:
+        raise ValueError("Downloaded manifest differs from pinned trusted SHA256")
     data = validate_manifest(stage)
     if data["archive_repo"] != repo:
         raise ValueError("Remote manifest references a different repository")
@@ -303,11 +313,9 @@ def main() -> None:
     elif args.upload:
         upload(args.staging_dir.resolve(), args.archive_repo)
     else:
-        if args.reference_manifest is None:
-            parser.error("--verify requires --reference-manifest from local preparation")
         verify(
             args.staging_dir.resolve(), args.archive_repo,
-            args.reference_manifest.resolve(),
+            args.reference_manifest.resolve() if args.reference_manifest else None,
         )
 
 
