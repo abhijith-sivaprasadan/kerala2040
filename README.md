@@ -43,6 +43,12 @@ A 16-combination wind-speed × surface-slope matrix and point-count histogram ar
 
 **LRIS 2.0 reconnaissance** identified an all-district layer catalogue; browser-served district/block/local-body GeoJSON; Level 1/2 land-use, roads and slope *summary* JSON; and GeoServer WMS map images. The tested standard WFS endpoint returned **“Service WFS is disabled.”** This does not disprove other authorised GIS access; no underlying land-use polygons or notification-linked forest/paddy/ESZ exclusions have been acquired from LRIS. See [the source-scoped LRIS inventory](data/evidence/gis/lris_public_services_discovery_2026_09_22.json).
 
+### District-resolved wind pilot: source boundary mismatch remains open
+
+The newly captured LRIS 2.0 district GeoJSON contains **14 valid MultiPolygons**. In an executed cross-source join, **200,362 / 200,692** original NWIC-clipped NIWE source centres match exactly one LRIS district, **330 match none**, and **0 have ambiguous multiple-district matches**. Of those 330, **236 lack finite DSM slope**. Retaining them as a separate *unassigned* bucket restores the statewide 199,853 valid / 839 missing slopes, resource histograms and all 16 threshold totals. No nearest-district allocation was made. [District partition QA](docs/NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md) · [Aggregate public-safe check](data/evidence/gis/niwe_lris_district_partition_qa_2026_09_22.json).
+
+**District comparisons are preliminary and not a complete partition.** The LRIS boundaries and NWIC state polygon are separate source geometries; we need to compare the original [NWIC District Boundary GeoJSON](https://www.nwdp.nwic.gov.in/dataset/district-boundary), establish vintage/use terms and rerun the fail-closed join before treating the district explorer as fully sourced. No eligible km², feasible MW or land permissions follow from these point summaries.
+
 ## What has actually been established?
 
 *Research status: 22 September 2026. Source coverage and scientific model readiness are separate things.*
