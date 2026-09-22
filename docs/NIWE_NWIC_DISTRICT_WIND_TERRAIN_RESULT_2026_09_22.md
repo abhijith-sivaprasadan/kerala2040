@@ -42,6 +42,22 @@ The source's **modelled mean wind speed at 150 m** and sampled **GLO-90 digital 
 
 The public aggregate preserves each district's 4×4 counts for minimum modelled wind speeds 5, 6, 7, 8 m/s and maximum DSM surface slopes 5°, 10°, 15°, 20°. Their sum reproduces the statewide ≥7 m/s and ≤10° example **8,637 point centres**. Neither these counts nor the source nominal ~500 m resource spacing establish land area or installable power.
 
+## Reproduction on the original private inputs
+
+The [NWIC district aggregation script](../scripts/rebuild_nwic_district_wind_aggregate.py) opens the **original national NWIC district ZIP** directly and selects the 14 features with `state_name = Kerala`, rather than clipping by a map envelope. It refuses different original/source ZIP, NIWE clip or DSM-slope TIFF hashes, and fails if any point is unassigned, multiply covered or inconsistent with the statewide independent audit.
+
+```powershell
+$py = '.\\.venv-311-media\\Scripts\\python.exe'
+& $py scripts/rebuild_nwic_district_wind_aggregate.py `
+  --nwic-district-zip 'E:\\path\\to\\district_nwic_geojson.zip' `
+  --niwe-clip 'E:\\Kerala2040MediaQA\\NIWE_Terrain_Private\\NIWE_150m_Kerala_NWIC_point_centres.csv.gz' `
+  --slope-degrees 'E:\\path\\to\\kerala_boundary_GLO90_slope_degrees_90m.tif' `
+  --statewide-reference data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json `
+  --out 'E:\\Kerala2040MediaQA\\NIWE_District_Private\\NWIC_district_aggregate_private.json'
+```
+
+Use [the historic LRIS comparison](NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md) only to inspect why polygon definitions differ, not as a second district assignment. Private outputs contain aggregates, not source point rows or polygon coordinates.
+
 ## What remains unresolved
 
 An entirely assigned administrative point population does **not** verify notified forest, wildlife, paddy, wetland or ESZ geometry; class-coded land-cover vintage; access roads, slope at actual foundations, land rights, grid deliverability, measured wind chronology or turbine yield. Source-vintage and redistribution-rights review also remains open. Maintain `eligible_area_km2=null`, `feasible_capacity_MW=null`, `hourly_generation_validated=false` and `model_admitted=false`.
