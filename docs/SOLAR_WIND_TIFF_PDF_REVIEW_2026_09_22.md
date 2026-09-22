@@ -25,6 +25,68 @@ section records observed terminal output, not an independent rerun of the
 source binaries by the repository or a review of 2,945 page images. No raw
 third-party TIFF/PDF/contact-sheet bytes are published.
 
+## Uploaded QA reports reviewed — 22 September 2026
+
+Two completed local JSON reports were received and inspected:
+[full GSA native-raster unit QA](../data/evidence/solar/gsa_pvout_full_raster_qa_2026_09_22.json)
+and the private local `renewable_media_inventory.json`. The GSA report is
+committed in full because it consists of provenance, source paths, TIFF hashes
+and numerical QA only; the large private media inventory, page contact sheets
+and underlying third-party source files are not committed.
+
+**GSA PVOUT source consistency (all-India, NOT a Kerala-only calculation):**
+
+| Check | Matched positive cells | Positive-cell mask disagreements | Cells above 0.2% tolerance | Largest absolute relative difference |
+|---|---:|---:|---:|---:|
+| Yearly PVOUT vs 365.25 × average-daily PVOUT | 8,796,068 | 0 | 0 | 0.000087799% |
+| Yearly PVOUT vs sum of 12 monthly-total layers | 8,796,068 | 0 | 0 | 0.0293348% |
+| Each monthly-total vs calendar-normalized daily PVOUT | 8,796,068 **per month** | 0 for every month | 0 for every month | 0.00297260% (February; other months ≤0.000011405%) |
+
+These 26 annual/monthly PVOUT TIFFs are EPSG:4326, **3,840 × 3,840**,
+native resolution **0.008333333°** (30 arcsec), bounds **66°–98° E,
+6°–38° N**. The comparison applied no resampling. The full report
+pins each source TIFF SHA256; it also preserves the stated long-term
+1999–2018 source vintage, non-admission, and `feasible_capacity_MW=null`.
+The 8,796,068 count is the *positive matched India pixel population for
+each comparison*, **not** a count of independent measurement stations or
+Kerala pixels. All checks passed the 0.2% source-internal tolerance.
+
+**Important limitations identified on close inspection:**
+
+- The two PVOUT representations use different nodata conventions:
+  yearly/monthly-total files declare approximately
+  `1.1754943508222875e-38`, average-daily files declare
+  `NaN`. Rasterio masks both; zero mismatches in this script means
+  **matched valid-positive cell support**, not proof that all raw
+  nodata bytes or all zero-valued cells are equivalent.
+- The 52 TIFF inventory divides into **19 average-daily India GSA,
+  19 yearly/monthly-total India GSA and 14 world-study rasters**.
+  The wind folder contains its important NIWE source *inside a ZIP*;
+  `52/52 TIFFs` does **not** mean a NIWE wind raster was opened.
+- GSA band-unit and band-description fields were **null** in the sampled
+  TIFF inventory. The year/day and month/day numerical relationships
+  are supported, but definitive publisher units/definitions must be
+  checked against the GSA XML/PDF sidecars, including **PDF page 2**
+  (image-heavy) and the source README before admitting values.
+- Sampled **negative TEMP** values are physically plausible
+  temperatures, not negative irradiance. The global study's binary
+  masks normally contain many zero pixels. Neither is automatically
+  a corrupt file. All 52 `source_meta_qa` flags remain
+  `CHECK_REQUIRED`; 900 × 900 previews are not full-raster statistics.
+- The PDF inventory reports **66/66 files, 2,945/2,945 pages
+  rendered, no errors**, but each PDF has
+  `visual_interpretation_completed=false`. The 121-page NISE
+  floating-PV report has **41 low-text pages** and the low/moderate
+  wind-blade report has **262/262 low-text pages**. Treat these as
+  visual review priorities, not automatically readable extracted text.
+
+**Source QA passed. Scientific admission remains blocked:** independent
+Kerala PV production/irradiance checks, the wind source's actual
+inside-ZIP raster review, GIS siting statutes, eligible area/roof/water
+geometry, network connections and uncertainty are separate gates. Do not
+promote the India GSA pixel count, study masks or floating-PV study scenarios
+into installed generation, feasible capacity or a 2040 headline.
+
 ## Purpose
 
 The GSA, NIWE, NISE and World Bank materials contain actual numerical rasters,
