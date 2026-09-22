@@ -202,7 +202,7 @@ test("district QA banner preserves the unassigned boundary gap rather than inven
   vm.runInContext("state.ledger=science;renderLrisEvidence()",c);
   assert.match(box.innerHTML,/330 points unresolved/);
   assert.match(box.innerHTML,/not allocated to a nearest district/);
-  assert.match(box.innerHTML,/district partition/i);
+  assert.match(box.innerHTML,/District comparison is incomplete/);
   assert.equal(c.science.district_qa.model_admitted,false);
 });
 
