@@ -2,9 +2,12 @@
 
 **State:** the user's five-folder TIFF inventory, PDF-page rendering, and
 all-India 26-layer GSA PVOUT unit audit have completed. The uploaded JSON
-reports have been reviewed and the GSA numerical QA committed. **Visual
-interpretation of the rendered PDF pages, the inside-ZIP NIWE raster audit,
-and scientific model admission remain outstanding.** Source storage was
+reports have been reviewed and the GSA numerical QA committed. **Selected pages of the user-attached NISE 121-page PDF and the official
+World Bank 62-page PDF have now been visually read and source-classified in
+[the source report crosswalk](SOLAR_WIND_VISUAL_SOURCE_CROSSWALK_2026_09_22.md).
+The NIWE 120 m source PDF is still awaiting direct page-image inspection;
+the inside-ZIP 150 m NIWE raster audit, complete 2,945-page visual review,
+and scientific model admission also remain outstanding.** Source storage was
 already independently restored from the PRIVATE archive. This document
 does not grant source licensing or admit data into the model.
 
