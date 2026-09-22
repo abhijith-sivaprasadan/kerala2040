@@ -74,6 +74,71 @@ Official [NIWE 120 m atlas publisher page](https://niwe.res.in/Open_data_Set/tec
 
 The privately archived NIWE **150 m** resource ZIP, earlier local cell-clipping QA, and any unfiltered portal popup are a *different asset* with a different height and screening basis. Neither the **2,311 MW** 120 m figure nor a larger 150 m popup value can be substituted for the other, added, treated as observed MWh or admitted as approved projects. A preliminary offshore map in the 120 m report is not measured Kerala offshore resource.
 
+## Additional direct-original visual and byte-identity review — 22 September 2026
+
+The actual **user-provided** `Solar.zip` and `Wind.zip` were available for
+independent local inspection in this review, in addition to the standalone NISE
+and NIWE PDF uploads. The two standalone PDFs' SHA256 values matched the
+corresponding member bytes inside those ZIPs; this establishes **identity of
+those two PDF members only**, not completion of the separate 17 provider-original
+archive checklist. The World Bank 2020 report and the India country factsheet
+were extracted directly from the provided `Solar.zip` and inspected from
+their actual PDF page renders, not inferred from filenames or OCR.
+
+| Exact user-supplied PDF | SHA256 of PDF bytes | Page review |
+|---|---|---|
+| `Solar/NISE_floating potential_report_2026.pdf` | `d655be7999fe042162f1e46de7ad35b098d427f50b00f30d4e1ce069b8a026fd` | 121-page document; selected method/figure, Table 6 and Kerala annexure pages, not all pages |
+| `Wind/India_Wind_Potential_Atlas_at_120m_agl.pdf` | `b717b017dfbb8cf5fcc068dcd73407baf06ae5277974d23b475d40edb130efdc` | 77-page document; selected Kerala tables, mapped exclusions, validation and offshore figures |
+| `Solar/Global-Photovoltaic-Power-Potential-by-Country.pdf` | `56f7c6e9a7ee6c5083674f2a40f39a292d39c0325a892fad7787e29b9e566378` | 2020 ESMAP/World Bank 62-page study; PDF pp.20, 24–29 and associated methodology |
+| `Solar/GSA_Global-PV-potential-study_Factsheet_India.pdf` | `cee6f7ef7224cff565929df84492d14fc052cfba0eae58c501d2f435715f75d1` | Three-page World Bank/Solargis country factsheet: all three page images examined |
+
+**World Bank India factsheet nuance (PDF p.1):** its India country-average
+practical potential at study Level 1 is **4.322 kWh/kWp/average day**,
+theoretical GHI average is **5.098 kWh/m²/average day**, and PVOUT seasonality
+index is **1.75**. Its legend explicitly distinguishes a *Level 0 solar
+resource map* from the *Levels 0/1/2 land-zonation map*. The infographic's
+25.1%/87.8%/100% distribution refers to its **national evaluated area** under
+study masks, **not Kerala land availability**. Its human-development,
+installed-capacity and electricity-access indicators use earlier years (for
+example, 2018 PV capacity), even though the downloaded factsheet bears
+**©2026**. Neither the country-average value nor these national map colours
+replaces a Kerala cell- or site-specific quantity.
+
+**NIWE provenance nuance:** PDF p.49's national **5%** MAPE comparison is for
+*wind speed* at 406 sites; the scatter diagram also reads
+`y=0.9788x`, `R²=0.7185`. It is not a 5% uncertainty
+on Kerala wind-farm output or on the 150 m downloaded grid. NIWE's 120 m
+2019 Kerala **2,311 MW** is a single scenario appearing under two
+non-additive breakdowns: **366/193/180/359/1,213 MW by CUF band** (p.14,
+pp.39–40), and **474/1,495/342 MW by study land class** (pp.34–35).
+Its **2,297 MW greenfield** (p.43) subtracts the then-existing turbine
+parcels; it is not a 2026 uncommitted land/capacity register. The 2019
+study's **5% forest availability factor** produces the nominal 342 MW
+forest-land component but gives no forest construction authorization.
+The maps on pp.37–38 show resource versus *study-screened* land—not current
+Kerala parcel/legal envelopes. Offshore p.52 is a coarse **India EEZ
+illustration**, not a high-resolution measured map of Kerala's offshore sites.
+
+**NISE visual interpretation nuance:** Hirakud's p.70–72 maps show
+successive, visibly shrinking *Odisha* waterbody masks for seasonality,
+depth, road and substation proximity, not a mapped Kerala site.
+Table 6 p.73 and Kerala annexure pp.99–101 separately show
+**5.73 GWp broader study** versus **2.22 GWp at its 20%-water-surface cap**.
+The annexure contains two **`Arabian Sea`** HydroLakes-labelled records,
+two Ashtamudi IDs, terrain-like lake names and the **`Nakshathra Kunnu`**
+entry. These are source identity/geometry *verification flags*, **not**
+proof that the rows are necessarily invalid. The source's p.54 Kerala
++3.71%/+4.12% values are **relative model cases**, not measured generation
+or a universal floating-PV uplift.
+
+**Resulting evidence status:** source figures and qualifying methods are
+reviewed and may be cited as *publisher-attributed research benchmarks*.
+No changed `model_admitted` gate, no inferred Kerala new buildable MW,
+no present-day permit assertion, and no blanket claim to have read every
+page of these reports. The source-media batch of 66 PDFs/2,945 pages was
+**rendered** by the user; that is not equivalent to visually interpreting
+all those pages.
+
 ## Decisions / follow-ups
 
 1. **Preserve the source page citations and clearly attribute results** rather than rewriting NISE/World Bank assumptions as Kerala-specific engineering facts.
