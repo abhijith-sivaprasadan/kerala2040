@@ -43,11 +43,13 @@ A 16-combination wind-speed × surface-slope matrix and point-count histogram ar
 
 **LRIS 2.0 reconnaissance** identified an all-district layer catalogue; browser-served district/block/local-body GeoJSON; Level 1/2 land-use, roads and slope *summary* JSON; and GeoServer WMS map images. The tested standard WFS endpoint returned **“Service WFS is disabled.”** This does not disprove other authorised GIS access; no underlying land-use polygons or notification-linked forest/paddy/ESZ exclusions have been acquired from LRIS. See [the source-scoped LRIS inventory](data/evidence/gis/lris_public_services_discovery_2026_09_22.json).
 
-### District-resolved wind pilot: source boundary mismatch remains open
+### District-level wind and terrain: exact point partition achieved
 
-The newly captured LRIS 2.0 district GeoJSON contains **14 valid MultiPolygons**. In an executed cross-source join, **200,362 / 200,692** original NWIC-clipped NIWE source centres match exactly one LRIS district, **330 match none**, and **0 have ambiguous multiple-district matches**. Of those 330, **236 lack finite DSM slope**. Retaining them as a separate *unassigned* bucket restores the statewide 199,853 valid / 839 missing slopes, resource histograms and all 16 threshold totals. No nearest-district allocation was made. [District partition QA](docs/NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md) · [Aggregate public-safe check](data/evidence/gis/niwe_lris_district_partition_qa_2026_09_22.json).
+The original **NWIC District Boundary GeoJSON** was checked against the same NWIC-state-clipped NIWE source points and GLO-90 DSM-slope samples. All **200,692** points are uniquely assigned across **14** NWIC Kerala district geometries: **0 unmatched, 0 multiply assigned**. All 199,853 valid and 839 missing slope samples, wind/slope histograms and all 16 hypothetical threshold totals reconcile. [Completed district report](docs/NIWE_NWIC_DISTRICT_WIND_TERRAIN_RESULT_2026_09_22.md) · [public-safe 14-district aggregate](data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json).
 
-**District comparisons are preliminary and not a complete partition.** The LRIS boundaries and NWIC state polygon are separate source geometries; we need to compare the original [NWIC District Boundary GeoJSON](https://www.nwdp.nwic.gov.in/dataset/district-boundary), establish vintage/use terms and rerun the fail-closed join before treating the district explorer as fully sourced. No eligible km², feasible MW or land permissions follow from these point summaries.
+**The earlier LRIS partition finding remains part of the audit history:** the separate LRIS geometry left 330 NIWE points unmatched; NWIC closes this population without moving points to a nearby district. District totals also change because LRIS and NWIC trace different source-defined boundaries. No original polygons or private NIWE point rows are redistributed.
+
+Completeness here applies **only to descriptive administrative point assignment**, not land-use clearance, notified forest/paddy/wetland/ESZ boundaries, turbine siting, grid hosting, source-vintage/reuse-rights review, eligible km² or feasible MW. Every such capacity/model gate remains closed.
 
 ## What has actually been established?
 
@@ -58,7 +60,7 @@ The newly captured LRIS 2.0 district GeoJSON contains **14 valid MultiPolygons**
 | **Electricity baseline** | 354 observed SLDC daily dates in FY2024–25; observed-day source-attribution PyPSA replay. [Daily model](docs/OBSERVED_DAILY_PYPSA.md). | The 11 missing dates; measured continuous statewide hourly / 15-minute load and interchange; calibrated hourly dispatch. |
 | **Weather** | ERA5 source/chronology QA for five representative locations × 8,760 UTC hours = 43,800 point-hours. [Source QA](data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json). | Validated statewide weather-to-generation modelling. |
 | **Solar** | Exact-boundary native-grid Kerala resource clips: 46,241 GSA PVOUT cell centres and 513,823 GHI cell centres. [Clip QA](data/evidence/solar/kerala_native_resource_clips_2026_09_22.json). | Measured FY2024–25 PV validation and rooftop/ground/floating buildable MW. |
-| **Wind** | Completed real NIWE 150 m × GLO-90 DSM slope join: **200,692** Kerala resource centres, **199,853** valid slope samples, median modelled speed **3.91 m/s**. [Executed result](docs/NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md). | Legally eligible sites, turbine layout, actual hourly yield, buildable MW, grid evacuation and offshore resource assessment. |
+| **Wind** | Completed real NIWE 150 m × GLO-90 DSM slope join **and** 14-district NWIC administrative partition: **200,692** source centres, **199,853** valid slope samples, zero unmatched district centres. [District result](docs/NIWE_NWIC_DISTRICT_WIND_TERRAIN_RESULT_2026_09_22.md). | Legally eligible sites, turbine layout, actual hourly yield, buildable MW, grid evacuation and offshore resource assessment. |
 | **Hydro, grid and land** | Source inventories, terrain/hazard QA and LRIS public-service discovery, including the tested disabled WFS route. [LRIS evidence](data/evidence/gis/lris_public_services_discovery_2026_09_22.json). | Verified reservoir cascades/operations, connection-point hosting capacity and notification-linked, technology-specific statutory GIS screens. |
 | **2040 scenarios** | Source-labelled benchmark pathways and explicitly proxy-labelled PyPSA sensitivities. [Limitations](docs/PYPSA_2040_PROXY_SCREENING.md). | Calibrated least-cost, reliable or permitted 2040 build-out. |
 
@@ -102,6 +104,8 @@ Five downloaded source-folder trees have been uploaded to and independently SHA-
 - [Solar and wind source interpretation](docs/SOLAR_WIND_CONSOLIDATED_ANALYSIS_2026_09_22.md)
 - [Kerala-native resource clipping](docs/KERALA_NATIVE_RENEWABLE_RESOURCE_CLIPS_2026_09_22.md)
 - [Executed NIWE wind × DSM slope analysis](docs/NIWE_150M_KERALA_TERRAIN_REAL_DATA_RESULT_2026_09_22.md)
+- [Completed NWIC 14-district wind × DSM partition](docs/NIWE_NWIC_DISTRICT_WIND_TERRAIN_RESULT_2026_09_22.md)
+- [Audited 14-district aggregate without source coordinates](data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json)
 - [NIWE × slope public-safe aggregate results](data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json)
 - [LRIS 2.0 public-service discovery and disabled WFS record](data/evidence/gis/lris_public_services_discovery_2026_09_22.json)
 - [Resource-to-capacity constraints](data/evidence/solar/solar_wind_feasible_capacity_gates_2026_09_22.json)
