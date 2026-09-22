@@ -55,6 +55,9 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     nwic_district = _json(
         root, "data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json"
     )
+    wind_normalized = _json(
+        root, "data/evidence/gis/niwe_nwic_district_normalized_wind_terrain_2026_09_23.json"
+    )
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -150,6 +153,34 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     assert nwic_district["feasible_capacity_MW"] is None
     assert nwic_district["model_admitted"] is False
 
+    assert wind_normalized["classification"] == (
+        "NIWE_NWIC_DISTRICT_NORMALIZED_DESCRIPTIVE_WIND_TERRAIN_SENSITIVITY_NOT_SUITABILITY"
+    )
+    normal_rows = wind_normalized["districts"]
+    assert len(normal_rows) == len(nr) == 14
+    assert [r["district"] for r in normal_rows] == [r["district"] for r in nr]
+    assert wind_normalized["statewide"]["source_point_centres"] == 200_692
+    assert wind_normalized["statewide"]["finite_DSM_slope_point_centres"] == 199_853
+    assert wind_normalized["statewide"]["missing_DSM_slope_point_centres"] == 839
+    assert wind_normalized["statewide"]["threshold_count_matrix"] == (
+        wind["physical_threshold_sensitivity"]["matching_point_centre_counts_in_row_column_order"]
+    )
+    assert all(
+        r["valid_slope_point_centres"] == raw["slope_finite"]
+        and r["niwe_point_centres"] == raw["point_centres"]
+        and r["counts"] == raw["threshold_matrix"]
+        and all(
+            abs(r["percent_of_district_valid_slope_centres"][i][j]
+                - 100 * r["counts"][i][j] / raw["slope_finite"]) < 0.000051
+            for i in range(4) for j in range(4)
+        )
+        for r, raw in zip(normal_rows, nr, strict=True)
+    )
+    assert wind_normalized["qa"]["all_16_threshold_cell_counts_reconciled"] is True
+    assert wind_normalized["eligible_area_km2"] is None
+    assert wind_normalized["feasible_capacity_MW"] is None
+    assert wind_normalized["model_admitted"] is False
+
     workstreams = [
         {
             "id": "electricity", "title": "Electricity & historical balance",
@@ -214,7 +245,7 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         },
         {
             "id": "wind", "title": "Onshore wind resource × terrain",
-            "phase": "partial", "label": "Resource/terrain join executed; sites unresolved",
+            "phase": "validated_source", "label": "Descriptive wind phase 1 complete; model gate closed",
             "metric": f'{wind["Kerala_point_centres"]:,}',
             "unit": "NIWE 150 m Kerala resource point centres",
             "summary": (
@@ -224,7 +255,8 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
             "completed": (
                 "Pinned-original NIWE and NWIC polygon clip; actual DSM slope join, "
                 "16 descriptive wind/slope threshold combinations and aggregate source QA; "
-                "NWIC original 14-district partition assigns all 200,692 points exactly once."
+                "NWIC original 14-district partition assigns all 200,692 points exactly once; "
+                "district-normalized 16-cell sensitivity and original vector poster figures complete."
             ),
             "blocked": (
                 "No notified land/ESZ/wetland polygons, turbine layout/production calibration, "
@@ -239,6 +271,8 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
                 {"label": "Aggregate source QA", "href": ROOT + "data/evidence/gis/niwe_150m_kerala_real_wind_DSM_slope_2026_09_22.json"},
                 {"label": "NWIC district real-data analysis", "href": ROOT + "docs/NIWE_NWIC_DISTRICT_WIND_TERRAIN_RESULT_2026_09_22.md"},
                 {"label": "NWIC district aggregate", "href": ROOT + "data/evidence/gis/niwe_nwic_district_wind_terrain_2026_09_22.json"},
+                {"label": "Wind phase 1 closeout", "href": ROOT + "docs/WIND_PHASE1_DISTRICT_NORMALIZED_CLOSEOUT_2026_09_23.md"},
+                {"label": "Normalized district sensitivity QA", "href": ROOT + "data/evidence/gis/niwe_nwic_district_normalized_wind_terrain_2026_09_23.json"},
                 {"label": "Historic LRIS boundary mismatch", "href": ROOT + "docs/NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md"},
             ],
         },
@@ -386,6 +420,17 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         "potential_mw": None,
         "workstreams": workstreams,
         "nwic_district": nwic_district,
+        "wind_phase1": {
+            "classification": wind_normalized["classification"],
+            "descriptive_wind_phase1_complete": True,
+            "normalized": wind_normalized,
+            "site_eligibility_verified": False,
+            "source_reuse_rights_verified": False,
+            "eligible_area_km2": None,
+            "feasible_capacity_MW": None,
+            "hourly_generation_validated": False,
+            "model_admitted": False,
+        },
         "district_qa": {
             "classification": district_qa["classification"],
             "original_point_centres": part["original_nwic_kerala_niwe_centres"],
