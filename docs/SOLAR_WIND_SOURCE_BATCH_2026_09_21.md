@@ -100,9 +100,16 @@ All rasters are **EPSG:4326, India 66–98°E and 6–38°N**. Irradiation has 9
 and transformation code; original third-party ZIP/PDF bytes must go to a
 **separate PRIVATE** GitHub repository, tentatively
 `abhijith-sivaprasadan/kerala2040-source-archive`. This private repository
-is **created, verified PRIVATE, and initialized on `main` with a README**, but all 17 solar original assets plus
-the NIWE original remain **not uploaded**. Do not claim otherwise or point
-to the old planned public GitHub Release.
+is **created, verified PRIVATE, and initialized on `main` with a README**.
+On 22 September, the **five extracted Downloads folder snapshots** were
+uploaded to its private Release, downloaded to a separate local restore folder,
+and passed each part, ZIP and nested-file SHA256 check. The verified
+[private archive asset inventory](../data/evidence/solar/renewable_five_folder_private_archive_2026_09_22.json)
+contains nine upload parts and one checksum manifest. **This is not a claim
+that the 17 byte-identical original solar ZIP/PDF files and separate original
+NIWE `Wind.zip` were independently archived.** Their exact-original manifest
+still has `release_uploaded=false`. Do not point to the old planned public
+GitHub Release.
 
 Use the private-only
 [solar uploader](../scripts/publish_solar_source_release.py),
