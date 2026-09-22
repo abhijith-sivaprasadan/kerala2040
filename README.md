@@ -82,7 +82,7 @@ The direction of travel is *evidence → validation → constraints → model �
 
 The September 2026 acquisition includes Global Solar Atlas India rasters, the NIWE wind atlas, solar studies and selected NWDP telemetry. The official NWIC Kerala state geometry is used for **descriptive native-grid, pixel-/point-centre clips**; clipping does not establish legal site eligibility. Five representative-point FY2024–25 ERA5 profiles are a **sensitivity exercise**, not validated generation.
 
-Five downloaded source-folder trees have been uploaded to and independently SHA-256-restored from a **separate private archive**. Public records retain provenance and asset hashes, **not the third-party raw data**:
+Five downloaded source-folder trees have been uploaded to and independently SHA-256-restored from a **separate private archive**. A subsequent **26-layer India GSA PVOUT native-grid consistency audit passed across 8,796,068 valid-positive cells per comparison**; it verifies internal annual/monthly-versus-daily representation, **not** FY2024–25 PV generation or buildable capacity. The PDF inventory rendered all 2,945 pages, but page-by-page visual interpretation remains pending. Public records retain provenance and asset hashes, **not the third-party raw data**:
 
 - [What is archived and what was verified](data/evidence/solar/renewable_five_folder_private_archive_2026_09_22.json)
 - [Solar and wind source interpretation](docs/SOLAR_WIND_CONSOLIDATED_ANALYSIS_2026_09_22.md)
