@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-09-22",
+  "classification": "USER_UPLOADED_NWDP_SAC_WETLAND_INVENTORY_GEOMETRY_QA_AND_GSA_OVERLAY_NOT_LEGAL_SITING_OR_MODEL_ADMISSION",
+  "original": {
+    "filename": "wb_kl_geojson.zip",
+    "user_attributed_source": "National Water Data Portal; exact dataset URL and publication date NOT VERIFIED",
+    "source_agency_field": "SAC N",
+    "zip_bytes": 8250266,
+    "zip_sha256": "b9a7f5199ec235f96ca02a246c3530720a981b5e5fb1fa9fa6d0f759f6126324",
+    "inner_filename": "wb_sac_kl.GeoJSON",
+    "inner_bytes": 29129332,
+    "inner_sha256": "544145ff85cb422dbee867a84e38e695cf13de5f31f51f7f1cb4337cc73862f3",
+    "crs": "EPSG:7755 WGS 84 / India NSF LCC (projected; do not assign EPSG:4326)",
+    "feature_count": 9196,
+    "multipolygon_count": 9196,
+    "distinct_id_count": 9196,
+    "invalid_geometry_count": 1,
+    "invalid_geometry_id": 9055,
+    "invalid_geometry_name": "Kavvayi Lagoon",
+    "invalid_geometry_reason": "Ring Self-intersection",
+    "nonempty_name_feature_count": 164,
+    "distinct_nonempty_names": 82,
+    "total_classified_polygon_area_km2": 939.038288,
+    "not_all_floating_eligible": true
+  },
+  "classes": [
+    {
+      "kind": "Coastal natural lagoon (source spells Costal)",
+      "features": 54,
+      "km2": 368.717581
+    },
+    {
+      "kind": "Inland man-made reservoir/barrage",
+      "features": 52,
+      "km2": 303.391587
+    },
+    {
+      "kind": "Coastal aquaculture pond",
+      "features": 436,
+      "km2": 123.869331
+    },
+    {
+      "kind": "Inland natural waterlogged",
+      "features": 680,
+      "km2": 77.140891
+    },
+    {
+      "kind": "Inland man-made tank/pond",
+      "features": 7822,
+      "km2": 43.740133
+    },
+    {
+      "kind": "Inland man-made aquaculture pond",
+      "features": 55,
+      "km2": 7.974898
+    },
+    {
+      "kind": "Inland riverine wetland",
+      "features": 40,
+      "km2": 6.765969
+    },
+    {
+      "kind": "Inland natural lake/pond",
+      "features": 5,
+      "km2": 6.183979
+    },
+    {
+      "kind": "Coastal creek",
+      "features": 41,
+      "km2": 1.066543
+    },
+    {
+      "kind": "Inland man-made waterlogged",
+      "features": 9,
+      "km2": 0.166636
+    },
+    {
+      "kind": "Unknown",
+      "features": 2,
+      "km2": 0.020738
+    }
+  ],
+  "reservoir_gsa_overlay": {
+    "source_subcollection": "52 inland man-made Reservoir/Barrage polygons ONLY",
+    "water_area_km2": 303.391587,
+    "matched_resource_polygons": 52,
+    "source": "Global Solar Atlas India v2 long-term average daily PVOUT and GHI TIFFs, not observed generation",
+    "pvout_native_grid_degrees": 0.008333333333333333,
+    "ghi_native_grid_degrees": 0.0025,
+    "method": "fractional cell-to-waterbody polygon intersection weighting after EPSG:7755/4326 transformation; PVOUT and GHI sampled on their distinct native grids; not cell-centre-only clipping",
+    "pvout_daily_kwh_per_kwp_min": 3.71849,
+    "pvout_daily_kwh_per_kwp_max": 4.2672,
+    "local_detailed_csv": "wb_kl_reservoir_gsa_overlay.csv (private user-facing result, NOT committed to public Git)",
+    "validation": "direct binary ZIP and TIFF analysis in conversation environment",
+    "model_admitted": false,
+    "source_zip_sha256": "b9a7f5199ec235f96ca02a246c3530720a981b5e5fb1fa9fa6d0f759f6126324"
+  },
+  "nise_2026": {
+    "source": "Solar/NISE_floating potential_report_2026.pdf",
+    "table6_pdf_page": 73,
+    "annexure_pdf_pages": [
+      99,
+      100,
+      101
+    ],
+    "kerala_identified_waterbody_km2": 219.02,
+    "kerala_feasible_before_20pct_cap_km2": 109.19,
+    "without_cap_GWp": 5.73,
+    "with_cap_area_km2": 42.29,
+    "with_cap_GWp": 2.22,
+    "source_geometry": "HydroLAKES, NOT the SAC waterbody GeoJSON",
+    "site_identity_qa": [
+      "NISE Arabian Sea entries are not classified as SAC inland reservoirs",
+      "NISE Nakshathra Kunnu and SAC Idukki Reservoir require verified crosswalk, not automatic name join",
+      "NISE has duplicate waterbody names with different HydroLakes IDs"
+    ],
+    "capacities_not_additive": true
+  },
+  "niwe_2019_120m": {
+    "reported_kerala_scenario_mw": 2311,
+    "land_subgroup_mw": {
+      "wasteland": 474,
+      "cultivable": 1495,
+      "forest": 342
+    },
+    "study_land_assumptions": {
+      "wasteland_fraction": 0.8,
+      "cultivable_fraction": 0.3,
+      "forest_fraction": 0.05,
+      "mw_per_km2": 5,
+      "cuf_threshold_fraction": 0.25
+    },
+    "not_equivalent_to_150m_atlas": true,
+    "not_legal_capacity": true
+  },
+  "original_private_release_uploaded": false,
+  "source_usage_and_public_redistribution_terms_verified": false,
+  "wetland_notification_linked": false,
+  "eligible_surface_km2": null,
+  "eligible_floating_pv_mw": null,
+  "eligible_wind_mw": null,
+  "model_admitted": false,
+  "note": "This public record is aggregate QA only. No source GeoJSON, polygons or publisher PDFs are publicly committed; the exact new ZIP is not yet in the older five-folder private Release."
+}
