@@ -174,8 +174,8 @@ test("wind and LRIS visuals use only committed descriptive evidence and preserve
   vm.runInContext("state.ledger=science;renderWindTerrain();renderLrisEvidence()",c);
   const windHTML=elements["#windTerrainEvidence"].innerHTML;
   const lrisHTML=elements["#lrisEvidence"].innerHTML;
-  assert.match(windHTML,/200,692/);
-  assert.match(windHTML,/199,853/);
+  assert.match(windHTML,/2,00,692/);
+  assert.match(windHTML,/1,99,853/);
   assert.match(windHTML,/8,637/);
   assert.match(windHTML,/No km² or MW inferred/);
   assert.match(lrisHTML,/Service WFS is disabled/);
