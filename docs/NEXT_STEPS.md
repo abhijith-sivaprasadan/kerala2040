@@ -1,5 +1,9 @@
 # Kerala 2040: next research steps
 
+## August 2019 real-original ERA5-Land pilot: processed, spatial admission still open
+
+[Executed original-GRIB August audit](ERA5_LAND_AUG2019_ORIGINALS_EXPLORATORY_AUDIT_2026_09_24.md): 24 ERA5-Land parameters parsed from user-provided acquisition-envelope GRIB; July 31 core boundary hours retained; **31 complete August IST rainfall dates**, 1,034 source-valid land pixels, original forecast-step/duplicate checks. July 31 extended fields are missing, so 1 Aug IST is incomplete for that second variable batch. **The 380.65 mm bbox-land-pixel mean and 537.73 mm example-rectangle mean must not be labelled Kerala or Idukki catchment rain**. Official state and source-verified reservoir-intercepted watershed polygons, and source-matched private SLDC inflow observations, remain separate gates; 2018 SLDC electricity is still missing.
+
 ## Electricity demand and annual accounting: parallel non-renewable workstream
 
 [The FY2024–25 official demand-sector and accounting-boundary review](DEMAND_SECTOR_ACCOUNTING_BASELINE_2026_09_23.md) now records KSEBL's nine customer/sales categories and disambiguates consumer electricity use, KSEBL all-category sales (including trading), in-state sales, net utility input, periphery supply input, and Kerala2040's 354-day incomplete operational SLDC sum. These are **not the same annual demand definition**, and no difference may be assigned to losses or imports without matching the scope and year. This annual review is **not** a measured hourly load or cost model.
