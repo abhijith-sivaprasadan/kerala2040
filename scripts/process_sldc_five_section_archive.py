@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# ruff: noqa: E701, E702  # Intentional compact offline row extraction loops.
 """Offline, provenance-preserving Kerala SLDC five-section archive normalization.
 
 Input: uploaded collector ZIP of accepted/rejected dated HTML + parsed rows.
@@ -158,8 +156,8 @@ def main():
        if key:period=key.lower()
        results['extrema_rows.csv'].append({'date':iso,'event':mode,'period':period,'quantity':row[1].lower(),'mw':val(row,2),
          'time_from_ist':row[3],'time_to_ist':row[5],'frequency_hz':val(row,7),'source_sha256':reported})
-      if mode=='frequency' and key in ('Maximum','Minimum','Average'):
-       if val(row,2) is not None:daily['frequency_'+{'Maximum':'max','Minimum':'min','Average':'avg'}[key]+'_hz']=val(row,2)
+      if mode=='frequency' and key in ('Maximum','Minimum','Average') and val(row,2) is not None:
+       daily['frequency_'+{'Maximum':'max','Minimum':'min','Average':'avg'}[key]+'_hz']=val(row,2)
       if mode in ('morning_peak','evening_peak') and key=='MW' and val(row,1) is not None:
        daily[mode+'_mw']=val(row,1)
       if mode in ('morning_peak','evening_peak') and key=='Time' and len(row)>1:
@@ -175,7 +173,7 @@ def main():
    day+=datetime.timedelta(days=1)
  for name,rows in results.items():write_csv(args.out/name,rows,COLUMNS[name])
  dailyrows=results['daily_system.csv'];summaries=[]
- for year in sorted(set(r['fy'] for r in dailyrows)):
+ for year in sorted({r['fy'] for r in dailyrows}):
   rr=[r for r in dailyrows if r['fy']==year];withc=[r for r in rr if r.get('consumption_qualified_mu') is not None]
   withb=[r for r in rr if r.get('balance_error_mu') is not None];withe=[r for r in rr if r.get('evening_peak_mw') is not None]
   s={'fy':year,'calendar_dates_in_archive':len(rr),'consumption_observed_days':len(withc),
@@ -189,7 +187,7 @@ def main():
   fields=['fy','calendar_dates_in_archive','consumption_observed_days','observed_consumption_sum_mu','consumption_median_mu_per_reported_day','balance_days','max_abs_energy_balance_error_mu','max_reported_evening_peak_mw','missing_consumption_dates']
   w=csv.DictWriter(f,fields);w.writeheader();w.writerows({**s,'missing_consumption_dates':';'.join(s['missing_consumption_dates'])} for s in summaries)
  monthly_summary=[]
- for month in sorted(set(r['date'][:7] for r in dailyrows)):
+ for month in sorted({r['date'][:7] for r in dailyrows}):
   rr=[r for r in dailyrows if r['date'].startswith(month)]
   good=[r for r in rr if r.get('consumption_qualified_mu') is not None]
   fractions=[r['net_import_interface_mu']/r['consumption_qualified_mu'] for r in good
@@ -207,7 +205,7 @@ def main():
  fields={'classification':'SLDC_REPORTED_DAILY_OBSERVATIONS_NOT_CONTINUOUS_INTERVAL','source_url':'https://sldckerala.com/index.php',
  'raw_archive_sha256':rawhash,'raw_archive_bytes':args.archive.stat().st_size,'start':str(start),'end':str(end),
  'calendar_days':len(dailyrows),'section_status_counts':{sec:{status:section_counts[(sec,status)] for status in ['accepted','rejected','uncollected','checksum_or_date_rejected']} for sec in SECTIONS},
- 'schema_by_section':{'%s:%s'%k:v for k,v in sorted(versions.items())},'normalized_table_rows':{k:len(v) for k,v in results.items()},
+ 'schema_by_section':{f'{k[0]}:{k[1]}':v for k,v in sorted(versions.items())},'normalized_table_rows':{k:len(v) for k,v in results.items()},
  'invalid_accepted_metadata_or_raw_html_sha256':errors,
  'reported_energy_balance_anomalies':[{'date':r['date'],'generation_mu':r.get('internal_generation_mu'),'net_import_mu':r.get('net_import_interface_mu'),'reported_consumption_mu':r.get('consumption_mu'),'balance_error_mu':r.get('balance_error_mu')} for r in dailyrows if r.get('energy_balance_qualified') is False],
  'missing_dates_by_section':missing_by_section,
