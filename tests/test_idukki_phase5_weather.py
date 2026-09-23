@@ -10,7 +10,7 @@ import pandas as pd
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "analysis"))
-from idukki_phase5_weather import ingest_hourly, load_weights, compare_models  # noqa: E402
+from idukki_phase5_weather import compare_models, ingest_hourly, load_weights
 
 
 def weights_file(tmp_path: Path, support="IDUKKI_RESERVOIR_INTERCEPTED_CATCHMENT"):
