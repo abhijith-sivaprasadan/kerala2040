@@ -1,5 +1,11 @@
 # Kerala 2040: next research steps
 
+## Electricity demand and annual accounting: parallel non-renewable workstream
+
+[The FY2024–25 official demand-sector and accounting-boundary review](DEMAND_SECTOR_ACCOUNTING_BASELINE_2026_09_23.md) now records KSEBL's nine customer/sales categories and disambiguates consumer electricity use, KSEBL all-category sales (including trading), in-state sales, net utility input, periphery supply input, and Kerala2040's 354-day incomplete operational SLDC sum. These are **not the same annual demand definition**, and no difference may be assigned to losses or imports without matching the scope and year. This annual review is **not** a measured hourly load or cost model.
+
+Next: harmonize **multiple years** of official sector baselines; obtain FY2024–25 measured hourly/15-minute statewide demand and interchange; source actual procurement/true-up/contract cost if studying affordability; join ERA5-Land temperature/dewpoint after arrival to a *measured*, calendar-matched load before attempting weather-driven demand inference. Keep projected EV, air-conditioning, industry and flexible demand explicitly labelled scenarios.
+
 ## Hydro Phase 5 (23 September 2026): pipeline ready, original basin data still gated
 
 The executed [Phase 4 Idukki reservoir and station pilot](PHASE4_IDUKKI_HYDRO_ENERGY_RESEARCH_2026_09_23.md) remains the latest observational result. The [Phase 5 ERA5-Land research pipeline](PHASE5_IDUKKI_ERA5_BASIN_WEATHER_2026_09_23.md) now includes original-GRIB parsing, independently source-reviewed catchment overlap weights, original hourly cumulative tp deaccumulation with an explicit 50:50 allocation across IST midnight, complete-pixel/day QA, and common-date chronological comparisons with Idukki SLDC-gauge rain and persistence. **This branch has no real selected catchment weather rows and no Phase 5 skill number.**
