@@ -166,6 +166,27 @@ def validate_bundle(public: Path) -> dict:
                 or wind_phase.get("feasible_capacity_MW") is not None
                 or wind_phase.get("model_admitted") is not False):
             raise ValueError("Wind descriptive phase 1 was not reproducible or was promoted to capacity")
+    if "research_ledger" in files:
+        solar = read(files["research_ledger"]).get("solar_phase1", {})
+        result = solar.get("aggregate", {})
+        qa = result.get("qa", {})
+        districts = result.get("districts", [])
+        if (solar.get("descriptive_solar_phase1_complete") is not True
+                or qa.get("NWIC_Kerala_district_pixels") != 46_241
+                or qa.get("inside_district_missing_any_of_14_PVOUT_layers") != 0
+                or qa.get("inside_district_multiple_assignments") != 0
+                or qa.get("all_14_district_counts_reconcile") is not True
+                or len(districts) != 14
+                or sum(r.get("finite_native_source_pixel_centres", 0) for r in districts) != 46_241
+                or result.get("statewide", {}).get("median_paired_Feb_minus_Jul_kWh_kWp_day") != 2.267
+                or result.get("statewide", {}).get("median_paired_Feb_to_Jul_drop_pct") != 43.60289
+                or solar.get("site_eligibility_verified") is not False
+                or solar.get("eligible_area_km2") is not None
+                or solar.get("installed_capacity_MW") is not None
+                or result.get("installed_capacity_MW") is not None
+                or result.get("model_admitted") is not False
+                or solar.get("model_admitted") is not False):
+            raise ValueError("Descriptive solar phase 1 lacks reconciliation or was promoted to MW")
     if "research_results" in files:
         research = read(files["research_results"])
         if research != site.get("research_results"):
@@ -317,7 +338,10 @@ def build_site(root: Path, output: Path) -> None:
     artwork = ("icons.svg", "chapter-electric.svg", "chapter-land.svg",
                "chapter-pathways.svg", "chapter-industry.svg",
                "wind-district-normalized-20260923.svg",
-               "wind-terrain-sensitivity-20260923.svg")
+               "wind-terrain-sensitivity-20260923.svg",
+               "solar-phase1-monthly-20260923.svg",
+               "solar-phase1-district-annual-20260923.svg",
+               "solar-phase1-district-seasonality-20260923.svg")
     for name in artwork:
         shutil.copy2(root / "docs/assets" / name, assets / name)
     # Social providers require a real PNG, not an SVG thumbnail or a browser

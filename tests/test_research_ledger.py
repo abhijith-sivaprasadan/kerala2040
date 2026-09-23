@@ -16,7 +16,7 @@ def test_workbench_ledger_is_a_fail_closed_index():
     assert ledger["classification"] == (
         "dated_repository_research_progress_NOT_geospatial_or_model_readiness"
     )
-    assert len(ledger["workstreams"]) == 13
+    assert len(ledger["workstreams"]) == 14
     assert ledger["ecological_capacity_ceiling_ready"] is False
     assert ledger["eligible_area_sq_km"] is None
     assert ledger["potential_mw"] is None
@@ -24,7 +24,7 @@ def test_workbench_ledger_is_a_fail_closed_index():
     assert ledger["release_gates"]["techno_economic_2040"]["passed"] is False
     assert ledger["audit_open_findings"] == ledger["audit_finding_count"]
     ids = {row["id"] for row in ledger["workstreams"]}
-    assert ids == {"electricity", "generators", "hydro", "grid", "wind", "lris", "lulc",
+    assert ids == {"electricity", "generators", "hydro", "grid", "solar", "wind", "lris", "lulc",
                    "boundary", "landslide", "forest", "wetlands", "industry", "modelling"}
     assert all(row["evidence"] and row["blocked"] for row in ledger["workstreams"])
 
@@ -134,3 +134,26 @@ def test_wind_phase1_is_closed_only_as_descriptive_analysis():
     rows = {row["id"]: row for row in ledger["workstreams"]}
     assert rows["wind"]["phase"] == "validated_source"
     assert "model gate closed" in rows["wind"]["label"]
+
+
+def test_solar_phase1_closes_descriptive_resource_but_not_feasible_capacity():
+    ledger = build_ledger(ROOT)
+    phase = ledger["solar_phase1"]
+    evidence = phase["aggregate"]
+    qa = evidence["qa"]
+    assert phase["descriptive_solar_phase1_complete"] is True
+    assert qa["NWIC_Kerala_district_pixels"] == 46_241
+    assert qa["inside_district_missing_any_of_14_PVOUT_layers"] == 0
+    assert qa["inside_district_multiple_assignments"] == 0
+    assert qa["all_14_district_counts_reconcile"] is True
+    assert len(evidence["districts"]) == 14
+    assert sum(r["finite_native_source_pixel_centres"] for r in evidence["districts"]) == 46_241
+    assert evidence["statewide"]["median_paired_Feb_minus_Jul_kWh_kWp_day"] == 2.267
+    assert evidence["statewide"]["median_paired_Feb_to_Jul_drop_pct"] == 43.60289
+    assert phase["site_eligibility_verified"] is False
+    assert phase["source_reuse_rights_verified"] is False
+    assert phase["eligible_area_km2"] is None
+    assert phase["installed_capacity_MW"] is None
+    assert phase["year_specific_hourly_generation_validated"] is False
+    assert phase["model_admitted"] is False
+    assert {r["id"]: r for r in ledger["workstreams"]}["solar"]["phase"] == "validated_source"

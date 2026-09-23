@@ -58,6 +58,9 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     wind_normalized = _json(
         root, "data/evidence/gis/niwe_nwic_district_normalized_wind_terrain_2026_09_23.json"
     )
+    solar_phase1 = _json(
+        root, "data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json"
+    )
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -181,6 +184,30 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     assert wind_normalized["feasible_capacity_MW"] is None
     assert wind_normalized["model_admitted"] is False
 
+    assert solar_phase1["classification"] == (
+        "GSA2_1999_2018_NWIC_KERALA_PVOUT_DISTRICT_PAIRED_SEASONALITY_DESCRIPTIVE_NOT_MW"
+    )
+    sp = solar_phase1["qa"]
+    ss = solar_phase1["statewide"]
+    sr = solar_phase1["districts"]
+    assert solar_phase1["solar_phase1_descriptive_complete"] is True
+    assert len(sr) == 14 and len({r["district"] for r in sr}) == 14
+    assert ss["source_pixel_centres"] == sp["NWIC_Kerala_district_pixels"] == 46_241
+    assert sum(r["finite_native_source_pixel_centres"] for r in sr) == 46_241
+    assert sp["inside_district_missing_any_of_14_PVOUT_layers"] == 0
+    assert sp["inside_district_multiple_assignments"] == 0
+    assert sp["all_14_district_counts_reconcile"] is True
+    assert sp["original_14_rasters_sha256_verified_against_uploaded_manifest"] is True
+    assert sp["no_resampling"] is True
+    assert sp["annual_source_mask_metadata_disagrees_with_actual_finite_values"] is True
+    assert len(ss["monthly_marginal_pixel_median_PVOUT_kWh_kWp_day"]) == 12
+    assert ss["median_paired_Feb_minus_Jul_kWh_kWp_day"] == 2.267
+    assert abs(ss["median_paired_Feb_to_Jul_drop_pct"] - 43.60289) < 0.000001
+    assert solar_phase1["source"]["copyright_and_reuse_rights_independently_verified"] is False
+    assert solar_phase1["eligible_area_km2"] is None
+    assert solar_phase1["installed_capacity_MW"] is None
+    assert solar_phase1["model_admitted"] is False
+
     workstreams = [
         {
             "id": "electricity", "title": "Electricity & historical balance",
@@ -241,6 +268,35 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
             "evidence": [
                 {"label": "Grid audit", "href": ROOT + "docs/GRID_TRANSFER_CONTRACTS_FY2024_25_AUDIT.md"},
                 {"label": "Transfer register", "href": ROOT + "configs/grid_transfer_contract_evidence_2024_25.yaml"},
+            ],
+        },
+        {
+            "id": "solar", "title": "Solar PV source resource × paired seasonality",
+            "phase": "validated_source", "label": "Descriptive solar phase 1 complete; model gate closed",
+            "metric": f'{ss["source_pixel_centres"]:,}',
+            "unit": "native GSA 2.0 Kerala PVOUT pixel centres",
+            "summary": (
+                f'Long-term median annual PVOUT {ss["median_annual_PVOUT_kWh_kWp"]:.2f} '
+                f'kWh/kWp; median paired Feb-to-Jul decline '
+                f'{ss["median_paired_Feb_to_Jul_drop_pct"]:.2f}%.'
+            ),
+            "completed": (
+                "All 14 original yearly/daily/monthly native source windows and NWIC "
+                "district polygons audited. 46,241 valid pixels assigned exactly once "
+                "with complete 12-month masks; paired within-pixel seasonality and "
+                "three original vector poster figures are source-qualified."
+            ),
+            "blocked": (
+                "Publisher reference-PV climatology is not FY2024-25 metered solar. "
+                "No statutory rooftop/land/water eligibility, module calibration, "
+                "verified hourly output, grid hosting, buildable area or installed MW; "
+                "original source usage rights await review."
+            ),
+            "action": "Obtain monitored Kerala PV chronology and permitted technology-specific site/roof geometry.",
+            "route": "atlas",
+            "evidence": [
+                {"label": "Solar phase 1 report", "href": ROOT + "docs/SOLAR_PHASE1_NWIC_DISTRICT_SEASONALITY_RESULT_2026_09_23.md"},
+                {"label": "District paired solar aggregate", "href": ROOT + "data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json"},
             ],
         },
         {
@@ -407,7 +463,7 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         raise ValueError("Research ledger lacks evidence or limit")
     return {
         "classification": "dated_repository_research_progress_NOT_geospatial_or_model_readiness",
-        "reviewed_date": max(gis["review_date"], wind["reviewed_date"], lris["reviewed_date"], wind_normalized["reviewed_date"]),
+        "reviewed_date": max(gis["review_date"], wind["reviewed_date"], lris["reviewed_date"], wind_normalized["reviewed_date"], solar_phase1["reviewed_date"]),
         "scope": "Kerala, historical FY2024-25 and planning horizon 2040",
         "audit_finding_count": audit["finding_count"],
         "audit_open_findings": audit["open_findings"],
@@ -419,6 +475,17 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         "eligible_area_sq_km": None,
         "potential_mw": None,
         "workstreams": workstreams,
+        "solar_phase1": {
+            "classification": solar_phase1["classification"],
+            "descriptive_solar_phase1_complete": True,
+            "aggregate": solar_phase1,
+            "site_eligibility_verified": False,
+            "source_reuse_rights_verified": False,
+            "eligible_area_km2": None,
+            "installed_capacity_MW": None,
+            "year_specific_hourly_generation_validated": False,
+            "model_admitted": False,
+        },
         "nwic_district": nwic_district,
         "wind_phase1": {
             "classification": wind_normalized["classification"],

@@ -251,13 +251,32 @@ async function main(){
       check(response.status()===200,"Source-safe vector figure missing: "+file);
       check((await response.text()).includes("<svg"),"Figure is not SVG: "+file);
     }
-    console.log("PASS atlas: 14 district selectors, normalized wind phase 1, vector poster figures and historic LRIS QA");
+    check((await page.locator("#solarPhaseSummary").innerText()).includes("46,241"),
+      "Solar source-pixel exact district partition absent");
+    check((await page.locator("#solarPhaseSummary").innerText()).includes("43.60%"),
+      "Paired February to July source solar result missing");
+    check(await page.locator("#solarDistrictChoice option").count()===14,
+      "All fourteen NWIC solar districts must be selectable");
+    await page.locator("#solarDistrictChoice").selectOption("Wayanad");
+    check((await page.locator("#solarDistrictDetail").innerText()).includes("49.22%"),
+      "Paired Wayanad source-pixel seasonality absent");
+    await page.locator("#solarDistrictChoice").selectOption("Thiruvananthapuram");
+    check((await page.locator("#solarDistrictDetail").innerText()).includes("32.23%"),
+      "Paired Thiruvananthapuram source-pixel seasonality absent");
+    for(const file of ["solar-phase1-monthly-20260923.svg",
+                       "solar-phase1-district-annual-20260923.svg",
+                       "solar-phase1-district-seasonality-20260923.svg"]){
+      const response=await page.request.get(base+"assets/"+file);
+      check(response.status()===200,"Published solar poster vector missing: "+file);
+      check((await response.text()).includes("<svg"),"Solar poster file not SVG: "+file);
+    }
+    console.log("PASS atlas: full native 14-district solar × wind descriptive results, paired seasonality and poster SVGs");
 
     await route("industry");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
     await route("workbench");
-    check(await page.locator(".research-item").count()===13,
-      "All thirteen research streams must render");
+    check(await page.locator(".research-item").count()===14,
+      "All fourteen research streams must render");
     await page.locator("#workbenchSearch").fill("forest");
     check(await page.locator(".research-item").count()>=1,
       "Research filtering not functional");

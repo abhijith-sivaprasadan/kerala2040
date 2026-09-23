@@ -30,7 +30,7 @@ const repoFile = value => {
     REPO+"/blob/main/"+path : "";
 };
 const state={site:null,daily:null,audit:null,ledger:null,route:"overview",month:"all",
-  metric:"consumption_mu",scenario:null,theme:"kasavu",district:null};
+  metric:"consumption_mu",scenario:null,theme:"kasavu",district:null,solarDistrict:null};
 const gatesRequired=["ecological_capacity_ceiling","techno_economic_2040"];
 const routeIds=["overview","electricity","pathways","atlas","industry","workbench","audit","data"];
 
@@ -208,6 +208,9 @@ function bindInteractions(){
   $("#auditSearch")?.addEventListener("input",renderFindings);
   $("#auditPriority")?.addEventListener("change",renderFindings);
   $("#sourceSearch")?.addEventListener("input",renderSources);
+  $("#solarDistrictChoice")?.addEventListener("change",event=>{
+    state.solarDistrict=event.target.value;renderSolarDistrictDetail();
+  });
   $("#districtChoice")?.addEventListener("change",event=>{
     state.district=event.target.value;renderDistrictDetail();
   });
@@ -744,6 +747,43 @@ function renderPathways(){
       '</article>';
   }).join("");
 }
+function renderSolarDistrictDetail(){
+  const solar=state.ledger?.solar_phase1?.aggregate,box=$("#solarDistrictDetail");
+  if(!solar || !box)return;
+  const row=solar.districts.find(r=>r.district===state.solarDistrict)||solar.districts[0];
+  if(!row){box.textContent="Original NWIC district PVOUT not available.";return;}
+  state.solarDistrict=row.district;
+  const picker=$("#solarDistrictChoice");
+  if(picker)picker.value=row.district;
+  box.innerHTML='<div class="section-eyebrow">ORIGINAL NWIC DISTRICT / PAIRED PIXELS</div>'+
+    '<h3>'+esc(row.district)+'</h3>'+
+    '<p>Source-grid 1999–2018 publisher reference-PV-system climatology. '+fmt(row.finite_native_source_pixel_centres,0)+
+    ' native 30-arcsecond centres, with all 12 months matched; no land-area or installed-MW inference.</p>'+
+    '<div class="wind-normalized-metrics">'+
+    '<span><small>Source PVOUT pixels</small><strong>'+fmt(row.finite_native_source_pixel_centres,0)+
+    '</strong><em>Original source centres</em></span>'+
+    '<span><small>Median annual PVOUT</small><strong>'+fmt(row.median_annual_PVOUT_kWh_kWp,2)+
+    '</strong><em>kWh/kWp/year</em></span>'+
+    '<span><small>Median paired Feb−Jul</small><strong>'+fmt(row.median_pixelwise_Feb_minus_Jul_kWh_kWp_day,3)+
+    '</strong><em>kWh/kWp/day</em></span>'+
+    '<span><small>Median paired Feb→Jul decline</small><strong>'+fmt(row.median_pixelwise_Feb_to_Jul_decline_pct,2)+
+    '%</strong><em>Pair each pixel before computing the median</em></span></div>'+
+    '<p class="caption">This is **not** a model of new rooftop or land installations, modern-module degradation, actual FY2024–25 electricity, legal sites or grid deliverability.</p>';
+}
+function renderSolarPhase1(){
+  const solar=state.ledger?.solar_phase1?.aggregate;
+  const summary=$("#solarPhaseSummary"),picker=$("#solarDistrictChoice");
+  if(!summary || !picker)return;
+  if(!solar){summary.textContent="Source-audited solar phase 1 not available in this evidence snapshot.";return;}
+  const a=solar.qa,v=solar.statewide;
+  summary.innerHTML='<span><strong>'+fmt(v.source_pixel_centres,0)+'</strong><small>NWIC Kerala PVOUT source centres</small></span>'+
+    '<span><strong>'+fmt(v.median_annual_PVOUT_kWh_kWp,2)+'</strong><small>Median annual kWh/kWp, not realized generation</small></span>'+
+    '<span><strong>'+fmt(v.median_paired_Feb_to_Jul_drop_pct,2)+'%</strong><small>Paired February→July median decline</small></span>'+
+    '<span><strong>'+fmt(a.inside_district_missing_any_of_14_PVOUT_layers,0)+'</strong><small>Missing among 14 within-district source layers</small></span>';
+  picker.innerHTML=solar.districts.map(r=>'<option value="'+esc(r.district)+'">'+esc(r.district)+'</option>').join('');
+  if(!solar.districts.some(r=>r.district===state.solarDistrict))state.solarDistrict=solar.districts[0]?.district||null;
+  renderSolarDistrictDetail();
+}
 function renderWindTerrain(){
   const root=$("#windTerrainEvidence"),w=state.ledger.wind_terrain;
   if(!root)return;
@@ -1031,7 +1071,7 @@ function renderSources(){
 }
 function renderAll(){
   renderHomepage();renderEditorialHome();renderProvenance();renderElectricity();renderEditorialElectricity();renderPathways();
-  renderWindTerrain();renderDistrictExplorer();renderLrisEvidence();renderAtlas();renderIndustry();renderWorkbench();renderAudit();renderSources();
+  renderWindTerrain();renderDistrictExplorer();renderSolarPhase1();renderLrisEvidence();renderAtlas();renderIndustry();renderWorkbench();renderAudit();renderSources();
   bindRoutes();
 }
 async function init(){
