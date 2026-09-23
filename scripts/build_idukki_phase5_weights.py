@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Build weighted ERA5-Land pixels from an independently checked reservoir catchment.
 
 No default polygon, invented watershed, district proxy, or Periyar-wide substitute.
