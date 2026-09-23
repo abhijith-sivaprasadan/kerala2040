@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Offline original GRIB -> private ERA5-Land hourly pixel CSV and source grid.
 
 This extracts original ERA5-Land forecast accumulations (tp, metres) WITHOUT
@@ -102,7 +101,7 @@ def extract(tp_files: list[Path], temp_files: list[Path], out: Path,
                                   how="inner", validate="many_to_one")
             if joined.empty:
                 raise ValueError("No selected pixels in this source GRIB")
-            if len(joined[["latitude", "longitude"]].drop_duplicates()]) != len(select):
+            if len(joined[["latitude", "longitude"]].drop_duplicates()) != len(select):
                 raise ValueError("GRIB omits at least one reviewed catchment pixel")
         times = set(joined.valid_time_utc.unique())
         if times & seen_times:
