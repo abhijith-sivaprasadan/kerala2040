@@ -157,3 +157,21 @@ def test_solar_phase1_closes_descriptive_resource_but_not_feasible_capacity():
     assert phase["year_specific_hourly_generation_validated"] is False
     assert phase["model_admitted"] is False
     assert {r["id"]: r for r in ledger["workstreams"]}["solar"]["phase"] == "validated_source"
+
+
+def test_historical_sldc_five_section_release_is_daily_not_interval():
+    ledger = build_ledger(ROOT)
+    archive = ledger["sldc_five_section"]
+    assert archive["classification"] == "SLDC_REPORTED_DAILY_OBSERVATIONS_NOT_CONTINUOUS_INTERVAL"
+    qa = archive["audit"]
+    assert qa["calendar_days"] == 2606
+    assert qa["accepted_html_date_sha256_failed_count"] == 0
+    assert qa["sections"]["statistics"]["accepted"] == 2576
+    assert qa["sections"]["imports"]["accepted"] == 2576
+    assert qa["sections"]["storage"]["accepted"] == 2577
+    assert qa["sections"]["availability"]["accepted"] == 2577
+    assert qa["sections"]["other_extrema"]["accepted"] == 2577
+    assert len(qa["balance_anomalies"]) == 1
+    assert qa["balance_anomalies"][0]["date"] == "2019-12-05"
+    assert archive["measured_hourly_chronology"] is False
+    assert archive["model_admitted_as_hourly_chronology"] is False

@@ -51,6 +51,14 @@ The original **NWIC District Boundary GeoJSON** was checked against the same NWI
 
 Completeness here applies **only to descriptive administrative point assignment**, not land-use clearance, notified forest/paddy/wetland/ESZ boundaries, turbine siting, grid hosting, source-vintage/reuse-rights review, eligible km² or feasible MW. Every such capacity/model gate remains closed.
 
+### Historical SLDC five-section source audit · 23 September 2026
+
+**Kerala SLDC five-section reports spanning 6 August 2019–23 September 2026 have been collected and normalized offline, without inventing hourly measurements.** Across 2,606 requested calendar dates, Statistics and Imports contain **2,576** source-dated and SHA-256-matched reports each, while Storage, Availability and Others contain **2,577** each. The 2019–2021 Statistics schema includes 614 earlier reduced-layout pages and the newer layout has 1,962 reports. The first day is a selected crawl boundary, not a verified date of first SLDC publication.
+
+The daily energy balance identifies one anomalous **5 December 2019** source record; its reported values are preserved but excluded from qualified consumption analysis. FY2024–25 remains **354/365 observed daily records** (30,666.2569 MU summed across those observed days, **not** a full-year total), and there is **no actual continuous 15/30/60-minute demand or generation chronology** in these reports. [Research audit and findings](docs/SLDC_FIVE_SECTION_2019_2026_SOURCE_AUDIT_2026_09_23.md) · [Public-safe evidence QA](data/evidence/sldc/sldc_five_section_2019_2026_public_qa_2026_09_23.json) · [Offline reproducer](scripts/process_sldc_five_section_archive.py).
+
+Nine gzip-compressed curated CSV tables and their SHA-256 manifest are now stored in the separate **private** `kerala2040-source-archive` repository. The original third-party HTML ZIP remains in the user-held source archive; no source HTML or private CSV table is committed to this public research repository. Private access does not grant public redistribution rights.
+
 ### Solar phase 1 closeout · 23 September 2026
 
 **The bounded descriptive solar-PV source-resource and paired-seasonality analysis is complete.** Rechecked all 14 original GSA 2.0 yearly/daily/monthly native 30-arcsecond windows against original NWIC district boundaries. Exactly **46,241** Kerala PVOUT pixel centres uniquely enter the 14 source-defined districts: **zero missing source values across annual + daily + all 12 months**, zero overlap, zero inferred nearest-district allocation. The long-term publisher-reference-system median annual PVOUT is **1,493.51 kWh/kWp/year**. Paired February and July per original source pixel yield median **2.267 kWh/kWp/day** difference and **43.60%** decrease; district paired median decline examples **32.23% in Thiruvananthapuram** and **49.22% in Wayanad**.

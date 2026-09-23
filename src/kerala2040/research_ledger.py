@@ -37,6 +37,9 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     transfer = _yaml(root, "configs/grid_transfer_contract_evidence_2024_25.yaml")
     generator = _yaml(root, "configs/generator_reconciliation_2024_25.yaml")
     qa = _json(root, "data/external/sldc_fy2024_25/qa_report.json")
+    sldc_history = _json(
+        root, "data/evidence/sldc/sldc_five_section_2019_2026_public_qa_2026_09_23.json"
+    )
     boundary = _json(
         root, "data/evidence/gis/nwic_kerala_boundary_dem_tile_intersections_2026_09_20.json"
     )
@@ -66,6 +69,19 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
 
     assert audit["classification"] == "repository_evidence_audit_not_external_source_validation"
     assert qa["observed_days"] + len(qa["missing_dates"]) == qa["expected_days"] == 365
+    assert sldc_history["classification"] == "SLDC_REPORTED_DAILY_OBSERVATIONS_NOT_CONTINUOUS_INTERVAL"
+    assert sldc_history["calendar_days"] == 2606
+    assert sldc_history["accepted_html_date_sha256_failed_count"] == 0
+    assert sldc_history["sections"]["statistics"]["accepted"] == 2576
+    assert sldc_history["sections"]["imports"]["accepted"] == 2576
+    assert sldc_history["sections"]["storage"]["accepted"] == 2577
+    assert sldc_history["sections"]["availability"]["accepted"] == 2577
+    assert sldc_history["sections"]["other_extrema"]["accepted"] == 2577
+    assert sldc_history["source_schema_versions"]["statistics:station_generation_without_full_energy_balance"] == 614
+    assert sldc_history["source_schema_versions"]["statistics:full_energy_balance"] == 1962
+    assert len(sldc_history["balance_anomalies"]) == 1
+    assert sldc_history["balance_anomalies"][0]["date"] == "2019-12-05"
+    assert sldc_history["model_admitted_as_hourly_chronology"] is False
     assert boundary["missing_source_tile_intersection_with_official_kerala"]["count"] == 0
     assert forest_source["verified_geometry_archives"] == forest["verified_geometry_archives"] == 0
     assert forest["wdpa_unique_matches_to_25_kfd_designations"] == 0
@@ -211,16 +227,18 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     workstreams = [
         {
             "id": "electricity", "title": "Electricity & historical balance",
-            "phase": "partial", "label": "Observed days, incomplete year",
-            "metric": f'{qa["observed_days"]} / {qa["expected_days"]}',
-            "unit": "SLDC days verified",
-            "summary": "Source-hashed daily accounting and station-level exports; no measured full-year interval load or interchange series.",
-            "completed": "Daily balance source QA, import/hydro tables and official comparison. All 11 missing dates retried 2026-09-20: zero recovery, known-day control confirmed.",
-            "blocked": "11 missing daily reports, interval chronology and final historical calibration.",
-            "action": "Recover original SLDC reports and authenticated interval exports.",
+            "phase": "partial", "label": "2019–2026 reported daily archive audited; interval chronology missing",
+            "metric": "2,575 / 2,606",
+            "unit": "energy-balance-qualified reported days",
+            "summary": "Five dated SLDC daily sections across 2019–2026; 2,576 Statistics and Imports days, 2,577 Storage/Availability/Extrema days. Not measured hourly telemetry.",
+            "completed": "13,030 date-section statuses hash-checked; 614 early and 1,962 later Statistics layouts kept distinct. All paired import totals match; anomalous 2019-12-05 balance excluded from qualified consumption. FY2024–25 remains 354/365 days.",
+            "blocked": "30 missing Statistics/Imports dates, 29 missing Storage/Availability/Extrema dates, partial reservoir subsections, and no independently measured full-year interval demand or generation.",
+            "action": "Audit field coverage and obtain authenticated interval meter/SLDC exports.",
             "route": "electricity",
             "evidence": [
-                {"label": "SLDC source QA", "href": ROOT + "data/external/sldc_fy2024_25/qa_report.json"},
+                {"label": "Multi-year source audit", "href": ROOT + "docs/SLDC_FIVE_SECTION_2019_2026_SOURCE_AUDIT_2026_09_23.md"},
+                {"label": "Multi-year QA", "href": ROOT + "data/evidence/sldc/sldc_five_section_2019_2026_public_qa_2026_09_23.json"},
+                {"label": "SLDC FY24–25 source QA", "href": ROOT + "data/external/sldc_fy2024_25/qa_report.json"},
                 {"label": "Historical daily replay method", "href": ROOT + "docs/OBSERVED_DAILY_PYPSA.md"},
                 {"label": "Missing-11 public source retry", "href": "https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/35539424582"},
             ],
@@ -475,6 +493,13 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         "eligible_area_sq_km": None,
         "potential_mw": None,
         "workstreams": workstreams,
+        "sldc_five_section": {
+            "classification": sldc_history["classification"],
+            "audit": sldc_history,
+            "daily_source_archived": True,
+            "measured_hourly_chronology": False,
+            "model_admitted_as_hourly_chronology": False,
+        },
         "solar_phase1": {
             "classification": solar_phase1["classification"],
             "descriptive_solar_phase1_complete": True,

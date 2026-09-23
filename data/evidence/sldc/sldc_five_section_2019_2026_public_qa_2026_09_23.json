@@ -1,0 +1,160 @@
+{
+  "classification": "SLDC_REPORTED_DAILY_OBSERVATIONS_NOT_CONTINUOUS_INTERVAL",
+  "audit_date": "2026-09-23",
+  "source_url": "https://sldckerala.com/index.php",
+  "uploaded_source_archive_sha256": "2d55fefdcbfcacf7f753cebb0c429479abb6ea5eedb2533297a455735b6bfc3f",
+  "requested_start": "2019-08-06",
+  "requested_end": "2026-09-23",
+  "calendar_days": 2606,
+  "sections": {
+    "statistics": {
+      "accepted": 2576,
+      "rejected": 30,
+      "uncollected": 0,
+      "checksum_or_date_rejected": 0
+    },
+    "imports": {
+      "accepted": 2576,
+      "rejected": 30,
+      "uncollected": 0,
+      "checksum_or_date_rejected": 0
+    },
+    "storage": {
+      "accepted": 2577,
+      "rejected": 29,
+      "uncollected": 0,
+      "checksum_or_date_rejected": 0
+    },
+    "availability": {
+      "accepted": 2577,
+      "rejected": 29,
+      "uncollected": 0,
+      "checksum_or_date_rejected": 0
+    },
+    "other_extrema": {
+      "accepted": 2577,
+      "rejected": 29,
+      "uncollected": 0,
+      "checksum_or_date_rejected": 0
+    }
+  },
+  "source_schema_versions": {
+    "availability:full_energy_balance": 2577,
+    "imports:full_energy_balance": 2576,
+    "other_extrema:full_energy_balance": 2577,
+    "statistics:full_energy_balance": 1962,
+    "statistics:station_generation_without_full_energy_balance": 614,
+    "storage:full_energy_balance": 2577
+  },
+  "normalized_row_counts": {
+    "source_calendar.csv": 13030,
+    "daily_system.csv": 2606,
+    "generation_rows.csv": 117468,
+    "import_rows.csv": 82119,
+    "reservoir_rows.csv": 34863,
+    "extrema_rows.csv": 25769,
+    "availability_rows.csv": 177680
+  },
+  "accepted_html_date_sha256_failed_count": 0,
+  "balance_anomalies": [
+    {
+      "date": "2019-12-05",
+      "generation_mu": 15.0,
+      "net_import_mu": 57.3783,
+      "reported_consumption_mu": 15.0,
+      "balance_error_mu": 57.3783
+    }
+  ],
+  "financial_year_summary": [
+    {
+      "fy": "2019-20",
+      "calendar_dates_in_archive": 239,
+      "consumption_observed_days": 237,
+      "observed_consumption_sum_mu": 16536.4963,
+      "consumption_median_mu_per_reported_day": 69.9108,
+      "balance_days": 238,
+      "max_abs_energy_balance_error_mu": 57.3783,
+      "max_reported_evening_peak_mw": 4249.0
+    },
+    {
+      "fy": "2020-21",
+      "calendar_dates_in_archive": 365,
+      "consumption_observed_days": 365,
+      "observed_consumption_sum_mu": 25145.0594,
+      "consumption_median_mu_per_reported_day": 68.9473,
+      "balance_days": 365,
+      "max_abs_energy_balance_error_mu": 0.0001,
+      "max_reported_evening_peak_mw": 4349.0
+    },
+    {
+      "fy": "2021-22",
+      "calendar_dates_in_archive": 365,
+      "consumption_observed_days": 362,
+      "observed_consumption_sum_mu": 26375.1739,
+      "consumption_median_mu_per_reported_day": 72.5318,
+      "balance_days": 362,
+      "max_abs_energy_balance_error_mu": 0.0001,
+      "max_reported_evening_peak_mw": 4406.0
+    },
+    {
+      "fy": "2022-23",
+      "calendar_dates_in_archive": 365,
+      "consumption_observed_days": 362,
+      "observed_consumption_sum_mu": 27518.0651,
+      "consumption_median_mu_per_reported_day": 75.7657,
+      "balance_days": 362,
+      "max_abs_energy_balance_error_mu": 0.0001,
+      "max_reported_evening_peak_mw": 4539.0
+    },
+    {
+      "fy": "2023-24",
+      "calendar_dates_in_archive": 366,
+      "consumption_observed_days": 365,
+      "observed_consumption_sum_mu": 30868.1181,
+      "consumption_median_mu_per_reported_day": 83.3107,
+      "balance_days": 365,
+      "max_abs_energy_balance_error_mu": 0.0001,
+      "max_reported_evening_peak_mw": 5303.0
+    },
+    {
+      "fy": "2024-25",
+      "calendar_dates_in_archive": 365,
+      "consumption_observed_days": 354,
+      "observed_consumption_sum_mu": 30666.2569,
+      "consumption_median_mu_per_reported_day": 84.7905,
+      "balance_days": 354,
+      "max_abs_energy_balance_error_mu": 0.0001,
+      "max_reported_evening_peak_mw": 5854.0
+    },
+    {
+      "fy": "2025-26",
+      "calendar_dates_in_archive": 365,
+      "consumption_observed_days": 356,
+      "observed_consumption_sum_mu": 30436.1937,
+      "consumption_median_mu_per_reported_day": 84.8569,
+      "balance_days": 356,
+      "max_abs_energy_balance_error_mu": 0.0001,
+      "max_reported_evening_peak_mw": 5861.0
+    },
+    {
+      "fy": "2026-27",
+      "calendar_dates_in_archive": 176,
+      "consumption_observed_days": 174,
+      "observed_consumption_sum_mu": 16195.2629,
+      "consumption_median_mu_per_reported_day": 91.0727,
+      "balance_days": 174,
+      "max_abs_energy_balance_error_mu": 0.0001,
+      "max_reported_evening_peak_mw": 6195.0
+    }
+  ],
+  "limits": [
+    "Partial fiscal years 2019\u201320 and 2026\u201327 are not annual observations.",
+    "354/365 FY2024\u201325 consumption days; 11 dates not observed.",
+    "All observations are daily reported source values; time-stamped extrema are not an hourly or 30-minute chronological series.",
+    "Early statistics layout 614 dated reports lacks later extra fields; no zero-imputation.",
+    "Availability schedules MU are not installed or operational MW.",
+    "2019-12-05 consumption field conflicts with energy balance, preserved but excluded from qualified analysis.",
+    "Full third-party HTML and detailed source tables remain local until redistribution terms are resolved."
+  ],
+  "model_admitted_as_hourly_chronology": false
+}
