@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ruff: noqa: E701, E702  # Intentional compact offline row extraction loops.
 """Offline, provenance-preserving Kerala SLDC five-section archive normalization.
 
 Input: uploaded collector ZIP of accepted/rejected dated HTML + parsed rows.
@@ -6,7 +7,15 @@ Outputs: calendar QA, system day, labelled generation/import rows, reservoir row
          extrema rows, source-shaped availability rows, summaries and manifest.
 No network. Nothing missing is imputed. MU=1e6 kWh, not MW.
 """
-import argparse,csv,hashlib,io,json,re,zipfile,collections,datetime,math
+import argparse
+import collections
+import csv
+import datetime
+import hashlib
+import json
+import math
+import re
+import zipfile
 from pathlib import Path
 
 SECTIONS=('statistics','imports','storage','availability','other_extrema')
@@ -60,7 +69,7 @@ def main():
  ap.add_argument('archive',type=Path)
  ap.add_argument('--out',type=Path,default=Path('Kerala2040_SLDC_Curated_2019_2026'))
  args=ap.parse_args();args.out.mkdir(parents=True,exist_ok=True)
- results={k:[] for k in COLUMNS};accepted={};errors=[];section_counts=collections.Counter();versions=collections.Counter()
+ results={k:[] for k in COLUMNS};errors=[];section_counts=collections.Counter();versions=collections.Counter()
  rawhash=hashlib.sha256(args.archive.read_bytes()).hexdigest()
  with zipfile.ZipFile(args.archive) as z:
   index={x.filename:x for x in z.infolist()};root=next(x.split('/')[0]+'/' for x in index if '/accepted/' in x)
@@ -92,7 +101,7 @@ def main():
     rows=d['rows'];variant=d.get('statistics_schema_variant') or ('station_generation_without_full_energy_balance' if sec=='statistics' and len(rows)<60 else 'full_energy_balance')
     results['source_calendar.csv'].append({'date':iso,'section':sec,'status':'accepted','reason':';'.join(d.get('qa_warnings') or []),'schema_variant':variant if sec=='statistics' else '',
        'row_count':len(rows),'response_sha256':reported,'html_path':h})
-    accepted[(iso,sec)]=d;versions[(sec,variant)]+=1
+    versions[(sec,variant)]+=1
     if sec=='statistics':
      daily['statistics_schema']=variant
      for idx,row in enumerate(rows):
