@@ -78,7 +78,7 @@ def main():
     parser.add_argument("--area", nargs=4, type=float, required=True, metavar=("N", "W", "S", "E"))
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--start", type=date.fromisoformat, default=date(2017, 12, 31))
-    parser.add_argument("--end", type=date.fromisoformat, default=date(2026, 9, 22))
+    parser.add_argument("--end", type=date.fromisoformat, default=date(2026, 9, 23))
     parser.add_argument("--execute", action="store_true", help="Make real CDS calls, never enabled by default")
     args = parser.parse_args()
     out = args.out
