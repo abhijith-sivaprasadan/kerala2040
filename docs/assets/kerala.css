@@ -804,3 +804,19 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
  .wind-normalized-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
  .wind-figure-links{grid-template-columns:1fr}
 }
+
+/* Completed descriptive solar PVOUT phase 1, separate from site feasibility. */
+.solar-phase1{border:1px solid var(--line);border-top:6px solid var(--gold);background:var(--surface);padding:clamp(22px,3.5vw,47px);margin:35px 0;min-width:0;max-width:100%;overflow-x:clip}
+.solar-phase1 h2{font:500 clamp(32px,4vw,54px)/1.1 var(--display);letter-spacing:-.02em;margin:10px 0}
+.solar-phase1 h2 em{color:var(--rust)}
+.solar-phase1>p{max-width:900px;font-size:13px;line-height:1.75;color:var(--ink-soft)}
+.solar-phase1 .district-normalized{background:var(--paper)}
+.solar-figure-links{grid-template-columns:repeat(2,minmax(0,1fr))}
+.solar-figure-links figure{min-width:0}
+.solar-figure-links figure:first-child{grid-column:1/-1}
+.solar-figure-links figure:first-child img{max-height:450px;object-fit:contain}
+.solar-figure-links figure:not(:first-child) img{max-height:480px;object-fit:contain}
+@media(max-width:740px){
+ .solar-figure-links{grid-template-columns:1fr}
+ .solar-figure-links figure:first-child{grid-column:auto}
+}
