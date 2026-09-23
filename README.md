@@ -65,6 +65,14 @@ The first **source-matched Idukki station + reservoir** pilot links 2,606 source
 
 [Phase-4 research report](docs/PHASE4_IDUKKI_HYDRO_ENERGY_RESEARCH_2026_09_23.md) · [source-safe aggregate audit](data/evidence/sldc/idukki_hydro_energy_phase4_2026_09_23.json) · [reproducible retrospective pipeline](analysis/idukki_hydro_energy_phase4.py) · [opt-in ERA5-Land original acquisition request planner](scripts/request_era5_land_hydro_monthly.py). Date-level source rows stay private.
 
+### Idukki basin-weather Phase 5 · implementation only · 23 September 2026
+
+**The next-stage ERA5-Land → Idukki basin weather workflow is implemented, not yet executed against a verified catchment and original reanalysis data.** Offline GRIB extraction, an independent catchment-polygon-to-equal-area-pixel-weight builder, strict ERA5-Land hourly deaccumulation and IST daily QA, and paired chronological gauge-versus-basin inflow experiments are available. The original rainfall accumulation at 00 UTC belongs to the preceding day; a date is admitted only with **all 25 original hourly inputs (23 full and two 50%-allocated midnight-crossing intervals) at every weighted grid cell**. A catchment polygon must represent the Idukki **reservoir-intercepted area**, not the entire Periyar basin or a district.
+
+**Real Phase 5 weather dates processed in this branch: 0. New Phase 5 holdout skill estimates: none.** The pre-existing five-point FY2024–25 ERA5 chronology does not meet this basin gate. This does not supersede the executed Phase 4 results or unlock a 2018 electricity history or a pumped-storage feasibility conclusion.
+
+[Phase 5 research status and private execution workflow](docs/PHASE5_IDUKKI_ERA5_BASIN_WEATHER_2026_09_23.md) · [Offline source GRIB extractor](scripts/extract_idukki_era5_land_grib.py) · [Reviewed-catchment weights](scripts/build_idukki_phase5_weights.py) · [IST daily and paired-model processor](analysis/idukki_phase5_weather.py).
+
 ### SLDC daily advanced analysis · phase 2 · 23 September 2026
 
 **No-imputation, matched-calendar-date analysis** of the verified 2019–2026 SLDC archive: FY2020–21 to FY2025–26 consumption on 356 matched month/days changes **+24.1%** (68.88 → 85.49 MU/day), while FY2023–24 to FY2025–26 changes **+1.17%** on 355 paired month/days. Observed import and hydel energy shares vary materially; the source Statistics Evening Peak reaches 6,195 MW on 23 April 2026, but differs from the separately reported Others evening extrema. Named Idukki reservoir seasonality and an independently rechecked source error in the 13 March 2026 KUNDALA percentage are included. **All confirmed missing days remain missing; no full-year totals or hourly series are inferred.**
