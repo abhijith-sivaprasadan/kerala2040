@@ -35,6 +35,12 @@ historical-calibration or 2040 release gates.
 
 This work runs **alongside**, rather than displaces, the P0 measured interval-demand and interchange acquisition needed for a validated 2040 model.
 
+## Solar phase 1 source-verified result · 23 September 2026
+
+The previously planned [solar phase 1](SOLAR_PHASE1_KPI_SCOPE_2026_09_23.md) has now been executed using all 14 native yearly/daily/monthly GSA PVOUT windows and the original NWIC district source: [audited 14-district matched-pixel report](SOLAR_PHASE1_NWIC_DISTRICT_SEASONALITY_RESULT_2026_09_23.md). The 46,241 Kerala native PVOUT pixels uniquely reconcile, all 12 months are available, and paired February→July percent change is derived for each pixel before district medians are taken. The statewide median paired decline is 43.60%; this is a source-climatology finding, not actual electricity generation, legal suitability or MW.
+
+Wind and solar bounded *descriptive* resource phase 1 questions are both frozen for CET. The next genuinely open project KPI is the measured FY2024–25 **interval electricity chronology and import/solar generation validation**, followed by independent statutory land/roof/waterbody eligibility and grid constraints. Do not add nominal 2040 PV MW or convert original resource-grid pixel counts into area.
+
 ## Your next actions, in order
 
 1. **Confirm the CET submission date and freeze the scope.** Make the first release
