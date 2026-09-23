@@ -1,0 +1,165 @@
+{
+  "classification": "observed_SLDC_named_reservoir_gauge_descriptive_join_NOT_causal_flood_effect",
+  "source_sha256": {
+    "/mnt/data/Kerala2040_SLDC_Curated_2019_2026/daily_system.csv": "c36a2effe0bcd9363f4c3cb7b9732da05737ea225d0126eb844f9095dcbd1ae9",
+    "/mnt/data/Kerala2040_SLDC_Curated_2019_2026/reservoir_rows.csv": "b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9",
+    "/mnt/data/Kerala2040_SLDC_Curated_2019_2026/source_calendar.csv": "4ef597a01f4305a1630de5dd84ce2e47a3e9287682c68875ca68621b5e3a61a6"
+  },
+  "date_start": "2019-08-06",
+  "date_end": "2026-09-23",
+  "date_slots": 2606,
+  "qualified_consumption_days": 2575,
+  "idukki_rainfall_available_days": 1359,
+  "idukki_inflow_available_days": 2414,
+  "correlation": {
+    "idukki_rainfall_mm__idukki_inflow_mcm_day": {
+      "n": 1344,
+      "raw_r": 0.627052701297961,
+      "year_month_demeaned_r": 0.5983355522826028
+    },
+    "idukki_rainfall_mm__hydel_total_mu": {
+      "n": 1358,
+      "raw_r": 0.08462738188424858,
+      "year_month_demeaned_r": -0.09947128762187911
+    },
+    "idukki_rainfall_mm__consumption_qualified_mu": {
+      "n": 1358,
+      "raw_r": -0.20929896267254247,
+      "year_month_demeaned_r": -0.24915356891431856
+    },
+    "idukki_rainfall_mm__net_import_interface_mu": {
+      "n": 1358,
+      "raw_r": -0.2092602004223857,
+      "year_month_demeaned_r": -0.13488723112745937
+    },
+    "idukki_storage_pct__hydel_total_mu": {
+      "n": 2576,
+      "raw_r": 0.26500874173293787,
+      "year_month_demeaned_r": 0.18161782691435444
+    }
+  },
+  "event_windows": [
+    {
+      "event": "Kerala flood 2018",
+      "start": "2018-08-08",
+      "end": "2018-08-20",
+      "class": "2018 historical anchor: outside SLDC sample",
+      "region": "multiple Kerala basins",
+      "source": "https://www.preventionweb.net/publication/study-report-kerala-floods-august-2018",
+      "observed_calendar_days": 0,
+      "qualified_consumption_days": 0,
+      "weather_gauge_days": 0,
+      "consumption_qualified_mu_mean": null,
+      "hydel_total_mu_mean": null,
+      "net_import_interface_mu_mean": null,
+      "evening_peak_mw_mean": null,
+      "idukki_rainfall_mm_mean": null,
+      "idukki_inflow_mcm_day_mean": null,
+      "idukki_storage_pct_mean": null
+    },
+    {
+      "event": "August 2019 Kerala floods",
+      "start": "2019-08-08",
+      "end": "2019-08-14",
+      "class": "flood/rainfall event review",
+      "region": "north and central Kerala",
+      "source": "https://www.scribd.com/document/535584539/report-on-losses-on-flood",
+      "observed_calendar_days": 7,
+      "qualified_consumption_days": 7,
+      "weather_gauge_days": 7,
+      "consumption_qualified_mu_mean": 50.4611,
+      "hydel_total_mu_mean": 13.36677,
+      "net_import_interface_mu_mean": 35.93567,
+      "evening_peak_mw_mean": 2802.14286,
+      "idukki_rainfall_mm_mean": 58.80571,
+      "idukki_inflow_mcm_day_mean": 65.23057,
+      "idukki_storage_pct_mean": 37.85714
+    },
+    {
+      "event": "Pettimudi 2020 landslide/heavy rain",
+      "start": "2020-08-06",
+      "end": "2020-08-11",
+      "class": "landslide; not statewide flood",
+      "region": "Idukki",
+      "source": "https://www.ndrf.gov.in/en/operations/landslide-idukki-kerala-2020",
+      "observed_calendar_days": 6,
+      "qualified_consumption_days": 6,
+      "weather_gauge_days": 6,
+      "consumption_qualified_mu_mean": 55.75935,
+      "hydel_total_mu_mean": 22.26698,
+      "net_import_interface_mu_mean": 32.04947,
+      "evening_peak_mw_mean": 2808.5,
+      "idukki_rainfall_mm_mean": 89.06667,
+      "idukki_inflow_mcm_day_mean": 75.26533,
+      "idukki_storage_pct_mean": 57.33333
+    },
+    {
+      "event": "October 2021 flood",
+      "start": "2021-10-15",
+      "end": "2021-10-20",
+      "class": "documented flood/landslides",
+      "region": "central and southern Kerala",
+      "source": "https://sdma.kerala.gov.in/wp-content/uploads/2022/05/Event-report_October-2021.pdf",
+      "observed_calendar_days": 6,
+      "qualified_consumption_days": 6,
+      "weather_gauge_days": 6,
+      "consumption_qualified_mu_mean": 69.77013,
+      "hydel_total_mu_mean": 34.40305,
+      "net_import_interface_mu_mean": 33.57783,
+      "evening_peak_mw_mean": 3463.33333,
+      "idukki_rainfall_mm_mean": 46.53333,
+      "idukki_inflow_mcm_day_mean": 46.58967,
+      "idukki_storage_pct_mean": 92.0
+    },
+    {
+      "event": "Wayanad 2024 landslide",
+      "start": "2024-07-29",
+      "end": "2024-08-04",
+      "class": "landslide; separate hazard category",
+      "region": "Wayanad",
+      "source": "https://www.reuters.com/world/india/india-extreme-weather-events-landslides-kerala-state-2024-07-30/",
+      "observed_calendar_days": 7,
+      "qualified_consumption_days": 7,
+      "weather_gauge_days": 7,
+      "consumption_qualified_mu_mean": 74.31731,
+      "hydel_total_mu_mean": 35.87671,
+      "net_import_interface_mu_mean": 35.76113,
+      "evening_peak_mw_mean": 3750.85714,
+      "idukki_rainfall_mm_mean": 35.22857,
+      "idukki_inflow_mcm_day_mean": 38.40414,
+      "idukki_storage_pct_mean": 59.42857
+    },
+    {
+      "event": "Nilambur 2026 flash flood",
+      "start": "2026-09-20",
+      "end": "2026-09-22",
+      "class": "localized flash flood, not state-wide",
+      "region": "Malappuram",
+      "source": "https://www.newindianexpress.com/states/kerala/2026/Sep/21/flash-flood-in-kottapuzha-river-claims-five-lives-in-nilambur-one-missing",
+      "observed_calendar_days": 3,
+      "qualified_consumption_days": 3,
+      "weather_gauge_days": 3,
+      "consumption_qualified_mu_mean": 92.03177,
+      "hydel_total_mu_mean": 22.01593,
+      "net_import_interface_mu_mean": 67.5769,
+      "evening_peak_mw_mean": 4730.66667,
+      "idukki_rainfall_mm_mean": 19.53333,
+      "idukki_inflow_mcm_day_mean": 11.28433,
+      "idukki_storage_pct_mean": 61.0
+    }
+  ],
+  "atlas_qa": {
+    "provided": false,
+    "accepted_rows": 0,
+    "rejected_rows": 0,
+    "accepted_labelled_candidate_series": []
+  },
+  "era5_weather_included": false,
+  "constraints": [
+    "2018 floods predates SLDC date scope; never fabricate 2018 daily energy",
+    "IDUKKI rainfall is source reservoir gauge, not Kerala-wide precipitation or Nilambur rainfall",
+    "event windows are descriptive and do not establish flood causality or physical flood extent",
+    "2019-2026 different system baselines, incomplete days, dispatch and import energy balance confounding",
+    "PSP cannot be inferred from reservoir storage MU or existing hydro MW"
+  ]
+}
