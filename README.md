@@ -57,7 +57,7 @@ Completeness here applies **only to descriptive administrative point assignment*
 
 The daily energy balance identifies one anomalous **5 December 2019** source record; its reported values are preserved but excluded from qualified consumption analysis. FY2024–25 remains **354/365 observed daily records** (30,666.2569 MU summed across those observed days, **not** a full-year total), and there is **no actual continuous 15/30/60-minute demand or generation chronology** in these reports. [Research audit and findings](docs/SLDC_FIVE_SECTION_2019_2026_SOURCE_AUDIT_2026_09_23.md) · [Public-safe evidence QA](data/evidence/sldc/sldc_five_section_2019_2026_public_qa_2026_09_23.json) · [Offline reproducer](scripts/process_sldc_five_section_archive.py).
 
-Detailed CSVs, original source HTML and the complete normalized data package remain separate from the public Git history while redistribution rights and private-release transport are resolved.
+Nine gzip-compressed curated CSV tables and their SHA-256 manifest are now stored in the separate **private** `kerala2040-source-archive` repository. The original third-party HTML ZIP remains in the user-held source archive; no source HTML or private CSV table is committed to this public research repository. Private access does not grant public redistribution rights.
 
 ### Solar phase 1 closeout · 23 September 2026
 
