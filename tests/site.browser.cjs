@@ -275,8 +275,8 @@ async function main(){
     await route("industry");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
     await route("workbench");
-    check(await page.locator(".research-item").count()===13,
-      "All thirteen research streams must render");
+    check(await page.locator(".research-item").count()===14,
+      "All fourteen research streams must render");
     await page.locator("#workbenchSearch").fill("forest");
     check(await page.locator(".research-item").count()>=1,
       "Research filtering not functional");
