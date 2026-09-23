@@ -264,6 +264,33 @@ test("wind phase 1 renders correct slope-available denominators and no MW",()=>{
   assert.match(html,/wind-terrain-sensitivity-20260923.svg/);
 });
 
+test("solar source-grid PVOUT panel uses matched-pixel seasonality, not capacity",()=>{
+  const elements={};
+  const el=selector=>elements[selector] ||= {innerHTML:"",textContent:"",value:""};
+  const c=context({document:{querySelector:el,querySelectorAll:()=>[]}});
+  const aggregate=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json"),"utf8"));
+  c.science=ledger();
+  c.science.solar_phase1={descriptive_solar_phase1_complete:true,
+    aggregate,installed_capacity_MW:null,model_admitted:false};
+  vm.runInContext("state.ledger=science;renderSolarPhase1()",c);
+  assert.match(elements["#solarPhaseSummary"].innerHTML,/46,241/);
+  assert.match(elements["#solarPhaseSummary"].innerHTML,/43\.60%/);
+  assert.match(elements["#solarDistrictChoice"].innerHTML,/Thiruvananthapuram/);
+  vm.runInContext("state.solarDistrict='Wayanad';renderSolarDistrictDetail()",c);
+  assert.match(elements["#solarDistrictDetail"].innerHTML,/49\.22%/);
+  assert.match(elements["#solarDistrictDetail"].innerHTML,/2,548/);
+  vm.runInContext("state.solarDistrict='Thiruvananthapuram';renderSolarDistrictDetail()",c);
+  assert.match(elements["#solarDistrictDetail"].innerHTML,/32\.23%/);
+  assert.equal(aggregate.installed_capacity_MW,null);
+  assert.equal(aggregate.model_admitted,false);
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  assert.match(html,/id="solarDistrictChoice"/);
+  assert.match(html,/solar-phase1-monthly-20260923.svg/);
+  assert.match(html,/solar-phase1-district-annual-20260923.svg/);
+  assert.match(html,/solar-phase1-district-seasonality-20260923.svg/);
+});
+
 test("all eight research pages render against one real observed-data snapshot",()=>{
   const elements={};
   function el(selector){
