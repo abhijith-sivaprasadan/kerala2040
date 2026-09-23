@@ -1,0 +1,451 @@
+{
+  "classification": "SOURCE_SLDC_IDUKKI_HYDRO_ENERGY_PILOT_NOT_CAUSAL_OR_PSP_FEASIBILITY",
+  "archive_scope": {
+    "start": "2019-08-06",
+    "end": "2026-09-23",
+    "slots": 2606,
+    "source_files_sha256": {
+      "daily_system.csv": "c36a2effe0bcd9363f4c3cb7b9732da05737ea225d0126eb844f9095dcbd1ae9",
+      "reservoir_rows.csv": "b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9",
+      "generation_rows.csv": "b597b8199063dcef9c0e80944ec561b285e62343639b9ba8eb2b5beada16e125",
+      "source_calendar.csv": "4ef597a01f4305a1630de5dd84ce2e47a3e9287682c68875ca68621b5e3a61a6"
+    }
+  },
+  "populations": {
+    "idukki_rain_days": 1359,
+    "idukki_inflow_days": 2414,
+    "idukki_station_generation_days": 2546,
+    "idukki_storage_volume_days": 2577,
+    "negative_inflow_reported_count": 0,
+    "outside_storage_bounds_count": 0,
+    "net_depletion_residual_days": 2388
+  },
+  "rainfall_inflow_lags": {
+    "lag_0_days": {
+      "paired_days": 1344,
+      "pearson_r": 0.62705,
+      "year_month_demeaned_r": 0.59834
+    },
+    "lag_1_days": {
+      "paired_days": 1319,
+      "pearson_r": 0.65084,
+      "year_month_demeaned_r": 0.61918
+    },
+    "lag_2_days": {
+      "paired_days": 1320,
+      "pearson_r": 0.55849,
+      "year_month_demeaned_r": 0.48822
+    },
+    "lag_3_days": {
+      "paired_days": 1320,
+      "pearson_r": 0.51296,
+      "year_month_demeaned_r": 0.4154
+    },
+    "lag_4_days": {
+      "paired_days": 1321,
+      "pearson_r": 0.43644,
+      "year_month_demeaned_r": 0.30739
+    },
+    "lag_5_days": {
+      "paired_days": 1323,
+      "pearson_r": 0.35968,
+      "year_month_demeaned_r": 0.20172
+    },
+    "lag_6_days": {
+      "paired_days": 1324,
+      "pearson_r": 0.28785,
+      "year_month_demeaned_r": 0.10059
+    },
+    "lag_7_days": {
+      "paired_days": 1324,
+      "pearson_r": 0.22318,
+      "year_month_demeaned_r": 0.01533
+    }
+  },
+  "station_generation_associations": {
+    "rainfall_mm_analysis": {
+      "paired_days": 1345,
+      "pearson_r": -0.00955,
+      "year_month_demeaned_r": -0.1306
+    },
+    "inflow_mcm_day_analysis": {
+      "paired_days": 2387,
+      "pearson_r": 0.12151,
+      "year_month_demeaned_r": -0.05365
+    },
+    "effective_storage_mcm_analysis": {
+      "paired_days": 2546,
+      "pearson_r": 0.15685,
+      "year_month_demeaned_r": 0.07319
+    }
+  },
+  "inflow_holdout_model": {
+    "features": [
+      "rain_lag0_mm",
+      "rain_lag1_mm",
+      "rain_lag2_mm",
+      "rain_lag3_mm",
+      "rain_lag4_mm",
+      "rain_lag5_mm",
+      "rain_lag6_mm",
+      "rain_lag7_mm",
+      "inflow_lag1_mcm_day"
+    ],
+    "train_period": "2019-08-06 to 2024-12-31",
+    "test_period": "2025-01-01 to 2026-09-23",
+    "complete_case_train_days": 434,
+    "complete_case_test_days": 158,
+    "weather_observed_same_day": true,
+    "model": "standardized_ridge_alpha10",
+    "baseline": "previous_observed_day_inflow_exact_day",
+    "status": "complete_case_holdout_scored",
+    "skill": {
+      "ridge": {
+        "mae_mcm_day": 3.365,
+        "rmse_mcm_day": 5.345
+      },
+      "persistence": {
+        "mae_mcm_day": 5.3616,
+        "rmse_mcm_day": 8.6479
+      },
+      "mae_improvement_percent_vs_persistence": 37.24
+    },
+    "test_coverage_limitation": "Only source-dated days with complete 8-day gauge rain history and previous-day inflow; not population-representative"
+  },
+  "event_window_descriptive_comparisons": [
+    {
+      "event": "2018 flood benchmark (no SLDC sample)",
+      "start": "2018-08-08",
+      "end": "2018-08-20",
+      "region": "multi-basin",
+      "source_sample_days": 0,
+      "reference_days_in_45day_flanks": 0,
+      "not_causal": true,
+      "rainfall_mm_analysis": {
+        "event_n": 0,
+        "event_mean": null,
+        "reference_n": 0,
+        "reference_mean": null
+      },
+      "inflow_mcm_day_analysis": {
+        "event_n": 0,
+        "event_mean": null,
+        "reference_n": 0,
+        "reference_mean": null
+      },
+      "effective_storage_mcm_analysis": {
+        "event_n": 0,
+        "event_mean": null,
+        "reference_n": 0,
+        "reference_mean": null
+      },
+      "idukki_station_generation_mu_analysis": {
+        "event_n": 0,
+        "event_mean": null,
+        "reference_n": 0,
+        "reference_mean": null
+      },
+      "hydel_total_mu": {
+        "event_n": 0,
+        "event_mean": null,
+        "reference_n": 0,
+        "reference_mean": null
+      },
+      "net_import_interface_mu": {
+        "event_n": 0,
+        "event_mean": null,
+        "reference_n": 0,
+        "reference_mean": null
+      },
+      "consumption_qualified_mu": {
+        "event_n": 0,
+        "event_mean": null,
+        "reference_n": 0,
+        "reference_mean": null
+      }
+    },
+    {
+      "event": "August 2019 flood review",
+      "start": "2019-08-08",
+      "end": "2019-08-14",
+      "region": "north/central Kerala",
+      "source_sample_days": 7,
+      "reference_days_in_45day_flanks": 47,
+      "not_causal": true,
+      "rainfall_mm_analysis": {
+        "event_n": 7,
+        "event_mean": 58.8057,
+        "reference_n": 44,
+        "reference_mean": 20.05
+      },
+      "inflow_mcm_day_analysis": {
+        "event_n": 7,
+        "event_mean": 65.2306,
+        "reference_n": 47,
+        "reference_mean": 16.2769
+      },
+      "effective_storage_mcm_analysis": {
+        "event_n": 7,
+        "event_mean": 553.5719,
+        "reference_n": 47,
+        "reference_mean": 847.3208
+      },
+      "idukki_station_generation_mu_analysis": {
+        "event_n": 7,
+        "event_mean": 1.5129,
+        "reference_n": 47,
+        "reference_mean": 3.0046
+      },
+      "hydel_total_mu": {
+        "event_n": 7,
+        "event_mean": 13.3668,
+        "reference_n": 47,
+        "reference_mean": 17.9309
+      },
+      "net_import_interface_mu": {
+        "event_n": 7,
+        "event_mean": 35.9357,
+        "reference_n": 47,
+        "reference_mean": 45.9975
+      },
+      "consumption_qualified_mu": {
+        "event_n": 7,
+        "event_mean": 50.4611,
+        "reference_n": 47,
+        "reference_mean": 65.2619
+      }
+    },
+    {
+      "event": "Pettimudi 2020 landslide",
+      "start": "2020-08-06",
+      "end": "2020-08-11",
+      "region": "Idukki district",
+      "source_sample_days": 6,
+      "reference_days_in_45day_flanks": 90,
+      "not_causal": true,
+      "rainfall_mm_analysis": {
+        "event_n": 6,
+        "event_mean": 89.0667,
+        "reference_n": 77,
+        "reference_mean": 21.7792
+      },
+      "inflow_mcm_day_analysis": {
+        "event_n": 6,
+        "event_mean": 75.2653,
+        "reference_n": 90,
+        "reference_mean": 12.4557
+      },
+      "effective_storage_mcm_analysis": {
+        "event_n": 6,
+        "event_mean": 835.3458,
+        "reference_n": 90,
+        "reference_mean": 740.0
+      },
+      "idukki_station_generation_mu_analysis": {
+        "event_n": 6,
+        "event_mean": 3.5503,
+        "reference_n": 90,
+        "reference_mean": 4.4292
+      },
+      "hydel_total_mu": {
+        "event_n": 6,
+        "event_mean": 22.267,
+        "reference_n": 90,
+        "reference_mean": 17.4846
+      },
+      "net_import_interface_mu": {
+        "event_n": 6,
+        "event_mean": 32.0495,
+        "reference_n": 90,
+        "reference_mean": 44.3601
+      },
+      "consumption_qualified_mu": {
+        "event_n": 6,
+        "event_mean": 55.7594,
+        "reference_n": 90,
+        "reference_mean": 63.2636
+      }
+    },
+    {
+      "event": "October 2021 floods",
+      "start": "2021-10-15",
+      "end": "2021-10-20",
+      "region": "central/southern Kerala",
+      "source_sample_days": 6,
+      "reference_days_in_45day_flanks": 90,
+      "not_causal": true,
+      "rainfall_mm_analysis": {
+        "event_n": 6,
+        "event_mean": 46.5333,
+        "reference_n": 78,
+        "reference_mean": 16.4795
+      },
+      "inflow_mcm_day_analysis": {
+        "event_n": 6,
+        "event_mean": 46.5897,
+        "reference_n": 90,
+        "reference_mean": 17.3515
+      },
+      "effective_storage_mcm_analysis": {
+        "event_n": 6,
+        "event_mean": 1346.4497,
+        "reference_n": 90,
+        "reference_mean": 1270.2376
+      },
+      "idukki_station_generation_mu_analysis": {
+        "event_n": 6,
+        "event_mean": 11.9738,
+        "reference_n": 90,
+        "reference_mean": 11.4508
+      },
+      "hydel_total_mu": {
+        "event_n": 6,
+        "event_mean": 34.4031,
+        "reference_n": 90,
+        "reference_mean": 32.2732
+      },
+      "net_import_interface_mu": {
+        "event_n": 6,
+        "event_mean": 33.5778,
+        "reference_n": 90,
+        "reference_mean": 37.5428
+      },
+      "consumption_qualified_mu": {
+        "event_n": 6,
+        "event_mean": 69.7701,
+        "reference_n": 90,
+        "reference_mean": 71.5574
+      }
+    },
+    {
+      "event": "Wayanad 2024 landslide",
+      "start": "2024-07-29",
+      "end": "2024-08-04",
+      "region": "Wayanad district",
+      "source_sample_days": 7,
+      "reference_days_in_45day_flanks": 90,
+      "not_causal": true,
+      "rainfall_mm_analysis": {
+        "event_n": 7,
+        "event_mean": 35.2286,
+        "reference_n": 79,
+        "reference_mean": 21.2038
+      },
+      "inflow_mcm_day_analysis": {
+        "event_n": 7,
+        "event_mean": 38.4041,
+        "reference_n": 88,
+        "reference_mean": 15.0794
+      },
+      "effective_storage_mcm_analysis": {
+        "event_n": 7,
+        "event_mean": 868.7219,
+        "reference_n": 88,
+        "reference_mean": 752.9657
+      },
+      "idukki_station_generation_mu_analysis": {
+        "event_n": 7,
+        "event_mean": 10.661,
+        "reference_n": 88,
+        "reference_mean": 7.5899
+      },
+      "hydel_total_mu": {
+        "event_n": 7,
+        "event_mean": 35.8767,
+        "reference_n": 88,
+        "reference_mean": 27.6279
+      },
+      "net_import_interface_mu": {
+        "event_n": 7,
+        "event_mean": 35.7611,
+        "reference_n": 88,
+        "reference_mean": 49.0922
+      },
+      "consumption_qualified_mu": {
+        "event_n": 7,
+        "event_mean": 74.3173,
+        "reference_n": 88,
+        "reference_mean": 79.5453
+      }
+    },
+    {
+      "event": "Nilambur 2026 flash flood",
+      "start": "2026-09-20",
+      "end": "2026-09-22",
+      "region": "Malappuram district",
+      "source_sample_days": 3,
+      "reference_days_in_45day_flanks": 46,
+      "not_causal": true,
+      "rainfall_mm_analysis": {
+        "event_n": 3,
+        "event_mean": 19.5333,
+        "reference_n": 31,
+        "reference_mean": 19.4258
+      },
+      "inflow_mcm_day_analysis": {
+        "event_n": 3,
+        "event_mean": 11.2843,
+        "reference_n": 45,
+        "reference_mean": 12.6687
+      },
+      "effective_storage_mcm_analysis": {
+        "event_n": 3,
+        "event_mean": 890.2777,
+        "reference_n": 45,
+        "reference_mean": 857.6811
+      },
+      "idukki_station_generation_mu_analysis": {
+        "event_n": 3,
+        "event_mean": 8.278,
+        "reference_n": 45,
+        "reference_mean": 5.6197
+      },
+      "hydel_total_mu": {
+        "event_n": 3,
+        "event_mean": 22.0159,
+        "reference_n": 45,
+        "reference_mean": 23.8648
+      },
+      "net_import_interface_mu": {
+        "event_n": 3,
+        "event_mean": 67.5769,
+        "reference_n": 45,
+        "reference_mean": 62.5695
+      },
+      "consumption_qualified_mu": {
+        "event_n": 3,
+        "event_mean": 92.0318,
+        "reference_n": 45,
+        "reference_mean": 89.2953
+      }
+    }
+  ],
+  "weather": {
+    "provided": false,
+    "included_days": 0
+  },
+  "atlas_observed_rows_integrated": 0,
+  "2018_sldc_daily_rows": 0,
+  "psp": {
+    "classification": "illustrative_physics_NOT_project_feasibility",
+    "head_m_assumed": 500,
+    "transfer_volume_mcm_assumed": 1,
+    "generation_efficiency_assumed": 0.9,
+    "pump_efficiency_assumed": 0.85,
+    "gross_gwh": 1.3625,
+    "generated_gwh": 1.22625,
+    "pumping_input_gwh": 1.60294,
+    "round_trip_efficiency_assumed": 0.765,
+    "no_verified_site_or_flood_operating_headroom": true
+  },
+  "limit": [
+    "Idukki gauge is not spatially integrated basin rainfall",
+    "rainfall is available on selected report dates; complete-case models have selection bias",
+    "rain t is observed retrospectively; no live inflow prediction claim",
+    "daily station energy cannot recover turbine head or turbine releases",
+    "inflow minus storage change is a net-depletion RESIDUAL, not observed spill or releases",
+    "local event flags are not basin flood footprints or causal estimates",
+    "the 2018 event has no dates inside collected SLDC archive",
+    "no extracted ERA5 basin series, Energy Atlas metered data, or PSP project constraints supplied"
+  ]
+}
