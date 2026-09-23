@@ -71,6 +71,12 @@ A separate **non-renewable workstream** now establishes the FY2024–25 KSEBL cu
 
 [Official-source demand-sector/accounting review](docs/DEMAND_SECTOR_ACCOUNTING_BASELINE_2026_09_23.md) · [Existing metered interval data request](docs/SLDC_DATA_REQUEST_DRAFT.md) · [Historical demand gap](docs/hourly_demand_gap.md).
 
+### ERA5-Land August 2019 · real-source exploratory weather audit · 24 September 2026
+
+The first actual **user-supplied original ERA5-Land GRIB** pilot has now processed **24 parameters** for August 2019, with 31 fully complete IST days of core rainfall on **1,034 valid 0.1° source land pixels**, a separate audited July boundary day, original forecast-step deaccumulation, 50:50 allocation of the hourly accumulation crossing IST midnight, and exact-array verification of a redundant 31 August download. Source GDAL mislabels numerical kelvin as Celsius and lacks the label for ECMWF potential evaporation parameter 228251; both are source-mapped explicitly. The **entire bounding-box land footprint contains areas outside Kerala**, and the example Idukki-vicinity rectangle is **not a verified reservoir watershed**. Illustrative full-bbox/rectangle rainfall totals **380.65/537.73 mm for August** are NOT state or catchment rainfall findings; all user source files and detailed cell/day outputs remain out of the public repo. **Verified catchment rainfall dates, new inflow scores, and 2018 electricity: still zero.**
+
+[Real-GRIB August exploratory audit](docs/ERA5_LAND_AUG2019_ORIGINALS_EXPLORATORY_AUDIT_2026_09_24.md) · [Verified-catchment Phase 5 gate](docs/PHASE5_IDUKKI_ERA5_BASIN_WEATHER_2026_09_23.md).
+
 ### Idukki basin-weather Phase 5 · implementation only · 23 September 2026
 
 **The next-stage ERA5-Land → Idukki basin weather workflow is implemented, not yet executed against a verified catchment and original reanalysis data.** Offline GRIB extraction, an independent catchment-polygon-to-equal-area-pixel-weight builder, strict ERA5-Land hourly deaccumulation and IST daily QA, and paired chronological gauge-versus-basin inflow experiments are available. The original rainfall accumulation at 00 UTC belongs to the preceding day; a date is admitted only with **all 25 original hourly inputs (23 full and two 50%-allocated midnight-crossing intervals) at every weighted grid cell**. A catchment polygon must represent the Idukki **reservoir-intercepted area**, not the entire Periyar basin or a district.
