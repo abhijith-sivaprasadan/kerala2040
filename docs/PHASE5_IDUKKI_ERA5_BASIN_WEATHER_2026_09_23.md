@@ -2,6 +2,10 @@
 
 **Status (23 September 2026): offline pipeline implemented, NOT real-data-executed.** The source-verified 2018–2026 ERA5-Land originals and an independently validated Idukki reservoir catchment polygon have NOT been supplied. **Zero real basin-weather days processed here; no new model-skill result.** The existing Phase 4 SLDC/Idukki gauge analysis remains the last executed observed result.
 
+## 24 September 2026 original-source pilot update
+
+[The August 2019 user-supplied original GRIB pilot](ERA5_LAND_AUG2019_ORIGINALS_EXPLORATORY_AUDIT_2026_09_24.md) now has **31 core precipitation IST days and 24 source parameters** processed for the statewide *acquisition bounding box* (1,034 valid land pixels of 2,091 original centres). It uses July 31 boundary hours, checks actual cumulative forecast steps, splits IST-crossing hours 50:50, and retains source gaps. **It is NOT spatially selected by a verified Idukki reservoir watershed**. Its 380.65 mm land-bbox / 537.73 mm illustrative-rectangle monthly rainfall findings must not be labelled Kerala state or Idukki basin rainfall. **Real verified Idukki catchment weather rows and comparative inflow model scores remain zero.** The original offline Phase 5 design continues to require verified geometry and source-matched SLDC inflow.
+
 ## Research question and admission gates
 
 Can area-weighted reanalysis rain over the *actual reservoir-intercepted Idukki drainage area* improve the model of source-reported reservoir inflow compared to the SLDC single Idukki rain gauge, evaluated on identical held-out dates?
