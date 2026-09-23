@@ -10,7 +10,7 @@ Input hourly CSV (original-archive-derived, private):
 Input basin grid weights CSV (prepared from independently audited geometry):
   latitude,longitude,weight,source_id,spatial_support,geometry_sha256
 All pixels in the weights file must match the hourly grid. IST days require
-24 complete, individually deaccumulated hourly intervals at EVERY selected
+25 source intervals (23 full + 2 half), all valid at EVERY selected
 pixel; missing values never become zero or partial-day totals.
 
 Example:
@@ -139,22 +139,37 @@ def ingest_hourly(hourly_path: Path, weights: pd.DataFrame,
         raise ValueError("Negative ERA5-Land increment: input may be deaccumulated or wrong stream")
     h["rain_hour_mm"] = (increment.clip(lower=0) * 1000).where(increment.notna())
     local_interval_end = h.time + pd.Timedelta(hours=5, minutes=30)
-    # Classify (end-1 ns) so an interval ENDING at local midnight
-    # belongs to the preceding day. IST has no daylight-saving transitions.
-    h["date"] = (local_interval_end - pd.Timedelta(nanoseconds=1)).dt.tz_localize(
-        None).dt.normalize()
     h["temp_hour_c"] = h.t2m_k - 273.15
-    pix = h.groupby(["date", "latitude", "longitude", "weight"], as_index=False).agg(
-        n_hourly_intervals=("time", "size"),
-        n_rain_intervals=("rain_hour_mm", "count"),
-        n_temp_intervals=("temp_hour_c", "count"),
-        rain_mm=("rain_hour_mm", "sum"),
-        temp_c=("temp_hour_c", "mean"))
-    pix["rain_ok"] = pix.n_hourly_intervals.eq(24) & pix.n_rain_intervals.eq(24)
-    pix["temp_ok"] = pix.n_hourly_intervals.eq(24) & pix.n_temp_intervals.eq(24)
-    # Do not use pandas sum-of-empty == zero.
+    # Hourly UTC increments cannot directly resolve a half-hour IST midnight.
+    # A UTC hour ending at local 00:30 spans 23:30-00:30: split its
+    # precipitation/temperature 50:50 between local dates, explicitly
+    # assuming a uniform intra-hour rate. Every IST day consequently needs
+    # 23 full hourly increments and TWO half-hour contributions: 25 source
+    # intervals with effective total weight 24 hours per selected pixel.
+    boundary = local_interval_end.dt.hour.eq(0) & local_interval_end.dt.minute.eq(30)
+    h["date"] = local_interval_end.dt.tz_localize(None).dt.normalize()
+    h["fraction"] = np.where(boundary, 0.5, 1.0)
+    prior = h.loc[boundary].copy()
+    prior["date"] = (local_interval_end.loc[boundary] - pd.Timedelta(hours=1)
+                     ).dt.tz_localize(None).dt.normalize()
+    prior["fraction"] = 0.5
+    pieces = pd.concat([h, prior], ignore_index=True)
+    pieces["rain_piece_mm"] = pieces.rain_hour_mm * pieces.fraction
+    pieces["temp_piece_c_hours"] = pieces.temp_hour_c * pieces.fraction
+    pix = pieces.groupby(["date", "latitude", "longitude", "weight"],
+                         as_index=False).agg(
+        n_source_intervals=("time", "size"),
+        effective_hours=("fraction", "sum"),
+        n_rain_segments=("rain_piece_mm", "count"),
+        n_temp_segments=("temp_piece_c_hours", "count"),
+        rain_mm=("rain_piece_mm", "sum"),
+        temp_c_hours=("temp_piece_c_hours", "sum"))
+    complete = pix.n_source_intervals.eq(25) & np.isclose(pix.effective_hours, 24)
+    pix["rain_ok"] = complete & pix.n_rain_segments.eq(25)
+    pix["temp_ok"] = complete & pix.n_temp_segments.eq(25)
+    # Never convert empty/partial sums to a zero-valued observation.
     pix["rain_mm"] = pix.rain_mm.where(pix.rain_ok)
-    pix["temp_c"] = pix.temp_c.where(pix.temp_ok)
+    pix["temp_c"] = (pix.temp_c_hours / 24).where(pix.temp_ok)
     pix["weighted_rain"] = pix.rain_mm * pix.weight
     pix["weighted_temp"] = pix.temp_c * pix.weight
     daily = pix.groupby("date", as_index=False).agg(
@@ -186,8 +201,9 @@ def ingest_hourly(hourly_path: Path, weights: pd.DataFrame,
           "latest_complete_day": (daily.loc[daily.rainfall_mm.notna(), "date"].max().date().isoformat()
                                   if daily.rainfall_mm.notna().any() else None),
           "era5_land_tp_convention": "accum_since_00UTC; validity_00UTC=prior_day_step24",
-          "ist_interval_convention": "UTC hourly interval ending time +05:30 minus 1ns",
-          "daily_missing_policy": "24 nonmissing increments at every weighted pixel"}
+          "ist_interval_convention": "UTC interval end +05:30; split 00:30 ends 50:50",
+          "temporal_allocation_assumption": "uniform rate within midnight-straddling UTC hour",
+          "daily_missing_policy": "25 nonmissing source intervals (23 full + two half) per IST day and pixel"}
     return daily, qa
 
 
