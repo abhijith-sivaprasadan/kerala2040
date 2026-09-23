@@ -63,6 +63,35 @@ def test_missing_hour_invalidates_entire_ist_day_not_zero(tmp_path):
     assert daily.rain_pixels_complete.iloc[0] == 1
 
 
+
+def test_midnight_straddling_hour_split_half_to_each_ist_day(tmp_path):
+    weights, _ = load_weights(weights_file(tmp_path))
+    h = hours()
+    # Add ten extra millimetres to UTC hour ENDING Jan-01 19:00,
+    # i.e. local Jan-02 00:30. Exactly half belongs to Jan-01.
+    t = pd.to_datetime(h.valid_time_utc, utc=True)
+    later = ((t.dt.date == pd.Timestamp("2018-01-01").date())
+             & (t.dt.hour >= 19)) | (t == pd.Timestamp("2018-01-02T00:00:00Z"))
+    h.loc[later, "tp_accum_m"] += 0.010
+    h.loc[t == pd.Timestamp("2018-01-01T19:00:00Z"), "t2m_k"] = 310.
+    inp = tmp_path / "nonuniform.csv"
+    h.to_csv(inp, index=False)
+    daily, qa = ingest_hourly(inp, weights, "2018-01-01", "2018-01-01")
+    assert qa["complete_basin_rain_days"] == 1
+    assert daily.rainfall_mm.iloc[0] == pytest.approx(29.)  # 24 + 10/2
+    assert daily.t2m_c.iloc[0] == pytest.approx(26.85 + 10./48.)
+
+
+def test_missing_next_midnight_boundary_rejects_preceding_day(tmp_path):
+    weights, _ = load_weights(weights_file(tmp_path))
+    h = hours()
+    h = h[h.valid_time_utc != "2018-01-01T19:00:00Z"]
+    inp = tmp_path / "missing_boundary.csv"
+    h.to_csv(inp, index=False)
+    daily, qa = ingest_hourly(inp, weights, "2018-01-01", "2018-01-01")
+    assert qa["complete_basin_rain_days"] == 0
+    assert pd.isna(daily.rainfall_mm.iloc[0])
+
 def test_wrong_spatial_support_rejected(tmp_path):
     with pytest.raises(ValueError, match="Idukki-reservoir"):
         load_weights(weights_file(tmp_path, "WHOLE_PERIYAR_BASIN"))
