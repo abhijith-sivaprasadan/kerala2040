@@ -1,5 +1,13 @@
 # Kerala 2040: next research steps
 
+## Hydro Phase 5 (23 September 2026): pipeline ready, original basin data still gated
+
+The executed [Phase 4 Idukki reservoir and station pilot](PHASE4_IDUKKI_HYDRO_ENERGY_RESEARCH_2026_09_23.md) remains the latest observational result. The [Phase 5 ERA5-Land research pipeline](PHASE5_IDUKKI_ERA5_BASIN_WEATHER_2026_09_23.md) now includes original-GRIB parsing, independently source-reviewed catchment overlap weights, proper original hourly cumulative tp to IST daily increments, complete-pixel/day QA, and common-date chronological comparisons with Idukki SLDC-gauge rain and persistence. **This branch has no real selected catchment weather rows and no Phase 5 skill number.**
+
+**Action order:** (1) source/verify the reservoir-intercepted Idukki catchment polygon and upstream diversion treatment; (2) dry-run and authenticate the monthly 2017-12-31–2026-09-23 ERA5-Land acquisition over its reviewed bbox; (3) privately extract original GRIB and construct reviewed weights; (4) run the Phase 5 weather and paired-model QA against privately held SLDC CSVs; (5) independently review holdout coverage/extremes before any public numerical result. The full Periyar basin and five representative ERA5 points are not substitutes.
+
+Phase 5 does **not** close the separate P0 measured hourly/15-minute electricity acquisition gate, recover 2018 SLDC daily rows, identify physical spill or qualify project-specific pumped-storage MW.
+
 ## What now works
 
 The research repository is the source of truth: `docs/` contains the interface and
