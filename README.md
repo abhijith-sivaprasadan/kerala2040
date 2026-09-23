@@ -65,6 +65,12 @@ The first **source-matched Idukki station + reservoir** pilot links 2,606 source
 
 [Phase-4 research report](docs/PHASE4_IDUKKI_HYDRO_ENERGY_RESEARCH_2026_09_23.md) · [source-safe aggregate audit](data/evidence/sldc/idukki_hydro_energy_phase4_2026_09_23.json) · [reproducible retrospective pipeline](analysis/idukki_hydro_energy_phase4.py) · [opt-in ERA5-Land original acquisition request planner](scripts/request_era5_land_hydro_monthly.py). Date-level source rows stay private.
 
+### Electricity demand and affordability · official annual source review · 23 September 2026
+
+A separate **non-renewable workstream** now establishes the FY2024–25 KSEBL customer-category energy/revenue baseline and the different official boundaries for Kerala consumption, KSEBL sales, energy entering Kerala and incomplete SLDC observed-day reports. In particular, **29,311.76 MU** official broad consumption, **28,544.05 MU** category-table sale including trading, and **32,306.15 MU** system periphery input are **not interchangeable measures of hourly demand**; the existing 30,666.2569 MU SLDC total covers only 354 days and has a separate operational definition. There is **no new 8,760-hour measured load, 2040 demand projection, or cost-to-serve model** here.
+
+[Official-source demand-sector/accounting review](docs/DEMAND_SECTOR_ACCOUNTING_BASELINE_2026_09_23.md) · [Existing metered interval data request](docs/SLDC_DATA_REQUEST_DRAFT.md) · [Historical demand gap](docs/hourly_demand_gap.md).
+
 ### Idukki basin-weather Phase 5 · implementation only · 23 September 2026
 
 **The next-stage ERA5-Land → Idukki basin weather workflow is implemented, not yet executed against a verified catchment and original reanalysis data.** Offline GRIB extraction, an independent catchment-polygon-to-equal-area-pixel-weight builder, strict ERA5-Land hourly deaccumulation and IST daily QA, and paired chronological gauge-versus-basin inflow experiments are available. The original rainfall accumulation at 00 UTC belongs to the preceding day; a date is admitted only with **all 25 original hourly inputs (23 full and two 50%-allocated midnight-crossing intervals) at every weighted grid cell**. A catchment polygon must represent the Idukki **reservoir-intercepted area**, not the entire Periyar basin or a district.
