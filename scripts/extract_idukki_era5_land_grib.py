@@ -36,8 +36,8 @@ def sha(path):
 
 def open_variable(path: Path, short_name: str, expected_unit: str) -> pd.DataFrame:
     try:
-        import xarray as xr
         import cfgrib  # noqa: F401
+        import xarray as xr
     except ImportError as exc:
         raise RuntimeError("Install cfgrib + eccodes in local environment") from exc
     with xr.open_dataset(path, engine="cfgrib", backend_kwargs={
