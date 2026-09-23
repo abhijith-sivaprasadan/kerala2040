@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Kerala2040: explicit, resumable ERA5-Land monthly request manifest / opt-in CDS fetch.
 
 Monthly source GRIB only; NO rainfall daily conversion, catchment clipping or
