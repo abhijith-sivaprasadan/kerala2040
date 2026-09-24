@@ -31,6 +31,8 @@ def test_historical_emc_chart_years_and_share_are_fiscal_and_not_rebuilt():
     assert Decimal(str(emc["baseline_total_mtoe"])) == Decimal("10.78")
     assert emc["mix_reconstruction_allowed"] is False
     assert emc["coal_captive_pct"] is None
+    assert emc["internal_discrepancy"]["figure_3_fy2015_mtoe"] == 9.18
+    assert emc["internal_discrepancy"]["section_3_prose_fy2015_mtoe"] == 9.81
     assert d["emc_2019_20_electricity_sector_share_context"]["classification"].endswith(
         "NOT_sector_shares_of_total_final_energy"
     )
@@ -53,6 +55,7 @@ def test_ppac_is_distinct_six_month_provisional_sales_not_fuel_energy():
     [
         (("emc_final_energy", "baseline_total_mtoe"), 15.0),
         (("emc_final_energy", "mix_reconstruction_allowed"), True),
+        (("emc_final_energy", "internal_discrepancy"), {}),
         (("ppac_provisional_half_year_2024_25", "end_date"), "2025-03-31"),
         (("ppac_provisional_half_year_2024_25", "no_annualisation"), False),
         (("ppac_provisional_half_year_2024_25", "publisher_pdf_visual_validation"), True),
