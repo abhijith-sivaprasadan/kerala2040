@@ -77,8 +77,8 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         root, "data/evidence/total_energy/kerala_ghg_sector_bridge_2026_09_24.json"
     )
     # Synthetic WP6 output is admitted as a bounded experiment, never as grid evidence.
-    from kerala2040.flexibility_dispatch import build_demonstration
     from kerala2040.flexibility_cooling import build_pilot
+    from kerala2040.flexibility_dispatch import build_demonstration
 
     flex = build_pilot()
     assert flex["classification"] == (
