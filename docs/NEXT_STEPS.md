@@ -1,5 +1,11 @@
 # Kerala 2040: next research steps
 
+## CET 2026 historical electricity story: bounded chapter complete · 24 September 2026
+
+[Executed source-audited historical chapter](CET_HISTORICAL_ELECTRICITY_STORY_2026_09_24.md) combines separately attributed **official annual Kerala consumption (FY2020–21–FY2024–25)** and **qualified SLDC operational daily reports (2019–2026)**. It adds four poster-oriented SVGs—official consumption, matched-day daily changes, observed-day import/hydel shares and separately labelled Statistics evening peaks—plus [validated input/denominator registry](../data/evidence/sldc/cet_historical_electricity_story_2026_09_24.json). The multi-year **descriptive** question is answered without ERA5 and without inventing annual sums, correcting missing days, or treating hydro/import accounting co-movement as causal.
+
+**Still open, deliberately not rebranded complete:** (1) retrieve 11 missing FY2024–25 SLDC qualified dates or leave absent; (2) obtain data dictionaries to reconcile operational daily and annual consumer-side boundaries, which differ even for 365/365 FY2020–21; (3) acquire and validate measured interval demand/interchange; (4) bound plant-level hydro operating and import-capacity/price parameters before claiming 2040 scenario outcomes. The research chapter on `main` is distinct from the immutable public website evidence snapshot.
+
 ## August 2019 real-original ERA5-Land pilot: processed, spatial admission still open
 
 [Executed original-GRIB August audit](ERA5_LAND_AUG2019_ORIGINALS_EXPLORATORY_AUDIT_2026_09_24.md): 24 ERA5-Land parameters parsed from user-provided acquisition-envelope GRIB; July 31 core boundary hours retained; **31 complete August IST rainfall dates**, 1,034 source-valid land pixels, original forecast-step/duplicate checks. July 31 extended fields are missing, so 1 Aug IST is incomplete for that second variable batch. **The 380.65 mm bbox-land-pixel mean and 537.73 mm example-rectangle mean must not be labelled Kerala or Idukki catchment rain**. Official state and source-verified reservoir-intercepted watershed polygons, and source-matched private SLDC inflow observations, remain separate gates; 2018 SLDC electricity is still missing.
