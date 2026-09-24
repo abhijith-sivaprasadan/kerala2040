@@ -1,0 +1,48 @@
+# WP6 engineering demonstration, NOT a Kerala measured building / weather / hourly demand.
+version: 1
+classification: synthetic_illustrative_1R1C_24_hour_cooling_only_NOT_Kerala_observations
+source: Kerala2040 explicitly authored thought experiment, 24 September 2026
+spatial_scope: one illustrative cooling zone, NOT Kerala population or installed AC fleet
+time_basis: 24 synthetic hours; hour index 0..23; 1 h step; no real date, tariff or climate year
+hourly_outdoor_C: [29, 29, 28, 28, 28, 29, 30, 31, 32, 33, 34, 35, 36, 36, 35, 35, 34, 33, 33, 32, 31, 30, 30, 29]
+zone:
+  starting_indoor_C: 25.5
+  baseline_setpoint_C: 25.5
+  min_comfort_C: 24.0
+  max_comfort_C: 26.0
+  heat_capacity_kWh_per_K: 3.5
+  envelope_UA_kW_per_K: 0.20
+  internal_gain_kW: 0.42
+  ac_max_thermal_kW: 4.8
+  cop_at_28C: 3.90
+  cop_drop_per_outdoor_K: 0.09
+  cop_lower_bound: 2.3
+  cop_upper_bound: 5.2
+peak_window:
+  start_hour_inclusive: 17
+  end_hour_inclusive: 21
+precool:
+  first_hour: 13
+  last_hour: 16
+  early_setpoint_C: 24.4
+storage:
+  thermal_energy_capacity_kWh: 6.0
+  charging_limit_kW_th: 1.15
+  discharging_limit_kW_th: 1.6
+  charging_efficiency: 0.92
+  discharging_efficiency: 0.94
+  self_discharge_fraction_per_hour: 0.003
+  charging_COP_multiplier: 0.85
+  discharge_pump_kWh_e_per_kWh_th: 0.045
+  charging_hours: [0, 1, 2, 3, 4, 5, 6]
+  discharge_hours: [17, 18, 19, 20, 21]
+  initial_stored_kWh_th: 0.0
+sensitivity:
+  storage_capacity_kWh_th: [3.0, 6.0, 9.0]
+  charge_COP_multiplier: [0.75, 0.85, 1.0]
+release:
+  numerical_kerala_2040_ready: false
+  actual_building_annual_savings_ready: false
+  comfort_validation_against_observed_room_temperature: false
+  actual_cooling_tariff_savings_ready: false
+  dispatch_optimized_against_grid_data: false

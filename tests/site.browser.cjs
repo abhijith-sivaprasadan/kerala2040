@@ -291,6 +291,31 @@ async function main(){
     await page.locator("#downloadSpecification").click();
     check((await scenarioPromise).suggestedFilename().endsWith(".json"),
       "Scenario download missing");
+    await page.locator("#wp6PowerChart svg").waitFor({state:"visible"});
+    check(await page.locator("#wp6PowerChart .research-point").count()===72,
+      "WP6 must show three hourly case profiles across all 24 synthetic hours");
+    check(await page.locator("#wp6RoomChart .research-point").count()===72,
+      "WP6 must show all 24 hours of zone temperature for each case");
+    check(await page.locator("#wp6StoreChart .research-point").count()===24,
+      "WP6 must show thermal energy state including empty final hour");
+    check(await page.locator("#wp6CaseCards .wp6-case-card").count()===3,
+      "WP6 three cases must be evaluated, not just described");
+    check(await page.locator("#wp6Sensitivity tbody tr").count()===9,
+      "WP6 model must regenerate all nine capacity x charging-COP sensitivities");
+    await page.locator("#wp6PowerChart svg").focus();
+    await page.locator("#wp6PowerChart svg").press("End");
+    check((await page.locator("#wp6PowerChart .research-chart-readout").innerText()).includes("23:00"),
+      "WP6 electricity chart must support full 24-hour keyboard inspection");
+    const wp6Response=await page.request.get(base+"data/wp6-cooling-pilot.json");
+    check(wp6Response.status()===200,"WP6 reproducible experiment not shipped");
+    const wp6=await wp6Response.json();
+    check(wp6.science_gates.real_Kerala_weather===false &&
+      wp6.science_gates.statewide_MW_or_MWh_claim===false &&
+      wp6.cases.conventional.summary.comfort_violation_hours===0 &&
+      wp6.cases.precooling.summary.comfort_violation_hours===0 &&
+      wp6.cases.chilled_water_storage.summary.end_store_kWh_th===0,
+      "WP6 must preserve model-only and comfort/terminal-state boundaries");
+    console.log("PASS WP6: three computed 24-hour cases, 9 sensitivities and source-scoped claims");
     console.log("PASS pathways: options and explicitly unsolved specification download");
 
     await route("atlas");
@@ -392,7 +417,7 @@ async function main(){
       "KMML measured-flow scientific release gates must remain closed");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
     await route("workbench");
-    check(await page.locator(".research-item").count()===15,
+    check(await page.locator(".research-item").count()===16,
       "All fourteen research streams must render");
     await page.locator("#workbenchSearch").fill("forest");
     check(await page.locator(".research-item").count()>=1,

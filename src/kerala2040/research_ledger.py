@@ -76,6 +76,15 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     ghg = _json(
         root, "data/evidence/total_energy/kerala_ghg_sector_bridge_2026_09_24.json"
     )
+    # Synthetic WP6 output is admitted as a bounded experiment, never as grid evidence.
+    from kerala2040.flexibility_cooling import build_pilot
+
+    flex = build_pilot()
+    assert flex["classification"] == (
+        "WP6_SYNTHETIC_24H_1R1C_COOLING_COMPARISON_NOT_KERALA_GRID_RESULT"
+    )
+    assert all(value is False for value in flex["science_gates"].values())
+    assert len(flex["sensitivity"]) == 9
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -512,6 +521,22 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
                 {"label": "PPAC full-year source audit", "href": ROOT + "docs/PPAC_KERALA_FULL_YEAR_SALES_SOURCE_AUDIT_2026_09_24.md"},
                 {"label": "Official sector GHG and source method", "href": ROOT + "docs/KERALA_TOTAL_ENERGY_ATLAS_SECTOR_GHG_METHODS_2026_09_24.md"},
                 {"label": "Dated GHG and GCV register", "href": ROOT + "data/evidence/total_energy/kerala_ghg_sector_bridge_2026_09_24.json"},
+            ],
+        },
+        {
+            "id": "flexibility", "title": "WP6 cooling, storage and demand flexibility",
+            "phase": "partial", "label": "Executable synthetic physics; site and grid calibration absent",
+            "metric": "3 cases / 9 sensitivities",
+            "unit": "one synthetic zone / 24 illustrative hours, not Kerala MW",
+            "summary": "An auditable 1R1C building model now compares conventional AC, pre-cooling and chilled-water storage under common comfort and end-state constraints.",
+            "completed": "Three reproduced 24-hour cases, detailed thermal/electric balances, direct AC and independent charging COP, 24–26 C comfort checks, night charging, morning state, evening and whole-day peak metrics, nine cold-store/COP sensitivity runs and site charts.",
+            "blocked": "No real Kerala weather, operative temperature/humidity validation, audited building-load measurements, actual hourly coincident grid peak, selected plant COP, tariffs, CO2, capex or annual Kerala scaling. Other WP6 EV/BESS/pumped/industrial cases are not completed.",
+            "action": "Validate source-approved building and cooling plant data, add humidity/occupancy, match Kerala hourly load, and extend to managed EV/industrial flexibility without equating shift to energy saving.",
+            "route": "pathways",
+            "evidence": [
+                {"label": "WP6 executable pilot and physical limits", "href": ROOT + "docs/WP6_COOLING_THERMAL_STORAGE_PILOT_2026_09_24.md"},
+                {"label": "WP6 synthetic input file", "href": ROOT + "configs/wp6_cooling_tes_illustrative.yaml"},
+                {"label": "WP6 code", "href": ROOT + "src/kerala2040/flexibility_cooling.py"},
             ],
         },
         {

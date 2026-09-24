@@ -1159,6 +1159,8 @@ async function init(){
       state.site.metadata.files.ppac_full_year_sales);
     if(typeof loadEnergyGHGBridge==="function")await loadEnergyGHGBridge(
       state.site.metadata.files.energy_ghg_bridge);
+    if(typeof loadWP6Pilot==="function")await loadWP6Pilot(
+      state.site.metadata.files.wp6_cooling_pilot);
     animateVisibleArtwork();
   }catch(err){
     console.error("Kerala2040 evidence load failed:",err);

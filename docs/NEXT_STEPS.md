@@ -1,5 +1,11 @@
 # Kerala 2040: next research steps
 
+## WP6 thermal storage and cooling: reproducible pilot complete · 24 September 2026
+
+The [first executable WP6 engineering chapter](WP6_COOLING_THERMAL_STORAGE_PILOT_2026_09_24.md) compares conventional AC, 13–16 pre-cooling and night-charged chilled-water storage for **one explicitly synthetic 24-hour profile**, from a versioned [1R1C specification](../configs/wp6_cooling_tes_illustrative.yaml). Conservation and same end-state checks, common 24–26°C comfort, early setpoint shortfall vs discomfort, charging parasitics/COP derate and independent whole-day/evening peak definitions are enforced; all three hourly series, nine sensitivity reruns and dynamic Pathways figures build from source. No Kerala hourly/ERA5 climate, statewide MW, annual financial or carbon claim is admitted. This opens a new WP6 topic rather than revisiting data requests.
+
+**WP6 next distinct tasks:** measured-building data and cooling/latent validation, demand-side EV charger availability and required terminal SoC, process-specific industrial flexible hours, BESS/pumped-storage technical options. Actual Kerala coincidence, tariffs and project economics remain gated until physically grounded source periods align.
+
 ## Total Energy Atlas: 2023 official sector emissions, heating-value method and source request pack · 24 September 2026
 
 The [sector GHG and energy-methods chapter](KERALA_TOTAL_ENERGY_ATLAS_SECTOR_GHG_METHODS_2026_09_24.md) and [auditable source register](../data/evidence/total_energy/kerala_ghg_sector_bridge_2026_09_24.json) add the DoECC official **calendar-2023** 20.64 MtCO₂e energy-sector estimate and separate transport/residential/industrial emission categories, explicitly **not equivalent to fuel×sector energy consumed**. The earlier 2005–2021 published inventory's **2020 16.96** vs current portal **17.09 MtCO₂e** disagreement is kept as an inventory revision gate. The BEE/CII/EMC annex lists fuel-specific **GCV**, which cannot silently substitute NCV or prove modern fuel grade. A concrete, public/authorised PPAC, EMC and DoECC original-data/definition request pack is ready; no request has been sent.

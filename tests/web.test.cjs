@@ -676,3 +676,45 @@ test("2023 official GHG cannot be represented as current FY fuel use or final en
   assert.throws(()=>vm.runInContext("validateEnergyGHGBridge(changed)",sandbox),
     /2023 emissions cannot become/);
 });
+
+
+test("WP6 pilot publishes dynamic counterfactuals without claiming real Kerala demand",()=>{
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  const js=fs.readFileSync(path.join(root,"docs/assets/research-charts.js"),"utf8");
+  for(const id of ["wp6Status","wp6CaseCards","wp6PowerChart","wp6RoomChart",
+                   "wp6StoreChart","wp6Sensitivity"]){
+    assert.ok(html.includes('id="'+id+'"'),"Missing WP6 visual: "+id);
+  }
+  assert.ok(js.includes("function validateWP6Pilot"));
+  assert.ok(js.includes("function renderWP6Pilot"));
+  assert.ok(html.includes('data/wp6-cooling-pilot.json'));
+  const ctx={console};vm.createContext(ctx);vm.runInContext(js,ctx);
+  const fake={
+    classification:"WP6_SYNTHETIC_24H_1R1C_COOLING_COMPARISON_NOT_KERALA_GRID_RESULT",
+    inputs:{classification:"synthetic_illustrative_1R1C_24_hour_cooling_only_NOT_Kerala_observations",
+            hourly_outdoor_C:Array(24).fill(30),
+            peak_window:{start_hour_inclusive:17,end_hour_inclusive:21}},
+    science_gates:{real_Kerala_weather:false},
+    cases:{
+      conventional:{hourly:Array(24).fill({}),summary:{
+        comfort_violation_hours:0,end_store_kWh_th:0,end_room_C:25.5,
+        total_grid_kWh_e:11,evening_grid_kWh_e:3}},
+      precooling:{hourly:Array(24).fill({}),summary:{
+        comfort_violation_hours:0,end_store_kWh_th:0,end_room_C:25.5}},
+      chilled_water_storage:{hourly:Array(24).fill({}),summary:{
+        comfort_violation_hours:0,end_store_kWh_th:0,end_room_C:25.5,
+        total_grid_kWh_e:12,evening_grid_kWh_e:1}}
+    },sensitivity:Array(9).fill({})
+  };
+  ctx.record=fake;
+  assert.equal(vm.runInContext("validateWP6Pilot(record)",ctx),undefined);
+  ctx.invalid=JSON.parse(JSON.stringify(fake));
+  ctx.invalid.science_gates.real_Kerala_weather=true;
+  assert.throws(()=>vm.runInContext("validateWP6Pilot(invalid)",ctx),/WP6 cannot publish/);
+  ctx.invalid=JSON.parse(JSON.stringify(fake));
+  ctx.invalid.cases.chilled_water_storage.summary.end_store_kWh_th=2;
+  assert.throws(()=>vm.runInContext("validateWP6Pilot(invalid)",ctx),/WP6 cannot publish/);
+  ctx.invalid=JSON.parse(JSON.stringify(fake));
+  ctx.invalid.cases.precooling.summary.comfort_violation_hours=1;
+  assert.throws(()=>vm.runInContext("validateWP6Pilot(invalid)",ctx),/WP6 cannot publish/);
+});
