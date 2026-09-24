@@ -344,6 +344,30 @@ async function main(){
           "No fictional industrial process may curtail safety-critical loads");
       }
     }
+    await page.locator("#wp6StorageChart svg").waitFor({state:"visible"});
+    check(await page.locator("#wp6StorageChart .research-point").count()===72,
+      "Three site-demand traces must show 24 hours: baseline, BESS, PSP");
+    check(await page.locator("#wp6StorageStock .research-point").count()===48,
+      "BESS and PSP state of charge must appear for all 24 hours");
+    check(await page.locator("#wp6StorageCards .wp6-case-card").count()===3,
+      "Baseline and both storage unit cells must be visible");
+    check(await page.locator("#wp6StorageSensitivity tbody tr").count()===18,
+      "Nine capacity and charge-efficiency reruns per technology required");
+    check((await page.locator("#wp6StorageSensitivity").innerText()).includes("Infeasible"),
+      "Undersized storage must not be silently presented as feasible");
+    const ps=await page.request.get(base+"data/wp6-bess-psp.json");
+    check(ps.status()===200,"Built synthetic storage output missing");
+    const screen=await ps.json();
+    check(screen.classification===
+      "WP6_SYNTHETIC_BESS_PSP_FIXED_SERVICE_NOT_KERALA_FEASIBILITY"&&
+      screen.cases.bess.summary.terminal_stored_kwh===0&&
+      screen.cases.psp.summary.terminal_stored_kwh===0&&
+      screen.cases.bess.summary.discharge_to_site_kwh===10&&
+      screen.cases.psp.summary.discharge_to_site_kwh===10&&
+      screen.input.source_discovery.source_page_image_verified===false&&
+      Object.values(screen.release).every(v=>v===false),
+      "Storage service, source, physics or non-admission boundary changed");
+    console.log("PASS WP6 STORAGE: 48 stored-hour rows, eighteen sensitivities and closed project gate");
     console.log("PASS WP6 EV/INDUSTRY: both complete service and nine sensitivities without source promotion");
     console.log("PASS WP6: three computed 24-hour cases, 9 sensitivities and source-scoped claims");
     console.log("PASS pathways: options and explicitly unsolved specification download");
