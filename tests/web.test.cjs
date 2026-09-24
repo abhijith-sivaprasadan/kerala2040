@@ -561,7 +561,7 @@ test("historical and atlas figures are real interactive data charts, not static 
     {key:"hydel",label:"Hydel",unit:"%",color:"#bd8236",visible:true}];
   const rendered=vm.runInContext("researchChartSVG(barRows,barSeries,'vertical')",sandbox);
   assert.match(rendered,/data-index="0"/);
-  assert.match(rendered,/73\\.8%/);
+  assert.match(rendered,/73\\.8 %/);
   assert.match(rendered,/tabindex="0"/);
   assert.match(rendered,/aria-label="Interactive/);
 });
