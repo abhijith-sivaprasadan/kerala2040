@@ -114,6 +114,26 @@ async function main(){
     await page.locator("#welcomeDismiss").click();
     await page.locator("#welcomeCard").waitFor({state:"hidden"});
     await page.screenshot({path:path.join(artifactDir,"homepage-desktop.png"),fullPage:true});
+    await page.locator("#totalEnergyHistoryChart svg").waitFor({state:"visible"});
+    check(await page.locator("#totalEnergyHistoryChart .research-point").count()===6,
+      "EMC total final energy must expose exactly six historic FY values");
+    check(await page.locator("#totalEnergyMixChart .research-point").count()===5,
+      "EMC fuel shares must preserve five original graphic labels including 0%");
+    check(await page.locator("#totalEnergyPPACChart .research-point").count()===5,
+      "PPAC must show five selected six-month products, not invented all-POL totals");
+    await page.locator("#totalEnergyHistoryChart svg").focus();
+    await page.locator("#totalEnergyHistoryChart svg").press("End");
+    check((await page.locator("#totalEnergyHistoryChart .research-chart-readout").innerText()).includes("2019-20"),
+      "Historical energy chart must expose FY2019-20 baseline on keyboard");
+    const energyResponse=await page.request.get(base+"data/total-energy-atlas.json");
+    check(energyResponse.status()===200,
+      "Source-qualified total-energy register missing from site");
+    const energy=await energyResponse.json();
+    check(energy.quantities_deliberately_null.kerala_total_final_energy_fy2024_25_mtoe===null &&
+      energy.ppac_provisional_half_year_2024_25.no_annualisation===true &&
+      energy.ppac_provisional_half_year_2024_25.end_date==="2024-09-30",
+      "Historical EMC and provisional PPAC must not become a current combined balance");
+    console.log("PASS TOTAL ENERGY ATLAS: EMC history, rounded fuel mix and bounded PPAC H1 sales");
     console.log("PASS home: 4 metrics, 354/365, 11 gaps; welcome dismisses; editorial system visible");
 
     const expected=process.env.KERALA_RESEARCH_SHA;

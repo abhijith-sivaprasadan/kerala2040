@@ -606,3 +606,25 @@ test("KMML Industry publishes interactive process and dated trial evidence witho
   assert.equal(vm.runInContext('kmmlGroup(fixture.streams.find(s=>s.id==="iron_oxide"))',sandbox),"existing");
   assert.equal(vm.runInContext('kmmlGroup(fixture.streams.find(s=>s.id==="heat"))',sandbox),"unquantified");
 });
+
+
+test("Kerala Total Energy Atlas keeps historical TFEC separate from half-year petroleum sales",()=>{
+  const page=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  const js=fs.readFileSync(path.join(root,"docs/assets/research-charts.js"),"utf8");
+  const d=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/total_energy/kerala_total_energy_source_register_2026_09_24.json"),"utf8"));
+  for(const id of ["totalEnergyStatus","totalEnergyHistoryChart",
+    "totalEnergyMixChart","totalEnergyPPACChart"]){
+    assert.ok(page.includes('id="'+id+'"'));
+  }
+  assert.ok(js.includes("function renderTotalEnergyAtlas"));
+  assert.ok(page.includes('data/total-energy-atlas.json'));
+  const sandbox={console};vm.createContext(sandbox);vm.runInContext(js,sandbox);
+  sandbox.source=d;
+  assert.equal(vm.runInContext("validateTotalEnergyAtlas(source)",sandbox),undefined);
+  sandbox.bad=JSON.parse(JSON.stringify(d));sandbox.bad.ppac_provisional_half_year_2024_25.no_annualisation=false;
+  assert.throws(()=>vm.runInContext("validateTotalEnergyAtlas(bad)",sandbox),/fiscal\/source\/sales/);
+  sandbox.bad=JSON.parse(JSON.stringify(d));
+  sandbox.bad.quantities_deliberately_null.kerala_total_final_energy_fy2024_25_mtoe=99;
+  assert.throws(()=>vm.runInContext("validateTotalEnergyAtlas(bad)",sandbox),/fiscal\/source\/sales/);
+});

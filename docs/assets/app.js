@@ -1153,6 +1153,8 @@ async function init(){
       state.site.metadata.files.historical_electricity,state.ledger);
     if(typeof loadKMMLCase==="function")await loadKMMLCase(
       state.site.metadata.files.kmml_case);
+    if(typeof loadTotalEnergyAtlas==="function")await loadTotalEnergyAtlas(
+      state.site.metadata.files.total_energy_atlas);
     animateVisibleArtwork();
   }catch(err){
     console.error("Kerala2040 evidence load failed:",err);
