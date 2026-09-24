@@ -1,9 +1,11 @@
 """Synchronized synthetic WP6 site dispatch; never measured Kerala telemetry."""
 from __future__ import annotations
 
-from kerala2040.flexibility_cooling import read_config, simulate as cooling_simulate
-from kerala2040.flexibility_dispatch import load_spec, dispatch
-from kerala2040.flexibility_storage import load_spec as storage_spec, simulate as storage_simulate
+from kerala2040.flexibility_cooling import read_config
+from kerala2040.flexibility_cooling import simulate as cooling_simulate
+from kerala2040.flexibility_dispatch import dispatch, load_spec
+from kerala2040.flexibility_storage import load_spec as storage_spec
+from kerala2040.flexibility_storage import simulate as storage_simulate
 
 CLASSIFICATION = "WP6_SYNTHETIC_SYNCHRONIZED_SITE_NOT_KERALA_GRID_DISPATCH"
 EVENING = range(17, 22)
