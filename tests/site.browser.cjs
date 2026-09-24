@@ -417,7 +417,7 @@ async function main(){
       "KMML measured-flow scientific release gates must remain closed");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
     await route("workbench");
-    check(await page.locator(".research-item").count()===15,
+    check(await page.locator(".research-item").count()===16,
       "All fourteen research streams must render");
     await page.locator("#workbenchSearch").fill("forest");
     check(await page.locator(".research-item").count()>=1,
