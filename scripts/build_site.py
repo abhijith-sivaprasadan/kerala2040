@@ -17,9 +17,9 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 from kerala2040.audit_readiness import build_audit
+from kerala2040.ppac_full_year import validate_ppac_sales
 from kerala2040.research_ledger import build_ledger
 from kerala2040.total_energy_atlas import validate_total_energy_source_register
-from kerala2040.ppac_full_year import validate_ppac_sales
 
 
 def validate_bundle(public: Path) -> dict:
