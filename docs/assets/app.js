@@ -156,6 +156,8 @@ function go(route){
   const target=routeIds.includes(route)?route:"overview";
   if(location.hash!=="#"+target)history.pushState(null,"","#"+target);
   showView(target);
+  const heading=document.querySelector(".view.active h1");
+  if(heading){heading.setAttribute("tabindex","-1");heading.focus?.({preventScroll:true});}
 }
 function showView(route){
   state.route=routeIds.includes(route)?route:"overview";
@@ -1082,6 +1084,8 @@ async function init(){
   try{
     await loadPlatformData();
     renderAll();
+    if(typeof loadHistoricalStudy==="function")await loadHistoricalStudy(
+      state.site.metadata.files.historical_electricity,state.ledger);
     animateVisibleArtwork();
   }catch(err){
     console.error("Kerala2040 evidence load failed:",err);
