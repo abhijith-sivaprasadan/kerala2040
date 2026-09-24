@@ -1,7 +1,7 @@
 """WP8 finance public-record boundary tests."""
+import json
 from copy import deepcopy
 from decimal import Decimal
-import json
 from pathlib import Path
 
 import pytest
