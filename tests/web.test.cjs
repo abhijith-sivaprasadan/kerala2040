@@ -718,3 +718,57 @@ test("WP6 pilot publishes dynamic counterfactuals without claiming real Kerala d
   ctx.invalid.cases.precooling.summary.comfort_violation_hours=1;
   assert.throws(()=>vm.runInContext("validateWP6Pilot(invalid)",ctx),/WP6 cannot publish/);
 });
+
+
+test("WP6 EV and industry panels expose service constraints and do not claim Kerala capacities",()=>{
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  const code=fs.readFileSync(path.join(root,"docs/assets/research-charts.js"),"utf8");
+  for(const id of ["wp6EvStatus","wp6EvCases","wp6EvChart","wp6EvJobs",
+      "wp6EvSensitivity","wp6IndustryStatus","wp6IndustryCases",
+      "wp6IndustryChart","wp6IndustryJobs","wp6IndustrySensitivity"]){
+    assert.ok(html.includes('id="'+id+'"'),id);
+  }
+  assert.ok(html.includes('data/wp6-ev-pilot.json'));
+  assert.ok(html.includes('data/wp6-industry-pilot.json'));
+  assert.ok(code.includes("function validateWP6ServiceDispatch"));
+  assert.ok(code.includes("function renderWP6ServiceDispatch"));
+  const sandbox={console};vm.createContext(sandbox);vm.runInContext(code,sandbox);
+  for(const kind of ["ev","industry"]){
+    const source=kind==="ev"?
+      "WP6_SYNTHETIC_EV_CHARGING_NOT_KERALA_FLEET":
+      "WP6_SYNTHETIC_NONCRITICAL_INDUSTRIAL_JOBS_NOT_KMML_OPERATIONS";
+    const label=kind==="ev"?
+      "WP6_SYNTHETIC_EV_DEADLINE_DISPATCH_NOT_KERALA_FLEET":
+      "WP6_SYNTHETIC_INDUSTRIAL_DEADLINE_DISPATCH_NOT_KMML_OPERATIONS";
+    const hour=Array.from({length:24},(_,i)=>({hour:i,background_kw:2,flexible_kw:1}));
+    const jobs=Array.from({length:3},(_,i)=>({
+      id:"job"+i,met_deadline:true,required_service_kwh:4,delivered_service_kwh:4
+    }));
+    const scenario={hourly:hour,jobs,summary:{
+      missed_deadlines:0,shared_flexible_limit_kw:8
+    }};
+    const input={classification:source,release:{real_kerala_data_admitted:false}};
+    if(kind==="industry"){
+      input.nonshiftable_safety_and_critical_duty_always_on=true;
+      input.industry_scope={
+        critical_load_curtailment_allowed:false,
+        utility_or_residual_recovery_claim:false
+      };
+    }
+    const d={classification:label,kind,input,
+      baseline:scenario,managed:scenario,
+      comparison:{total_electricity_change_kwh:0},
+      sensitivity:Array(9).fill({}),
+      science_gates:{year_2040_model_input_ready:false}
+    };
+    sandbox.record=d;
+    assert.equal(vm.runInContext('validateWP6ServiceDispatch(record,"'+kind+'")',sandbox),
+      undefined);
+    const bad=JSON.parse(JSON.stringify(d));
+    bad.comparison.total_electricity_change_kwh=-10;
+    sandbox.corrupt=bad;
+    assert.throws(()=>
+      vm.runInContext('validateWP6ServiceDispatch(corrupt,"'+kind+'")',sandbox),
+      /matched-service/);
+  }
+});
