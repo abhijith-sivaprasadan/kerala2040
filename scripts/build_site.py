@@ -368,7 +368,7 @@ def build_site(root: Path, output: Path) -> None:
         raise ValueError("The social thumbnail did not render as a PNG")
     # Immutable filenames prevent a new HTML page from running an old cached app.
     html = (output / "index.html").read_text(encoding="utf-8")
-    for name in ("app.js", "kerala.css"):
+    for name in ("app.js", "research-charts.js", "kerala.css"):
         asset = root / "docs/assets" / name
         digest = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
         versioned = f"{asset.stem}.{digest}{asset.suffix}"
@@ -434,6 +434,26 @@ def build_site(root: Path, output: Path) -> None:
     (data_dir / "research-ledger.json").write_text(
         json.dumps(ledger, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    # The research chapter is distinct from the pinned FY2024-25 observed bundle.
+    # Publish a frozen, public-safe aggregate JSON, never private SLDC row data.
+    historic = json.loads((root / "data/evidence/sldc/cet_historical_electricity_story_2026_09_24.json").read_text(encoding="utf-8"))
+    if (historic.get("classification") != "source_derived_historical_electricity_story_distinct_reporting_boundaries"
+            or historic.get("qa", {}).get("missing_fy2024_25") != 11
+            or historic.get("qa", {}).get("no_imputation") is not True
+            or historic.get("qa", {}).get("interval_telemetry_present") is not False
+            or historic.get("paired_fy_2020_21_2025_26", {}).get("matched_calendar_month_day_count") != 356
+            or len(historic.get("official_economic_review_2025_kerala_consumption_mu", {})) != 5
+            or len(historic.get("sldc_observed_fy", {})) != 6):
+        raise ValueError("Historical research data cannot be promoted without provenance/coverage")
+    name = "cet-historical-electricity.json"
+    (data_dir / name).write_text(json.dumps(historic, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    site["metadata"]["files"]["historical_electricity"] = name
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
