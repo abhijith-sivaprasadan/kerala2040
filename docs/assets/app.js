@@ -1151,6 +1151,8 @@ async function init(){
     renderAll();
     if(typeof loadHistoricalStudy==="function")await loadHistoricalStudy(
       state.site.metadata.files.historical_electricity,state.ledger);
+    if(typeof loadKMMLCase==="function")await loadKMMLCase(
+      state.site.metadata.files.kmml_case);
     animateVisibleArtwork();
   }catch(err){
     console.error("Kerala2040 evidence load failed:",err);
