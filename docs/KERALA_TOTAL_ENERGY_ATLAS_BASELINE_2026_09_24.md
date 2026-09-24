@@ -17,6 +17,8 @@ The [EMC Kerala/CII **State Energy Efficiency Action Plan**](https://keralaenerg
 | FY2018–19 | **10.33** | Same |
 | FY2019–20 | **10.78** | Same + section 1.4 prose |
 
+**Original-source contradiction, preserved:** the same EMC action plan's §3 projection-method prose (printed **p. 19**) says the FY2015 actual TFEC was **9.81 Mtoe**, whereas its own Figure 3 on printed p. 13 visibly labels **FY2015 as 9.18 Mtoe**. The series above is explicitly **Figure-3-transcribed**, not a resolved source-level annual balance. Neither value is silently corrected or used to calibrate Kerala2040's demand trajectory. Obtain the author's workbook/corrigendum before independent statistical use of FY2014–15. This conflict is machine-recorded in the evidence JSON and displayed in the interactive chart's source note.
+
 This six-point series is a **publisher's figure**, not a time series reconstructed or audited against original sector/fuel input spreadsheets. The report's separately stated **17.98 Mtoe FY2030** is *its projection* (printed p. 20), not a Kerala2040 observation or adopted forecast.
 
 ### Historical final-energy fuel mix—not electricity generation mix
