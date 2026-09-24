@@ -606,3 +606,31 @@ test("KMML Industry publishes interactive process and dated trial evidence witho
   assert.equal(vm.runInContext('kmmlGroup(fixture.streams.find(s=>s.id==="iron_oxide"))',sandbox),"existing");
   assert.equal(vm.runInContext('kmmlGroup(fixture.streams.find(s=>s.id==="heat"))',sandbox),"unquantified");
 });
+
+
+test("WP8 public financing chapter stays distinct from Kerala2040 projected costs",()=>{
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  const code=fs.readFileSync(path.join(root,"docs/assets/research-charts.js"),"utf8");
+  const d=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/finance/wp8_finance_source_ledger_2026_09_24.json"),"utf8"));
+  for(const id of ["financeHeading","financeStatus","financeAgency","financeKSEB",
+    "financeCAG","financeCases","financeCaseDetail"]){
+    assert.ok(html.includes('id="'+id+'"'));
+  }
+  assert.ok(html.includes('data/wp8-finance.json'));
+  assert.ok(code.includes("function renderWP8Finance"));
+  assert.ok(code.includes("data-finance-case"));
+  assert.ok(code.includes('aria-pressed'));
+  const sandbox={console};vm.createContext(sandbox);vm.runInContext(code,sandbox);
+  sandbox.ledger=d;
+  assert.equal(vm.runInContext("validateWP8Finance(ledger)",sandbox),true);
+  sandbox.corrupted=JSON.parse(JSON.stringify(d));
+  sandbox.corrupted.planning_fy2025_26.provisional_visual_qa=false;
+  assert.throws(()=>vm.runInContext("validateWP8Finance(corrupted)",sandbox),/WP8 publication/);
+  sandbox.corrupted=JSON.parse(JSON.stringify(d));
+  sandbox.corrupted.model_template.project_capex_inr=10000000;
+  assert.throws(()=>vm.runInContext("validateWP8Finance(corrupted)",sandbox),/WP8 publication/);
+  sandbox.corrupted=JSON.parse(JSON.stringify(d));
+  sandbox.corrupted.planning_fy2025_26.ksebl_proposed_outlay_components_inr_lakh[1].value=999;
+  assert.throws(()=>vm.runInContext("validateWP8Finance(corrupted)",sandbox),/reconciliation/);
+});
