@@ -820,3 +820,32 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
  .solar-figure-links{grid-template-columns:1fr}
  .solar-figure-links figure:first-child{grid-column:auto}
 }
+
+
+/* A source-qualified historical research insert, separate from pinned observed-day bundle. */
+.historical-evidence{margin:18px 0 clamp(35px,5vw,70px);padding:clamp(24px,4vw,55px);border:1px solid var(--line);border-top:6px solid var(--leaf);background:var(--surface)}
+.historical-evidence-head{display:flex;justify-content:space-between;align-items:end;gap:22px}
+.historical-evidence-head>div{max-width:820px}
+.historical-evidence-head h2{margin:13px 0;font-size:clamp(30px,4vw,54px)}
+.historical-evidence-head p{font-size:14px;color:var(--ink-soft);line-height:1.8}
+.historical-evidence-head>a{font-size:13px;font-weight:700;line-height:1.6;max-width:200px;color:var(--rust)}
+.historical-evidence-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:27px 0 22px}
+.historical-evidence-stats>div{background:var(--paper);padding:19px;min-width:0}
+.historical-evidence-stats span{font:600 11px/1.4 var(--mono);color:var(--rust);letter-spacing:.04em}
+.historical-evidence-stats strong{display:block;font:600 clamp(26px,3vw,39px)/1.2 var(--display);font-variant-numeric:tabular-nums;margin:7px 0;color:var(--ink)}
+.historical-evidence-stats strong small{font:500 14px var(--mono);color:var(--ink-soft)}
+.historical-evidence-stats p{font-size:12px;line-height:1.5;margin:0;color:var(--ink-soft)}
+.historical-evidence-figures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.historical-evidence-figures figure{min-width:0;margin:0;padding:11px 11px 19px;border:1px solid var(--line);background:var(--paper)}
+.historical-evidence-figures img{width:100%;height:auto;display:block;aspect-ratio:1300/690;object-fit:contain}
+.historical-evidence-figures figcaption{padding:8px 7px 0}
+.historical-evidence-figures h3{font:500 clamp(19px,2.1vw,27px)/1.25 var(--display);margin:5px 0 7px}
+.historical-evidence-figures p{font-size:12px;line-height:1.65;color:var(--ink-soft);margin:0}
+.historical-evidence-caveat{border-left:4px solid var(--gold);margin:25px 0 0;padding:10px 18px;background:var(--paper);font-size:13px;line-height:1.8;color:var(--ink-soft)}
+.historical-evidence-caveat a{color:var(--rust);font-weight:700}
+@media(max-width:820px){
+  .historical-evidence-head{display:block}
+  .historical-evidence-head>a{display:inline-block;margin-top:8px}
+  .historical-evidence-stats{grid-template-columns:1fr}
+  .historical-evidence-figures{grid-template-columns:1fr}
+}
