@@ -30,6 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Manjari:wght@400;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/kerala.css">
   <script defer src="assets/app.js"></script>
+  <script defer src="assets/research-charts.js"></script>
   <title>Kerala2040 — Our land. Our energy future.</title>
 </head>
 <body>
@@ -82,6 +83,17 @@
   </header>
 
   <main id="main">
+    <nav class="topic-trail" aria-label="Browse all Kerala2040 topics">
+      <span class="topic-trail-label">EXPLORE / വിഷയങ്ങൾ</span>
+      <a href="#overview" data-route="overview">Project</a>
+      <a href="#electricity" data-route="electricity">Electricity</a>
+      <a href="#atlas" data-route="atlas">Land &amp; ecology</a>
+      <a href="#pathways" data-route="pathways">2040 pathways</a>
+      <a href="#industry" data-route="industry">Industry</a>
+      <a href="#workbench" data-route="workbench">Research</a>
+      <a href="#data" data-route="data">Evidence</a>
+      <a href="#audit" data-route="audit">Open gaps</a>
+    </nav>
     <section class="view active" data-view="overview" aria-labelledby="homeTitle">
       <div class="hero scene">
         <div class="scene-sun" aria-hidden="true"></div><div class="scene-rain" aria-hidden="true"></div>
@@ -107,6 +119,12 @@
             <h1 id="homeTitle">A stronger<br><em>energy future</em><br>for Kerala.</h1>
             <p class="hero-description">Kerala depends on electricity arriving from outside the state, on water stored in its hills, and on land that cannot simply be built over. <strong>What mix of energy, storage, trade and industry can make the state more resilient by 2040—without sacrificing the places that make it Kerala?</strong></p>
             <div class="hero-actions"><button type="button" class="button button-cream" data-route="electricity">Start with Kerala today <span aria-hidden="true">↗</span></button><button type="button" class="button button-outline" data-route="pathways">The 2040 question <span aria-hidden="true">→</span></button></div>
+            <nav class="hero-topic-links" aria-label="Start in any research chapter">
+              <a href="#atlas" data-route="atlas">Land &amp; ecology ↗</a>
+              <a href="#industry" data-route="industry">Circular industry ↗</a>
+              <a href="#workbench" data-route="workbench">Research log ↗</a>
+              <a href="#data" data-route="data">Evidence ↗</a>
+            </nav>
             <div class="hero-foot"><span>01 / 08</span><span>Observed FY2024–25 → Research horizon 2040</span><span id="dataOrigin">Loading dated evidence…</span></div>
           </div>
         </div>
@@ -228,10 +246,10 @@
           <div><span>FY2024–25 SLDC COVERAGE</span><strong>354<small>/365 days</small></strong><p>Missing dates left missing; not an annual sum</p></div>
         </div>
         <div class="historical-evidence-figures">
-          <figure><a href="assets/cet-historical-official-consumption-20260924.svg" target="_blank" rel="noopener noreferrer"><img src="assets/cet-historical-official-consumption-20260924.svg" loading="lazy" alt="Official annual Kerala electricity consumption, from 22,540.32 MU in FY2020–21 to 29,311.76 MU in FY2024–25"></a><figcaption><h3>01 / Official annual consumption</h3><p>A consumer-side five-year series; not a sum of the separately published SLDC daily operational reports.</p></figcaption></figure>
-          <figure><a href="assets/cet-historical-matched-month-demand-20260924.svg" target="_blank" rel="noopener noreferrer"><img src="assets/cet-historical-matched-month-demand-20260924.svg" loading="lazy" alt="Matched calendar day means of SLDC reported daily consumption in FY2020–21 and FY2025–26, with paired-day counts in each month"></a><figcaption><h3>02 / Same dates, different years</h3><p>356 comparable month/day observations; FY2020–21 is a pandemic-affected comparator, and gaps are never imputed.</p></figcaption></figure>
-          <figure><a href="assets/cet-historical-import-hydro-shares-20260924.svg" target="_blank" rel="noopener noreferrer"><img src="assets/cet-historical-import-hydro-shares-20260924.svg" loading="lazy" alt="SLDC net-import and hydel energy shares by fiscal year, with the count of qualified days for each year"></a><figcaption><h3>03 / Imports and hydro</h3><p>Shares of reported consumption on qualified source dates. These energy-accounting shares do not establish hydro-caused import displacement.</p></figcaption></figure>
-          <figure><a href="assets/cet-historical-evening-peaks-20260924.svg" target="_blank" rel="noopener noreferrer"><img src="assets/cet-historical-evening-peaks-20260924.svg" loading="lazy" alt="FY2020–21 through FY2025–26 Statistics evening peak maxima and 95th percentiles on observed source dates"></a><figcaption><h3>04 / Peak stress</h3><p>Statistics evening-peak observations; not an 8,760-hour demand curve or Other Extrema's differently defined field.</p></figcaption></figure>
+          <figure><h3>01 / Official annual consumption</h3><p>A separate consumer-side annual measure, including open access and captive use.</p><div id="historyOfficial" class="live-research-chart" aria-live="polite">Loading verified chart data…</div></figure>
+          <figure><h3>02 / Same dates, different years</h3><p>Matched SLDC daily consumption, not a calendar-year annual sum.</p><div id="historyMatched" class="live-research-chart" aria-live="polite">Loading verified chart data…</div></figure>
+          <figure><h3>03 / Imports and hydro</h3><p>Ratios of summed MU on qualified source days, not causal displacement.</p><div id="historyShares" class="live-research-chart" aria-live="polite">Loading verified chart data…</div></figure>
+          <figure><h3>04 / Peak stress</h3><p>Separate Statistics evening-peak field, not a full interval trace.</p><div id="historyPeaks" class="live-research-chart" aria-live="polite">Loading verified chart data…</div></figure>
         </div>
         <p class="historical-evidence-caveat"><strong>Read the boundaries:</strong> the official FY2024–25 state-consumption figure, KSEBL sales, Kerala-periphery input and partial SLDC operational sums are not interchangeable. The validated 2040 energy-system model and metered interval chronology remain open research gates. <a href="https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/data/evidence/sldc/cet_historical_electricity_story_2026_09_24.json" target="_blank" rel="noopener noreferrer">Inspect the machine-readable scope and QA ↗</a></p>
       </section>
@@ -291,20 +309,10 @@
         <div class="section-eyebrow">FIELD RESULT / 2026.09.23 / കാറ്റ്</div>
         <h3 id="windPhase1ResultTitle" class="display-title">Wind phase 1. <em>Question answered.</em></h3>
         <p>District-normalized source-point subsets show how hypothetical slope limits change the interpretation of NIWE 150 m modelled wind. The figures below show <strong>not permitted wind sites or buildable MW</strong>. Click to view the scalable vector graphics.</p>
-        <div class="wind-figure-links">
-          <figure>
-            <a href="assets/wind-district-normalized-20260923.svg" target="_blank" rel="noopener noreferrer" aria-label="Open full size district-normalized descriptive NIWE and DSM figure">
-              <img src="assets/wind-district-normalized-20260923.svg" loading="lazy" decoding="async" width="1350" height="1115" alt="All 14 NWIC Kerala districts, alphabetically: percentage of finite-DSM-slope NIWE point centres with modelled wind speed at least 7 metres per second and sampled surface slope no more than 10 degrees. Palakkad 27.50%, Idukki 8.08%. Not eligible wind-farm sites.">
-            </a>
-            <figcaption>01 / All 14 districts · finite-slope-denominator shares, not land percentages. <a href="assets/wind-district-normalized-20260923.svg" target="_blank" rel="noopener noreferrer">View vector ↗</a></figcaption>
-          </figure>
-          <figure>
-            <a href="assets/wind-terrain-sensitivity-20260923.svg" target="_blank" rel="noopener noreferrer" aria-label="Open full size wind terrain sensitivity response figure">
-              <img src="assets/wind-terrain-sensitivity-20260923.svg" loading="lazy" decoding="async" width="1330" height="860" alt="Line chart of the retained percentage of the 20-degree reference point-centre subset for Palakkad, Idukki and Kerala at modelled wind at least 7 metres per second. At 5 degrees, 70.49%, 19.55% and 49.28% respectively.">
-            </a>
-            <figcaption>02 / Holding wind ≥7 m/s · slope-threshold change relative only to each ≤20° reference. <a href="assets/wind-terrain-sensitivity-20260923.svg" target="_blank" rel="noopener noreferrer">View vector ↗</a></figcaption>
-          </figure>
-        </div>
+        <div class="research-chart-gallery">
+        <figure><h3>01 / District-normalized wind resource</h3><p>NIWE source-point subset counts by district; thresholds are hypothetical, not siting permission.</p><div id="windDistrictChart" class="live-research-chart" aria-live="polite">Loading verified resource data…</div></figure>
+        <figure><h3>02 / Terrain sensitivity</h3><p>Choose a district, minimum wind speed and maximum modelled DSM slope; valid slope centres only.</p><div id="windSlopeChart" class="live-research-chart" aria-live="polite">Loading verified resource data…</div></figure>
+      </div>
         <p class="caption"><a href="https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/docs/WIND_PHASE1_DISTRICT_NORMALIZED_CLOSEOUT_2026_09_23.md" target="_blank" rel="noopener noreferrer">Read the completed wind phase 1 report, methods, missing-data accounting and open gates ↗</a></p>
       </section>
       <h3 class="subsection-title">All 14 district observations · alphabetical, not a suitability ranking</h3>
@@ -322,25 +330,10 @@
         <select id="solarDistrictChoice" aria-controls="solarDistrictDetail"><option value="">Loading original NWIC districts…</option></select>
       </div>
       <div id="solarDistrictDetail" class="district-normalized" aria-live="polite"></div>
-      <div class="wind-figure-links solar-figure-links">
-        <figure>
-          <a href="assets/solar-phase1-monthly-20260923.svg" target="_blank" rel="noopener noreferrer" aria-label="Open long-term monthly reference PVOUT chart">
-            <img src="assets/solar-phase1-monthly-20260923.svg" loading="lazy" decoding="async" width="1320" height="850" alt="Twelve unweighted monthly PVOUT source-pixel medians for Kerala, highest in February at 5.212 and lower in July at 2.941 kWh/kWp/day. These are marginal monthly medians, not a measured Kerala PV generation time series.">
-          </a>
-          <figcaption>01 / Source-grid monthly climatology; each monthly median is marginal. <a href="assets/solar-phase1-monthly-20260923.svg" target="_blank" rel="noopener noreferrer">Open vector ↗</a></figcaption>
-        </figure>
-        <figure>
-          <a href="assets/solar-phase1-district-annual-20260923.svg" target="_blank" rel="noopener noreferrer" aria-label="Open annual modelled PVOUT median by original NWIC district">
-            <img src="assets/solar-phase1-district-annual-20260923.svg" loading="lazy" decoding="async" width="1400" height="1170" alt="Annual modelled reference PVOUT by the 14 NWIC districts, alphabetical, unweighted source-pixel medians and count per district, not buildable PV capacity.">
-          </a>
-          <figcaption>02 / Modelled annual reference PVOUT, not the output of planned installations. <a href="assets/solar-phase1-district-annual-20260923.svg" target="_blank" rel="noopener noreferrer">Open vector ↗</a></figcaption>
-        </figure>
-        <figure>
-          <a href="assets/solar-phase1-district-seasonality-20260923.svg" target="_blank" rel="noopener noreferrer" aria-label="Open paired-pixel February to July PVOUT percentage decline by original NWIC district">
-            <img src="assets/solar-phase1-district-seasonality-20260923.svg" loading="lazy" decoding="async" width="1400" height="1170" alt="Paired original-pixel February to July PVOUT decline by district, ranging from 32.23 percent Thiruvananthapuram to 49.22 percent Wayanad, source-grid descriptive climatology.">
-          </a>
-          <figcaption>03 / Each source pixel paired across the months before computing its percentage change. <a href="assets/solar-phase1-district-seasonality-20260923.svg" target="_blank" rel="noopener noreferrer">Open vector ↗</a></figcaption>
-        </figure>
+      <div class="research-chart-gallery">
+        <figure><h3>01 / Monthly source climatology</h3><p>Long-term GSA reference-system monthly PVOUT medians, not measured electricity production.</p><div id="solarMonthChart" class="live-research-chart" aria-live="polite">Loading verified resource data…</div></figure>
+        <figure><h3>02 / Annual district medians</h3><p>All 14 NWIC districts, source-pixel median PVOUT, not buildable MW.</p><div id="solarAnnualChart" class="live-research-chart" aria-live="polite">Loading verified resource data…</div></figure>
+        <figure><h3>03 / Paired February-to-July change</h3><p>Each original PVOUT pixel is paired before calculating the district's median percentage change.</p><div id="solarSeasonChart" class="live-research-chart" aria-live="polite">Loading verified resource data…</div></figure>
       </div>
       <p class="caption"><a href="https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/docs/SOLAR_PHASE1_NWIC_DISTRICT_SEASONALITY_RESULT_2026_09_23.md" target="_blank" rel="noopener noreferrer">Completed solar phase 1 report, denominators, sources and remaining feasibility gates ↗</a></p>
     </section>
