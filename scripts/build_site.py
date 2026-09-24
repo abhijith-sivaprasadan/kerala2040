@@ -20,8 +20,8 @@ from kerala2040.audit_readiness import build_audit
 from kerala2040.energy_ghg_bridge import validate_energy_ghg_bridge
 from kerala2040.flexibility_cooling import build_pilot
 from kerala2040.flexibility_dispatch import build_demonstration
-from kerala2040.flexibility_storage import build_screen
 from kerala2040.flexibility_integrated import build_integrated
+from kerala2040.flexibility_storage import build_screen
 from kerala2040.ppac_full_year import validate_ppac_sales
 from kerala2040.research_ledger import build_ledger
 from kerala2040.total_energy_atlas import validate_total_energy_source_register
