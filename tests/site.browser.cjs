@@ -248,7 +248,7 @@ async function main(){
     check(await page.locator("#solarAnnualChart .research-point").count()===14 &&
       await page.locator("#solarSeasonChart .research-point").count()===14,
       "Both district solar source charts must render fourteen values");
-    await page.locator('#windDistrictChart .research-chart-pickers select').first().selectOption("8");
+    await page.locator('#windDistrictChart select[aria-label="Minimum wind speed (m/s)"]').selectOption("8");
     check((await page.locator("#windDistrictChart .research-chart-data").textContent()).includes("≥8 m/s"),
       "Wind speed threshold selector must update its reported source-defined denominator");
     check(await page.locator("#spatialPipeline [data-layer]").count()===7,
