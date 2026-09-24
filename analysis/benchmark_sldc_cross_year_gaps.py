@@ -97,7 +97,7 @@ def predict(\n    data: dict[date, float], day: date, min_years: int = 3, *,\n  
 
 
 def benchmark(data: dict[date, float], *, min_years: int = 3) -> dict:
-    errors = defaultdict(list)
+    errors = defaultdict(list)\n    residuals_by_year = defaultdict(lambda: defaultdict(list))
     paired = defaultdict(list)
     by_year = defaultdict(lambda: defaultdict(list))
     for day, actual in sorted(data.items()):
@@ -110,7 +110,7 @@ def benchmark(data: dict[date, float], *, min_years: int = 3) -> dict:
             if estimate is not None:
                 err = estimate - actual
                 errors[method].append(err)
-                by_year[str(day.year)][method].append(err)
+                by_year[str(day.year)][method].append(err)\n                residuals_by_year[day.year][method].append(err)
         if candidates["interpolation"] is not None and candidates["historical_adjusted"] is not None:
             paired["interpolation"].append(candidates["interpolation"] - actual)
             paired["historical_adjusted"].append(candidates["historical_adjusted"] - actual)
@@ -134,7 +134,7 @@ def benchmark(data: dict[date, float], *, min_years: int = 3) -> dict:
         "limitations": [
             "Historical analogue training excludes entire target calendar year; local interpolation and target-year baseline retain observed neighbouring days.",\n            "This is not leave-one-year-out evaluation of a model that uses no target-year observations.",
             "Other-year same-date ratios confound weekday, festivals and weather.",
-            "Prediction intervals and festival controls are not calibrated; do not interpret weekday matching as festival control.",
+            "Error-band coverage is marginal and retrospective; not a calibrated conditional interval for actual missing gaps.",\n            "No verified movable-festival calendar or weather controls; weekday matching is not festival control.",
             "Method comparison must use paired cases, not unequal eligible-date counts.",
             "Input daily source rows remain private; this report contains aggregates only.",
         ],
