@@ -1,0 +1,29 @@
+# Synthetic process-support duty. KMML topology is a research context, not meter evidence.
+version: 1
+classification: WP6_SYNTHETIC_NONCRITICAL_INDUSTRIAL_JOBS_NOT_KMML_OPERATIONS
+time_basis: one illustrative 24-hour day, hourly power held constant within each hour
+power_unit: kW_e
+energy_unit: kWh_e
+hourly_nonshiftable_site_load_kw: [2.0, 2.0, 2.0, 2.0, 2.0, 2.1, 2.1, 2.2, 2.4, 2.5, 2.6, 2.6, 2.8, 3.0, 3.1, 3.2, 3.4, 5.5, 5.8, 6.0, 5.7, 5.0, 3.3, 2.5]
+evening_window: [17, 18, 19, 20, 21]
+managed_shared_flexible_limit_kw: 8.0
+nonshiftable_safety_and_critical_duty_always_on: true
+jobs:
+  - {id: optional_batch_preparation, arrival_hour: 9, deadline_hour: 20, electricity_service_kwh: 12.0, flexible_power_limit_kw: 4.0, conversion_efficiency: 1.0}
+  - {id: optional_packaging, arrival_hour: 14, deadline_hour: 24, electricity_service_kwh: 16.0, flexible_power_limit_kw: 4.0, conversion_efficiency: 1.0}
+  - {id: noncritical_utility_recharge, arrival_hour: 16, deadline_hour: 24, electricity_service_kwh: 18.0, flexible_power_limit_kw: 6.0, conversion_efficiency: 1.0}
+sensitivity:
+  shared_flexible_limit_kw: [6.0, 8.0, 10.0]
+  optional_job_service_multiplier: [0.8, 1.0, 1.2]
+industry_scope:
+  site: illustrative industrial facility, not a KMML unit schedule
+  kmml_topology_reference: data/evidence/industry/kmml_source_bounded_case_2026_09_24.json
+  utility_or_residual_recovery_claim: false
+  production_constraint: same daily noncritical jobs fully completed by each deadline
+  critical_load_curtailment_allowed: false
+release:
+  verified_kmml_interval_meters: false
+  verified_production_shift_permissions: false
+  actual_flexible_capacity_or_cost: false
+  site_level_reliability_approved: false
+  kerala_2040_industrial_flexibility_admitted: false

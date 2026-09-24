@@ -668,3 +668,125 @@ async function loadWP6Pilot(filename){
     root.textContent="Cooling experiment failed its scientific checks; results withheld.";
   }
 }
+
+
+/* EV and optional industrial jobs are *synthetic*, service-equivalent dispatches.
+ * A shifted kWh is not automatically an avoided kWh or Kerala peak MW. */
+function validateWP6ServiceDispatch(d,kind){
+  const classes={
+    ev:"WP6_SYNTHETIC_EV_DEADLINE_DISPATCH_NOT_KERALA_FLEET",
+    industry:"WP6_SYNTHETIC_INDUSTRIAL_DEADLINE_DISPATCH_NOT_KMML_OPERATIONS"
+  }, inputs={
+    ev:"WP6_SYNTHETIC_EV_CHARGING_NOT_KERALA_FLEET",
+    industry:"WP6_SYNTHETIC_NONCRITICAL_INDUSTRIAL_JOBS_NOT_KMML_OPERATIONS"
+  };
+  if(!["ev","industry"].includes(kind)||
+     d?.classification!==classes[kind]||d?.kind!==kind||
+     d?.input?.classification!==inputs[kind]||
+     d?.baseline?.hourly?.length!==24||d?.managed?.hourly?.length!==24||
+     d?.baseline?.jobs?.length!==3||d?.managed?.jobs?.length!==3||
+     d?.baseline?.summary?.missed_deadlines!==0||
+     d?.managed?.summary?.missed_deadlines!==0||
+     d?.comparison?.total_electricity_change_kwh!==0||
+     d?.sensitivity?.length!==9||
+     !d?.science_gates||Object.values(d.science_gates).some(v=>v!==false)||
+     !d?.input?.release||Object.values(d.input.release).some(v=>v!==false)||
+     d?.baseline?.jobs?.some(j=>j.met_deadline!==true||
+       Math.abs(j.required_service_kwh-j.delivered_service_kwh)>0.00001)||
+     d?.managed?.jobs?.some(j=>j.met_deadline!==true||
+       Math.abs(j.required_service_kwh-j.delivered_service_kwh)>0.00001)||
+     (kind==="industry"&&
+       (d.input.nonshiftable_safety_and_critical_duty_always_on!==true||
+        d.input.industry_scope.critical_load_curtailment_allowed!==false||
+        d.input.industry_scope.utility_or_residual_recovery_claim!==false))){
+    throw new Error("WP6 EV/industry result failed matched-service, synthetic-source or safety gates");
+  }
+  for(let h=0;h<24;h++){
+    const a=d.baseline.hourly[h],b=d.managed.hourly[h];
+    if(a.hour!==h||b.hour!==h||
+       Math.abs(a.background_kw-b.background_kw)>0.000001||
+       a.flexible_kw>d.baseline.summary.shared_flexible_limit_kw+0.00001||
+       b.flexible_kw>d.managed.summary.shared_flexible_limit_kw+0.00001){
+      throw new Error("WP6 source requires equal nonshiftable loads and matched shared capacity");
+    }
+  }
+}
+function renderWP6ServiceDispatch(d,kind){
+  validateWP6ServiceDispatch(d,kind);
+  const prefix=kind==="ev"?"wp6Ev":"wp6Industry";
+  const label=kind==="ev"?"Battery charge by departure":"Optional duty completed by deadline";
+  const status=document.getElementById(prefix+"Status");
+  if(status)status.innerHTML=
+   '<span><b>24 hours</b> synthetic site background</span>'+
+   '<span><b>3 jobs</b> all departures/deadlines met</span>'+
+   '<span><b>0 kWh</b> modelled change in total charging or process electricity</span>'+
+   '<span><b>9</b> rerun sensitivity pairs</span>';
+  const cards=document.getElementById(prefix+"Cases");
+  if(cards)cards.innerHTML=["baseline","managed"].map(k=>{
+    const s=d[k].summary;
+    return '<article><small>'+chartEsc(k==="baseline"?"Arrival-order baseline":"Illustrative managed dispatch")+
+      '</small><h3>'+chartEsc(chartNumber(s.whole_day_site_peak_kw,"kW_e",3))+
+      '</h3><p>Whole-day site maximum, not Kerala grid MW</p>'+
+      '<dl><div><dt>Evening site maximum</dt><dd>'+
+      chartEsc(chartNumber(s.evening_site_peak_kw,"kW_e",3))+'</dd></div>'+
+      '<div><dt>Evening flexible electricity</dt><dd>'+
+      chartEsc(chartNumber(s.evening_flexible_kwh,"kWh_e",3))+'</dd></div>'+
+      '<div><dt>Flexible electricity all day</dt><dd>'+
+      chartEsc(chartNumber(s.electricity_kwh,"kWh_e",3))+'</dd></div>'+
+      '<div><dt>'+chartEsc(label)+'</dt><dd>'+
+      chartEsc(chartNumber(s.delivered_service_kwh,"kWh",3))+'</dd></div>'+
+      '<div><dt>Missed deadlines</dt><dd>'+s.missed_deadlines+'</dd></div>'+
+      '</dl></article>';
+  }).join("");
+  const rows=Array.from({length:24},(_,h)=>({
+    label:String(h).padStart(2,"0")+":00",
+    values:{baseline:d.baseline.hourly[h].site_total_kw,
+      managed:d.managed.hourly[h].site_total_kw},
+    note:(h>=17&&h<=21?"Within illustrative 17–21 evening. ":"Outside evening. ")+
+     'Unchanged other site load '+chartNumber(d.baseline.hourly[h].background_kw,"kW_e",3)+
+     "; both policies use the same shared electrical duty limit and required services."
+  }));
+  mountResearchChart(prefix+"Chart",{
+    style:"vertical",
+    source:"Kerala2040 WP6 original synthetic 24-hour scenario. NOT observed Kerala charging, factory operation, avoided annual energy, feeder or grid demand; no optimal dispatch claim.",
+    rows,
+    series:[{key:"baseline",label:"Arrival-order site demand",unit:"kW_e",decimals:3},
+      {key:"managed",label:"Managed site demand",unit:"kW_e",decimals:3}]
+  });
+  const jobs=document.getElementById(prefix+"Jobs");
+  if(jobs)jobs.innerHTML='<h3>'+chartEsc(label)+
+     '</h3><p>Identical useful service and the same eligibility window for both policies; no unserved work is reclassified as avoided electricity.</p>'+
+     '<div class="table-scroll"><table><thead><tr><th>Illustrative job</th>'+
+     '<th>Arrival</th><th>Deadline</th><th>Required service (kWh)</th>'+
+     '<th>Delivered in each policy (kWh)</th><th>Missed?</th></tr></thead><tbody>'+
+     d.managed.jobs.map(j=>'<tr><th scope="row">'+chartEsc(j.id)+
+       '</th><td>'+j.arrival_hour+':00</td><td>'+j.deadline_hour+
+       ':00</td><td>'+chartEsc(chartNumber(j.required_service_kwh,"",3))+
+       '</td><td>'+chartEsc(chartNumber(j.delivered_service_kwh,"",3))+
+       '</td><td>'+(!j.met_deadline?"YES":"No")+'</td></tr>').join("")+'</tbody></table></div>';
+  const sensitivity=document.getElementById(prefix+"Sensitivity");
+  if(sensitivity)sensitivity.innerHTML=
+   '<h3>Physical sensitivity — nine separately simulated pairs</h3>'+
+   '<p>Both policies receive identical conditions in each row. These are engineering scenarios, not measured Kerala availability or production.</p>'+
+   '<div class="table-scroll"><table><thead><tr>'+
+   '<th>Shared limit (kW)</th><th>'+chartEsc(kind==="ev"?"Charge efficiency":"Duty multiplier")+
+   '</th><th>Arrival-order evening max (kW)</th><th>Managed evening max (kW)</th>'+
+   '<th>All-day managed max (kW)</th><th>Missed jobs</th></tr></thead><tbody>'+
+   d.sensitivity.map(r=>'<tr><td>'+chartEsc(chartNumber(r.shared_limit_kw,"",1))+
+     '</td><td>'+chartEsc(chartNumber(kind==="ev"?r.charging_efficiency:
+       r.service_multiplier,"",2))+
+     '</td><td>'+chartEsc(chartNumber(r.baseline_evening_site_peak_kw,"",3))+
+     '</td><td>'+chartEsc(chartNumber(r.managed_evening_site_peak_kw,"",3))+
+     '</td><td>'+chartEsc(chartNumber(r.managed_whole_day_site_peak_kw,"",3))+
+     '</td><td>'+r.missed_deadlines+'</td></tr>').join("")+'</tbody></table></div>';
+}
+async function loadWP6ServiceDispatch(filename,kind){
+  const id=kind==="ev"?"wp6EvChart":"wp6IndustryChart";
+  const root=document.getElementById(id);if(!root)return;
+  if(filename!==(kind==="ev"?"wp6-ev-pilot.json":"wp6-industry-pilot.json")){
+    root.textContent="WP6 illustrative source not admitted into this research snapshot.";return;
+  }
+  try{renderWP6ServiceDispatch(await getJSON(filename),kind);}
+  catch(error){console.error("WP6 constrained service dispatch admission failed",error);
+    root.textContent="WP6 dispatch/source validation failed; results withheld.";}
+}

@@ -1161,6 +1161,10 @@ async function init(){
       state.site.metadata.files.energy_ghg_bridge);
     if(typeof loadWP6Pilot==="function")await loadWP6Pilot(
       state.site.metadata.files.wp6_cooling_pilot);
+    if(typeof loadWP6ServiceDispatch==="function"){
+      await loadWP6ServiceDispatch(state.site.metadata.files.wp6_ev_pilot,"ev");
+      await loadWP6ServiceDispatch(state.site.metadata.files.wp6_industry_pilot,"industry");
+    }
     animateVisibleArtwork();
   }catch(err){
     console.error("Kerala2040 evidence load failed:",err);
