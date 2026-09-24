@@ -51,6 +51,12 @@ The original **NWIC District Boundary GeoJSON** was checked against the same NWI
 
 Completeness here applies **only to descriptive administrative point assignment**, not land-use clearance, notified forest/paddy/wetland/ESZ boundaries, turbine siting, grid hosting, source-vintage/reuse-rights review, eligible km² or feasible MW. Every such capacity/model gate remains closed.
 
+### Website research experience · interactive source charts and topic navigation · 24 September 2026
+
+The historical electricity, wind and solar figure galleries now render **from audited packaged aggregate JSON and the pinned research ledger**, not linked pre-rendered SVG images. Nine newly interactive charts expose per-point source readouts, touch/click, keyboard arrow inspection and source tables; comparison plots also expose series controls, while wind supports original source-threshold and district selectors. The existing FY2024–25 monthly electricity and hydro timelines now offer date-aware readouts without filling missing days. Sitewide link navigation exposes **all eight topics** on every view; mobile navigation switches before the header becomes overcrowded.
+
+The official annual KSEBL-attributed historical series is **distinct from the pinned SLDC FY2024–25 observed-day bundle** and has independent source/coverage admission checks. The static SVGs remain as optional repository poster exports, not the browser's chart engine. The website repository still pins its own immutable research commit; a research merge alone never automatically advances that release pointer.
+
 ### Historical electricity story · CET source-audited synthesis · 24 September 2026
 
 **The historical electricity chapter now has a defined research answer, not only a list of inputs:** the [KSEBL-attributed annual state-consumption series](docs/CET_HISTORICAL_ELECTRICITY_STORY_2026_09_24.md) rises from **22,540.32 MU (FY2020–21)** to **29,311.76 MU (FY2024–25)**; separately, Kerala SLDC source-matched operational daily consumption rises **24.12% on 356 paired calendar dates** from FY2020–21 to FY2025–26. Net import and hydel shares are reported on **qualified observed FY days**, with explicit FY coverage, and evening peak fields are never represented as metered hourly load. **The KSEBL and SLDC numbers use different reporting boundaries even when the SLDC FY has 365/365 days; do not subtract them to invent losses or an annual correction.**
