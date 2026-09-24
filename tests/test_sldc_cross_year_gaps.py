@@ -45,3 +45,28 @@ def test_paired_comparison_has_equal_n():
     pair = result["paired_interpolation_vs_historical"]
     assert pair["interpolation"]["n"] == pair["historical_adjusted"]["n"]
     assert pair["interpolation"]["n"] > 100
+
+
+def test_whole_year_excluded_from_analogue_training():
+    data = fixture_data()
+    day = date(2022, 9, 20)
+    actual = data.pop(day)
+    other_years = {d: value for d, value in data.items() if d.year != day.year}
+    base = module.predict(data, day, historical_training=other_years)
+    contaminated = dict(data)
+    for d in list(contaminated):
+        if d.year == day.year and d != day:
+            contaminated[d] = 9999
+    changed = module.predict(contaminated, day, historical_training=other_years)
+    assert base["historical_analogue_years"] == changed["historical_analogue_years"]
+    assert module.historical_factor(other_years, day) == module.historical_factor(other_years, day)
+    assert actual > 0
+
+
+def test_year_excluded_band_coverage_reported():
+    result = module.benchmark(fixture_data())
+    for method, diagnostic in result["year_excluded_error_band_diagnostics"].items():
+        assert method in result["methods_all_eligible"]
+        assert diagnostic["nominal_coverage"] == 0.9
+        assert diagnostic["evaluated_n"] > 0
+        assert 0 <= diagnostic["empirical_coverage"] <= 1
