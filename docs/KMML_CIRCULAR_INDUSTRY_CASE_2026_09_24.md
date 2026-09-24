@@ -20,6 +20,8 @@
 | KMML historical self-record | [Growth story](https://www.kmml.com/kmml-growth-story) and [R&D](https://www.kmml.com/research-and-development) | Brick commercialization claimed for 1998; R&D development of value-added oxide; sponge commissioning recorded for 2011 | 2026 brick sales, percentage recovered, operating Mg recovery |
 | User-supplied historical introductory slides/report scans, authorship/version unclear | [Source-qualified transcription](KMML_HISTORICAL_PROCESS_EVIDENCE_2026_09_21.md) | Names of IBP/ARP/U200/U300 sheets, historical equipment/nameplate *leads*, process chemistry examples | Primary authenticated current technical flowsheets, production/permit/financial inputs |
 
+**Nomenclature QA:** KMML's short ARP webpage carries the caption “U200 Acid regeneration system”, while the independent pigment facility page names **U200 as chlorination**. Treat the ARP text as evidence for the acid-regeneration *process*, not proof that both pages refer to the same physical U200 asset or asset code; request as-built plant tag drawings before unifying labels. In our schematic, ARP remains a separate process boundary.
+
 **Time rule:** The 2022–23 report’s 1–2 g/L TiO2-fines claim and roughly 300 m³/day backwash claim are *dated plant self-reports*, not a current measured series. Historical pigment `40,000 t/y`, TiCl4 `90,000 t/y` and `500 t/y` sponge nameplates are not annual production. The pre-2010 slide calling the sponge line “planned” is superseded **only as to commissioning history** by KMML’s 2011 history, not as to current capacity utilisation.
 
 ## 3. Flow diagram — **not to scale; all arrow quantities unknown**
