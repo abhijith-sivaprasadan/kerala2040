@@ -16,7 +16,7 @@ def test_workbench_ledger_is_a_fail_closed_index():
     assert ledger["classification"] == (
         "dated_repository_research_progress_NOT_geospatial_or_model_readiness"
     )
-    assert len(ledger["workstreams"]) == 14
+    assert len(ledger["workstreams"]) == 15
     assert ledger["ecological_capacity_ceiling_ready"] is False
     assert ledger["eligible_area_sq_km"] is None
     assert ledger["potential_mw"] is None
