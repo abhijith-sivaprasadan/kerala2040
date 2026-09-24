@@ -25,7 +25,7 @@ def test_workbench_ledger_is_a_fail_closed_index():
     assert ledger["audit_open_findings"] == ledger["audit_finding_count"]
     ids = {row["id"] for row in ledger["workstreams"]}
     assert ids == {"electricity", "generators", "hydro", "grid", "solar", "wind", "lris", "lulc",
-                   "boundary", "landslide", "forest", "wetlands", "industry", "modelling"}
+                   "boundary", "landslide", "forest", "wetlands", "industry", "finance", "modelling"}
     assert all(row["evidence"] and row["blocked"] for row in ledger["workstreams"])
 
 
