@@ -238,7 +238,7 @@ async function main(){
     await page.locator("#financeCases [data-finance-case]").first().waitFor();
     check(await page.locator("#financeCases button").count()===6,
       "WP8 must present six distinct payer structures");
-    check((await page.locator("#financeKSEB").innerText()).includes("104,218"),
+    check((await page.locator("#financeKSEB").innerText()).includes("1,04,218"),
       "Utility own-fund proposed budget must remain distinct");
     check((await page.locator("#financeCAG").innerText()).includes("48,510.2"),
       "CAG statewide post-audit deficit must remain labelled as fiscal context");
