@@ -1,0 +1,190 @@
+{
+  "classification": "PPAC_KERALA_ANNUAL_OIL_COMPANY_SALES_NOT_FINAL_ENERGY_OR_SECTOR_ALLOCATION",
+  "date_prepared": "2026-09-24",
+  "place": "Kerala",
+  "units": "thousand_metric_tonnes",
+  "source_register": {
+    "ppac_h1_fy2024_25_official": {
+      "publisher": "Petroleum Planning and Analysis Cell (PPAC), Government of India",
+      "url": "https://ppac.gov.in/download.php?file=rep_studies%2F1733114272_Ready+Reckoner_H1_FY+2024-25_Final.pdf",
+      "title": "India's Oil & Gas Ready Reckoner, H1 FY2024–25",
+      "locator": "statewise sales all-POL table 6.3(A), and statewise MS table in source",
+      "retrieval": "original PPAC publisher-indexed PDF text",
+      "original_page_image_verified": false,
+      "covered_fy": [
+        "2019-20",
+        "2020-21",
+        "2021-22",
+        "2022-23",
+        "2023-24"
+      ],
+      "status": "publisher_indexed_text_no_page_image"
+    },
+    "ppac_older_2019_20": {
+      "publisher": "Petroleum Planning and Analysis Cell (PPAC)",
+      "url": "https://ppac.gov.in/uploads/rep_studies/1709718330_ready-recknor-2023_October.pdf",
+      "title": "PPAC Ready Reckoner October 2023",
+      "locator": "statewise POL consumption/sales historic row for Kerala",
+      "retrieval": "original PPAC publisher-indexed PDF text",
+      "original_page_image_verified": false,
+      "covered_fy": [
+        "2019-20"
+      ],
+      "status": "publisher_indexed_text_no_page_image"
+    },
+    "ppac_fy2024_25_primary_unretrieved": {
+      "publisher": "Petroleum Planning and Analysis Cell (PPAC)",
+      "url": "https://ppac.gov.in/download.php?file=rep_studies%2F1751629660_Readt%20_Reckoner_FY_2024_25.pdf",
+      "title": "India's Oil & Gas Ready Reckoner, FY2024–25",
+      "locator": "state-wise sales tables 6.4(A), 6.4(B), 6.4(C)",
+      "retrieval": "publisher original PDF responded application/octet-stream and could not be visually opened; exact publication ID independently located",
+      "original_page_image_verified": false,
+      "status": "primary_document_not_visually_admitted"
+    },
+    "fy2024_25_secondary_transcription": {
+      "publisher": "Scribd mirror of identified PPAC FY2024–25 Ready Reckoner",
+      "url": "https://www.scribd.com/document/889885325/PPAC-Ready-Reckoner-FY-2024-25",
+      "title": "Ready Reckoner FY2024–25 mirror, tables 6.4(A)-(C)",
+      "locator": "Table 6.4(A) Kerala all-POL, Table 6.4(B) Kerala MS, Table 6.4(C) Kerala HSD",
+      "retrieval": "third-party full-text mirror, not publisher-original image",
+      "original_page_image_verified": false,
+      "status": "secondary_transcription_unverified_at_primary"
+    },
+    "emc_seeap": {
+      "publisher": "Energy Management Centre Kerala / CII",
+      "url": "https://keralaenergy.gov.in/files/PDF2023/State_energy_efficiency_action_plan.pdf",
+      "status": "published historic end-use report; source fuel-by-sector workbook not found in public EMC downloads"
+    },
+    "ppac_sales_portal": {
+      "publisher": "PPAC",
+      "url": "https://ppac.gov.in/consumption/state-wise",
+      "status": "interactive statewise data link requires access workflow; no authenticated workbook bytes recovered"
+    }
+  },
+  "annual_kerala_rows": [
+    {
+      "fy": "2019-20",
+      "all_pol_tmt": 6533.5,
+      "ms_tmt": 1558.8,
+      "hsd_tmt": null,
+      "all_pol_tier": "publisher_indexed_text",
+      "ms_tier": "publisher_indexed_text",
+      "hsd_tier": "missing",
+      "source_ids": [
+        "ppac_h1_fy2024_25_official",
+        "ppac_older_2019_20"
+      ]
+    },
+    {
+      "fy": "2020-21",
+      "all_pol_tmt": 5461.3,
+      "ms_tmt": 1371.1,
+      "hsd_tmt": 1922.7,
+      "all_pol_tier": "publisher_indexed_text",
+      "ms_tier": "secondary_transcription",
+      "hsd_tier": "secondary_transcription",
+      "source_ids": [
+        "ppac_h1_fy2024_25_official",
+        "fy2024_25_secondary_transcription"
+      ]
+    },
+    {
+      "fy": "2021-22",
+      "all_pol_tmt": 5901.7,
+      "ms_tmt": 1495.8,
+      "hsd_tmt": 2101.1,
+      "all_pol_tier": "publisher_indexed_text",
+      "ms_tier": "secondary_transcription",
+      "hsd_tier": "secondary_transcription",
+      "source_ids": [
+        "ppac_h1_fy2024_25_official",
+        "fy2024_25_secondary_transcription"
+      ]
+    },
+    {
+      "fy": "2022-23",
+      "all_pol_tmt": 6879.1,
+      "ms_tmt": 1747.6,
+      "hsd_tmt": 2485.6,
+      "all_pol_tier": "publisher_indexed_text",
+      "ms_tier": "secondary_transcription",
+      "hsd_tier": "secondary_transcription",
+      "source_ids": [
+        "ppac_h1_fy2024_25_official",
+        "fy2024_25_secondary_transcription"
+      ]
+    },
+    {
+      "fy": "2023-24",
+      "all_pol_tmt": 6891.7,
+      "ms_tmt": 1791.5,
+      "hsd_tmt": 2413.3,
+      "all_pol_tier": "publisher_indexed_text",
+      "ms_tier": "secondary_transcription",
+      "hsd_tier": "secondary_transcription",
+      "source_ids": [
+        "ppac_h1_fy2024_25_official",
+        "fy2024_25_secondary_transcription"
+      ]
+    },
+    {
+      "fy": "2024-25",
+      "all_pol_tmt": 6939.7,
+      "ms_tmt": 1879.4,
+      "hsd_tmt": 2419.3,
+      "all_pol_tier": "secondary_transcription_unverified_at_primary",
+      "ms_tier": "secondary_transcription_unverified_at_primary",
+      "hsd_tier": "secondary_transcription_unverified_at_primary",
+      "source_ids": [
+        "ppac_fy2024_25_primary_unretrieved",
+        "fy2024_25_secondary_transcription"
+      ]
+    }
+  ],
+  "vintage_disagreements": [
+    {
+      "fy": "2022-23",
+      "earlier_all_pol_tmt": 6882.6,
+      "later_all_pol_tmt": 6879.1,
+      "earlier_source_id": "ppac_older_2019_20",
+      "later_source_id": "ppac_h1_fy2024_25_official",
+      "interpretation": "different publication vintages; older provisional or revised figure; not sum/add or silently mix"
+    },
+    {
+      "fy": "2024-25",
+      "older_half_year_selected_products_are_not_annual_subtotals": true,
+      "interpretation": "the earlier H1 product-only panel remains a separate source population with its own validation limitations"
+    }
+  ],
+  "emc_data_request": {
+    "status": "underlying_fuel_by_sector_workbook_not_publicly_located",
+    "requested_materials": [
+      "Underlying spreadsheet/table for TFEC Figure 3 FY2014–15–FY2019–20 and FY2019–20 Figure 4",
+      "Fuel-by-final-consuming-sector table including electricity, LPG, petrol, diesel, ATF, kerosene, industrial fuel oil, coal, gas and captive consumption",
+      "Original PPAC product data/source vintage and reconciliation of statewide sales with final energy",
+      "Fuel-specific net calorific factors and attribution for non-energy feedstock, refinery fuel, power conversion fuel and re-exports",
+      "Sectoral allocation methodology for road/marine/aviation, domestic cooking, industry process heat and buildings",
+      "Original FY2015 figure (9.18) versus section 3 prose (9.81) Mtoe correction or workbook explanation",
+      "Source version, period/units and rights to publish aggregated derived results"
+    ],
+    "not_obtained": true
+  },
+  "unsupported_current_results": {
+    "fy2024_25_kerala_total_final_energy_mtoe": null,
+    "all_products_fuel_specific_energy_mtoe": null,
+    "fy2024_25_oil_import_share_pct": null,
+    "fy2024_25_oil_end_use_by_sector_mtoe": null,
+    "fy2024_25_energy_related_emissions_mtco2e": null,
+    "fy2024_25_oil_retail_sales_vs_in_state_use_adjustment": null
+  },
+  "qa": {
+    "primary_fy2024_25_pdf_image_verified": false,
+    "secondary_fy2024_25_publication_crosswalk_complete": true,
+    "all_rows_full_fiscal_year": true,
+    "all_pol_includes_subcategory_ms_hsd": true,
+    "no_annualisation_of_h1": true,
+    "no_mass_to_energy_without_source_factors": true,
+    "no_combining_distinct_source_vintages": true,
+    "revenue_cost_or_kerala_import_claim_ready": false
+  }
+}
