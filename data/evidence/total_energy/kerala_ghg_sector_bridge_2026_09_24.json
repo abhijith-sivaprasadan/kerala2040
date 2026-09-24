@@ -1,0 +1,160 @@
+{
+  "classification": "KERALA_GHG_2023_OFFICIAL_SECTOR_EMISSIONS_NOT_FINAL_ENERGY_OR_2024_25",
+  "captured_date": "2026-09-24",
+  "period": "calendar_2023",
+  "unit": "MtCO2e",
+  "sources": {
+    "current_portal": {
+      "publisher": "Directorate of Environment and Climate Change, Government of Kerala",
+      "title": "Kerala GHG Inventory: Energy Sector, estimates 2005–2023",
+      "url": "https://climatechange.envt.kerala.gov.in/emissions-estimates/energy/",
+      "method": "official first-party HTML source; distinct updated emissions inventory vintage",
+      "status": "official_portal_2023_not_metered_fuel_use"
+    },
+    "report_2024": {
+      "publisher": "Directorate of Environment and Climate Change / Vasudha Foundation",
+      "title": "Kerala GHG Inventory Report, June 2024, 2005–2021",
+      "url": "https://climatechange.envt.kerala.gov.in/wp-content/uploads/2024/06/Kerala-GHG-Inventory-Report_June24-1.pdf",
+      "pdf_page_index": [
+        35,
+        72,
+        95,
+        96,
+        107,
+        108
+      ],
+      "status": "official prior report, not same 2023 revision"
+    },
+    "methodology": {
+      "publisher": "Directorate of Environment and Climate Change",
+      "title": "Kerala GHG Inventory Energy methodology",
+      "url": "https://climatechange.envt.kerala.gov.in/methodology/energy/",
+      "status": "first-party methodology page; specific detailed historical PDF dates to 2021; do not infer it fully documents 2023 revisions"
+    },
+    "seeap_annexure": {
+      "publisher": "BEE / CII / EMC Kerala",
+      "title": "State Energy Efficiency Action Plan, Annexure Table 25 Gross Calorific Value of Fuels",
+      "url": "https://keralaenergy.gov.in/wp-content/uploads/2023/07/SEEAP-report_ready-to-print.pdf",
+      "printed_page": 109,
+      "pdf_page_index": 118,
+      "status": "official publisher PDF text; no original fuel-by-sector workbook; GCV not NCV"
+    }
+  },
+  "energy_sector_2023_mtco2e": 20.64,
+  "energy_share_of_state_gross_excluding_lulucf_pct_approx": 80,
+  "categories": [
+    {
+      "id": "transport",
+      "name": "Transport",
+      "mtco2e": 13.59,
+      "share_of_energy_pct": 65.87,
+      "source": "current_portal",
+      "comment": "Includes road and other transport; do not equate with fuel by sector."
+    },
+    {
+      "id": "residential",
+      "name": "Residential energy",
+      "mtco2e": 3.2,
+      "share_of_energy_pct": 15.48,
+      "source": "current_portal",
+      "comment": "Official website says ~99.6% of this category due to LPG, not 99.6% of all Kerala energy or LPG tonnes."
+    },
+    {
+      "id": "industrial",
+      "name": "Industrial energy",
+      "mtco2e": 1.89,
+      "share_of_energy_pct": 9.16,
+      "source": "current_portal",
+      "comment": "FO/LSHS = 0.74 MtCO2e and natural gas = 0.62 MtCO2e within this emissions category."
+    }
+  ],
+  "within_sector_2023": {
+    "transport_road_mtco2e_approx": 11.83,
+    "transport_road_fraction_of_transport_pct_approx": 87,
+    "residential_lpg_fraction_of_residential_emissions_pct_approx": 99.6,
+    "industrial_fo_lshs_mtco2e": 0.74,
+    "industrial_gas_mtco2e": 0.62
+  },
+  "historic_source_vintage_conflict": {
+    "calendar_year": 2020,
+    "old_report_energy_mtco2e": 16.96,
+    "current_portal_energy_mtco2e": 17.09,
+    "status": "non_identical_inventory_vintages; no merged trend; reconcile methodology and data revisions with DoECC"
+  },
+  "historical_seeap_gcv": {
+    "basis": "GROSS CALORIFIC VALUE as printed (kcal/kg), NOT net calorific value; no toe-conversion claims; published as method reference ONLY",
+    "values": [
+      {
+        "product": "LPG",
+        "kcal_per_kg": 11318
+      },
+      {
+        "product": "Motor gasoline",
+        "kcal_per_kg": 10717
+      },
+      {
+        "product": "Gas/diesel oil",
+        "kcal_per_kg": 10357
+      },
+      {
+        "product": "Fuel oil",
+        "kcal_per_kg": 9866
+      },
+      {
+        "product": "Kerosene",
+        "kcal_per_kg": 10467
+      },
+      {
+        "product": "Kerosene type jet fuel",
+        "kcal_per_kg": 10667
+      },
+      {
+        "product": "Naphtha",
+        "kcal_per_kg": 10767
+      }
+    ],
+    "note": "Source Table 25 is reference heating value, not measured Kerala 2024–25 fuel quality; GCV cannot be silently used in NCV / IEA toe or IPCC emission calculations."
+  },
+  "source_method_findings": [
+    "June 2024 official report describes national-level transport/retail percentage applied to Kerala petrol and diesel, not fully metered year-by-year Kerala sector demand.",
+    "June 2024 source describes interpolations and FY-to-CY transforms, so annual emission outputs are not unprocessed fuel meter readings.",
+    "2023 portal is updated inventory; methodology and revisions relative to June 2024 PDF have not been resolved.",
+    "2023 inventory excludes power-import embodied generation emissions unless methodology explicitly establishes coverage; avoid asserting included or excluded from source absence."
+  ],
+  "crosswalk": [
+    {
+      "measure": "Kerala PPAC all-POL",
+      "year": "FY2024–25",
+      "unit": "thousand tonnes sales",
+      "allowed_join": false,
+      "reason": "mass of sales by product vs calendar 2023 modelled emissions; emissions factors and end-use allocations are not directly identifiable"
+    },
+    {
+      "measure": "Kerala EMC TFEC",
+      "year": "FY2019–20",
+      "unit": "Mtoe final energy",
+      "allowed_join": false,
+      "reason": "historic final-energy baseline, not 2023 carbon inventory and no original fuel×sector workbook"
+    },
+    {
+      "measure": "Kerala electricity accounts",
+      "year": "FY2024–25",
+      "unit": "MU consumer-side",
+      "allowed_join": false,
+      "reason": "different year, spatial/sector and energy-carrier boundary, no double count conversion fuel or imports"
+    },
+    {
+      "measure": "Official Kerala energy GHG",
+      "year": "CY2023",
+      "unit": "MtCO2e inventory",
+      "allowed_join": true,
+      "reason": "report separately with scope, not a conversion of PPAC fuels into Mtoe"
+    }
+  ],
+  "no_assumed_energy_2024_25_mtoe": null,
+  "no_assumed_2024_25_sectoral_emissions_mtco2e": null,
+  "no_co2_per_tonne_pol_ratio": null,
+  "no_current_kerala_import_share": null,
+  "no_externally_verified_2023_fuel_by_sector_matrix": null,
+  "no_raw_seeap_workbook": true
+}
