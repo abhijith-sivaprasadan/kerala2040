@@ -11,14 +11,13 @@ import csv
 import json
 import math
 import random
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta, timezone
 from pathlib import Path
 from statistics import mean, median
 
 SOURCE = Path("data/external/sldc_fy2024_25/daily_balance.csv")
 CLASSIFICATION = "SYNTHETIC_15MIN_DAILY_SLDC_ANCHORED_NOT_OBSERVED_INTERVAL_LOAD"
 METHODS = ("flat", "morning_evening", "evening_stress")
-UTC = timezone.utc
 IST = timezone(timedelta(hours=5, minutes=30))
 
 
