@@ -378,3 +378,70 @@ async function loadKMMLCase(filename){
     root.textContent="KMML case failed provenance/coverage checks; no process claims shown.";
   }
 }
+
+
+/* Historical Kerala total energy and separate provisional half-year fuel sales.
+ * Never align publisher FY2019–20 shares with FY2024–25 PPAC consumption.
+ */
+function validateTotalEnergyAtlas(d){
+  if(d?.classification!=="HISTORICAL_KERALA_FINAL_ENERGY_AND_H1_PETROLEUM_SALES_NOT_CURRENT_COMPLETE_ENERGY_BALANCE"||
+     d?.emc_final_energy?.observed_years?.length!==6||
+     d?.emc_final_energy?.baseline_fy!=="2019-20"||
+     d?.emc_final_energy?.baseline_total_mtoe!==10.78||
+     d?.emc_final_energy?.rounded_mix_pct?.reduce((v,r)=>v+r.pct,0)!==100||
+     d?.emc_final_energy?.mix_reconstruction_allowed!==false||
+     d?.ppac_provisional_half_year_2024_25?.no_annualisation!==true||
+     d?.ppac_provisional_half_year_2024_25?.publisher_pdf_visual_validation!==false||
+     d?.ppac_provisional_half_year_2024_25?.end_date!=="2024-09-30"||
+     d?.ppac_provisional_half_year_2024_25?.items?.length!==5||
+     Object.values(d?.quantities_deliberately_null||{}).length!==8||
+     Object.values(d.quantities_deliberately_null).some(v=>v!==null)){
+     throw new Error("Total energy atlas failed fiscal/source/sales boundary admission");
+  }
+}
+function renderTotalEnergyAtlas(d){
+  validateTotalEnergyAtlas(d);
+  const status=document.getElementById("totalEnergyStatus");
+  if(status)status.innerHTML=
+    '<span><b>10.78 Mtoe</b> EMC historical FY2019–20 TFEC</span>'+
+    '<span><b>64% oil</b> historical publisher-rounded share</span>'+
+    '<span><b>19% electricity</b> historical share, NOT electricity generation</span>'+
+    '<span><b>FY2024–25: not reconstructed</b> Separate PPAC H1 sales only</span>';
+  mountResearchChart("totalEnergyHistoryChart",{
+    style:"vertical",source:"EMC Kerala/CII State Energy Efficiency Action Plan, original Fig. 3, printed p. 13; fiscal END-year labels; historic total final energy.",
+    rows:d.emc_final_energy.observed_years.map(r=>({
+      label:r.fy,values:{mtoe:r.value_mtoe},note:"EMC Fig. 3 source label: FY "+r.fy.slice(-2)+"; value rounded to two decimals"
+    })),
+    series:[{key:"mtoe",label:"Final energy",unit:"Mtoe",decimals:2}]
+  });
+  mountResearchChart("totalEnergyMixChart",{
+    style:"horizontal",source:"EMC Kerala/CII Action Plan, Fig. 4, printed p. 13; published FY2019–20 integer-rounded shares; no measured fuel-by-fuel Mtoe inferred.",
+    rows:d.emc_final_energy.rounded_mix_pct.map(r=>({
+      label:r.fuel,values:{share:r.pct},
+      note:r.pct===0?"Display-rounding 0%, not proof of absence":"Rounded published graphic, not measured exact share"
+    })),
+    series:[{key:"share",label:"Publisher rounded fuel share",unit:"%",decimals:0}]
+  });
+  mountResearchChart("totalEnergyPPACChart",{
+    style:"horizontal",source:"PPAC Ready Reckoner H1 FY2024–25 Table 6.3(A), indexed PDF text; provisional Apr–Sep sales in Kerala. Original PDF image not yet confirmed; NOT annual or full final-energy balance.",
+    rows:d.ppac_provisional_half_year_2024_25.items.map(r=>({
+      label:r.product,values:{sales:r.tmt},
+      note:"Only April–September 2024; provisional selected-product sales; original PDF image QA pending"
+    })),
+    series:[{key:"sales",label:"Selected product sales",unit:"thousand tonnes",decimals:2}]
+  });
+}
+async function loadTotalEnergyAtlas(filename){
+  const root=document.getElementById("totalEnergyHistoryChart");
+  if(!root)return;
+  const mounts=["totalEnergyHistoryChart","totalEnergyMixChart","totalEnergyPPACChart"];
+  if(filename!=="total-energy-atlas.json"){
+    mounts.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent="No source-admitted total-energy dataset in this release.";});
+    return;
+  }
+  try{renderTotalEnergyAtlas(await getJSON(filename));}
+  catch(error){
+    console.error("Total energy atlas source admission failed:",error);
+    mounts.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent="Total energy source QA failed; figures withheld. Read the research chapter.";});
+  }
+}
