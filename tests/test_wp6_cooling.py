@@ -108,7 +108,7 @@ def test_wp6_is_not_installed_as_a_statewide_calibrated_model():
     doc = (ROOT / "docs/WP6_COOLING_THERMAL_STORAGE_PILOT_2026_09_24.md").read_text(
         encoding="utf-8"
     )
-    assert "not measured Kerala" in doc.lower()
+    assert "not a kerala statistic" in doc.lower()
     assert "setpoint shortfall" in doc.lower()
     assert "whole-day" in doc.lower()
     assert json.dumps(result, allow_nan=False)
