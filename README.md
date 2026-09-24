@@ -35,6 +35,12 @@ This is independent research by [Abhijith Sivaprasadan](https://github.com/abhij
 
 The [website](https://kerala2040.github.io/) is a *published, pinned evidence snapshot*. The `main` branch is ongoing research and may contain newer analysis than the deployed website; the site's `SOURCE_COMMIT` and `RELEASE_MANIFEST.json` identify its exact source version. Do not mistake development-only results for published findings.
 
+## KMML circular-industry case · CET 2026 / 24 September 2026
+
+[Source-qualified process chapter](docs/KMML_CIRCULAR_INDUSTRY_CASE_2026_09_24.md) · [Ten-stream auditable case register](data/evidence/industry/kmml_source_bounded_case_2026_09_24.json) · [Interactive Industry process explorer](https://kerala2040.github.io/#industry).
+
+Kerala Minerals and Metals Ltd's official chloride-route descriptions allow us to distinguish **nine separate units/branches**, including the existing HCl regeneration loop, and **ten non-interchangeable material, water and energy streams**. Its **FY2022–23** annual report records 10 MT of *sponge iron from oxide in two trials*, TiO2 fines of 1–2 g/L in U400 polishing-pond overflow and a separate approximately 300 m³/day filter-backwash claim; neither the pilot quantities nor historical nameplate capacities are current annual performance. Iron oxide brick commercialization is a separate **historical** company claim; the titanium-sponge line is a different product. This is a **completed descriptive process study**, not quantified recovery, annual savings, emissions, or independent regulatory approval. The measured KMML release gate stays closed.
+
 ## Latest verified milestone · 22 September 2026
 
 **The NIWE 150 m Kerala wind-resource × GLO-90 surface-terrain analysis has been executed on real, hash-verified inputs.** From 19,475,568 national atlas rows, the original NWIC Kerala polygon selects **200,692** onshore resource point centres; the modelled wind-speed median is **3.91 m/s at 150 m**. Sampling the independently derived 90 m GLO-90 DSM slope yields **199,853** finite slope results and **839** missing samples. The median sampled DSM slope is **4.96°**.

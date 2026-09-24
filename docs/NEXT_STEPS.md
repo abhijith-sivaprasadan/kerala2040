@@ -1,5 +1,11 @@
 # Kerala 2040: next research steps
 
+## CET 2026 KMML circular-process case: bounded chapter complete · 24 September 2026
+
+The [completed KMML source-audited chapter](KMML_CIRCULAR_INDUSTRY_CASE_2026_09_24.md) now reconciles official KMML process branches (9 named units), the FY2022–23 company report and the user-shared historical references into 10 distinctly classified residual/recovery streams with source-dated status. Existing ARP acid regeneration is separated from historical oxide bricks, documented 2022–23 **trials** for oxide-to-sponge-iron, U400 fines and filter-backwash reuse, and hypothetical heat integration. A separate Ti-sponge product branch and the report's non-verified regulatory classification are explicit. The [public-safe case register](../data/evidence/industry/kmml_source_bounded_case_2026_09_24.json) contains **null** annual recovery, heat and emissions outcomes. The website Industry page displays the process nodes and filters interactively.
+
+**Still open:** aligned contemporary site meters, compositions, actual trial commissioning, water and heat balances, accepted offtake/disposal, as-issued regulator records and capex/opex before *numerical* circularity/2040 industrial claims. Finish CET poster using bounded evidence rather than waiting for facility data. ERA5 acquisition is independent.
+
 ## CET 2026 historical electricity story: bounded chapter complete · 24 September 2026
 
 [Executed source-audited historical chapter](CET_HISTORICAL_ELECTRICITY_STORY_2026_09_24.md) combines separately attributed **official annual Kerala consumption (FY2020–21–FY2024–25)** and **qualified SLDC operational daily reports (2019–2026)**. It adds four poster-oriented SVGs—official consumption, matched-day daily changes, observed-day import/hydel shares and separately labelled Statistics evening peaks—plus [validated input/denominator registry](../data/evidence/sldc/cet_historical_electricity_story_2026_09_24.json). The multi-year **descriptive** question is answered without ERA5 and without inventing annual sums, correcting missing days, or treating hydro/import accounting co-movement as causal.

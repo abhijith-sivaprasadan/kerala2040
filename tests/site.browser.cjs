@@ -314,6 +314,26 @@ async function main(){
     console.log("PASS atlas: full native 14-district solar × wind descriptive results, paired seasonality and poster SVGs");
 
     await route("industry");
+    await page.locator("#kmmlFlow .kmml-unit").first().waitFor();
+    check(await page.locator("#kmmlFlow .kmml-unit").count()===9,
+      "KMML process flow must preserve nine distinct source units");
+    check(await page.locator("#kmmlStreams .kmml-stream").count()===10,
+      "KMML residual stream audit must expose all ten distinct loops");
+    await page.locator('#kmmlFlow button[data-kmml-unit="ARP"]').click();
+    check((await page.locator("#kmmlUnitDetail").innerText()).includes("recovered HCl"),
+      "ARP acid recovery must describe its actual material loop");
+    await page.locator('#kmmlStreamFilters button[data-kmml-filter="trials"]').click();
+    check(await page.locator("#kmmlStreams .kmml-stream").count()===2,
+      "Two FY2022-23 trial routes, not every historic or prospective idea");
+    check((await page.locator("#kmmlStreams").innerText()).includes("FY2022–23"),
+      "Trial status must retain dated source period");
+    await page.locator('#kmmlStreamFilters button[data-kmml-filter="all"]').click();
+    const caseResponse=await page.request.get(base+"data/kmml-case.json");
+    check(caseResponse.status()===200,"KMML audited case missing from deployed data");
+    const caseData=await caseResponse.json();
+    check(caseData.published_numeric_recovery_by_Kerala2040===null&&
+      caseData.scientific_scope.kmml_case_release_gate_passed===false,
+      "KMML measured-flow scientific release gates must remain closed");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
     await route("workbench");
     check(await page.locator(".research-item").count()===14,

@@ -460,6 +460,32 @@ def build_site(root: Path, output: Path) -> None:
     (data_dir / "metadata.json").write_text(
         json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
+    # KMML process-only release: do not convert company claims to measured recovery.
+    kmml = json.loads((root / "data/evidence/industry/kmml_source_bounded_case_2026_09_24.json").read_text(encoding="utf-8"))
+    kmml_scope = kmml.get("scientific_scope", {})
+    if (kmml.get("classification") != "KMML_CHAVARA_SOURCE_BOUNDED_PROCESS_CASE_NOT_MEASURED_2024_25_NOT_RECOVERY_FORECAST"
+            or len(kmml.get("units", [])) != 9
+            or len(kmml.get("streams", [])) != 10
+            or kmml_scope.get("measured_mass_energy_water_balance_complete") is not False
+            or kmml_scope.get("measured_recovery_credits_available") is not False
+            or kmml_scope.get("kmml_case_release_gate_passed") is not False
+            or kmml.get("ready_for_numerical_2040_industry_scenario") is not False
+            or kmml.get("published_numeric_recovery_by_Kerala2040") is not None
+            or any(stream.get("annual_tonnes") is not None
+                   or stream.get("annual_mwh") is not None
+                   or stream.get("avoided_co2_t") is not None
+                   for stream in kmml["streams"])):
+        raise ValueError("KMML is a source-bounded process case, not measured circularity")
+    site["metadata"]["files"]["kmml_case"] = "kmml-case.json"
+    (data_dir / "kmml-case.json").write_text(
+        json.dumps(kmml, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
     validate_bundle(data_dir)
     validate_static_site(output)
     (output / ".nojekyll").touch()

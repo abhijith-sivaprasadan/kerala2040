@@ -1,0 +1,497 @@
+{
+  "classification": "KMML_CHAVARA_SOURCE_BOUNDED_PROCESS_CASE_NOT_MEASURED_2024_25_NOT_RECOVERY_FORECAST",
+  "reviewed_date": "2026-09-24",
+  "location": "Sankaramangalam, Chavara, Kollam, Kerala",
+  "selected_case": "KMML",
+  "scientific_scope": {
+    "process_topology_complete": true,
+    "source_qualified_residual_inventory_complete": true,
+    "measured_period": "FY2022-23 dated report only for three R&D examples; current FY2024-25 operations unavailable",
+    "measured_mass_energy_water_balance_complete": false,
+    "measured_recovery_credits_available": false,
+    "project_selection_authorized": false,
+    "kmml_case_release_gate_passed": false
+  },
+  "sources": {
+    "facility": {
+      "url": "https://www.kmml.com/manufacturing-facility",
+      "type": "official undated KMML process description"
+    },
+    "process": {
+      "url": "https://www.kmml.com/process-chart",
+      "type": "official undated qualitative layout"
+    },
+    "ms": {
+      "url": "https://www.kmml.com/manufacturing-facility/1",
+      "type": "official MS topology"
+    },
+    "ibp": {
+      "url": "https://www.kmml.com/manufacturing-facility/4",
+      "type": "official IBP topology"
+    },
+    "arp": {
+      "url": "https://www.kmml.com/manufacturing-facility/2",
+      "type": "official ARP topology and reaction templates"
+    },
+    "pigment": {
+      "url": "https://www.kmml.com/manufacturing-facility/5",
+      "type": "official U200/U300/U400 topology"
+    },
+    "utilities": {
+      "url": "https://www.kmml.com/manufacturing-facility/6",
+      "type": "official boiler/compressor/water-treatment inventory"
+    },
+    "environment": {
+      "url": "https://www.kmml.com/environment/3",
+      "type": "undated KMML environmental self-description, not independent compliance verification"
+    },
+    "rd": {
+      "url": "https://www.kmml.com/research-and-development",
+      "type": "undated KMML R&D self-description"
+    },
+    "history": {
+      "url": "https://www.kmml.com/kmml-growth-story",
+      "type": "KMML dated historic events, not current run rates"
+    },
+    "annual_2022_23": {
+      "url": "https://www.kmml.com/uploads/ckeditor_files/1718428992_KMML%2BAnnual%2BReport%2B2022-23%2BLatest.pdf",
+      "type": "KMML FY2022-23 annual report; printed pages 20-21, 33, 2022-23 historic research/status, not FY2024-25 operational audit"
+    },
+    "prior_excerpts": {
+      "path": "docs/KMML_HISTORICAL_PROCESS_EVIDENCE_2026_09_21.md",
+      "type": "user-provided historical excerpts, identity/dates/reuse unclear"
+    }
+  },
+  "units": [
+    {
+      "id": "MS",
+      "name": "Mineral separation",
+      "branch": "pigment",
+      "step": 1,
+      "origin": "ms",
+      "function": "Beach-wash mineral concentration, dry mill and separation of ilmenite, rutile, zircon and other mineral fractions.",
+      "inputs": "beach-wash sand; water; dryer fuel; electricity",
+      "outputs": "raw ilmenite and separately saleable mineral streams; rejects",
+      "status": "official_topology",
+      "quantified": false
+    },
+    {
+      "id": "IBP",
+      "name": "Ilmenite beneficiation",
+      "branch": "pigment",
+      "step": 2,
+      "origin": "ibp",
+      "function": "Reduction, leaching, washing and calcination; sends chloride-rich spent liquor to ARP.",
+      "inputs": "raw ilmenite; reductant; hydrochloric acid; wash water; heat; electricity",
+      "outputs": "beneficiated ilmenite; spent chloride liquor; washes and off-gas",
+      "status": "official_topology",
+      "quantified": false
+    },
+    {
+      "id": "ARP",
+      "name": "Acid regeneration",
+      "branch": "recovery",
+      "step": 3,
+      "origin": "arp",
+      "function": "Oil-fired spray roasting and acid absorption; returns recovered HCl to IBP and separates iron oxide.",
+      "inputs": "IBP spent liquor; oil; water/absorber liquor; power",
+      "outputs": "recovered HCl loop; iron oxide; off-gas; rejects",
+      "status": "official_topology_existing_loop",
+      "quantified": false
+    },
+    {
+      "id": "U200",
+      "name": "Chlorination / TiCl4 purification",
+      "branch": "pigment",
+      "step": 4,
+      "origin": "pigment",
+      "function": "Chlorinate beneficiated ilmenite with chlorine and coke; condense and distil titanium tetrachloride.",
+      "inputs": "beneficiated ilmenite; chlorine; petroleum coke; cooling; power",
+      "outputs": "TiCl4 to U300, branch allocation to sponge/sales; impurity metal chlorides and purges",
+      "status": "official_topology",
+      "quantified": false
+    },
+    {
+      "id": "U300",
+      "name": "TiCl4 oxidation",
+      "branch": "pigment",
+      "step": 5,
+      "origin": "pigment",
+      "function": "Vapourise and oxidise titanium tetrachloride with oxygen to raw pigment slurry; chlorine is regenerated chemically.",
+      "inputs": "TiCl4; oxygen; heat; steam/power",
+      "outputs": "raw TiO2; chlorine-containing streams; heat and off-gases",
+      "status": "official_topology",
+      "quantified": false
+    },
+    {
+      "id": "U400",
+      "name": "Pigment finishing",
+      "branch": "pigment",
+      "step": 6,
+      "origin": "pigment",
+      "function": "Surface treatment, classification, filtration/washing, drying, micronising and packaging.",
+      "inputs": "raw TiO2 slurry; additives; water; steam; power",
+      "outputs": "graded TiO2 pigment; fines; wash water; reject solids",
+      "status": "official_topology",
+      "quantified": false
+    },
+    {
+      "id": "ETP",
+      "name": "Effluent treatment",
+      "branch": "environment",
+      "step": 7,
+      "origin": "environment",
+      "function": "Neutralisation and settling; outlet/recycle routing and solid storage require measured and permit records.",
+      "inputs": "facility wastewaters; lime/caustic",
+      "outputs": "treated effluent; sludge; pond/secure-storage streams",
+      "status": "official_self_description_not_compliance",
+      "quantified": false
+    },
+    {
+      "id": "TSP",
+      "name": "Titanium sponge — separate product boundary",
+      "branch": "sponge",
+      "step": 8,
+      "origin": "facility",
+      "function": "TiCl4 metal-grade purification; Mg reduction, pyro-vacuum distillation, sponge finishing; MgCl2 co-product.",
+      "inputs": "allocated TiCl4; Mg; argon; energy",
+      "outputs": "titanium sponge; MgCl2; rejects",
+      "status": "official_distinct_product",
+      "quantified": false
+    },
+    {
+      "id": "UTIL",
+      "name": "Steam, oxygen and utilities",
+      "branch": "utilities",
+      "step": 9,
+      "origin": "utilities",
+      "function": "Boiler steam, compressed air, oxygen, water treatment/DM; all cross-boundary energy and water must be allocated once.",
+      "inputs": "fuel; electricity; water; oxygen supply",
+      "outputs": "steam; compressed air; treated water and utility rejects",
+      "status": "official_topology",
+      "quantified": false
+    }
+  ],
+  "links": [
+    [
+      "MS",
+      "IBP",
+      "raw ilmenite"
+    ],
+    [
+      "IBP",
+      "ARP",
+      "spent ferrous/ferric chloride liquor"
+    ],
+    [
+      "ARP",
+      "IBP",
+      "recovered HCl / acid loop"
+    ],
+    [
+      "IBP",
+      "U200",
+      "beneficiated ilmenite"
+    ],
+    [
+      "U200",
+      "U300",
+      "purified TiCl4"
+    ],
+    [
+      "U300",
+      "U200",
+      "chlorine recovery candidate: actual recycle requires metered confirmation"
+    ],
+    [
+      "U300",
+      "U400",
+      "raw TiO2 slurry"
+    ],
+    [
+      "U200",
+      "TSP",
+      "allocated TiCl4: separate product"
+    ],
+    [
+      "U400",
+      "ETP",
+      "wash water/fines"
+    ],
+    [
+      "ARP",
+      "ETP",
+      "reject liquor/oxide routing; actual split unknown"
+    ],
+    [
+      "IBP",
+      "ETP",
+      "wash water"
+    ],
+    [
+      "UTIL",
+      "IBP",
+      "steam / power / water"
+    ],
+    [
+      "UTIL",
+      "ARP",
+      "fuel / power / water"
+    ],
+    [
+      "UTIL",
+      "U200",
+      "cooling / power"
+    ],
+    [
+      "UTIL",
+      "U300",
+      "oxygen / power"
+    ],
+    [
+      "UTIL",
+      "U400",
+      "steam / water / power"
+    ],
+    [
+      "TSP",
+      "ETP",
+      "distinct waste streams; as applicable"
+    ]
+  ],
+  "streams": [
+    {
+      "id": "iron_oxide",
+      "unit": "ARP",
+      "title": "Iron oxide, fine and potentially acidic/chloride-bearing",
+      "type": "residual",
+      "status": "existing_ARP_generation_trial_valorisation",
+      "source_ids": [
+        "arp",
+        "annual_2022_23",
+        "rd",
+        "history"
+      ],
+      "route": "Iron-oxide separation/storage; KMML describes brick development/commercial introduction and FY2022–23 sponge-iron trial; do not infer percentage reused or 2026 outlet.",
+      "necessary": "wet/dry mass, Fe oxide grade, acid/chloride/trace constituents, age and pond vs fresh material, current destinations, actual kiln/processing energy, sales and residue controls",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    },
+    {
+      "id": "arp_acid",
+      "unit": "ARP",
+      "title": "Reclaimed hydrochloric acid",
+      "type": "recovery_loop",
+      "status": "existing_officially_described",
+      "source_ids": [
+        "arp",
+        "annual_2022_23"
+      ],
+      "route": "Return to IBP leach; measured recovered HCl mass and concentration unknown.",
+      "necessary": "feed chloride species and volume, recovered acid volume/density/wt%, purge losses, fresh HCl purchases, oil/fuel/power for recovery",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    },
+    {
+      "id": "ibp_spent_liquor",
+      "unit": "IBP",
+      "title": "Spent chloride liquor",
+      "type": "intermediate",
+      "status": "existing_feed_to_ARP",
+      "source_ids": [
+        "ibp",
+        "arp"
+      ],
+      "route": "Not simultaneously an exported waste and an ARP recovery credit.",
+      "necessary": "tonnes, Fe(II)/Fe(III), free HCl, chloride, Ti and impurities, temperature, water",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    },
+    {
+      "id": "u200_impurity",
+      "unit": "U200",
+      "title": "Impurity metal chlorides, condensing/purge streams",
+      "type": "residual",
+      "status": "existing_process_unquantified",
+      "source_ids": [
+        "pigment"
+      ],
+      "route": "Recover TiCl4 by source-described stages; impurity-rich residue fate must be verified.",
+      "necessary": "tonnes, species, chlorides, titanium loss, storage/disposal and off-gas",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    },
+    {
+      "id": "chlorine_cycle",
+      "unit": "U300",
+      "title": "Chlorine from TiCl4 oxidation",
+      "type": "recovery_loop",
+      "status": "chemical_topology_not_metered_recycle",
+      "source_ids": [
+        "pigment"
+      ],
+      "route": "Potentially feed chlorination; net fresh chlorine displacement requires actual measured refeed, vent/scrub and storage data.",
+      "necessary": "kg Cl2 generated, consumed fresh/recycled, purges, scrubber bleed, inventories",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    },
+    {
+      "id": "pigment_fines",
+      "unit": "U400",
+      "title": "TiO2 fines in polishing/run-off water",
+      "type": "loss_candidate",
+      "status": "FY2022_23_reported_trial_permanent_installation_unverified",
+      "source_ids": [
+        "annual_2022_23"
+      ],
+      "route": "KMML reported 1.0–2.0 g/L in overflow and PAC settling trials; not proven commissioned recovery.",
+      "necessary": "flow m3/day, time-matched representative g/L, PAC dose, purity, dry solids recovery, product acceptance, sludge fate and new utility use",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    },
+    {
+      "id": "backwash_water",
+      "unit": "UTIL",
+      "title": "Filter backwash water",
+      "type": "reuse_candidate",
+      "status": "FY2022_23_reported_trial_permanent_installation_unverified",
+      "source_ids": [
+        "annual_2022_23"
+      ],
+      "route": "Report said approximately 300 m3/day generated and PAC trials suggested cooling make-up; not verified actual 2026 recycle.",
+      "necessary": "measured flow by date, conductivity/chloride, microbiology if relevant, PAC/sludge, actual reused m3, evaporative losses and make-up substitution",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    },
+    {
+      "id": "etp_sludge",
+      "unit": "ETP",
+      "title": "Neutralisation sludge",
+      "type": "residual",
+      "status": "existing_source_described_storage",
+      "source_ids": [
+        "environment",
+        "annual_2022_23"
+      ],
+      "route": "Settle/store under permit; not equivalent to ARP oxide. Reuse requires waste-code and leaching validation.",
+      "necessary": "as-generated dry/wet mass, pH/metals/chloride, disposal permit, leach testing, storage and treatment cost",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    },
+    {
+      "id": "heat",
+      "unit": "UTIL",
+      "title": "Useful rejected process heat / steam",
+      "type": "opportunity_hypothesis",
+      "status": "not_measured_not_committed",
+      "source_ids": [
+        "utilities",
+        "pigment",
+        "arp"
+      ],
+      "route": "Screen source/sink temperature-duration matches and corrosion constraints before specifying technology.",
+      "necessary": "hourly temperature and flow, source/sink pinch, utility duty and shutdowns, fouling, capex and substitute fuel",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    },
+    {
+      "id": "sponge_mgcl2",
+      "unit": "TSP",
+      "title": "Magnesium chloride from Kroll branch",
+      "type": "distinct_coproduct",
+      "status": "official_sponge_branch",
+      "source_ids": [
+        "facility",
+        "process"
+      ],
+      "route": "Separate from pigment residuals; magnesium recovery mentioned historically as proposal, no current recovery credit.",
+      "necessary": "TiCl4 allocation, Mg charged, MgCl2 purity and moisture, current handling and verified Mg recovery",
+      "annual_tonnes": null,
+      "annual_mwh": null,
+      "avoided_co2_t": null
+    }
+  ],
+  "dated_evidence": {
+    "fy2022_23": {
+      "iron_oxide_stock_phrase": "more than 2 lakhs of iron oxide ... generated and stored till date; numerical unit and moisture basis absent in report text — do not convert to tonnes",
+      "iron_oxide_sponge_iron_trial_mt": 10,
+      "iron_oxide_trial_scope": "two trials; total trial product, not t/y or demonstrated continuous recovery",
+      "tio2_fines_overflow_g_per_l": [
+        1,
+        2
+      ],
+      "fines_trial": "PAC settling plant trials; permanent installation described as underway, not confirmed",
+      "filter_backwash_m3_per_day_approx": 300,
+      "backwash_trial": "PAC treatment plant trials; permanent facility described as initiated, not confirmed",
+      "regulatory": "KMML reports NEERI concluded 'non-hazardous' but also says report submitted to KSPCB/CPCB/MoEF for approval; classification not independently established here"
+    },
+    "historic_1998": "KMML self-records iron oxide brick commercialization in 1998; outlet volume, product qualification and continued scale not verified",
+    "historic_2011": "KMML history/announcement records commissioned titanium sponge branch in 2010–11, overriding pre-2010 slide that merely planned it; no FY2024-25 output inferred"
+  },
+  "decision_candidates": [
+    {
+      "id": "acid_loop",
+      "name": "ARP acid-recovery optimisation",
+      "evidence": "existing route",
+      "goal": "fresh-acid displacement net of oil/electricity/steam and purge",
+      "gate": "metered acid concentration and flow, Fe/Cl balance, fuel and control evidence"
+    },
+    {
+      "id": "oxide",
+      "name": "Segregate/characterise iron oxide and test end-use",
+      "evidence": "brick historic + 2022–23 sponge-iron trial",
+      "goal": "measured waste avoided and accepted saleable product, minus dechlorination/heat/rejects",
+      "gate": "full chemistry, regulatory acceptance, buyer specifications, cost of beneficiating fresh vs pond materials"
+    },
+    {
+      "id": "fines",
+      "name": "Recover pigment fines",
+      "evidence": "2022–23 PAC plant trials",
+      "goal": "measured TiO2 recovered and water quality after PAC, net reagents/sludge",
+      "gate": "U400 flow and representative C, actual installed status, capture yield, grade acceptance"
+    },
+    {
+      "id": "water",
+      "name": "Reuse filter backwash",
+      "evidence": "2022–23 PAC plant trials",
+      "goal": "verified freshwater/utility displacement",
+      "gate": "flow, quality, performance, PAC/sludge and cooling compatibility"
+    },
+    {
+      "id": "heat",
+      "name": "Heat integration",
+      "evidence": "unit operations/steam described, no heat measurements",
+      "goal": "replace actual marginal fuel/steam on simultaneous source/sink duties",
+      "gate": "time-aligned heat source/sink temperature and flow; metallurgy"
+    },
+    {
+      "id": "sponge",
+      "name": "Mg recovery from MgCl2",
+      "evidence": "historical proposals, not current practice",
+      "goal": "potential magnesium recycle within separate TSP boundary",
+      "gate": "TSP flows, MgCl2 handling, permits, energy and capex"
+    }
+  ],
+  "math_templates": {
+    "acid": "Recovered HCl (kg)=measured recovered solution (kg) × laboratory HCl mass fraction; fresh-acid displacement requires identical HCl basis and verified net import/substitution.",
+    "oxide": "Fe, Cl and water inputs = recovered products + transfers to other verified streams + emitted/aqueous residual + changes in inventory; segregate existing pond stock from new generation.",
+    "fines": "TiO2 entering overflow (kg)=measured Q (m3) × measured C (g/L) × 1 kg/(m3·g/L). Net saleable product=that quantity × actual captured fraction × accepted grade fraction; never substitute 300 m3/day backwash for unmeasured U400 overflow.",
+    "water": "Net freshwater displaced (m3)=verified accepted reuse to utility − any new freshwater consumed in treatment/recirculation; not the reported 300 m3/day without actual reuse.",
+    "heat": "Recovered useful heat (MWh_th)=integral over simultaneous feasible source and sink duties after ΔTmin, exchanger effectiveness, parasitic energy, corrosion/fouling and availability checks.",
+    "value": "Net incremental value = verified avoided purchases + accepted-product revenue + avoided compliant disposal costs − new reagent, energy, transport, quality, residue, maintenance, labour and annualised capex; do not double count internal transfers.",
+    "emissions": "Avoided emissions require the measured marginal displaced system, not imported average electricity × synthetic recovery."
+  },
+  "published_numeric_recovery_by_Kerala2040": null,
+  "measured_fy2024_25_site_energy": null,
+  "verified_regulatory_classification": null,
+  "ready_for_numerical_2040_industry_scenario": false
+}
