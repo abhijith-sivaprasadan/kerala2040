@@ -772,3 +772,41 @@ test("WP6 EV and industry panels expose service constraints and do not claim Ker
       /matched-service/);
   }
 });
+
+
+test("WP6 battery/pumped storage panels reject invented Kerala projects and free energy",()=>{
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  const js=fs.readFileSync(path.join(root,"docs/assets/research-charts.js"),"utf8");
+  for(const id of ["wp6StorageTitle","wp6StorageStatus","wp6StorageCards",
+                  "wp6StorageChart","wp6StorageStock","wp6StorageSensitivity"]){
+    assert.ok(html.includes('id="'+id+'"'),"Missing storage evidence panel "+id);
+  }
+  assert.ok(js.includes("function validateWP6Storage"));
+  assert.ok(js.includes("function renderWP6Storage"));
+  const sandbox={console};vm.createContext(sandbox);vm.runInContext(js,sandbox);
+  sandbox.record={
+    classification:"WP6_SYNTHETIC_BESS_PSP_FIXED_SERVICE_NOT_KERALA_FEASIBILITY",
+    input:{classification:"WP6_SYNTHETIC_ELECTRICAL_STORAGE_NOT_KERALA_SITES",
+      hourly_background_site_kw:Array(24).fill(6),
+      source_discovery:{source_page_image_verified:false},
+      release:{calibrated_2040_capacity:false}},
+    cases:{
+      bess:{hourly:Array(24).fill({}),summary:{
+        terminal_stored_kwh:0,daily_grid_energy_change_kwh:1,discharge_to_site_kwh:10}},
+      psp:{hourly:Array(24).fill({}),summary:{
+        terminal_stored_kwh:0,daily_grid_energy_change_kwh:2,discharge_to_site_kwh:10}}},
+    sensitivities:{
+      bess:[{feasible:false},...Array(8).fill({feasible:true})],
+      psp:[{feasible:false},...Array(8).fill({feasible:true})]},
+    release:{measured_kerala_data:false}};
+  assert.equal(vm.runInContext("validateWP6Storage(record)",sandbox),undefined);
+  sandbox.bad=JSON.parse(JSON.stringify(sandbox.record));
+  sandbox.bad.release.measured_kerala_data=true;
+  assert.throws(()=>vm.runInContext("validateWP6Storage(bad)",sandbox),/storage source/);
+  sandbox.bad=JSON.parse(JSON.stringify(sandbox.record));
+  sandbox.bad.cases.psp.summary.terminal_stored_kwh=1;
+  assert.throws(()=>vm.runInContext("validateWP6Storage(bad)",sandbox),/storage source/);
+  sandbox.bad=JSON.parse(JSON.stringify(sandbox.record));
+  sandbox.bad.cases.bess.summary.daily_grid_energy_change_kwh=-1;
+  assert.throws(()=>vm.runInContext("validateWP6Storage(bad)",sandbox),/storage source/);
+});
