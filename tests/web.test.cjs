@@ -260,8 +260,8 @@ test("wind phase 1 renders correct slope-available denominators and no MW",()=>{
   assert.equal(normalized.feasible_capacity_MW,null);
   const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
   assert.match(html,/id="districtNormalized"/);
-  assert.match(html,/wind-district-normalized-20260923.svg/);
-  assert.match(html,/wind-terrain-sensitivity-20260923.svg/);
+  assert.match(html,/id="windDistrictChart"/);
+  assert.match(html,/id="windSlopeChart"/);
 });
 
 test("solar source-grid PVOUT panel uses matched-pixel seasonality, not capacity",()=>{
@@ -286,9 +286,9 @@ test("solar source-grid PVOUT panel uses matched-pixel seasonality, not capacity
   assert.equal(aggregate.model_admitted,false);
   const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
   assert.match(html,/id="solarDistrictChoice"/);
-  assert.match(html,/solar-phase1-monthly-20260923.svg/);
-  assert.match(html,/solar-phase1-district-annual-20260923.svg/);
-  assert.match(html,/solar-phase1-district-seasonality-20260923.svg/);
+  assert.match(html,/id="solarMonthChart"/);
+  assert.match(html,/id="solarAnnualChart"/);
+  assert.match(html,/id="solarSeasonChart"/);
 });
 
 test("all eight research pages render against one real observed-data snapshot",()=>{
@@ -524,4 +524,57 @@ test("monthly and hydro artwork keeps data provenance when motion is enabled",()
     assert.match(file,/prefers-reduced-motion:no-preference/);
     assert.match(file,/animation:/);
   }
+});
+
+
+test("historical and atlas figures are real interactive data charts, not static SVG thumbnails",()=>{
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  const js=fs.readFileSync(path.join(root,"docs/assets/research-charts.js"),"utf8");
+  for(const id of ["historyOfficial","historyMatched","historyShares","historyPeaks",
+    "windDistrictChart","windSlopeChart","solarMonthChart","solarAnnualChart","solarSeasonChart"]){
+    assert.match(html,new RegExp('id="'+id+'"'));
+  }
+  assert.match(html,/assets\/research-charts\.js/);
+  for(const old of ["cet-historical-official-consumption-20260924.svg",
+    "cet-historical-matched-month-demand-20260924.svg",
+    "cet-historical-import-hydro-shares-20260924.svg",
+    "cet-historical-evening-peaks-20260924.svg",
+    "wind-district-normalized-20260923.svg","wind-terrain-sensitivity-20260923.svg",
+    "solar-phase1-monthly-20260923.svg","solar-phase1-district-annual-20260923.svg",
+    "solar-phase1-district-seasonality-20260923.svg"]){
+    assert.ok(!html.includes(old),"old static chart still shown: "+old);
+  }
+  for(const control of ["pointerover","keydown","ArrowLeft","ArrowRight",
+    "data-series","aria-pressed","details","source","onSelect"]){
+    assert.ok(js.includes(control),"missing interaction "+control);
+  }
+  const science=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/sldc/cet_historical_electricity_story_2026_09_24.json"),"utf8"));
+  const sandbox={console};vm.createContext(sandbox);vm.runInContext(js,sandbox);
+  sandbox.fixture=science;
+  assert.equal(vm.runInContext("validateHistorical(fixture)",sandbox),undefined);
+  assert.equal(vm.runInContext("Object.keys(fixture.sldc_observed_fy).length",sandbox),6);
+  sandbox.bad=JSON.parse(JSON.stringify(science));sandbox.bad.qa.no_imputation=false;
+  assert.throws(()=>vm.runInContext("validateHistorical(bad)",sandbox),/evidence-boundary/);
+  sandbox.barRows=[{label:"2024–25",values:{imports:73.8108,hydel:23.5258},note:"354/365"}];
+  sandbox.barSeries=[{key:"imports",label:"Net import",unit:"%",color:"#087e65",visible:true},
+    {key:"hydel",label:"Hydel",unit:"%",color:"#bd8236",visible:true}];
+  const rendered=vm.runInContext("researchChartSVG(barRows,barSeries,'vertical')",sandbox);
+  assert.match(rendered,/data-index="0"/);
+  assert.match(rendered,/73.8108/);
+  assert.match(rendered,/tabindex="0"/);
+  assert.match(rendered,/aria-label="Interactive/);
+});
+test("every topic has a visible link on all pages and the homepage has direct chapter shortcuts",()=>{
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  const pages=["overview","electricity","atlas","pathways","industry","workbench","audit","data"];
+  for(const page of pages){
+    assert.match(html,new RegExp('href="#'+page+'" data-route="'+page+'"'));
+    assert.match(html,new RegExp('data-view="'+page+'"'));
+  }
+  assert.match(html,/class="topic-trail"/);
+  assert.match(html,/class="hero-topic-links"/);
+  assert.match(html,/id="mobileNav"/);
+  const css=fs.readFileSync(path.join(root,"docs/assets/kerala.css"),"utf8");
+  assert.match(css,/@media\(max-width:1250px\)/);
 });
