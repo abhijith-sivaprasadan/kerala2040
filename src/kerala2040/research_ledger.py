@@ -67,6 +67,15 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     kmml = _json(
         root, "data/evidence/industry/kmml_source_bounded_case_2026_09_24.json"
     )
+    total_energy = _json(
+        root, "data/evidence/total_energy/kerala_total_energy_source_register_2026_09_24.json"
+    )
+    annual_sales = _json(
+        root, "data/evidence/total_energy/ppac_full_fy_kerala_source_audit_2026_09_24.json"
+    )
+    ghg = _json(
+        root, "data/evidence/total_energy/kerala_ghg_sector_bridge_2026_09_24.json"
+    )
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -106,6 +115,18 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         and stream["avoided_co2_t"] is None
         for stream in kmml["streams"]
     )
+    assert total_energy["emc_final_energy"]["baseline_total_mtoe"] == 10.78
+    assert len(total_energy["emc_final_energy"]["observed_years"]) == 6
+    assert total_energy["quantities_deliberately_null"]["kerala_total_final_energy_fy2024_25_mtoe"] is None
+    assert annual_sales["annual_kerala_rows"][-1]["all_pol_tier"] == (
+        "secondary_transcription_unverified_at_primary"
+    )
+    assert annual_sales["qa"]["primary_fy2024_25_pdf_image_verified"] is False
+    assert annual_sales["unsupported_current_results"]["fy2024_25_kerala_total_final_energy_mtoe"] is None
+    assert ghg["classification"] == "KERALA_GHG_2023_OFFICIAL_SECTOR_EMISSIONS_NOT_FINAL_ENERGY_OR_2024_25"
+    assert ghg["energy_sector_2023_mtco2e"] == 20.64
+    assert ghg["period"] == "calendar_2023"
+    assert ghg["no_assumed_energy_2024_25_mtoe"] is None
     assert hazard["gsi_total_source_features"] == hazard["gsi_invalid_source_features"] == 39
     assert hazard["wetland_geometries_verified"] == 0
     assert terrain["nwic_kerala_native_grid_dsm_pixel_centres_verified"] is True
@@ -474,6 +495,23 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
                 {"label": "KMML public-safe case data", "href": ROOT + "data/evidence/industry/kmml_source_bounded_case_2026_09_24.json"},
                 {"label": "KMML case plan", "href": ROOT + "docs/KMML_CASE_PLAN.md"},
                 {"label": "Release-gate rules", "href": ROOT + "docs/AUDIT_RELEASE_GATES.md"},
+            ],
+        },
+        {
+            "id": "total-energy", "title": "Total energy, oil, sector emissions",
+            "phase": "partial", "label": "Three dated source boundaries; no current complete energy balance",
+            "metric": "10.78 Mtoe historic / 20.64 MtCO₂e CY2023",
+            "unit": "distinct TFEC and energy-emissions measures, not additive",
+            "summary": "Historic EMC final energy, six-year PPAC sales and 2023 official fuel-use emissions are now source-tiered on separate year, sector and accounting boundaries.",
+            "completed": "Six historical EMC FY total-final-energy values, FY2019–20 rounded oil/electricity/coal/gas shares, annual petroleum sales FY2019–20–FY2024–25, and official 2023 transport/residential/industrial emissions; heating-value method and source conflicts documented.",
+            "blocked": "No original EMC fuel×sector workbook, FY2015 correction, primary PDF verification of PPAC FY2024–25, full native PPAC file, same-year NCVs, final fuel-use allocation or border import balance. GHG 2020 inventory vintages disagree.",
+            "action": "Request publication-cleared EMC/DoECC source tables, original PPAC full-year state×product data and revision notes; do not derive current Kerala final-energy Mtoe or import share from sales/emissions.",
+            "route": "overview",
+            "evidence": [
+                {"label": "Energy atlas historical baseline", "href": ROOT + "docs/KERALA_TOTAL_ENERGY_ATLAS_BASELINE_2026_09_24.md"},
+                {"label": "PPAC full-year source audit", "href": ROOT + "docs/PPAC_KERALA_FULL_YEAR_SALES_SOURCE_AUDIT_2026_09_24.md"},
+                {"label": "Official sector GHG and source method", "href": ROOT + "docs/KERALA_TOTAL_ENERGY_ATLAS_SECTOR_GHG_METHODS_2026_09_24.md"},
+                {"label": "Dated GHG and GCV register", "href": ROOT + "data/evidence/total_energy/kerala_ghg_sector_bridge_2026_09_24.json"},
             ],
         },
         {
