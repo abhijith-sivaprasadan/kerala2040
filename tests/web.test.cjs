@@ -649,3 +649,30 @@ test("PPAC annual charts reject unverified source promotion and synthetic energy
   ctx.bad.unsupported_current_results.fy2024_25_kerala_total_final_energy_mtoe=15;
   assert.throws(()=>vm.runInContext("validatePPACAnnualSales(bad)",ctx),/source or final-energy/);
 });
+
+
+test("2023 official GHG cannot be represented as current FY fuel use or final energy",()=>{
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  const js=fs.readFileSync(path.join(root,"docs/assets/research-charts.js"),"utf8");
+  const d=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/total_energy/kerala_ghg_sector_bridge_2026_09_24.json"),"utf8"));
+  for(const id of ["totalEnergyGHGStatus","totalEnergyGHGChart"]){
+    assert.ok(html.includes('id="'+id+'"'));
+  }
+  assert.ok(js.includes("function renderEnergyGHGBridge"));
+  const sandbox={console};vm.createContext(sandbox);vm.runInContext(js,sandbox);
+  sandbox.data=d;
+  assert.equal(vm.runInContext("validateEnergyGHGBridge(data)",sandbox),undefined);
+  sandbox.changed=JSON.parse(JSON.stringify(d));
+  sandbox.changed.no_assumed_energy_2024_25_mtoe=20.64;
+  assert.throws(()=>vm.runInContext("validateEnergyGHGBridge(changed)",sandbox),
+    /2023 emissions cannot become/);
+  sandbox.changed=JSON.parse(JSON.stringify(d));
+  sandbox.changed.period="FY2024-25";
+  assert.throws(()=>vm.runInContext("validateEnergyGHGBridge(changed)",sandbox),
+    /2023 emissions cannot become/);
+  sandbox.changed=JSON.parse(JSON.stringify(d));
+  sandbox.changed.historical_seeap_gcv.basis="NET CALORIFIC VALUE";
+  assert.throws(()=>vm.runInContext("validateEnergyGHGBridge(changed)",sandbox),
+    /2023 emissions cannot become/);
+});
