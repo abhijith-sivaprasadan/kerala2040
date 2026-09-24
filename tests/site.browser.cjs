@@ -315,6 +315,36 @@ async function main(){
       wp6.cases.precooling.summary.comfort_violation_hours===0 &&
       wp6.cases.chilled_water_storage.summary.end_store_kWh_th===0,
       "WP6 must preserve model-only and comfort/terminal-state boundaries");
+    for(const [kind,prefix,filename] of [
+      ["ev","wp6Ev","wp6-ev-pilot.json"],
+      ["industry","wp6Industry","wp6-industry-pilot.json"]
+    ]){
+      await page.locator("#"+prefix+"Chart svg").waitFor({state:"visible"});
+      check(await page.locator("#"+prefix+"Chart .research-point").count()===48,
+        kind+" WP6 must render two 24-hour equal-service profiles");
+      check(await page.locator("#"+prefix+"Cases article").count()===2,
+        kind+" WP6 must show both dispatch outcomes");
+      check(await page.locator("#"+prefix+"Jobs tbody tr").count()===3,
+        kind+" WP6 must show three service/deadline checks");
+      check(await page.locator("#"+prefix+"Sensitivity tbody tr").count()===9,
+        kind+" WP6 must render nine fully rerun comparisons");
+      const response=await page.request.get(base+"data/"+filename);
+      check(response.status()===200,kind+" dataset missing from published bundle");
+      const record=await response.json();
+      check(record.kind===kind&&record.baseline.hourly.length===24&&
+        record.managed.hourly.length===24&&
+        record.comparison.total_electricity_change_kwh===0&&
+        record.baseline.summary.missed_deadlines===0&&
+        record.managed.summary.missed_deadlines===0&&
+        Object.values(record.science_gates).every(value=>value===false),
+        kind+" WP6 shifted service, missed deadlines or promoted a Kerala-grid result");
+      if(kind==="industry"){
+        check(record.input.nonshiftable_safety_and_critical_duty_always_on===true&&
+          record.input.industry_scope.critical_load_curtailment_allowed===false,
+          "No fictional industrial process may curtail safety-critical loads");
+      }
+    }
+    console.log("PASS WP6 EV/INDUSTRY: both complete service and nine sensitivities without source promotion");
     console.log("PASS WP6: three computed 24-hour cases, 9 sensitivities and source-scoped claims");
     console.log("PASS pathways: options and explicitly unsolved specification download");
 
