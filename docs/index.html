@@ -454,5 +454,65 @@
   </main>
 
   <footer class="footer"><div class="section-wrap footer-grid"><div><span class="footer-mark" lang="ml">ക</span><strong>Kerala2040</strong><p lang="ml">നമ്മുടെ നാട്. നമ്മുടെ ഊർജഭാവി.</p><p>Independent energy-systems research. Not an official Government of Kerala, KSEBL or regulatory publication.</p></div><div><strong>EXPLORE</strong><button data-route="electricity">Observed electricity</button><button data-route="pathways">2040 questions</button><button data-route="atlas">Land and water</button><button data-route="industry">Circular industry</button></div><div><strong>VERIFY</strong><button data-route="workbench">Research log</button><button data-route="audit">Scientific release gates</button><button data-route="data">Source library</button><a href="https://github.com/abhijith-sivaprasadan/kerala2040" target="_blank" rel="noopener noreferrer">Open-source repository ↗</a></div></div><div class="section-wrap footer-bottom"><span>KERALA / INDIA · STUDY HORIZON 2040</span><span id="footerResearchIdentity">Loading pinned source revision…</span><span>Made to be questioned, not merely believed.</span></div></footer>
+<script>
+/* WP6 synthetic synchronized experiment; no observed hourly Kerala data. */
+(async function () {
+  const status = document.getElementById('wp6IntegratedStatus');
+  const cards = document.getElementById('wp6IntegratedCases');
+  const chart = document.getElementById('wp6IntegratedChart');
+  if (!status || !cards || !chart) return;
+  try {
+    const response = await fetch('data/wp6-integrated-dispatch.json');
+    if (!response.ok) throw new Error('Dataset unavailable (' + response.status + ')');
+    const data = await response.json();
+    if (data.classification !== 'WP6_SYNTHETIC_SYNCHRONIZED_SITE_NOT_KERALA_GRID_DISPATCH'
+        || Object.values(data.release).some(Boolean)) throw new Error('Provenance gate failed');
+    const names = {unmanaged:'Unmanaged', flexibility_only:'Flexibility only',
+                   bess_only:'Battery only', combined:'Combined'};
+    const entries = Object.entries(data.cases);
+    if (entries.length !== 4 || entries.some(([,v]) => v.hourly.length !== 24))
+      throw new Error('Incomplete synchronized cases');
+    status.textContent = 'Illustrative 24-hour shared-site experiment · not SLDC telemetry';
+    cards.replaceChildren();
+    for (const [key, value] of entries) {
+      const box = document.createElement('article');
+      const title = document.createElement('h3');
+      title.textContent = names[key];
+      const detail = document.createElement('p');
+      const m = value.summary;
+      detail.textContent = 'Daily grid: ' + m.daily_grid_kwh.toFixed(2) +
+        ' kWh · evening peak: ' + m.evening_peak_kw.toFixed(2) +
+        ' kW · whole-day peak: ' + m.whole_day_peak_kw.toFixed(2) + ' kW';
+      box.append(title, detail); cards.append(box);
+    }
+    const width=720, height=270, left=48, top=20, bottom=235;
+    const max=Math.max(...entries.flatMap(([,v])=>v.hourly.map(r=>r.net_site_kw)))*1.08;
+    const ns='http://www.w3.org/2000/svg';
+    const svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox','0 0 '+width+' '+height);
+    svg.setAttribute('role','img');
+    svg.setAttribute('aria-label','Four synthetic synchronized hourly net-site demand curves in kW');
+    const colors=['#d97706','#2e7d32','#2563eb','#9333ea'];
+    entries.forEach(([key,value],index)=>{
+      const line=document.createElementNS(ns,'polyline');
+      line.setAttribute('fill','none');
+      line.setAttribute('stroke',colors[index]);
+      line.setAttribute('stroke-width','2.5');
+      line.setAttribute('points',value.hourly.map((r,h)=>
+        (left+h*(width-left-20)/23).toFixed(2)+','+
+        (bottom-r.net_site_kw/max*(bottom-top)).toFixed(2)).join(' '));
+      svg.append(line);
+    });
+    chart.replaceChildren(svg);
+    const legend=document.createElement('p');
+    legend.textContent='Orange: unmanaged · Green: flexibility · Blue: battery · Purple: combined. Horizontal: hour 00–23; vertical: net site kW (0–'+max.toFixed(1)+').';
+    chart.append(legend);
+  } catch (error) {
+    status.textContent='Integrated dataset could not be validated: '+error.message;
+    cards.textContent='No unverified result displayed.';
+    chart.textContent='';
+  }
+})();
+</script>
 </body>
 </html>
