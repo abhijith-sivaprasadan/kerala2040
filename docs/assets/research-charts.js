@@ -790,3 +790,125 @@ async function loadWP6ServiceDispatch(filename,kind){
   catch(error){console.error("WP6 constrained service dispatch admission failed",error);
     root.textContent="WP6 dispatch/source validation failed; results withheld.";}
 }
+
+
+/* WP6: synthetic electrical BESS and pump-hydro unit cell, NOT a Kerala reservoir. */
+function validateWP6Storage(d){
+  const p=d?.input;
+  if(d?.classification!=="WP6_SYNTHETIC_BESS_PSP_FIXED_SERVICE_NOT_KERALA_FEASIBILITY"||
+    p?.classification!=="WP6_SYNTHETIC_ELECTRICAL_STORAGE_NOT_KERALA_SITES"||
+    p?.hourly_background_site_kw?.length!==24||
+    p?.source_discovery?.source_page_image_verified!==false||
+    d?.cases?.bess?.hourly?.length!==24||
+    d?.cases?.psp?.hourly?.length!==24||
+    d?.sensitivities?.bess?.length!==9||
+    d?.sensitivities?.psp?.length!==9||
+    d.cases.bess.summary.terminal_stored_kwh!==0||
+    d.cases.psp.summary.terminal_stored_kwh!==0||
+    d.cases.bess.summary.daily_grid_energy_change_kwh<=0||
+    d.cases.psp.summary.daily_grid_energy_change_kwh<=0||
+    d.cases.bess.summary.discharge_to_site_kwh!==10||
+    d.cases.psp.summary.discharge_to_site_kwh!==10||
+    Object.values(p?.release||{}).some(v=>v!==false)||
+    Object.values(d?.release||{}).some(v=>v!==false)||
+    !Object.keys(d?.release||{}).length||
+    !d.sensitivities.bess.some(x=>x.feasible===false)||
+    !d.sensitivities.psp.some(x=>x.feasible===false)||
+    !d.sensitivities.bess.some(x=>x.feasible===true)||
+    !d.sensitivities.psp.some(x=>x.feasible===true)){
+    throw new Error("WP6 storage source, physics or project admission failed");
+  }
+}
+function renderWP6Storage(d){
+  validateWP6Storage(d);
+  const labels={bess:"Battery energy storage",psp:"Pumped-storage unit cell"};
+  const base=d.baseline;
+  const status=document.getElementById("wp6StorageStatus");
+  if(status)status.innerHTML=
+    '<span><b>2 kW × 5h</b> common evening electrical service</span>'+
+    '<span><b>0 → 0</b> both beginning/end stored kWh</span>'+
+    '<span><b>24 h</b> fictional site profile</span>'+
+    '<span><b>18</b> rerun sensitivity cells, infeasible cases retained</span>';
+  const cards=document.getElementById("wp6StorageCards");
+  if(cards)cards.innerHTML=
+    '<article class="wp6-case-card"><small>UNSTORED REFERENCE · SYNTHETIC</small><h3>'+
+      chartEsc(chartNumber(base.daily_site_grid_kwh,"kWh_e",3))+
+      '</h3><p>Whole-day site electricity</p><dl><div><dt>Whole-day site peak</dt><dd>'+
+      chartEsc(chartNumber(base.whole_day_site_peak_kw,"kW",3))+'</dd></div>'+
+      '<div><dt>Evening site peak</dt><dd>'+
+      chartEsc(chartNumber(base.evening_site_peak_kw,"kW",3))+
+      '</dd></div></dl></article>'+
+    ["bess","psp"].map(kind=>{
+      const s=d.cases[kind].summary;
+      return '<article class="wp6-case-card"><small>'+chartEsc(labels[kind])+
+       ' · UNIT CELL</small><h3>'+chartEsc(chartNumber(s.daily_site_grid_kwh,"kWh_e",3))+
+       '</h3><p>Whole-day grid electricity; '+chartEsc(
+         chartNumber(s.daily_grid_energy_change_kwh,"kWh_e additional",3))+
+       ' due to charging, conversion and auxiliary loss</p><dl>'+
+       '<div><dt>Whole-day site peak</dt><dd>'+
+         chartEsc(chartNumber(s.whole_day_site_peak_kw,"kW",3))+'</dd></div>'+
+       '<div><dt>Evening site peak</dt><dd>'+
+         chartEsc(chartNumber(s.evening_site_peak_kw,"kW",3))+'</dd></div>'+
+       '<div><dt>Grid charging</dt><dd>'+
+         chartEsc(chartNumber(s.charge_grid_kwh,"kWh_e",3))+'</dd></div>'+
+       '<div><dt>Delivered evening service</dt><dd>'+
+         chartEsc(chartNumber(s.discharge_to_site_kwh,"kWh_e",3))+'</dd></div>'+
+       '<div><dt>Round-trip net ratio</dt><dd>'+
+         chartEsc(chartNumber(100*s.round_trip_net_energy_ratio,"%",2))+
+         '</dd></div></dl><p class="wp6-case-note">'+
+         (kind==="psp"?"Fictional 300 m head: "+chartEsc(chartNumber(
+           s.max_upper_water_m3_analogue,"m³ upper water at max",3))+
+           "; no verified reservoir pair.":"No battery supplier, location or procurement established.")+
+       '</p></article>';
+    }).join("");
+  const source="Kerala2040 authored synthetic electric-service example. NOT SLDC actual interval, BESS installation, Idukki/Pallivasal PSP, price or 2040 planning result.";
+  mountResearchChart("wp6StorageChart",{
+    style:"vertical",source,
+    rows:Array.from({length:24},(_,hour)=>({
+      label:String(hour).padStart(2,"0")+":00",
+      values:{reference:d.input.hourly_background_site_kw[hour],
+        bess:d.cases.bess.hourly[hour].grid_site_kw,
+        psp:d.cases.psp.hourly[hour].grid_site_kw},
+      note:(hour>=17&&hour<=21?"Illustrative discharge window. ":
+        "Outside evening service. ")+
+        "Includes any early-hour charging and device auxiliaries."
+    })),
+    series:[{key:"reference",label:"Without storage",unit:"kW",decimals:3},
+      {key:"bess",label:"Battery",unit:"kW",decimals:3},
+      {key:"psp",label:"Hydraulic unit cell",unit:"kW",decimals:3}]
+  });
+  mountResearchChart("wp6StorageStock",{
+    style:"vertical",source:source+" Stored ELECTRICAL-equivalent energy; not usable m³ or electricity delivered before discharge efficiency.",
+    rows:Array.from({length:24},(_,hour)=>({
+      label:String(hour).padStart(2,"0")+":00",
+      values:{bess:d.cases.bess.hourly[hour].stock_kwh_stored,
+        psp:d.cases.psp.hourly[hour].stock_kwh_stored},
+      note:"End-of-hour stored potential energy; both end empty."
+    })),
+    series:[{key:"bess",label:"Battery state",unit:"kWh stored",decimals:3},
+      {key:"psp",label:"Hydraulic potential",unit:"kWh stored",decimals:3}]
+  });
+  const table=document.getElementById("wp6StorageSensitivity");
+  if(table)table.innerHTML='<div class="table-scroll"><table>'+
+    '<thead><tr><th>Technology</th><th>Capacity kWh</th><th>Charge η</th>'+
+    '<th>Service feasible?</th><th>Daily grid kWh</th><th>Evening site peak kW</th></tr></thead>'+
+    '<tbody>'+["bess","psp"].flatMap(kind=>
+      d.sensitivities[kind].map(x=>'<tr><td>'+chartEsc(labels[kind])+
+        '</td><td>'+chartEsc(chartNumber(x.capacity_kwh_stored,"",1))+
+        '</td><td>'+chartEsc(chartNumber(x.charge_efficiency,"",2))+
+        '</td><td>'+(x.feasible?"Yes":"Infeasible: "+chartEsc(x.reason))+
+        '</td><td>'+(x.feasible?chartEsc(chartNumber(x.daily_site_grid_kwh,"",3)):"—")+
+        '</td><td>'+(x.feasible?chartEsc(chartNumber(x.evening_site_peak_kw,"",3)):"—")+
+        '</td></tr>')).join("")+
+    '</tbody></table></div>';
+}
+async function loadWP6Storage(filename){
+  const target=document.getElementById("wp6StorageChart");if(!target)return;
+  if(filename!=="wp6-bess-psp.json"){
+    target.textContent="The source-qualified storage experiment is unavailable.";return;
+  }
+  try{renderWP6Storage(await getJSON(filename));}
+  catch(error){console.error("WP6 storage evidence failed:",error);
+    target.textContent="Storage source/physics QA failed; numbers withheld.";
+  }
+}
