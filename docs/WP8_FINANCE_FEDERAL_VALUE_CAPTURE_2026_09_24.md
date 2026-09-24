@@ -25,6 +25,8 @@ The Kerala State Planning Board's [Annual Plan Proposals 2025–26](https://spb.
 
 The proposal splits the KSEBL line into **₹104,218 lakh in “KSEBL’s own fund schemes”; ₹540 lakh “Externally Aided Project”; and ₹4,122 lakh “State Plan scheme of KSEBL.”** These components reconcile to **108,880 lakh**. The *text* directly supports this planned categorical separation but does not say that the State Plan number was actually released, that the external component is a grant rather than a loan, or that all agency outlays are fresh state budget payments. No inferences about current KSEBL financing practice follow automatically from this one proposal document.
 
+**This budget proposal remains an unverified actual-expenditure input: the source is a plan document, not Treasury spending.**
+
 **Outstanding document QA:** page-rendering/screenshot verification of the publisher PDF returned a cache miss; the supplied figures are **not promoted as visually authenticated tables** until the relevant pages can be checked against the original layout. Store the exact source and page location; do not misstate them as an expenditure account.
 
 ## Evidence B · statewide fiscal setting (FY2024–25, not a power-sector earmark)
