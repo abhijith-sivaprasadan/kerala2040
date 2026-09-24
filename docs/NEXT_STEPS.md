@@ -1,5 +1,11 @@
 # Kerala 2040: next research steps
 
+## Kerala full-year petroleum sales · additional total-energy atlas analysis · 24 September 2026
+
+The [PPAC annual publication audit](PPAC_KERALA_FULL_YEAR_SALES_SOURCE_AUDIT_2026_09_24.md) and [source-tier data register](../data/evidence/total_energy/ppac_full_fy_kerala_source_audit_2026_09_24.json) distinguish six full FY2019–20–2024–25 Kerala all-POL sales rows and petrol/diesel included subseries. FY2024–25 is transcribed from a precisely identified PPAC edition's **third-party text mirror**; original PPAC PDF image access remains blocked, so FY2024–25 annual sales is explicitly lower-assurance and not a measured in-state final-energy balance. No annualisation of the earlier H1 provisional products, and no inferred missing FY2019–20 diesel. Earlier PPAC FY2022–23 source reports disagree (6,882.6 vs later 6,879.1 thousand tonnes); vintages are preserved. The source register lists specific data fields/request needed from EMC because its fuel-by-consuming-sector input workbook was not found in public EMC downloads.
+
+**Next actual evidence gates:** official FY2024–25 PDF bytes and Kerala row cross-check, original all-FY PPAC state×product workbook/data dictionary; EMC author workbook and conversion methods, ideally publication-cleared CSV. Never assume fuel sales, generation input, import share and Kerala final energy are equivalent.
+
 ## Kerala Total Energy Atlas: new original-plan dimension started · 24 September 2026
 
 The [first source-qualified statewide TFEC research chapter](KERALA_TOTAL_ENERGY_ATLAS_BASELINE_2026_09_24.md) retrieves **six historical EMC final-energy totals (FY2014–15–FY2019–20)** and FY2019–20 publisher-rounded oil/electricity/coal/gas shares, with visually checked source Figure 3 and 4. Distinct PPAC **April–September 2024 provisional selected-product petroleum sales** have indexed publisher-text provenance but **original page-image QA still pending**. The [register](../data/evidence/total_energy/kerala_total_energy_source_register_2026_09_24.json), fail-closed validator and three interactive homepage charts prevent combining unlike years or mass/energy/nominal plant capacities. The PPAC 30 September 2024 infrastructure snapshot remains supply context, not consumed energy.
