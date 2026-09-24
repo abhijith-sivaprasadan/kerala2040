@@ -19,6 +19,7 @@ from urllib.parse import unquote, urlsplit
 from kerala2040.audit_readiness import build_audit
 from kerala2040.energy_ghg_bridge import validate_energy_ghg_bridge
 from kerala2040.flexibility_cooling import build_pilot
+from kerala2040.flexibility_dispatch import build_demonstration
 from kerala2040.ppac_full_year import validate_ppac_sales
 from kerala2040.research_ledger import build_ledger
 from kerala2040.total_energy_atlas import validate_total_energy_source_register
@@ -556,6 +557,28 @@ def build_site(root: Path, output: Path) -> None:
     (data_dir / "wp6-cooling-pilot.json").write_text(
         json.dumps(cooling, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    # WP6 synthetic EV and optional industrial dispatch preserve service,
+    # availability and connection constraints; NO measured Kerala or KMML claims.
+    for kind, filename in (("ev", "wp6-ev-pilot.json"),
+                           ("industry", "wp6-industry-pilot.json")):
+        trial = build_demonstration(kind)
+        if (len(trial["baseline"]["hourly"]) != 24
+                or len(trial["managed"]["hourly"]) != 24
+                or len(trial["sensitivity"]) != 9
+                or any(trial["science_gates"].values())
+                or trial["comparison"]["total_electricity_change_kwh"] != 0
+                or trial["managed"]["summary"]["missed_deadlines"] != 0):
+            raise ValueError("WP6 flex source, terminal service or real-Kerala gate breached")
+        site["metadata"]["files"][f"wp6_{kind}_pilot"] = filename
+        (data_dir / filename).write_text(
+            json.dumps(trial, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+        )
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
