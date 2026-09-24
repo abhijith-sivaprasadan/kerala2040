@@ -164,12 +164,12 @@ def simulate(cfg: dict, case: str) -> dict:
         "discharged_to_room_kWh_th": _round(sum(r["thermal_discharge_to_room_kWh_th"] for r in rows)),
         "standing_loss_kWh_th": _round(sum(r["standing_loss_kWh_th"] for r in rows)),
     }
+    if summary["comfort_violation_hours"] != 0:
+        raise ValueError("Cooling case leaves the common comfort envelope")
     if abs(stock - store["initial_stored_kWh_th"]) > 1e-7:
         raise ValueError("Storage must end empty: no end-of-horizon free energy")
     if abs(indoor - zone["starting_indoor_C"]) > 1e-7:
         raise ValueError("Zone must end at starting temperature: no unpaid pre-cooling")
-    if summary["comfort_violation_hours"] != 0:
-        raise ValueError("Cooling case leaves the common comfort envelope")
     return {"case": case, "summary": summary, "hourly": rows}
 
 
