@@ -1,5 +1,11 @@
 # Kerala 2040: next research steps
 
+## WP6 BESS/pumped-storage: bounded electrical service screen · 24 September 2026
+
+The [BESS/PSP executable study](WP6_BESS_PUMPED_STORAGE_SCREEN_2026_09_24.md) runs two zero-initial/zero-terminal synthetic stores against a fictional site and fixed five-hour evening duty. Grid charging, stored-state losses, auxiliary power, round-trip ratio, separate whole-day/evening peaks and a hypothetical 300 m hydraulic m³ conversion are source-labelled. Nine capacity×efficiency combinations per store preserve infeasible cases as null. Neither actual Kerala pumping MW nor net import reduction is inferred. CEA's 2026 report index and dated 2025 Kerala project text are **discovery only** (original page-image check failed), not current approval.
+
+**Next physical gates:** updated named project stage, distinct upper/lower reservoir and head/storage curves, flood and environmental rules, water rights, project-grid connection and independently dated BESS site/equipment/cost/market evidence. A 24-hour fictitious service cannot yield a Kerala 2040 storage capacity or compare environmental/financial merit.
+
 ## WP6 two new reproducible experiments: managed EV + noncritical industrial duty · 24 September 2026
 
 [Technical model and public method chapter](WP6_EV_INDUSTRIAL_FLEXIBILITY_PILOTS_2026_09_24.md) and [shared constrained Python scheduler](../src/kerala2040/flexibility_dispatch.py) implement **two independent 24h** source-labelled illustrative examples. EV charger arrivals/departures, battery headroom, per-vehicle charging kW, conversion losses and shared circuit cap are enforced for BOTH earliest and managed policies; industrial optional jobs preserve exact due production/service duty and leave fictional critical/safety load untouched. Nine connection capacity × charging efficiency or duty-size sensitivities per pilot (18) regenerate both policies, with deadline checks and unchanged total electricity under fixed efficiency. The website exposes 48 hourly rows per pilot, two case comparisons, individual jobs and each sensitivity. Source-bounded industrial model is **not** a KMML metered/process-permission finding.

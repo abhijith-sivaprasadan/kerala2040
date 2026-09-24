@@ -1165,6 +1165,8 @@ async function init(){
       await loadWP6ServiceDispatch(state.site.metadata.files.wp6_ev_pilot,"ev");
       await loadWP6ServiceDispatch(state.site.metadata.files.wp6_industry_pilot,"industry");
     }
+    if(typeof loadWP6Storage==="function")await loadWP6Storage(
+      state.site.metadata.files.wp6_storage_screen);
     animateVisibleArtwork();
   }catch(err){
     console.error("Kerala2040 evidence load failed:",err);

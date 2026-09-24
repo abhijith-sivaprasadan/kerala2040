@@ -1,0 +1,51 @@
+# Hypothetical BESS and closed-loop pumped-storage electrical-service comparison.
+# Not a Kerala installation, observed load, reservoir geometry or DPR.
+version: 1
+classification: WP6_SYNTHETIC_ELECTRICAL_STORAGE_NOT_KERALA_SITES
+time_basis: 24 synthetic 1-hour slots; no measured Kerala system time series
+spatial_scope: hypothetical 1-site electrical load; pumped storage is a tiny hydraulic analogue, NOT a project size
+hourly_background_site_kw: [5, 4.8, 4.6, 4.5, 4.5, 4.7, 5.1, 6.2, 7.4, 8.1, 9.0, 9.8, 10.6, 11.2, 11.6, 11.1, 10.5, 12.5, 13.5, 14.5, 13.4, 11.8, 8.4, 6.0]
+charge_hours: [0, 1, 2, 3, 4, 5, 6]
+discharge_hours: [17, 18, 19, 20, 21]
+discharge_service_kw: 2.0
+storage:
+  bess:
+    capacity_kwh_stored: 16.0
+    charge_max_kw: 4.0
+    discharge_max_kw: 3.0
+    charge_efficiency: 0.95
+    discharge_efficiency: 0.95
+    standing_loss_per_hour: 0.0005
+    auxiliary_kwh_per_kwh_delivered: 0.005
+    provenance: illustrative battery AC-bus efficiency and losses; not product datasheet
+    sensitivity_capacity_kwh: [8.0, 12.0, 16.0]
+    sensitivity_charge_efficiency: [0.80, 0.90, 0.95]
+  psp:
+    capacity_kwh_stored: 16.0
+    charge_max_kw: 4.0
+    discharge_max_kw: 3.0
+    charge_efficiency: 0.90
+    discharge_efficiency: 0.88
+    standing_loss_per_hour: 0.0001
+    auxiliary_kwh_per_kwh_delivered: 0.02
+    hypothetical_net_head_m: 300.0
+    reference_water_density_kg_per_m3: 1000.0
+    gravity_m_per_s2: 9.81
+    provenance: fictional closed-loop hydraulic analogue; head/efficiency/capacity NOT Idukki or Pallivasal values
+    sensitivity_capacity_kwh: [8.0, 12.0, 16.0]
+    sensitivity_charge_efficiency: [0.80, 0.90, 0.95]
+source_discovery:
+  cea_monthly_index: https://cea.nic.in/hpi-report/?lang=en
+  cea_2025_kerala_profile: https://cea.nic.in/wp-content/uploads/hpi/2025/04/All_India_Hydro_Potential_Profile_April_25-2.pdf
+  indexed_project_leads: [Idukki, Pallivasal]
+  source_page_image_verified: false
+  source_claim: dated 2025 planning/discovery only; NOT 2026 project status, permission, MW dispatch or buildability
+release:
+  measured_kerala_net_load: false
+  installed_kerala_bess_capacity: false
+  verified_pumped_reservoir_pair: false
+  approved_head_storage_or_water_right: false
+  environmental_land_safety_clearance: false
+  power_network_or_grid_ancillary_services: false
+  annual_tariff_emissions_finance: false
+  kerala_2040_numerical_scenario: false

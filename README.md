@@ -41,6 +41,12 @@ The [website](https://kerala2040.github.io/) is a *published, pinned evidence sn
 
 Kerala Minerals and Metals Ltd's official chloride-route descriptions allow us to distinguish **nine separate units/branches**, including the existing HCl regeneration loop, and **ten non-interchangeable material, water and energy streams**. Its **FY2022–23** annual report records 10 MT of *sponge iron from oxide in two trials*, TiO2 fines of 1–2 g/L in U400 polishing-pond overflow and a separate approximately 300 m³/day filter-backwash claim; neither the pilot quantities nor historical nameplate capacities are current annual performance. Iron oxide brick commercialization is a separate **historical** company claim; the titanium-sponge line is a different product. This is a **completed descriptive process study**, not quantified recovery, annual savings, emissions, or independent regulatory approval. The measured KMML release gate stays closed.
 
+## WP6 BESS + pumped-storage unit cells · 24 September 2026
+
+[Technical chapter](docs/WP6_BESS_PUMPED_STORAGE_SCREEN_2026_09_24.md) · [Authored physical inputs](configs/wp6_bess_psp_illustrative.yaml) · [Executable physics](src/kerala2040/flexibility_storage.py) · [Interactive Pathways](https://kerala2040.github.io/#pathways).
+
+A fourth distinct WP6 pilot executes hypothetical BESS and constant-head pumped-hydro **electrical-service** units with the **same 2 kW × five-hour evening output**, source-explicit losses, fixed charge/discharge windows and exact zero→zero stored-energy boundaries. Whole-day versus evening peak and grid kWh are separately accounted. Eighteen capacity × charge-efficiency reruns keep undersized combinations **infeasible**, never counting partial service. The 300 m hydraulic head and computed m³ are invented unit-cell geometry, **not Idukki/Pallivasal reservoir or a feasible project**. CEA dated project-status leads are retained as discovery only; primary page-image and current project-specific physical/legal/environmental/financial gates remain open. No real Kerala MW, savings, emissions or preferred technology is inferred.
+
 ## WP6 EV and optional industry: two matched-service dispatch experiments · 24 September 2026
 
 [Full methods and source limits](docs/WP6_EV_INDUSTRIAL_FLEXIBILITY_PILOTS_2026_09_24.md) · [reproducible shared scheduling model](src/kerala2040/flexibility_dispatch.py) · [EV input](configs/wp6_ev_charging_illustrative.yaml) · [industry input](configs/wp6_industrial_illustrative.yaml) · [live interactive charts](https://kerala2040.github.io/#pathways).
