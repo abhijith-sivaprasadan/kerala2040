@@ -4,6 +4,10 @@ User-confirmed on 18 September 2026. TTPL and FACT remain comparison references.
 This facility case sits inside the whole-Kerala study; it does not narrow the
 electricity model to Chavara or Kochi.
 
+## CET 2026 bounded delivery — completed 24 September 2026
+
+[Read the source-audited KMML process chapter](KMML_CIRCULAR_INDUSTRY_CASE_2026_09_24.md) and [source-typed nine-unit / ten-stream register](../data/evidence/industry/kmml_source_bounded_case_2026_09_24.json). Existing loops, historic brick commercialisation, FY2022–23 R&D trials, unmeasured heat and the separate Ti-sponge branch are now independently labelled. The first deliverable is **finished as a qualitative, dated process account and symbolic mass-energy-water/economic framework**. No contemporaneous validated facility operations dataset or numerical recovery is available; the following input request remains the gate to calculation.
+
 ## First deliverable
 
 A sourced material/energy/water flow diagram and baseline residual-stream ledger.
