@@ -18,6 +18,7 @@ from urllib.parse import unquote, urlsplit
 
 from kerala2040.audit_readiness import build_audit
 from kerala2040.research_ledger import build_ledger
+from kerala2040.total_energy_atlas import validate_total_energy_source_register
 
 
 def validate_bundle(public: Path) -> dict:
@@ -479,6 +480,24 @@ def build_site(root: Path, output: Path) -> None:
     site["metadata"]["files"]["kmml_case"] = "kmml-case.json"
     (data_dir / "kmml-case.json").write_text(
         json.dumps(kmml, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    # This is a historical TFEC panel plus a distinct provisional six-month sales slice.
+    # Never stitch unlike dates or interpret nominal infrastructure as measured consumption.
+    energy = json.loads(
+        (root / "data/evidence/total_energy/kerala_total_energy_source_register_2026_09_24.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    validate_total_energy_source_register(energy)
+    site["metadata"]["files"]["total_energy_atlas"] = "total-energy-atlas.json"
+    (data_dir / "total-energy-atlas.json").write_text(
+        json.dumps(energy, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
