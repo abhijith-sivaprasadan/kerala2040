@@ -19,6 +19,7 @@ from urllib.parse import unquote, urlsplit
 from kerala2040.audit_readiness import build_audit
 from kerala2040.research_ledger import build_ledger
 from kerala2040.total_energy_atlas import validate_total_energy_source_register
+from kerala2040.ppac_full_year import validate_ppac_sales
 
 
 def validate_bundle(public: Path) -> dict:
@@ -498,6 +499,23 @@ def build_site(root: Path, output: Path) -> None:
     site["metadata"]["files"]["total_energy_atlas"] = "total-energy-atlas.json"
     (data_dir / "total-energy-atlas.json").write_text(
         json.dumps(energy, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    # Annual oil-company sales are NOT electricity data or Kerala final energy.
+    ppac_full = json.loads(
+        (root / "data/evidence/total_energy/ppac_full_fy_kerala_source_audit_2026_09_24.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    validate_ppac_sales(ppac_full)
+    site["metadata"]["files"]["ppac_full_year_sales"] = "ppac-annual-sales.json"
+    (data_dir / "ppac-annual-sales.json").write_text(
+        json.dumps(ppac_full, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
