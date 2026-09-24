@@ -1041,3 +1041,38 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
  .wp6-status{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.wp6-status{grid-template-columns:1fr}
  .wp6-sensitivity{padding:2px}.wp6-sensitivity th,.wp6-sensitivity td{padding:8px}}
+
+/* WP6 matched useful-service comparison: never presented as Kerala fleet or KMML meters. */
+.wp6-flex-study{margin:22px 0 40px;padding:clamp(18px,3vw,40px);
+ border:1px solid var(--line);border-top:5px solid var(--gold);background:var(--surface)}
+.wp6-flex-study>.display-title{margin:10px 0 15px}
+.wp6-flex-study>p{font:500 13px/1.8 var(--body);color:var(--ink-soft);max-width:990px}
+.wp6-flex-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;
+ border:1px solid var(--line);background:var(--line);margin:22px 0}
+.wp6-flex-status>span{display:grid;gap:6px;background:var(--paper);padding:15px;
+ font:500 12px/1.6 var(--body);color:var(--ink-soft)}
+.wp6-flex-status b{font:600 clamp(18px,2vw,26px)/1.3 var(--display);color:var(--leaf)}
+.wp6-flex-cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.wp6-flex-cases article,.wp6-flex-plot,.wp6-flex-jobs,.wp6-flex-sensitivity{
+ min-width:0;border:1px solid var(--line);background:var(--paper);padding:clamp(13px,2vw,22px)}
+.wp6-flex-cases article small{font:700 11px/1.5 var(--mono);color:var(--rust)}
+.wp6-flex-cases article h3{font:600 clamp(25px,3vw,38px)/1.3 var(--display);margin:8px 0}
+.wp6-flex-cases article p,.wp6-flex-plot p,.wp6-flex-jobs p,.wp6-flex-sensitivity p{
+ font:500 12px/1.7 var(--body);color:var(--ink-soft)}
+.wp6-flex-cases article dl{display:grid;gap:1px;background:var(--line);margin:13px 0 0}
+.wp6-flex-cases article dl>div{display:flex;align-items:baseline;justify-content:space-between;
+ gap:10px;padding:10px;background:var(--surface)}
+.wp6-flex-cases article dt{font:500 11px/1.5 var(--body);color:var(--ink-soft)}
+.wp6-flex-cases article dd{margin:0;font:600 12px/1.5 var(--mono);text-align:right}
+.wp6-flex-plot,.wp6-flex-jobs,.wp6-flex-sensitivity{margin:15px 0}
+.wp6-flex-plot h3,.wp6-flex-jobs h3,.wp6-flex-sensitivity h3{
+ font:600 clamp(21px,2.5vw,32px)/1.3 var(--display);margin:6px 0}
+.wp6-flex-jobs table,.wp6-flex-sensitivity table{border-collapse:collapse;
+ width:100%;font:500 12px/1.5 var(--body)}
+.wp6-flex-jobs th,.wp6-flex-jobs td,.wp6-flex-sensitivity th,.wp6-flex-sensitivity td{
+ padding:10px;border-bottom:1px solid var(--line);text-align:left;font-variant-numeric:tabular-nums}
+.wp6-flex-jobs thead th,.wp6-flex-sensitivity thead th{color:var(--leaf);font-weight:700}
+@media(max-width:920px){.wp6-flex-status{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .wp6-flex-cases{grid-template-columns:1fr}}
+@media(max-width:570px){.wp6-flex-status{grid-template-columns:1fr}
+ .wp6-flex-study{padding:14px}.wp6-flex-jobs,.wp6-flex-sensitivity{padding:12px}}
