@@ -14,8 +14,8 @@ CLASSIFICATION = (
 FY = ("2014-15", "2015-16", "2016-17", "2017-18", "2018-19", "2019-20")
 TFEC = ("9.18", "9.35", "9.61", "10.17", "10.33", "10.78")
 PPAC = {
-    "LPG": "579.0",
-    "Motor spirit (petrol)": "937.0",
+    "LPG": "579",
+    "Motor spirit (petrol)": "937",
     "Superior kerosene oil": "3.41",
     "High-speed diesel": "1169.5",
     "Aviation turbine fuel": "283.7",
