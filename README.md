@@ -51,6 +51,12 @@ The original **NWIC District Boundary GeoJSON** was checked against the same NWI
 
 Completeness here applies **only to descriptive administrative point assignment**, not land-use clearance, notified forest/paddy/wetland/ESZ boundaries, turbine siting, grid hosting, source-vintage/reuse-rights review, eligible km² or feasible MW. Every such capacity/model gate remains closed.
 
+### Historical electricity story · CET source-audited synthesis · 24 September 2026
+
+**The historical electricity chapter now has a defined research answer, not only a list of inputs:** the [KSEBL-attributed annual state-consumption series](docs/CET_HISTORICAL_ELECTRICITY_STORY_2026_09_24.md) rises from **22,540.32 MU (FY2020–21)** to **29,311.76 MU (FY2024–25)**; separately, Kerala SLDC source-matched operational daily consumption rises **24.12% on 356 paired calendar dates** from FY2020–21 to FY2025–26. Net import and hydel shares are reported on **qualified observed FY days**, with explicit FY coverage, and evening peak fields are never represented as metered hourly load. **The KSEBL and SLDC numbers use different reporting boundaries even when the SLDC FY has 365/365 days; do not subtract them to invent losses or an annual correction.**
+
+[Conference-ready four-figure chapter](docs/CET_HISTORICAL_ELECTRICITY_STORY_2026_09_24.md) · [Machine-readable audit](data/evidence/sldc/cet_historical_electricity_story_2026_09_24.json). The 11 missing FY2024–25 SLDC dates, measured interval load/interchange and full cross-source boundary reconciliation remain open. This finished **descriptive history** is not a validated 2040 system optimisation or a public-site release promotion.
+
 ### Historical SLDC five-section source audit · 23 September 2026
 
 **Kerala SLDC five-section reports spanning 6 August 2019–23 September 2026 have been collected and normalized offline, without inventing hourly measurements.** Across 2,606 requested calendar dates, Statistics and Imports contain **2,576** source-dated and SHA-256-matched reports each, while Storage, Availability and Others contain **2,577** each. The 2019–2021 Statistics schema includes 614 earlier reduced-layout pages and the newer layout has 1,962 reports. The first day is a selected crawl boundary, not a verified date of first SLDC publication.
