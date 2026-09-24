@@ -149,6 +149,25 @@ async function main(){
       full.annual_kerala_rows[0].hsd_tmt===null &&
       full.unsupported_current_results.fy2024_25_kerala_total_final_energy_mtoe===null,
       "Missing original source and current total final-energy scientific gates violated");
+    await page.locator("#totalEnergyGHGChart svg").waitFor({state:"visible"});
+    check(await page.locator("#totalEnergyGHGChart .research-point").count()===3,
+      "Exactly three official 2023 energy-emission categories must be shown");
+    check((await page.locator("#totalEnergyGHGStatus").innerText()).includes("20.64 MtCO₂e"),
+      "Official 2023 energy-sector emissions total unavailable");
+    await page.locator("#totalEnergyGHGChart svg").focus();
+    await page.locator("#totalEnergyGHGChart svg").press("Home");
+    check((await page.locator("#totalEnergyGHGChart .research-chart-readout").innerText()).includes("13.59"),
+      "Source-backed transport emissions must be inspectable by keyboard");
+    const ghgResponse=await page.request.get(base+"data/energy-ghg-bridge.json");
+    check(ghgResponse.status()===200,"Source-qualified GHG data missing from deployed snapshot");
+    const ghg=await ghgResponse.json();
+    check(ghg.period==="calendar_2023"&&
+      ghg.no_assumed_energy_2024_25_mtoe===null&&
+      ghg.no_assumed_2024_25_sectoral_emissions_mtco2e===null&&
+      ghg.historic_source_vintage_conflict.old_report_energy_mtco2e===16.96&&
+      ghg.historic_source_vintage_conflict.current_portal_energy_mtco2e===17.09,
+      "Historical emissions must not be promoted to a current energy estimate");
+    console.log("PASS OFFICIAL GHG: calendar-2023 scope, interactive subcategories and explicit version gap");
     console.log("PASS FULL-YEAR PPAC: six full-FY totals, category subsets and primary QA caveat");
     console.log("PASS TOTAL ENERGY ATLAS: EMC history, rounded fuel mix and bounded PPAC H1 sales");
     console.log("PASS home: 4 metrics, 354/365, 11 gaps; welcome dismisses; editorial system visible");
@@ -373,7 +392,7 @@ async function main(){
       "KMML measured-flow scientific release gates must remain closed");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
     await route("workbench");
-    check(await page.locator(".research-item").count()===14,
+    check(await page.locator(".research-item").count()===15,
       "All fourteen research streams must render");
     await page.locator("#workbenchSearch").fill("forest");
     check(await page.locator(".research-item").count()>=1,

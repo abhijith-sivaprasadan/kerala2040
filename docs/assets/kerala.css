@@ -989,3 +989,12 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
 @media(max-width:870px){.total-energy-status{grid-template-columns:repeat(2,minmax(0,1fr))}
   .total-energy-figures{grid-template-columns:1fr}.total-energy-figures .total-energy-halfyear{grid-column:auto}}
 @media(max-width:540px){.total-energy-status{grid-template-columns:1fr}}
+
+/* Source-dated inventory emissions are not fuel sales or final energy. */
+.total-energy-ghg-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;
+  margin:14px 0;background:var(--line);border:1px solid var(--line)}
+.total-energy-ghg-status span{display:grid;gap:8px;padding:16px;
+  font:500 12px/1.5 var(--body);background:var(--surface);color:var(--ink-soft)}
+.total-energy-ghg-status b{font:600 clamp(17px,2vw,25px)/1.25 var(--display);color:var(--leaf)}
+.total-energy-atlas .total-energy-figures figure>.total-energy-warning{max-width:none}
+@media(max-width:750px){.total-energy-ghg-status{grid-template-columns:1fr}}
