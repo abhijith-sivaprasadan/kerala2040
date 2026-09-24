@@ -276,3 +276,105 @@ async function loadHistoricalStudy(filename,ledger){
     });
   }
 }
+
+
+/* KMML's process diagram deliberately contains no invented material/energy widths.
+   Datum date and whether a loop was commissioned remain visible on every view. */
+const kmmlState={unit:"IBP",filter:"all"};
+function validateKMMLCase(data){
+  const s=data?.scientific_scope||{};
+  if(data?.classification!=="KMML_CHAVARA_SOURCE_BOUNDED_PROCESS_CASE_NOT_MEASURED_2024_25_NOT_RECOVERY_FORECAST"||
+    data?.selected_case!=="KMML"||
+    data?.units?.length!==9||data?.streams?.length!==10||
+    s.measured_mass_energy_water_balance_complete!==false||
+    s.measured_recovery_credits_available!==false||
+    s.kmml_case_release_gate_passed!==false||
+    data.ready_for_numerical_2040_industry_scenario!==false||
+    data.published_numeric_recovery_by_Kerala2040!==null||
+    data.streams.some(x=>x.annual_tonnes!==null||x.annual_mwh!==null||x.avoided_co2_t!==null)||
+    data.dated_evidence?.fy2022_23?.iron_oxide_sponge_iron_trial_mt!==10||
+    data.dated_evidence?.fy2022_23?.filter_backwash_m3_per_day_approx!==300||
+    JSON.stringify(data.dated_evidence?.fy2022_23?.tio2_fines_overflow_g_per_l)!=="[1,2]"){
+    throw new Error("KMML scientific boundary was altered or missing");
+  }
+  return true;
+}
+function kmmlGroup(stream){
+  if(["pigment_fines","backwash_water"].includes(stream.id))return "trials";
+  if(["heat","sponge_mgcl2"].includes(stream.id))return "unquantified";
+  return "existing";
+}
+function kmmlSourceLink(data,id){
+  const entry=data.sources[id];
+  if(!entry)return "";
+  const href=entry.url||"";
+  if(!/^https:\/\/www\.kmml\.com\//.test(href))return "";
+  return '<a href="'+chartEsc(href)+'" target="_blank" rel="noopener noreferrer">'+
+    chartEsc(id==="annual_2022_23"?"KMML Annual Report FY2022–23":id.toUpperCase()+" · official KMML")+' ↗</a>';
+}
+function renderKMMLCase(data){
+  validateKMMLCase(data);
+  const status=document.getElementById("kmmlCaseStatus");
+  if(status)status.innerHTML=
+    '<span><b>9</b> documented process and utility units</span>'+
+    '<span><b>10</b> source-qualified residual and loop entries</span>'+
+    '<span><b>2022–23</b> dated R&D trial record</span>'+
+    '<span><b>Unmeasured</b> annual plant-wide recovery and avoided CO₂</span>';
+  const root=document.getElementById("kmmlFlow"),details=document.getElementById("kmmlUnitDetail");
+  if(root){
+    const orders=[["MS","IBP","U200","U300","U400"],["ARP","TSP","ETP","UTIL"]];
+    const printUnit=id=>{
+      const u=data.units.find(x=>x.id===id);if(!u)return "";
+      const selected=u.id===kmmlState.unit;
+      return '<button type="button" data-kmml-unit="'+chartEsc(u.id)+'" aria-pressed="'+selected+
+       '" class="kmml-unit kmml-unit-'+chartEsc(u.branch)+'">'+
+       '<small>'+chartEsc(u.branch==="pigment"?"PIGMENT · MAIN":
+         u.branch==="sponge"?"METAL · SEPARATE":u.branch==="recovery"?"ACID · RETURN":
+         u.branch==="environment"?"EFFLUENT / RESIDUE":"UTILITIES")+'</small>'+
+       '<strong>'+chartEsc(u.id)+'</strong><span>'+chartEsc(u.name)+'</span></button>';
+    };
+    root.innerHTML='<div class="kmml-trunk">'+orders[0].map((id,i)=>printUnit(id)+
+      (i<orders[0].length-1?'<span aria-hidden="true" class="kmml-arrow">→</span>':"")).join("")+
+      '</div><p class="kmml-flow-note">MS → IBP → U200 → U300 → U400 is the pigment chain; select the branches below for the acid return, sponge metal, effluent and cross-cutting utilities.</p>'+
+      '<div class="kmml-branches">'+orders[1].map(printUnit).join("")+'</div>';
+    root.querySelectorAll("[data-kmml-unit]").forEach(button=>button.addEventListener("click",()=>{
+      kmmlState.unit=button.dataset.kmmlUnit;renderKMMLCase(data);
+      document.getElementById("kmmlUnitDetail")?.scrollIntoView?.({block:"nearest",behavior:"smooth"});
+    }));
+  }
+  const unit=data.units.find(x=>x.id===kmmlState.unit)||data.units[0];
+  if(details)details.innerHTML='<div><small>SELECTED UNIT · '+chartEsc(unit.id)+
+    ' · NOT A METERED FLOW</small><h3>'+chartEsc(unit.name)+'</h3>'+
+    '<p>'+chartEsc(unit.function)+'</p></div><div><b>Inputs:</b> '+chartEsc(unit.inputs)+
+    '</div><div><b>Outputs:</b> '+chartEsc(unit.outputs)+
+    '</div><p class="kmml-unit-caveat">Annual output / heat / water: not verified. '+
+    kmmlSourceLink(data,unit.origin)+'</p>';
+  const fs=document.getElementById("kmmlStreamFilters"),out=document.getElementById("kmmlStreams");
+  const filters=[["all","All ten"],["existing","Existing routes / source processes"],
+    ["trials","FY2022–23 trials"],["unquantified","Unmeasured opportunities / coproduct"]];
+  if(fs){
+    fs.innerHTML=filters.map(([id,label])=>'<button type="button" data-kmml-filter="'+id+
+      '" aria-pressed="'+String(kmmlState.filter===id)+'">'+chartEsc(label)+'</button>').join("");
+    fs.querySelectorAll("[data-kmml-filter]").forEach(button=>button.addEventListener("click",()=>{
+      kmmlState.filter=button.dataset.kmmlFilter;renderKMMLCase(data);
+    }));
+  }
+  const selected=data.streams.filter(s=>kmmlState.filter==="all"||kmmlGroup(s)===kmmlState.filter);
+  if(out)out.innerHTML=selected.map(s=>{
+    const group=kmmlGroup(s),txt=group==="trials"?"DATED TRIAL · FY2022–23":
+      group==="unquantified"?"NO RECOVERY CREDIT":"DESCRIBED ROUTE · QUANTITIES UNKNOWN";
+    return '<article class="kmml-stream"><div><small>'+chartEsc(s.unit)+' · '+txt+
+       '</small><h4>'+chartEsc(s.title)+'</h4><p>'+chartEsc(s.route)+'</p></div>'+
+       '<details><summary>What would establish the amount and the benefit?</summary>'+
+       '<p>'+chartEsc(s.necessary)+'</p><p>Annual tonnes: — · Annual MWh: — · Avoided CO₂: —</p>'+
+       '<div class="source-links">'+s.source_ids.map(id=>kmmlSourceLink(data,id)).join(" ")+'</div></details></article>';
+  }).join("");
+}
+async function loadKMMLCase(filename){
+  const root=document.getElementById("kmmlFlow");if(!root)return;
+  if(filename!=="kmml-case.json"){root.textContent="No source-verified KMML case in this published research revision.";return;}
+  try{renderKMMLCase(await getJSON(filename));}
+  catch(err){console.error("KMML case data failed verification:",err);
+    root.textContent="KMML case failed provenance/coverage checks; no process claims shown.";
+  }
+}
