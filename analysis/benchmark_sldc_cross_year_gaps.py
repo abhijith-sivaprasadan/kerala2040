@@ -168,8 +168,7 @@ def main() -> None:
     data = load(args.input)
     result = benchmark(data, min_years=args.min_years)
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(result, indent=2, allow_nan=False) + "
-", encoding="utf-8")
+    args.out.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=2))
 
 
