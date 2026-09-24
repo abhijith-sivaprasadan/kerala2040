@@ -1155,6 +1155,8 @@ async function init(){
       state.site.metadata.files.kmml_case);
     if(typeof loadTotalEnergyAtlas==="function")await loadTotalEnergyAtlas(
       state.site.metadata.files.total_energy_atlas);
+    if(typeof loadPPACAnnualSales==="function")await loadPPACAnnualSales(
+      state.site.metadata.files.ppac_full_year_sales);
     animateVisibleArtwork();
   }catch(err){
     console.error("Kerala2040 evidence load failed:",err);

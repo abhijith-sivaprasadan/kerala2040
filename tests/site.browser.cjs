@@ -133,6 +133,23 @@ async function main(){
       energy.ppac_provisional_half_year_2024_25.no_annualisation===true &&
       energy.ppac_provisional_half_year_2024_25.end_date==="2024-09-30",
       "Historical EMC and provisional PPAC must not become a current combined balance");
+    await page.locator("#totalEnergyAnnualPPACChart svg").waitFor({state:"visible"});
+    check(await page.locator("#totalEnergyAnnualPPACChart .research-point").count()===6,
+      "All six fiscal years of full-year Kerala oil-company sales must render");
+    check(await page.locator("#totalEnergyPPACProductsChart .research-point").count()===11,
+      "Six petrol and five diesel readings must render without fabricated FY2019–20 diesel");
+    await page.locator("#totalEnergyAnnualPPACChart svg").focus();
+    await page.locator("#totalEnergyAnnualPPACChart svg").press("End");
+    check((await page.locator("#totalEnergyAnnualPPACChart .research-chart-readout").innerText()).includes("SECONDARY"),
+      "FY2024–25 original PPAC page-image caveat must remain inspectable");
+    const fullPPAC=await page.request.get(base+"data/ppac-annual-sales.json");
+    check(fullPPAC.status()===200,"Full-year PPAC source ledger missing from public release");
+    const full=await fullPPAC.json();
+    check(full.qa.primary_fy2024_25_pdf_image_verified===false &&
+      full.annual_kerala_rows[0].hsd_tmt===null &&
+      full.unsupported_current_results.fy2024_25_kerala_total_final_energy_mtoe===null,
+      "Missing original source and current total final-energy scientific gates violated");
+    console.log("PASS FULL-YEAR PPAC: six full-FY totals, category subsets and primary QA caveat");
     console.log("PASS TOTAL ENERGY ATLAS: EMC history, rounded fuel mix and bounded PPAC H1 sales");
     console.log("PASS home: 4 metrics, 354/365, 11 gaps; welcome dismisses; editorial system visible");
 
