@@ -132,8 +132,16 @@
       "Figure 4 fuel percentages are integer-rounded graphic labels; no original precise Mtoe-by-fuel table recovered.",
       "Zero percent is a display-rounded figure, not proof no coal consumption.",
       "The source's electricity series and later KSEBL or SLDC figures have distinct vintages and boundaries; no splice.",
-      "FY2030 17.98 Mtoe in the report is a projection, not an observed total and not adopted as Kerala2040 forecast."
-    ]
+      "FY2030 17.98 Mtoe in the report is a projection, not an observed total and not adopted as Kerala2040 forecast.",
+      "Internal publisher inconsistency: Fig. 3 FY2015=9.18 Mtoe, projection-method prose printed p.19 FY2015=9.81 Mtoe. Display is FIGURE-TRANSCRIBED, not independently reconciled baseline."
+    ],
+    "internal_discrepancy": {
+      "figure_3_fy2015_mtoe": 9.18,
+      "section_3_prose_fy2015_mtoe": 9.81,
+      "prose_locator": "printed page 19 / PDF zero-based page 18, base year determination",
+      "status": "unresolved_publisher_internal_disagreement",
+      "action": "publisher original data workbook or corrigendum required; preserve Figure 3 as chart-sourced series, do not silently substitute section 3 text; FY2015 historical number must not be independently used for statistical calibration"
+    }
   },
   "emc_2019_20_electricity_sector_share_context": {
     "classification": "sector_shares_of_electricity_only_NOT_sector_shares_of_total_final_energy",
