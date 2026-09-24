@@ -390,6 +390,8 @@ function validateTotalEnergyAtlas(d){
      d?.emc_final_energy?.baseline_total_mtoe!==10.78||
      d?.emc_final_energy?.rounded_mix_pct?.reduce((v,r)=>v+r.pct,0)!==100||
      d?.emc_final_energy?.mix_reconstruction_allowed!==false||
+     d?.emc_final_energy?.internal_discrepancy?.figure_3_fy2015_mtoe!==9.18||
+     d?.emc_final_energy?.internal_discrepancy?.section_3_prose_fy2015_mtoe!==9.81||
      d?.ppac_provisional_half_year_2024_25?.no_annualisation!==true||
      d?.ppac_provisional_half_year_2024_25?.publisher_pdf_visual_validation!==false||
      d?.ppac_provisional_half_year_2024_25?.end_date!=="2024-09-30"||
@@ -408,9 +410,9 @@ function renderTotalEnergyAtlas(d){
     '<span><b>19% electricity</b> historical share, NOT electricity generation</span>'+
     '<span><b>FY2024–25: not reconstructed</b> Separate PPAC H1 sales only</span>';
   mountResearchChart("totalEnergyHistoryChart",{
-    style:"vertical",source:"EMC Kerala/CII State Energy Efficiency Action Plan, original Fig. 3, printed p. 13; fiscal END-year labels; historic total final energy.",
+    style:"vertical",source:"EMC Kerala/CII, original Fig. 3 p. 13; publisher contradiction: Fig. 3 FY2015=9.18 Mtoe vs §3 prose p. 19 FY2015=9.81; source values NOT reconciled. Historic fiscal end-year labels.",
     rows:d.emc_final_energy.observed_years.map(r=>({
-      label:r.fy,values:{mtoe:r.value_mtoe},note:"EMC Fig. 3 source label: FY "+r.fy.slice(-2)+"; value rounded to two decimals"
+      label:r.fy,values:{mtoe:r.value_mtoe},note:"EMC Figure 3 FY "+r.fy.slice(-2)+(r.fy==="2014-15"?"; conflicts with §3 prose value 9.81 Mtoe":"; chart rounded to two decimals")
     })),
     series:[{key:"mtoe",label:"Final energy",unit:"Mtoe",decimals:2}]
   });
