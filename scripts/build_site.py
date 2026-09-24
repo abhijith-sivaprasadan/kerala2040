@@ -20,6 +20,7 @@ from kerala2040.audit_readiness import build_audit
 from kerala2040.energy_ghg_bridge import validate_energy_ghg_bridge
 from kerala2040.flexibility_cooling import build_pilot
 from kerala2040.flexibility_dispatch import build_demonstration
+from kerala2040.flexibility_storage import build_screen
 from kerala2040.ppac_full_year import validate_ppac_sales
 from kerala2040.research_ledger import build_ledger
 from kerala2040.total_energy_atlas import validate_total_energy_source_register
@@ -579,6 +580,28 @@ def build_site(root: Path, output: Path) -> None:
         (data_dir / filename).write_text(
             json.dumps(trial, indent=2, allow_nan=False) + "\n", encoding="utf-8"
         )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    # Storage is a synthetic fixed-service electrical cell. Hydro head and water
+    # are NOT Idukki/Pallivasal or source-calibrated cascade constraints.
+    storage = build_screen()
+    if (storage["classification"]
+            != "WP6_SYNTHETIC_BESS_PSP_FIXED_SERVICE_NOT_KERALA_FEASIBILITY"
+            or any(storage["release"].values())
+            or storage["input"]["source_discovery"]["source_page_image_verified"] is not False
+            or any(len(x["hourly"]) != 24 for x in storage["cases"].values())
+            or any(len(x) != 9 for x in storage["sensitivities"].values())
+            or any(x["summary"]["terminal_stored_kwh"] != 0
+                   for x in storage["cases"].values())):
+        raise ValueError("WP6 storage source/physics/final-state release gate failed")
+    site["metadata"]["files"]["wp6_storage_screen"] = "wp6-bess-psp.json"
+    (data_dir / "wp6-bess-psp.json").write_text(
+        json.dumps(storage, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
