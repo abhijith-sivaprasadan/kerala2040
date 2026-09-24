@@ -341,7 +341,11 @@ def build_site(root: Path, output: Path) -> None:
                "wind-terrain-sensitivity-20260923.svg",
                "solar-phase1-monthly-20260923.svg",
                "solar-phase1-district-annual-20260923.svg",
-               "solar-phase1-district-seasonality-20260923.svg")
+               "solar-phase1-district-seasonality-20260923.svg",
+               "cet-historical-official-consumption-20260924.svg",
+               "cet-historical-matched-month-demand-20260924.svg",
+               "cet-historical-import-hydro-shares-20260924.svg",
+               "cet-historical-evening-peaks-20260924.svg")
     for name in artwork:
         shutil.copy2(root / "docs/assets" / name, assets / name)
     # Social providers require a real PNG, not an SVG thumbnail or a browser
