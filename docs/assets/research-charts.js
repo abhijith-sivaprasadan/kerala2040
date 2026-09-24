@@ -394,7 +394,7 @@ function validateTotalEnergyAtlas(d){
      d?.ppac_provisional_half_year_2024_25?.publisher_pdf_visual_validation!==false||
      d?.ppac_provisional_half_year_2024_25?.end_date!=="2024-09-30"||
      d?.ppac_provisional_half_year_2024_25?.items?.length!==5||
-     Object.values(d?.quantities_deliberately_null||{}).length!==8||
+     Object.values(d?.quantities_deliberately_null||{}).length!==9||
      Object.values(d.quantities_deliberately_null).some(v=>v!==null)){
      throw new Error("Total energy atlas failed fiscal/source/sales boundary admission");
   }
