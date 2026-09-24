@@ -1,0 +1,234 @@
+{
+  "classification": "source_derived_historical_electricity_story_distinct_reporting_boundaries",
+  "evidence_cutoff": "2026-09-23",
+  "compiled": "2026-09-24",
+  "source": {
+    "sldc_archive_sha256": "2d55fefdcbfcacf7f753cebb0c429479abb6ea5eedb2533297a455735b6bfc3f",
+    "sldc_advanced_aggregate": "data/evidence/sldc/sldc_daily_advanced_aggregate_2026_09_23.json",
+    "sldc_report": "docs/SLDC_ADVANCED_DAILY_ANALYSIS_2026_09_23.md",
+    "economic_review_2025_volume1": "https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume1%20Eng%20final.pdf",
+    "economic_review_2025_volume2": "https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume%202%20Eng%20final.pdf",
+    "source_vol1_printed_pages": [
+      568,
+      569
+    ],
+    "accounting_review": "docs/DEMAND_SECTOR_ACCOUNTING_BASELINE_2026_09_23.md"
+  },
+  "official_economic_review_2025_kerala_consumption_mu": {
+    "2020-21": 22540.32,
+    "2021-22": 23983.42,
+    "2022-23": 25383.77,
+    "2023-24": 28360.25,
+    "2024-25": 29311.76
+  },
+  "official_kerala_consumption_includes": [
+    "open_access",
+    "captive_generation_consumption"
+  ],
+  "sldc_observed_fy": {
+    "2020-21": {
+      "qualified_days": 365,
+      "calendar_days": 365,
+      "observed_sum_mu": 25145.0594,
+      "observed_daily_mean_mu": 68.89057,
+      "net_import_energy_share_pct": 69.6269,
+      "hydel_energy_share_pct": 28.2511,
+      "peak_evening_p95_mw": 4044,
+      "peak_evening_max_mw": 4349
+    },
+    "2021-22": {
+      "qualified_days": 362,
+      "calendar_days": 365,
+      "observed_sum_mu": 26375.1739,
+      "observed_daily_mean_mu": 72.8596,
+      "net_import_energy_share_pct": 60.3794,
+      "hydel_energy_share_pct": 37.4588,
+      "peak_evening_p95_mw": 4173,
+      "peak_evening_max_mw": 4406
+    },
+    "2022-23": {
+      "qualified_days": 362,
+      "calendar_days": 365,
+      "observed_sum_mu": 27518.0651,
+      "observed_daily_mean_mu": 76.01675,
+      "net_import_energy_share_pct": 65.7984,
+      "hydel_energy_share_pct": 31.508,
+      "peak_evening_p95_mw": 4305.1,
+      "peak_evening_max_mw": 4539
+    },
+    "2023-24": {
+      "qualified_days": 365,
+      "calendar_days": 366,
+      "observed_sum_mu": 30868.1181,
+      "observed_daily_mean_mu": 84.57019,
+      "net_import_energy_share_pct": 78.7924,
+      "hydel_energy_share_pct": 18.5094,
+      "peak_evening_p95_mw": 5015.4,
+      "peak_evening_max_mw": 5303
+    },
+    "2024-25": {
+      "qualified_days": 354,
+      "calendar_days": 365,
+      "observed_sum_mu": 30666.2569,
+      "observed_daily_mean_mu": 86.62784,
+      "net_import_energy_share_pct": 73.8108,
+      "hydel_energy_share_pct": 23.5258,
+      "peak_evening_p95_mw": 5488.4,
+      "peak_evening_max_mw": 5854
+    },
+    "2025-26": {
+      "qualified_days": 356,
+      "calendar_days": 365,
+      "observed_sum_mu": 30436.1937,
+      "observed_daily_mean_mu": 85.49493,
+      "net_import_energy_share_pct": 65.3644,
+      "hydel_energy_share_pct": 31.7363,
+      "peak_evening_p95_mw": 5177,
+      "peak_evening_max_mw": 5861
+    }
+  },
+  "paired_fy_2020_21_2025_26": {
+    "baseline_fy": "2020-21",
+    "comparison_fy": "2025-26",
+    "matched_calendar_month_day_count": 356,
+    "baseline_same_days_mean_mu": 68.88173,
+    "comparison_same_days_mean_mu": 85.49493,
+    "paired_relative_change_of_means_pct": 24.1184,
+    "paired_absolute_change_mean_mu_per_day": 16.61319,
+    "paired_days_positive_pct": 98.5955
+  },
+  "paired_recent_comparisons": {
+    "2023-24_to_2025-26": {
+      "common_month_day_n": 355,
+      "baseline_daily_mean_mu": 84.54372,
+      "comparison_daily_mean_mu": 85.53041,
+      "difference_mu_per_day": 0.98669,
+      "change_pct": 1.1671
+    },
+    "2024-25_to_2025-26": {
+      "common_month_day_n": 345,
+      "baseline_daily_mean_mu": 86.57395,
+      "comparison_daily_mean_mu": 85.4665,
+      "difference_mu_per_day": -1.10745,
+      "change_pct": -1.2792
+    }
+  },
+  "paired_months": {
+    "1": {
+      "n": 30,
+      "baseline_mean_mu": 70.20109,
+      "latest_mean_mu": 84.32826,
+      "change_pct": 20.1239
+    },
+    "2": {
+      "n": 27,
+      "baseline_mean_mu": 74.79368,
+      "latest_mean_mu": 90.50331,
+      "change_pct": 21.004
+    },
+    "3": {
+      "n": 31,
+      "baseline_mean_mu": 82.44933,
+      "latest_mean_mu": 98.77425,
+      "change_pct": 19.7999
+    },
+    "4": {
+      "n": 29,
+      "baseline_mean_mu": 68.211,
+      "latest_mean_mu": 94.81576,
+      "change_pct": 39.0036
+    },
+    "5": {
+      "n": 28,
+      "baseline_mean_mu": 70.79188,
+      "latest_mean_mu": 88.77343,
+      "change_pct": 25.4006
+    },
+    "6": {
+      "n": 29,
+      "baseline_mean_mu": 64.09281,
+      "latest_mean_mu": 80.72077,
+      "change_pct": 25.9436
+    },
+    "7": {
+      "n": 30,
+      "baseline_mean_mu": 62.44011,
+      "latest_mean_mu": 76.3638,
+      "change_pct": 22.2993
+    },
+    "8": {
+      "n": 31,
+      "baseline_mean_mu": 62.60368,
+      "latest_mean_mu": 80.01985,
+      "change_pct": 27.8197
+    },
+    "9": {
+      "n": 30,
+      "baseline_mean_mu": 63.65086,
+      "latest_mean_mu": 83.18769,
+      "change_pct": 30.6937
+    },
+    "10": {
+      "n": 31,
+      "baseline_mean_mu": 67.03499,
+      "latest_mean_mu": 84.56607,
+      "change_pct": 26.1521
+    },
+    "11": {
+      "n": 29,
+      "baseline_mean_mu": 70.59417,
+      "latest_mean_mu": 83.81678,
+      "change_pct": 18.7305
+    },
+    "12": {
+      "n": 31,
+      "baseline_mean_mu": 70.08913,
+      "latest_mean_mu": 80.81113,
+      "change_pct": 15.2977
+    }
+  },
+  "qa": {
+    "sldc_source_qualified_days": 2575,
+    "missing_fy2024_25": 11,
+    "anomalous_2019_12_05_balance_source": [
+      {
+        "date": "2019-12-05",
+        "reported_consumption_mu": 15,
+        "balance_error_mu": 57.3783
+      }
+    ],
+    "peak_fields_non_interchangeable": {
+      "paired_days": 2574,
+      "exact_equal_days": 15,
+      "max_abs_difference_mw": 992,
+      "2026_04_23": {
+        "statistics_evening_peak_mw": 6195,
+        "other_evening_max_consumption_mw": 5950,
+        "classification": "separately_reported_source_fields_not_interchangeable"
+      },
+      "duplicate_source_events": [
+        {
+          "date": "2019-12-09",
+          "event": "maximum",
+          "period": "evening",
+          "quantity": "consumption",
+          "count": 2
+        }
+      ]
+    },
+    "interval_telemetry_present": false,
+    "no_imputation": true
+  },
+  "interpretation": {
+    "annual_official_vs_daily_sldc": "non_equivalent_scope; FY2024-25 SLDC has 11 missing dates; do not subtract to infer loss, imports or demand error",
+    "energy_shares": "sum(source_reported_net_import_or_hydel_MU_on_qualified_days)/sum(source_reported_consumption_MU_on_same_days), not median daily share",
+    "hydro_import": "descriptive accounting co-movement, NOT hydro-caused import displacement",
+    "hourly": "unavailable; daily evening peak not 8760-hour metered chronology"
+  },
+  "blocked": [
+    "reconcile_report_boundaries_with_primary_SDLCKSEBL_data_dictionary",
+    "recover_all_11_FY2024_25_missing_days_or_preserve",
+    "metered_interval_statewide_demand_and_interchange",
+    "verified_station_hydro_dispatch_constraints"
+  ]
+}
