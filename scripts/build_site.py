@@ -616,13 +616,13 @@ def build_site(root: Path, output: Path) -> None:
         raise ValueError("Integrated WP6 synthetic-only gate failed")
     site["metadata"]["files"]["wp6_integrated_dispatch"] = "wp6-integrated-dispatch.json"
     (data_dir / "wp6-integrated-dispatch.json").write_text(
-        json.dumps(integrated, indent=2, allow_nan=False) + "\\n", encoding="utf-8"
+        json.dumps(integrated, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (data_dir / "site-data.json").write_text(
-        json.dumps(site, indent=2, allow_nan=False) + "\\n", encoding="utf-8"
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (data_dir / "metadata.json").write_text(
-        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\\n", encoding="utf-8"
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     validate_bundle(data_dir)
     validate_static_site(output)
