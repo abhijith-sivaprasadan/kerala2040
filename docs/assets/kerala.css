@@ -907,3 +907,62 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
 .research-chart-canvas{overflow-x:auto}
 .research-chart-canvas svg{min-width:580px}
 @media(max-width:740px){.research-chart-canvas svg{min-width:580px}}
+
+
+/* KMML process evidence: one physical stream map, not a simulated Sankey. */
+.kmml-case{margin:20px 0 48px;border:1px solid var(--line);border-top:6px solid var(--rust);
+  background:var(--surface);padding:clamp(19px,3.8vw,45px)}
+.kmml-case>.display-title{margin:9px 0 12px}
+.kmml-case>p{font-size:14px;line-height:1.8;color:var(--ink-soft);max-width:890px}
+.kmml-case-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;
+  margin:26px 0;background:var(--line);border:1px solid var(--line)}
+.kmml-case-status>span{background:var(--paper);padding:16px;display:grid;gap:8px;
+  font:500 12px/1.5 var(--body);color:var(--ink-soft)}
+.kmml-case-status b{font:600 24px var(--display);color:var(--leaf)}
+.kmml-map-intro h3,.kmml-ledger-heading h3{font:600 clamp(24px,2.7vw,38px) var(--display);
+  margin:18px 0 4px}
+.kmml-map-intro p,.kmml-ledger-heading p{font:500 12px/1.7 var(--body);color:var(--ink-soft)}
+.kmml-trunk{display:flex;align-items:stretch;gap:7px;margin:20px 0 15px;overflow-x:auto;padding:0 0 12px}
+.kmml-unit{min-width:145px;flex:1 1 150px;text-align:left;padding:13px;
+  border:1px solid var(--line);border-top:4px solid var(--rust);
+  background:var(--paper);display:grid;align-content:start;gap:7px;color:var(--ink)}
+.kmml-unit small{font:700 9px/1.5 var(--mono);letter-spacing:.02em;color:var(--rust)}
+.kmml-unit strong{font:600 24px/1.1 var(--display)}
+.kmml-unit span{font-size:12px;line-height:1.35}
+.kmml-unit:hover,.kmml-unit[aria-pressed="true"]{outline:2px solid var(--leaf);outline-offset:-2px;
+  background:var(--surface-2)}
+.kmml-unit:focus-visible,.kmml-stream-filters button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.kmml-unit-recovery{border-top-color:var(--leaf)}
+.kmml-unit-sponge{border-top-color:var(--water)}
+.kmml-unit-environment{border-top-color:var(--gold)}
+.kmml-unit-utilities{border-top-color:var(--ink-soft)}
+.kmml-arrow{font:600 23px var(--display);color:var(--rust);align-self:center}
+.kmml-flow-note{border-left:3px solid var(--leaf);margin:4px 0 15px;padding:7px 13px;
+  color:var(--ink-soft);font-size:12px;line-height:1.65}
+.kmml-branches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kmml-branches .kmml-unit{min-width:0}
+.kmml-unit-detail{border:1px solid var(--line);border-left:5px solid var(--leaf);margin:18px 0 29px;
+  padding:19px 23px;background:var(--paper);display:grid;gap:10px}
+.kmml-unit-detail h3{margin:5px 0;font:600 26px/1.3 var(--display)}
+.kmml-unit-detail p{font-size:13px;line-height:1.7;color:var(--ink-soft)}
+.kmml-unit-detail small,.kmml-stream small{font:700 10px/1.6 var(--mono);color:var(--rust)}
+.kmml-unit-detail>div{font-size:12px;line-height:1.65}
+.kmml-unit-caveat a{color:var(--rust);font-weight:700}
+.kmml-stream-filters{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.kmml-stream-filters button{border:1px solid var(--line);background:var(--paper);color:var(--ink);
+  font:700 12px var(--body);padding:9px 12px}
+.kmml-stream-filters button[aria-pressed="true"]{border-color:var(--leaf);color:var(--leaf);background:var(--surface-2)}
+.kmml-streams{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kmml-stream{padding:19px;border:1px solid var(--line);background:var(--paper);min-width:0}
+.kmml-stream h4{font:600 clamp(18px,2vw,25px)/1.25 var(--display);margin:10px 0}
+.kmml-stream p{font-size:12px;line-height:1.7;color:var(--ink-soft)}
+.kmml-stream details{border-top:1px solid var(--line);margin-top:13px;padding-top:10px}
+.kmml-stream summary{cursor:pointer;font:700 12px var(--body);color:var(--rust)}
+.kmml-stream .source-links{padding-top:6px}
+.kmml-case-links{display:flex;flex-wrap:wrap;gap:8px 22px;margin:28px 0 0}
+.kmml-case-links a{font-weight:700;font-size:13px;color:var(--rust);text-underline-offset:4px}
+@media(max-width:1000px){.kmml-case-status{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kmml-branches{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.kmml-case-status,.kmml-branches,.kmml-streams{grid-template-columns:1fr}
+  .kmml-trunk{gap:4px}.kmml-unit{min-width:150px}.kmml-arrow{font-size:17px}
+  .kmml-unit-detail{padding:16px}}
