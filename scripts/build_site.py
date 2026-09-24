@@ -17,6 +17,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 from kerala2040.audit_readiness import build_audit
+from kerala2040.energy_ghg_bridge import validate_energy_ghg_bridge
 from kerala2040.ppac_full_year import validate_ppac_sales
 from kerala2040.research_ledger import build_ledger
 from kerala2040.total_energy_atlas import validate_total_energy_source_register
@@ -516,6 +517,24 @@ def build_site(root: Path, output: Path) -> None:
     site["metadata"]["files"]["ppac_full_year_sales"] = "ppac-annual-sales.json"
     (data_dir / "ppac-annual-sales.json").write_text(
         json.dumps(ppac_full, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    # Calendar-2023 state greenhouse-gas inventory is NOT a fuel, energy,
+    # FY2024-25 emissions, or petroleum-import accounting population.
+    ghg = json.loads(
+        (root / "data/evidence/total_energy/kerala_ghg_sector_bridge_2026_09_24.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    validate_energy_ghg_bridge(ghg)
+    site["metadata"]["files"]["energy_ghg_bridge"] = "energy-ghg-bridge.json"
+    (data_dir / "energy-ghg-bridge.json").write_text(
+        json.dumps(ghg, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
