@@ -18,6 +18,7 @@ from urllib.parse import unquote, urlsplit
 
 from kerala2040.audit_readiness import build_audit
 from kerala2040.energy_ghg_bridge import validate_energy_ghg_bridge
+from kerala2040.flexibility_cooling import build_pilot
 from kerala2040.ppac_full_year import validate_ppac_sales
 from kerala2040.research_ledger import build_ledger
 from kerala2040.total_energy_atlas import validate_total_energy_source_register
@@ -535,6 +536,25 @@ def build_site(root: Path, output: Path) -> None:
     site["metadata"]["files"]["energy_ghg_bridge"] = "energy-ghg-bridge.json"
     (data_dir / "energy-ghg-bridge.json").write_text(
         json.dumps(ghg, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    # WP6 first quantitative experiment is synthetic by construction, and is
+    # regenerated from committed inputs. Do not publish it as Kerala grid results.
+    cooling = build_pilot()
+    if (cooling["classification"]
+            != "WP6_SYNTHETIC_24H_1R1C_COOLING_COMPARISON_NOT_KERALA_GRID_RESULT"
+            or any(cooling["science_gates"].values())
+            or any(len(result["hourly"]) != 24 for result in cooling["cases"].values())
+            or len(cooling["sensitivity"]) != 9):
+        raise ValueError("WP6 experimental origin, coverage or publication gate changed")
+    site["metadata"]["files"]["wp6_cooling_pilot"] = "wp6-cooling-pilot.json"
+    (data_dir / "wp6-cooling-pilot.json").write_text(
+        json.dumps(cooling, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
