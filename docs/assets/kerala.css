@@ -998,3 +998,46 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
 .total-energy-ghg-status b{font:600 clamp(17px,2vw,25px)/1.25 var(--display);color:var(--leaf)}
 .total-energy-atlas .total-energy-figures figure>.total-energy-warning{max-width:none}
 @media(max-width:750px){.total-energy-ghg-status{grid-template-columns:1fr}}
+
+
+/* WP6 24-hour experiment deliberately stands apart from a solved Kerala 2040 scenario. */
+.wp6-experiment{border:1px solid var(--line);border-top:6px solid var(--leaf);
+  background:var(--surface);padding:clamp(19px,3.5vw,42px);margin:26px 0 42px}
+.wp6-experiment .display-title{margin:10px 0 16px}
+.wp6-intro{font-size:14px;line-height:1.8;color:var(--ink-soft);max-width:880px}
+.wp6-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;
+  border:1px solid var(--line);background:var(--line);margin:25px 0}
+.wp6-status>span{display:grid;gap:6px;background:var(--paper);padding:15px;
+  font:500 12px/1.6 var(--body);color:var(--ink-soft)}
+.wp6-status b{font:600 clamp(18px,2vw,27px)/1.3 var(--display);color:var(--leaf)}
+.wp6-case-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:22px 0}
+.wp6-case-card{border:1px solid var(--line);background:var(--paper);padding:18px;min-width:0}
+.wp6-case-card small{font:700 10px/1.5 var(--mono);color:var(--rust)}
+.wp6-case-card h3{font:600 clamp(20px,2.4vw,32px)/1.2 var(--display);margin:8px 0}
+.wp6-case-card p{font:500 12px/1.65 var(--body);color:var(--ink-soft)}
+.wp6-case-card dl{margin:13px 0;display:grid;gap:1px;background:var(--line)}
+.wp6-case-card dl>div{background:var(--surface);padding:9px;display:flex;gap:8px;
+  justify-content:space-between;align-items:baseline}
+.wp6-case-card dt{font:500 11px/1.4 var(--body);color:var(--ink-soft)}
+.wp6-case-card dd{font:600 11px/1.5 var(--mono);margin:0;text-align:right}
+.wp6-case-card .wp6-case-note{border-top:1px solid var(--line);padding-top:12px}
+.wp6-charts{display:grid;grid-template-columns:1fr;gap:14px}
+.wp6-charts figure{min-width:0;margin:0;background:var(--paper);border:1px solid var(--line);
+  padding:clamp(14px,2vw,24px)}
+.wp6-charts h3,.wp6-subtitle{font:600 clamp(20px,2.6vw,32px)/1.3 var(--display);margin:6px 0}
+.wp6-charts figure>p,.wp6-experiment>.wp6-subtitle+p{font:500 12px/1.7 var(--body);
+  color:var(--ink-soft)}
+.wp6-subtitle{margin:29px 0 5px}
+.wp6-sensitivity{background:var(--paper);border:1px solid var(--line);padding:12px}
+.wp6-sensitivity table{width:100%;border-collapse:collapse;font:500 12px/1.5 var(--body)}
+.wp6-sensitivity th,.wp6-sensitivity td{border-bottom:1px solid var(--line);
+  padding:10px;text-align:left;font-variant-numeric:tabular-nums}
+.wp6-sensitivity th{font-weight:700;color:var(--leaf)}
+.wp6-links{display:flex;flex-wrap:wrap;gap:9px 22px;margin:22px 0}
+.wp6-links a{font:700 12px var(--body);color:var(--rust)}
+.wp6-caveat{padding:16px;background:var(--paper);border-left:4px solid var(--rust);
+  font:500 12px/1.8 var(--body);color:var(--ink-soft)}
+@media(max-width:970px){.wp6-case-cards{grid-template-columns:1fr}
+ .wp6-status{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.wp6-status{grid-template-columns:1fr}
+ .wp6-sensitivity{padding:2px}.wp6-sensitivity th,.wp6-sensitivity td{padding:8px}}
