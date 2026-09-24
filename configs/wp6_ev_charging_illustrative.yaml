@@ -1,0 +1,22 @@
+# Deliberately synthetic: no Kerala EV fleet or feeder-meter data.
+version: 1
+classification: WP6_SYNTHETIC_EV_CHARGING_NOT_KERALA_FLEET
+time_basis: one illustrative 24-hour day, hourly power held constant within each hour
+power_unit: kW_e
+energy_unit: kWh_e
+hourly_other_site_load_kw: [1.6, 1.4, 1.4, 1.3, 1.3, 1.6, 1.9, 2.0, 2.2, 2.4, 2.7, 2.9, 3.1, 3.2, 3.3, 3.3, 3.5, 5.5, 5.8, 6.1, 5.6, 4.8, 2.6, 1.9]
+evening_window: [17, 18, 19, 20, 21]
+managed_shared_charger_limit_kw: 8.0
+vehicles:
+  - {id: morning, arrival_hour: 0, departure_hour: 8, required_battery_kwh: 15.3, initial_battery_kwh: 18.0, battery_capacity_kwh: 55.0, charging_limit_kw: 3.6, charging_efficiency: 0.9}
+  - {id: afternoon, arrival_hour: 13, departure_hour: 24, required_battery_kwh: 24.3, initial_battery_kwh: 22.0, battery_capacity_kwh: 65.0, charging_limit_kw: 7.2, charging_efficiency: 0.9}
+  - {id: late_arrival, arrival_hour: 17, departure_hour: 24, required_battery_kwh: 20.0, initial_battery_kwh: 15.0, battery_capacity_kwh: 50.0, charging_limit_kw: 7.2, charging_efficiency: 0.9}
+sensitivity:
+  shared_charger_limit_kw: [7.2, 8.0, 10.8]
+  charging_efficiency: [0.85, 0.90, 0.95]
+release:
+  kerala_fleet_or_feeder_load_calibrated: false
+  observed_arrival_departure_patterns: false
+  statewide_peak_or_energy_impact: false
+  actual_tariff_savings_or_emissions: false
+  annual_2040_optimization_admitted: false
