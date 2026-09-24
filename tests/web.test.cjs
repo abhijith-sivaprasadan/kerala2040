@@ -578,3 +578,31 @@ test("every topic has a visible link on all pages and the homepage has direct ch
   const css=fs.readFileSync(path.join(root,"docs/assets/kerala.css"),"utf8");
   assert.match(css,/@media\(max-width:1250px\)/);
 });
+
+
+test("KMML Industry publishes interactive process and dated trial evidence without invented recovery",()=>{
+  const html=fs.readFileSync(path.join(root,"docs/index.html"),"utf8");
+  const js=fs.readFileSync(path.join(root,"docs/assets/research-charts.js"),"utf8");
+  const record=JSON.parse(fs.readFileSync(path.join(root,
+    "data/evidence/industry/kmml_source_bounded_case_2026_09_24.json"),"utf8"));
+  for(const id of ["kmmlFlow","kmmlUnitDetail","kmmlStreamFilters","kmmlStreams"]){
+    assert.ok(html.includes('id="'+id+'"'));
+  }
+  assert.ok(js.includes("function renderKMMLCase"));
+  assert.ok(js.includes('data-kmml-unit'));
+  assert.ok(js.includes('data-kmml-filter'));
+  assert.ok(js.includes('aria-pressed'));
+  const sandbox={console};vm.createContext(sandbox);vm.runInContext(js,sandbox);
+  sandbox.fixture=record;
+  assert.equal(vm.runInContext("validateKMMLCase(fixture)",sandbox),true);
+  sandbox.invalid=JSON.parse(JSON.stringify(record));
+  sandbox.invalid.streams[0].annual_mwh=999;
+  assert.throws(()=>vm.runInContext("validateKMMLCase(invalid)",sandbox),/KMML scientific boundary/);
+  sandbox.invalid=JSON.parse(JSON.stringify(record));
+  sandbox.invalid.scientific_scope.kmml_case_release_gate_passed=true;
+  assert.throws(()=>vm.runInContext("validateKMMLCase(invalid)",sandbox),/KMML scientific boundary/);
+  assert.equal(vm.runInContext('kmmlGroup(fixture.streams.find(s=>s.id==="pigment_fines"))',sandbox),"trials");
+  assert.equal(vm.runInContext('kmmlGroup(fixture.streams.find(s=>s.id==="backwash_water"))',sandbox),"trials");
+  assert.equal(vm.runInContext('kmmlGroup(fixture.streams.find(s=>s.id==="iron_oxide"))',sandbox),"existing");
+  assert.equal(vm.runInContext('kmmlGroup(fixture.streams.find(s=>s.id==="heat"))',sandbox),"unquantified");
+});
