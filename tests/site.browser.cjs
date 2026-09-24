@@ -129,6 +129,34 @@ async function main(){
       check(new URL(page.url()).hash==="#"+name,"Incorrect hash route "+name);
     }
     await route("electricity");
+    await page.locator("#historyOfficial .research-point").first().waitFor();
+    check(await page.locator("#historyOfficial .research-point").count()===5,
+      "Official five-year history must render from its own validated data");
+    check(await page.locator("#historyMatched .research-point").count()===24,
+      "Matched month/day series must contain 12 comparable observations for each FY");
+    check(await page.locator("#historyShares .research-point").count()===12,
+      "Two distinct net-import/hydel energy-share series must render for six FYs");
+    check(await page.locator("#historyPeaks .research-point").count()===12,
+      "Peak P95/maximum data must be distinct for six FYs");
+    await page.locator("#historyOfficial svg").focus();
+    await page.locator("#historyOfficial svg").press("Home");
+    check((await page.locator("#historyOfficial .research-chart-readout").innerText()).includes("2020-21"),
+      "Historical keyboard readout must name its selected source year");
+    await page.locator('#historyShares button[data-series="imports"]').click();
+    check(await page.locator("#historyShares .research-point").count()===6,
+      "Toggling source series must redraw the plot and preserve source-year counts");
+    check((await page.locator("#historyShares .research-chart-source").innerText()).includes("accounting"),
+      "Chart must retain energy-boundary caveat after filtering");
+    check((await page.locator("#historicalEvidenceTitle").innerText()).includes("electricity story"),
+      "Historical chapter absent");
+    await page.locator("#electricMonthlyArt svg").focus();
+    await page.locator("#electricMonthlyArt svg").press("Home");
+    check((await page.locator("#electricMonthlyArt .viz-live-readout").innerText()).includes("2024-04"),
+      "Original FY2024–25 monthly graph must support dated keyboard inspection");
+    await page.locator("#hydroSeasonArt svg").focus();
+    await page.locator("#hydroSeasonArt svg").press("Home");
+    check((await page.locator("#hydroSeasonArt .viz-live-readout").innerText()).includes("2024-04"),
+      "Original hydro and storage graph must support dated keyboard inspection");
     check(await page.locator("#electricMonthlyArt .viz-month-column").count()===12,
       "Detailed month comparison is incomplete");
     check(await page.locator("#electricMonthlyTable tbody tr").count()===12,
@@ -210,6 +238,19 @@ async function main(){
     console.log("PASS pathways: options and explicitly unsolved specification download");
 
     await route("atlas");
+    await page.locator("#windDistrictChart .research-point").first().waitFor();
+    check(await page.locator("#windDistrictChart .research-point").count()===14,
+      "Wind district chart must display all fourteen NWIC districts");
+    check(await page.locator("#windSlopeChart .research-point").count()===4,
+      "Interactive wind slope sensitivity must contain four original thresholds");
+    check(await page.locator("#solarMonthChart .research-point").count()===12,
+      "Solar source-grid climatology must contain twelve months");
+    check(await page.locator("#solarAnnualChart .research-point").count()===14 &&
+      await page.locator("#solarSeasonChart .research-point").count()===14,
+      "Both district solar source charts must render fourteen values");
+    await page.locator('#windDistrictChart .research-chart-pickers select').first().selectOption("8");
+    check((await page.locator("#windDistrictChart .research-chart-data").innerText()).includes("≥8 m/s"),
+      "Wind speed threshold selector must update its reported source-defined denominator");
     check(await page.locator("#spatialPipeline [data-layer]").count()===7,
       "All seven spatial evidence layers must load");
     const forest=page.locator('#spatialPipeline [data-layer="forest"]');
@@ -302,6 +343,12 @@ async function main(){
         "Selected theme not accessible");
     }
     await route("overview");
+    check(await page.locator('.topic-trail a[data-route]').count()===8,
+      "Every page must show eight direct, linked topic routes");
+    await page.locator('.topic-trail a[data-route="industry"]').click();
+    await visible(page.locator('.view.active[data-view="industry"]'),
+      "Persistent topic ribbon must navigate to Industry");
+    await page.locator('.topic-trail a[data-route="overview"]').click();
     await page.reload({waitUntil:"domcontentloaded"});
     await page.locator("#headlineMetrics .number-card").first().waitFor();
     check(await page.locator("html").getAttribute("data-theme")==="kasavu",
