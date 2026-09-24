@@ -1,7 +1,7 @@
 """Kerala total-energy atlas: source, period and non-reconstruction gates."""
+import json
 from copy import deepcopy
 from decimal import Decimal
-import json
 from pathlib import Path
 
 import pytest
