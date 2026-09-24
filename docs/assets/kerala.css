@@ -899,3 +899,11 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
 @media(max-width:850px){.research-chart-gallery{grid-template-columns:1fr}}
 @media(max-width:740px){.topic-trail{gap:5px;padding:10px 12px}.topic-trail-label{flex-basis:100%}
   .topic-trail a{font-size:11px;padding:7px 9px}.historical-evidence-figures{grid-template-columns:1fr}}
+
+.viz-live-readout{font:500 12px/1.7 var(--body);color:var(--ink);min-height:42px;
+  padding:10px 14px;border-left:3px solid var(--rust);background:var(--surface-2);margin:9px 0 0}
+.viz-month-svg:focus-visible,.viz-hydro-svg:focus-visible{outline:3px solid var(--rust);outline-offset:3px}
+.viz-month-column{cursor:pointer}
+.research-chart-canvas{overflow-x:auto}
+.research-chart-canvas svg{min-width:580px}
+@media(max-width:740px){.research-chart-canvas svg{min-width:580px}}
