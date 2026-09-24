@@ -79,6 +79,7 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     # Synthetic WP6 output is admitted as a bounded experiment, never as grid evidence.
     from kerala2040.flexibility_cooling import build_pilot
     from kerala2040.flexibility_dispatch import build_demonstration
+    from kerala2040.flexibility_storage import build_screen
 
     flex = build_pilot()
     assert flex["classification"] == (
@@ -94,6 +95,12 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         assert not any(study["science_gates"].values())
         assert study["baseline"]["summary"]["missed_deadlines"] == 0
         assert study["managed"]["summary"]["missed_deadlines"] == 0
+    storage = build_screen()
+    assert len(storage["cases"]) == 2
+    assert all(len(rows) == 9 for rows in storage["sensitivities"].values())
+    assert all(value is False for value in storage["release"].values())
+    assert all(run["summary"]["terminal_stored_kwh"] == 0
+               for run in storage["cases"].values())
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -535,12 +542,12 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
         {
             "id": "flexibility", "title": "WP6 cooling, storage and demand flexibility",
             "phase": "partial", "label": "Executable synthetic physics; site and grid calibration absent",
-            "metric": "3 synthetic pilots / 27 sensitivity reruns",
-            "unit": "one synthetic building, EV depot and fictional industry; not Kerala MW",
-            "summary": "Three separate executable bounded pilots compare AC/TES, three-vehicle depot charging and optional industrial jobs without claiming measured Kerala or KMML operations.",
-            "completed": "Cooling: three 24-hour cases and nine TES sensitivities with thermal balance and comfort checks. EV: three deadline-constrained batteries and nine charging sensitivities. Industry: same noncritical duty by deadlines, nonshiftable safety background and nine process sensitivities. All three report day and evening peaks distinctly.",
-            "blocked": "No Kerala building/EV/industrial site calibration, actual hourly grid coincidence, feeder or operator-approved flexible capacity, selected plant performance, tariffs/CO2/capex or annual scaling. BESS and pumped-storage modelling remain outstanding; industrial case is not metered KMML.",
-            "action": "Validate cooling/weather, EV arrivals/SoC and operator-cleared industry process schedules; then add actual feeder/grid chronology and test separate battery/pumped-storage options.",
+            "metric": "4 WP6 pilots / 45 sensitivity cells",
+            "unit": "building, EV, fictional industry and storage cells; not Kerala MW",
+            "summary": "Four separate bounded experiments cover cooling/TES, managed EV charging, optional industrial duty and electric BESS/PSP cells; none is an actual Kerala storage site or grid result.",
+            "completed": "Cooling: three cases and nine TES sensitivities. EV: identical battery service, deadlines and nine charging sensitivities. Industry: preserved safety background and nine process sensitivities. Storage: BESS and closed-loop hydraulic unit cells, energy/auxiliary losses, zero terminal stock, separate site/evening peaks and 18 feasibility-aware sensitivities.",
+            "blocked": "No Kerala building/EV/industrial or BESS project calibration, hourly coincident grid/feeder data, tariffs/CO2/capex or annual scaling; no verified PSP upper/lower reservoirs, head-storage curves, water rights, environmental clearance or shared-water reconciliation. Industrial case is not metered KMML.",
+            "action": "Validate measured cooling, EV/industry schedules and grid coincidence; source project-specific battery specs and distinct pumped-reservoir head/volume/consent before any real capacity, rupees or 2040 dispatch claim.",
             "route": "pathways",
             "evidence": [
                 {"label": "WP6 executable pilot and physical limits", "href": ROOT + "docs/WP6_COOLING_THERMAL_STORAGE_PILOT_2026_09_24.md"},
@@ -548,6 +555,8 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
                 {"label": "WP6 code", "href": ROOT + "src/kerala2040/flexibility_cooling.py"},
                 {"label": "WP6 EV and industry experiments", "href": ROOT + "docs/WP6_EV_INDUSTRIAL_FLEXIBILITY_PILOTS_2026_09_24.md"},
                 {"label": "WP6 managed-service simulation code", "href": ROOT + "src/kerala2040/flexibility_dispatch.py"},
+                {"label": "WP6 BESS and PSP screen", "href": ROOT + "docs/WP6_BESS_PUMPED_STORAGE_SCREEN_2026_09_24.md"},
+                {"label": "WP6 BESS and PSP physical code", "href": ROOT + "src/kerala2040/flexibility_storage.py"},
             ],
         },
         {
