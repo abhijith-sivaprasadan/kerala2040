@@ -1,8 +1,8 @@
 """WP8 public finance-source checks; not a priced Kerala2040 scenario model."""
 from __future__ import annotations
 
-from decimal import Decimal
 import json
+from decimal import Decimal
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
