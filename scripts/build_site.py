@@ -18,6 +18,7 @@ from urllib.parse import unquote, urlsplit
 
 from kerala2040.audit_readiness import build_audit
 from kerala2040.research_ledger import build_ledger
+from kerala2040.wp8_finance import validate_finance_ledger
 
 
 def validate_bundle(public: Path) -> dict:
@@ -479,6 +480,24 @@ def build_site(root: Path, output: Path) -> None:
     site["metadata"]["files"]["kmml_case"] = "kmml-case.json"
     (data_dir / "kmml-case.json").write_text(
         json.dumps(kmml, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    # WP8 is a source-scoped finance architecture, not an approved budget.
+    # Reconcile energy plan *proposals* separately from statewide fiscal *actuals*.
+    finance = json.loads(
+        (root / "data/evidence/finance/wp8_finance_source_ledger_2026_09_24.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    validate_finance_ledger(finance)
+    site["metadata"]["files"]["wp8_finance"] = "wp8-finance.json"
+    (data_dir / "wp8-finance.json").write_text(
+        json.dumps(finance, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
