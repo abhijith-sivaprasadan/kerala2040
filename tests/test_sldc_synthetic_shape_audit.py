@@ -1,5 +1,4 @@
 """Strict scenario QA from generated synthetic intervals."""
-import csv
 import importlib.util
 from pathlib import Path
 
