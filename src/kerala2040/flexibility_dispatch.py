@@ -29,7 +29,7 @@ SPECS = {
 def load_spec(kind: str, root: Path = ROOT) -> dict:
     if kind not in SPECS:
         raise ValueError("Unknown WP6 demonstration type")
-    path, tag, _ = SPECS[kind]
+    path, _, _ = SPECS[kind]
     data = yaml.safe_load((root / path).read_text(encoding="utf-8"))
     validate_spec(data, kind)
     return data
