@@ -447,3 +447,61 @@ async function loadTotalEnergyAtlas(filename){
     mounts.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent="Total energy source QA failed; figures withheld. Read the research chapter.";});
   }
 }
+
+
+/* Full FY PPAC oil-company sales: publisher-indexed historic totals, exact FY2024-25
+ * table via independent mirror; no conversion to energy, imports or sector service. */
+function validatePPACAnnualSales(d){
+  const vals=[6533.5,5461.3,5901.7,6879.1,6891.7,6939.7];
+  const rows=d?.annual_kerala_rows;
+  if(d?.classification!=="PPAC_KERALA_ANNUAL_OIL_COMPANY_SALES_NOT_FINAL_ENERGY_OR_SECTOR_ALLOCATION"||
+     rows?.length!==6||
+     rows.some((r,i)=>r.fy!==["2019-20","2020-21","2021-22","2022-23","2023-24","2024-25"][i]||
+       r.all_pol_tmt!==vals[i])||
+     rows[0].hsd_tmt!==null||
+     rows[5].all_pol_tier!=="secondary_transcription_unverified_at_primary"||
+     d?.qa?.primary_fy2024_25_pdf_image_verified!==false||
+     d?.qa?.all_pol_includes_subcategory_ms_hsd!==true||
+     d?.qa?.no_annualisation_of_h1!==true||
+     d?.qa?.no_mass_to_energy_without_source_factors!==true||
+     d?.qa?.revenue_cost_or_kerala_import_claim_ready!==false||
+     Object.values(d?.unsupported_current_results||{}).length!==6||
+     Object.values(d.unsupported_current_results).some(x=>x!==null)){
+    throw new Error("PPAC annual sales failed vintage, source or final-energy boundary");
+  }
+}
+function renderPPACAnnualSales(d){
+  validatePPACAnnualSales(d);
+  const rows=d.annual_kerala_rows;
+  const source="PPAC Ready Reckoner state sales: official H1 FY2024-25 indexed historical table for FY2019-20–2023-24; FY2024-25 exact original-publication mirror only, original publisher PDF image unverified. Thousands of tonnes SOLD, not final energy.";
+  mountResearchChart("totalEnergyAnnualPPACChart",{
+    style:"vertical",source,
+    rows:rows.map(r=>({label:r.fy,values:{all:r.all_pol_tmt},
+      note:r.all_pol_tier==="publisher_indexed_text"?
+        "Original PPAC-indexed historical PDF table; no original page-image QA":
+        "FY2024–25 SECONDARY REPRODUCTION ONLY · publisher PDF visual comparison pending"})),
+    series:[{key:"all",label:"All POL sales",unit:"thousand tonnes",decimals:1}]
+  });
+  mountResearchChart("totalEnergyPPACProductsChart",{
+    style:"vertical",source:source+" Petrol and HSD are components INCLUDED in all-POL. FY2019–20 HSD cell unavailable; do not convert to zero.",
+    rows:rows.map(r=>({label:r.fy,values:{petrol:r.ms_tmt,diesel:r.hsd_tmt},
+      note:"Petrol "+r.ms_tier+"; diesel "+r.hsd_tier+"; product subset, NOT transport end use"})),
+    series:[{key:"petrol",label:"Motor spirit",unit:"thousand tonnes",decimals:1},
+      {key:"diesel",label:"High-speed diesel",unit:"thousand tonnes",decimals:1}]
+  });
+}
+async function loadPPACAnnualSales(filename){
+  const mounts=["totalEnergyAnnualPPACChart","totalEnergyPPACProductsChart"];
+  if(!document.getElementById(mounts[0]))return;
+  if(filename!=="ppac-annual-sales.json"){
+    mounts.forEach(id=>{const node=document.getElementById(id);
+      if(node)node.textContent="Source-audited annual petroleum sales not in this research release.";});
+    return;
+  }
+  try{renderPPACAnnualSales(await getJSON(filename));}
+  catch(error){
+    console.error("PPAC annual sales source admission failed:",error);
+    mounts.forEach(id=>{const node=document.getElementById(id);
+      if(node)node.textContent="Annual sales source QA failed; figure withheld.";});
+  }
+}
