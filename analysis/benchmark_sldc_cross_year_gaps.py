@@ -80,17 +80,17 @@ def historical_factor(
     return (median(factors), len(factors)) if len(factors) >= min_years else (None, len(factors))
 
 
-def predict(data: dict[date, float], day: date, min_years: int = 3) -> dict:
+def predict(\n    data: dict[date, float], day: date, min_years: int = 3, *,\n    historical_training: dict[date, float] | None = None,\n) -> dict:
     """Target date MUST be masked by caller; all baselines are target-year local."""
     if day in data:
         raise ValueError("Target must be masked before prediction")
     context = nearby(data, day)
     baseline = median(context) if len(context) >= 4 else None
     linear = interpolate(data, day)
-    factor, years = historical_factor(data, day, min_years=min_years)
+    # The training pool can exclude the *entire* held-out year.\n    factor, years = historical_factor(\n        data if historical_training is None else historical_training,\n        day, min_years=min_years,\n    )
     return {
         "interpolation": linear,
-        "local_median": baseline,
+        "local_median": baseline,\n        "weekday_local": weekday_baseline,\n        "historical_weekday_adjusted": (weekday_baseline * factor\n                                        if weekday_baseline is not None and factor is not None else None),
         "historical_adjusted": baseline * factor if baseline is not None and factor is not None else None,
         "historical_analogue_years": years,
     }
@@ -104,8 +104,8 @@ def benchmark(data: dict[date, float], *, min_years: int = 3) -> dict:
         # Mask whole target date; other years may be used only as independent analogues.
         masked = dict(data)
         del masked[day]
-        candidates = predict(masked, day, min_years=min_years)
-        for method in ("interpolation", "local_median", "historical_adjusted"):
+        training = {d: value for d, value in masked.items() if d.year != day.year}\n        candidates = predict(masked, day, min_years=min_years, historical_training=training)
+        for method in ("interpolation", "local_median", "weekday_local", "historical_adjusted",\n                       "historical_weekday_adjusted"):
             estimate = candidates[method]
             if estimate is not None:
                 err = estimate - actual
@@ -132,9 +132,9 @@ def benchmark(data: dict[date, float], *, min_years: int = 3) -> dict:
         "yearwise": {year: {k: stats(v) for k, v in methods.items()}
                      for year, methods in sorted(by_year.items())},
         "limitations": [
-            "Single-date masking, not whole-year held-out validation.",
+            "Historical analogue training excludes entire target calendar year; local interpolation and target-year baseline retain observed neighbouring days.",\n            "This is not leave-one-year-out evaluation of a model that uses no target-year observations.",
             "Other-year same-date ratios confound weekday, festivals and weather.",
-            "Calendar analogue has no estimated probability or calibrated prediction interval.",
+            "Prediction intervals and festival controls are not calibrated; do not interpret weekday matching as festival control.",
             "Method comparison must use paired cases, not unequal eligible-date counts.",
             "Input daily source rows remain private; this report contains aggregates only.",
         ],
