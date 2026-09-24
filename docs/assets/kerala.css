@@ -966,3 +966,47 @@ html[data-theme="monsoon"] .viz-insight b{color:var(--leaf-2)}
 @media(max-width:680px){.kmml-case-status,.kmml-branches,.kmml-streams{grid-template-columns:1fr}
   .kmml-trunk{gap:4px}.kmml-unit{min-width:150px}.kmml-arrow{font-size:17px}
   .kmml-unit-detail{padding:16px}}
+
+/* WP8 is a public-accounting boundary, never an investment-return chart. */
+.finance-workstream{margin:26px 0 36px;padding:clamp(22px,3.5vw,46px);
+  border:1px solid var(--line);border-top:6px solid var(--gold);background:var(--surface)}
+.finance-workstream>.display-title{margin:9px 0 13px}
+.finance-lead{font-size:14px;line-height:1.8;color:var(--ink-soft);max-width:900px}
+.finance-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:22px 0;
+  gap:1px;background:var(--line);border:1px solid var(--line)}
+.finance-status span{display:grid;gap:6px;padding:15px;background:var(--paper);
+  font:500 12px/1.5 var(--body);color:var(--ink-soft)}
+.finance-status b{font:600 clamp(18px,2vw,27px)/1.3 var(--display);color:var(--leaf)}
+.finance-panel-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:15px}
+.finance-data-panel{border:1px solid var(--line);background:var(--paper);min-width:0;padding:20px}
+.finance-data-panel h3{font:600 clamp(20px,2.2vw,29px)/1.25 var(--display);margin:9px 0}
+.finance-data-panel p{font:500 12px/1.7 var(--body);color:var(--ink-soft)}
+.finance-data-panel a{font:700 12px var(--body);color:var(--rust)}
+.finance-source-rows{border-top:1px solid var(--line);margin:15px 0}
+.finance-source-rows>div{display:flex;gap:15px;justify-content:space-between;align-items:baseline;
+  border-bottom:1px solid var(--line);padding:10px 2px;font-size:12px}
+.finance-source-rows strong{max-width:57%}
+.finance-source-rows span{font:600 15px/1.4 var(--mono);white-space:nowrap;font-variant-numeric:tabular-nums}
+.finance-warning{border-left:3px solid var(--gold);background:var(--surface);
+  padding:10px;font-size:11px!important;line-height:1.65}
+.finance-audit-list>div{border-bottom:1px solid var(--line);padding:13px 0;display:grid;gap:5px}
+.finance-audit-list small{font:600 10px/1.5 var(--mono);color:var(--ink-soft)}
+.finance-audit-list strong{font:600 clamp(17px,2.1vw,27px) var(--display);font-variant-numeric:tabular-nums}
+.finance-workstream>h3{font:600 clamp(23px,2.8vw,36px) var(--display);margin:30px 0 6px}
+.finance-workstream>h3+p{font-size:12px;line-height:1.7;color:var(--ink-soft)}
+.finance-cases{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.finance-cases button{font:700 12px/1.5 var(--body);border:1px solid var(--line);
+  background:var(--paper);color:var(--ink);padding:9px 13px}
+.finance-cases button[aria-pressed="true"]{border-color:var(--leaf);background:var(--surface-2);color:var(--leaf)}
+.finance-case-detail{border:1px solid var(--line);border-left:5px solid var(--leaf);background:var(--paper);padding:23px}
+.finance-case-detail small{font:700 10px var(--mono);color:var(--rust)}
+.finance-case-detail h4{font:600 28px var(--display);margin:10px 0}
+.finance-case-detail p,.finance-case-detail li{font:500 13px/1.75 var(--body);color:var(--ink-soft)}
+.finance-case-detail h5{font:700 12px var(--body)}
+.finance-source-links{display:flex;gap:20px;flex-wrap:wrap;margin:24px 0 0}
+.finance-source-links a{font:700 12px var(--body);color:var(--rust)}
+.finance-cases button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media(max-width:950px){.finance-panel-grid{grid-template-columns:1fr}
+.finance-status{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.finance-status{grid-template-columns:1fr}
+.finance-source-rows span{font-size:12px}.finance-source-rows strong{max-width:54%}}

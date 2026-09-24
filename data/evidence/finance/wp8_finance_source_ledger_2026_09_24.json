@@ -1,0 +1,296 @@
+{
+  "classification": "WP8_FINANCE_PUBLIC_SOURCE_LEDGER_NOT_KERALA_2040_FINANCING_PLAN",
+  "as_of": "2026-09-24",
+  "study": "Kerala2040 WP8: financing responsibilities and value capture",
+  "units": {
+    "planning": "INR lakh",
+    "audit": "INR crore",
+    "conversion": "1 crore = 100 lakh"
+  },
+  "sources": {
+    "annual_plan_2025_26": {
+      "publisher": "Kerala State Planning Board",
+      "title": "Annual Plan Proposals 2025–26",
+      "url": "https://spb.kerala.gov.in/sites/default/files/inline-files/Annual%20Plan%20Proposals%202025-26%20%282%29.pdf",
+      "printed_pages": [
+        146,
+        147
+      ],
+      "pdf_page_index": [
+        153,
+        154
+      ],
+      "access": "public_pdf",
+      "method": "publisher PDF text extraction",
+      "visual_check": "web screenshot cache miss on 2026-09-24; page image requires independent visual review",
+      "reporting_status": "budget_proposal_not_spending"
+    },
+    "cag_state_finances_2024_25": {
+      "publisher": "Comptroller and Auditor General of India",
+      "title": "Kerala State Finances Audit Report FY2024–25, Chapter I",
+      "url": "https://www.digitalreports.cag.gov.in/kerala/chapter/1",
+      "period": "FY2024-25",
+      "method": "publisher HTML",
+      "reporting_status": "audited_statewide_fiscal_context_not_power_earmark"
+    },
+    "cag_guarantee_review": {
+      "publisher": "Comptroller and Auditor General of India",
+      "title": "Kerala State Finances Audit Report FY2024–25, section 1.4.6",
+      "url": "https://www.digitalreports.cag.gov.in/kerala/chapter/1",
+      "period": "FY2024-25",
+      "method": "publisher HTML",
+      "reporting_status": "statewide_contingent_exposure_not_power_earmark"
+    }
+  },
+  "planning_fy2025_26": {
+    "reporting_scope": "annual plan proposals, not Consolidated Fund release or incurred spending",
+    "provisional_visual_qa": true,
+    "energy_agency_outlay_inr_lakh": [
+      {
+        "entity": "KSEBL",
+        "value": 108880,
+        "source_id": "annual_plan_2025_26",
+        "label": "proposed",
+        "funding_boundary": "mixed, not all state treasury"
+      },
+      {
+        "entity": "ANERT",
+        "value": 5110,
+        "source_id": "annual_plan_2025_26",
+        "label": "proposed",
+        "funding_boundary": "agency outlay, source split not established"
+      },
+      {
+        "entity": "Electrical Inspectorate",
+        "value": 836,
+        "source_id": "annual_plan_2025_26",
+        "label": "proposed",
+        "funding_boundary": "agency outlay, source split not established"
+      },
+      {
+        "entity": "EMC",
+        "value": 850,
+        "source_id": "annual_plan_2025_26",
+        "label": "proposed",
+        "funding_boundary": "agency outlay, source split not established"
+      }
+    ],
+    "reported_total_inr_lakh": 115676,
+    "ksebl_proposed_outlay_components_inr_lakh": [
+      {
+        "category": "KSEBL own-fund schemes",
+        "value": 104218,
+        "funding_boundary": "utility own-fund proposed scheme outlay; not automatically state equity"
+      },
+      {
+        "category": "Externally aided project",
+        "value": 540,
+        "funding_boundary": "project funding classification; grant/loan and counterparty not established"
+      },
+      {
+        "category": "State Plan schemes of KSEBL",
+        "value": 4122,
+        "funding_boundary": "State Plan classification; not proof treasury cash released"
+      }
+    ],
+    "qualifications": [
+      "Agency-wide table must not be relabelled Kerala state cash spending.",
+      "A proposal in FY2025-26 cannot be called FY2024-25 actual expenditure.",
+      "Confirm PDF visual against original published page before fully promoting exact table transcription."
+    ]
+  },
+  "fiscal_fy2024_25": {
+    "scope": "statewide financial constraints and contingent liabilities; do not allocate any fraction to electricity without project-level evidence",
+    "from": "cag_state_finances_2024_25",
+    "as_of": "2025-03-31",
+    "original_finance_accounts": {
+      "fiscal_deficit_inr_crore": 48248.14,
+      "fiscal_deficit_pct_gsdp": 3.86,
+      "overall_liabilities_inr_crore": 445901.49,
+      "overall_liabilities_pct_gsdp": 35.71
+    },
+    "post_audit": {
+      "fiscal_deficit_inr_crore": 48510.2,
+      "fiscal_deficit_pct_gsdp": 3.89,
+      "overall_liabilities_inr_crore": 446163.55,
+      "overall_liabilities_pct_gsdp": 35.74
+    },
+    "outstanding_guarantees_inr_crore": 74297.58,
+    "caveats": [
+      "Statewide liabilities are not project funding, not a financeable budget and cannot be added to contingent guarantee stocks.",
+      "Post-audit and originally reported figures are alternate measures of the same fiscal position, not additional separate liabilities.",
+      "CAG describes guarantees as contingent; they are not automatically invoked cash liabilities.",
+      "No power-specific KSEBL guarantee amount is established by the statewide total."
+    ]
+  },
+  "accounting_boundaries": [
+    {
+      "id": "economic",
+      "label": "Whole-system economic cost",
+      "meaning": "All incremental lifecycle resources used regardless of financier",
+      "separate_from": "Cash transfer between Kerala, KSEBL and Union"
+    },
+    {
+      "id": "state",
+      "label": "Kerala exchequer",
+      "meaning": "Actual state grants, equity, eligible guarantees invoked, state debt service and support costs",
+      "separate_from": "KSEBL own-fund investment and contingent uncalled guarantee face value"
+    },
+    {
+      "id": "ksebl",
+      "label": "KSEBL utility accounts",
+      "meaning": "Utility capex, debt service, purchase expenses, opex and revenue flows",
+      "separate_from": "Consolidated Fund actual expenditure and consumer tariffs"
+    },
+    {
+      "id": "union",
+      "label": "Union / central-PSU",
+      "meaning": "Eligible grants, central utility investment and programme funding per verified sanction",
+      "separate_from": "Announced national scheme size or hypothetical eligibility"
+    },
+    {
+      "id": "private",
+      "label": "Private/development finance",
+      "meaning": "Contract-specific equity, loan drawdowns, guarantees and required returns",
+      "separate_from": "De-risking treated as a free government subsidy"
+    },
+    {
+      "id": "consumer",
+      "label": "Consumers and communities",
+      "meaning": "Tariffs, own capex, avoided bills, resilience/access benefits and distribution",
+      "separate_from": "Guaranteed public-budget saving"
+    }
+  ],
+  "financing_cases": [
+    {
+      "id": "state_budget",
+      "title": "Treasury-led project",
+      "funder": "State budget appropriation after release",
+      "risk_bearer": "State taxpayer",
+      "beneficiary": "Service users, possibly utility/consumer",
+      "requires": [
+        "grant head and sanction",
+        "BE/RE/actual matching",
+        "asset ownership",
+        "O&M/replacement"
+      ]
+    },
+    {
+      "id": "ksebl",
+      "title": "Utility-led asset",
+      "funder": "KSEBL internal funds and/or utility borrowing",
+      "risk_bearer": "Utility/creditor; contingent government only if guaranteed",
+      "beneficiary": "KSEBL, customers depending on tariff treatment",
+      "requires": [
+        "utility board decision",
+        "audited cashflow",
+        "borrowing approval",
+        "tariff/regulatory asset treatment"
+      ]
+    },
+    {
+      "id": "union_cpsu",
+      "title": "Union/central-PSU co-financing",
+      "funder": "Approved scheme or central-PSU balance sheet",
+      "risk_bearer": "Named contracted institutions",
+      "beneficiary": "Contract-defined service recipients",
+      "requires": [
+        "current scheme guidelines",
+        "eligible asset and counterpart",
+        "state matching terms",
+        "sanction not announcement"
+      ]
+    },
+    {
+      "id": "private",
+      "title": "Private ownership or PPA",
+      "funder": "Private equity, private debt; possible public viability gap",
+      "risk_bearer": "Contracted investor/offtaker; counterparty and termination exposure",
+      "beneficiary": "Investor and power user under contract",
+      "requires": [
+        "PPA / concession",
+        "risk allocation",
+        "offtake credit",
+        "tariff, land and grid permission"
+      ]
+    },
+    {
+      "id": "consumer",
+      "title": "Household/commercial distributed investment",
+      "funder": "Prosumer/aggregator plus eligible subsidy",
+      "risk_bearer": "Customer/financier",
+      "beneficiary": "Customer net bill reduction, grid if valued",
+      "requires": [
+        "customer economics",
+        "tariff structure",
+        "subsidy sanction",
+        "metering and export credit"
+      ]
+    },
+    {
+      "id": "mixed",
+      "title": "Blended funding",
+      "funder": "Disjoint state/Union/utility/private sources",
+      "risk_bearer": "Assigned by instruments not blanket assumption",
+      "beneficiary": "Tracked per flow",
+      "requires": [
+        "unique payer ledger",
+        "cofinance and guarantee terms",
+        "cost/revenue distribution",
+        "no double counting"
+      ]
+    }
+  ],
+  "model_template": {
+    "classification": "structure_not_appraised_projects",
+    "price_year": null,
+    "discount_rate_pct": null,
+    "project_capex_inr": null,
+    "lifecycle_cost_npv_inr": null,
+    "kerala_exchequer_npv_inr": null,
+    "ksebl_cash_need_inr": null,
+    "union_support_inr": null,
+    "private_capital_inr": null,
+    "consumer_bill_effect_inr": null,
+    "emissions_benefit_tco2e": null,
+    "financing_shares_pct": null,
+    "scenario_winner": null
+  },
+  "required_record_fields": [
+    "project_id",
+    "technology",
+    "source_document",
+    "source_period",
+    "unit",
+    "ownership",
+    "asset_boundary",
+    "government_budget_head",
+    "BE",
+    "RE",
+    "actual_expenditure",
+    "sanction",
+    "release",
+    "utilization",
+    "KSEBL_own_funds",
+    "KSEBL_debt",
+    "Union_support",
+    "private_equity",
+    "private_debt",
+    "guarantee_exposure",
+    "guarantee_invoked",
+    "economic_cost",
+    "tariff_recovery",
+    "operations",
+    "replacement",
+    "expiry_and_revisions",
+    "publication_rights"
+  ],
+  "release_checks": [
+    "Proposed allocation != release != expenditure != full economic cost.",
+    "Separate agency-level outlay from Kerala treasury fiscal responsibility.",
+    "Annual flow from year-end stock; original and post-audit are not additive.",
+    "Cash support, repayable loan, equity and uninvoked guarantee are different instruments.",
+    "Fiscal deficit does not measure room for project funding on its own.",
+    "No 2040 cost or funding percentages without admitted project register, real price year, contracts and source-linked risk assignment."
+  ]
+}

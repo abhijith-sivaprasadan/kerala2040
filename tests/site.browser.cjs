@@ -235,6 +235,23 @@ async function main(){
     await page.locator("#downloadSpecification").click();
     check((await scenarioPromise).suggestedFilename().endsWith(".json"),
       "Scenario download missing");
+    await page.locator("#financeCases [data-finance-case]").first().waitFor();
+    check(await page.locator("#financeCases button").count()===6,
+      "WP8 must present six distinct payer structures");
+    check((await page.locator("#financeKSEB").innerText()).includes("1,04,218"),
+      "Utility own-fund proposed budget must remain distinct");
+    check((await page.locator("#financeCAG").innerText()).includes("48,510.2"),
+      "CAG statewide post-audit deficit must remain labelled as fiscal context");
+    await page.locator('#financeCases [data-finance-case="union_cpsu"]').click();
+    check((await page.locator("#financeCaseDetail").innerText()).includes("sanction"),
+      "Union scheme must require source-verified sanctions");
+    const financeResponse=await page.request.get(base+"data/wp8-finance.json");
+    check(financeResponse.status()===200,"Source-scoped WP8 ledger was not packaged");
+    const finance=await financeResponse.json();
+    check(finance.model_template.project_capex_inr===null &&
+      finance.planning_fy2025_26.provisional_visual_qa===true,
+      "Finance project cost must remain null and proposal QA visible");
+    console.log("PASS WP8 finance: source-separated proposals, fiscal context and payer cases");
     console.log("PASS pathways: options and explicitly unsolved specification download");
 
     await route("atlas");
@@ -336,8 +353,8 @@ async function main(){
       "KMML measured-flow scientific release gates must remain closed");
     check(await page.locator(".industry-card").count()>=3,"Industry evidence absent");
     await route("workbench");
-    check(await page.locator(".research-item").count()===14,
-      "All fourteen research streams must render");
+    check(await page.locator(".research-item").count()===15,
+      "All fifteen research streams must render");
     await page.locator("#workbenchSearch").fill("forest");
     check(await page.locator(".research-item").count()>=1,
       "Research filtering not functional");

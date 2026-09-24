@@ -1153,6 +1153,8 @@ async function init(){
       state.site.metadata.files.historical_electricity,state.ledger);
     if(typeof loadKMMLCase==="function")await loadKMMLCase(
       state.site.metadata.files.kmml_case);
+    if(typeof loadWP8Finance==="function")await loadWP8Finance(
+      state.site.metadata.files.wp8_finance);
     animateVisibleArtwork();
   }catch(err){
     console.error("Kerala2040 evidence load failed:",err);

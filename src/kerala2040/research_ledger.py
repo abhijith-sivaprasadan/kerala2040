@@ -67,6 +67,7 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     kmml = _json(
         root, "data/evidence/industry/kmml_source_bounded_case_2026_09_24.json"
     )
+    wp8 = _json(root, "data/evidence/finance/wp8_finance_source_ledger_2026_09_24.json")
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -94,6 +95,11 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     assert hydro["classification"] == "partial_official_hydro_topology_not_dispatch_constraints"
     assert generator["release_gate"] == "partial_or_provisional"
     assert not gates["kmml_case"]["passed"]
+    assert wp8["classification"] == "WP8_FINANCE_PUBLIC_SOURCE_LEDGER_NOT_KERALA_2040_FINANCING_PLAN"
+    assert wp8["planning_fy2025_26"]["provisional_visual_qa"] is True
+    assert len(wp8["financing_cases"]) == len(wp8["accounting_boundaries"]) == 6
+    assert wp8["model_template"]["project_capex_inr"] is None
+    assert wp8["model_template"]["kerala_exchequer_npv_inr"] is None
     assert kmml["classification"] == (
         "KMML_CHAVARA_SOURCE_BOUNDED_PROCESS_CASE_NOT_MEASURED_2024_25_NOT_RECOVERY_FORECAST"
     )
@@ -474,6 +480,22 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
                 {"label": "KMML public-safe case data", "href": ROOT + "data/evidence/industry/kmml_source_bounded_case_2026_09_24.json"},
                 {"label": "KMML case plan", "href": ROOT + "docs/KMML_CASE_PLAN.md"},
                 {"label": "Release-gate rules", "href": ROOT + "docs/AUDIT_RELEASE_GATES.md"},
+            ],
+        },
+        {
+            "id": "finance", "title": "Finance & federal value capture",
+            "phase": "partial", "label": "Funding boundaries source-audited; project appraisal blocked",
+            "metric": "6 financing cases",
+            "unit": "no approved Kerala2040 project costs or funding shares",
+            "summary": "Distinguishes FY2025–26 published energy-plan proposals, FY2024–25 CAG statewide fiscal context and six non-interchangeable payer/risk boundaries.",
+            "completed": "Source-labelled actor taxonomy, exact plan-proposal subtotal checks, statewide deficit/guarantee scopes, six funding structures and a fail-closed finance register.",
+            "blocked": "Plan PDF page-image QA, matched BE/RE/actual, KSEBL utility cashflow and regulatory tariff treatment, actual Union sanctions, contracts and site-specific capital budgets.",
+            "action": "Verify plan-page image and acquire published grant-head actuals, KSEBL audited cashflows and one scheme/project sanction; never promote statewide fiscal totals to energy finance.",
+            "route": "pathways",
+            "evidence": [
+                {"label": "WP8 source-audited finance study", "href": ROOT + "docs/WP8_FINANCE_FEDERAL_VALUE_CAPTURE_2026_09_24.md"},
+                {"label": "WP8 finance public-source register", "href": ROOT + "data/evidence/finance/wp8_finance_source_ledger_2026_09_24.json"},
+                {"label": "Finance-project source schema", "href": ROOT + "schemas/finance_projects.schema.json"},
             ],
         },
         {

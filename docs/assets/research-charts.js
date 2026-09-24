@@ -378,3 +378,83 @@ async function loadKMMLCase(filename){
     root.textContent="KMML case failed provenance/coverage checks; no process claims shown.";
   }
 }
+
+
+/* WP8 financing evidence, deliberately independent of the 2040 model's costs. */
+let wp8SelectedCase="ksebl";
+function validateWP8Finance(finance){
+  if(finance?.classification!=="WP8_FINANCE_PUBLIC_SOURCE_LEDGER_NOT_KERALA_2040_FINANCING_PLAN"||
+     finance?.planning_fy2025_26?.provisional_visual_qa!==true||
+     finance?.sources?.annual_plan_2025_26?.reporting_status!=="budget_proposal_not_spending"||
+     finance?.planning_fy2025_26?.reported_total_inr_lakh!==115676||
+     finance?.fiscal_fy2024_25?.outstanding_guarantees_inr_crore!==74297.58||
+     finance?.financing_cases?.length!==6||
+     finance?.accounting_boundaries?.length!==6||
+     finance?.model_template?.project_capex_inr!==null||
+     finance?.model_template?.kerala_exchequer_npv_inr!==null||
+     finance?.model_template?.scenario_winner!==null){
+    throw new Error("WP8 publication cannot present proposed/audited totals as approved finance");
+  }
+  const plan=finance.planning_fy2025_26;
+  const agencySum=plan.energy_agency_outlay_inr_lakh.reduce((n,r)=>n+r.value,0);
+  const ksebl=plan.energy_agency_outlay_inr_lakh.find(r=>r.entity==="KSEBL")?.value;
+  const kseblSum=plan.ksebl_proposed_outlay_components_inr_lakh.reduce((n,r)=>n+r.value,0);
+  if(agencySum!==plan.reported_total_inr_lakh||kseblSum!==ksebl){
+    throw new Error("WP8 source budget category reconciliation failed");
+  }
+  return true;
+}
+function renderWP8Finance(finance){
+  validateWP8Finance(finance);
+  const plan=finance.planning_fy2025_26, audit=finance.fiscal_fy2024_25;
+  const status=document.getElementById("financeStatus");
+  if(status)status.innerHTML=
+    '<span><b>₹ '+chartNumber(plan.reported_total_inr_lakh/100,"crore",2)+'</b>2025–26 proposed energy plan, not paid cash</span>'+
+    '<span><b>4</b> proposed agency categories</span>'+
+    '<span><b>3</b> KSEBL funding classifications</span>'+
+    '<span><b>6</b> distinct illustrative funding cases</span>';
+  const agency=document.getElementById("financeAgency");
+  if(agency)agency.innerHTML=
+    '<div class="finance-source-rows">'+plan.energy_agency_outlay_inr_lakh.map(r=>
+      '<div><strong>'+chartEsc(r.entity)+'</strong><span>₹ '+chartNumber(r.value,"lakh",0)+'</span></div>'
+    ).join("")+'</div><p class="finance-warning">Source: Kerala State Planning Board, Annual Plan Proposals FY2025–26, printed p. 146; publisher PDF text extraction, page-image verification pending. Planned outlay ≠ actual expenditure.</p>';
+  const comp=document.getElementById("financeKSEB");
+  if(comp)comp.innerHTML='<div class="finance-source-rows">'+
+    plan.ksebl_proposed_outlay_components_inr_lakh.map(r=>
+    '<div><strong>'+chartEsc(r.category)+'</strong><span>₹ '+chartNumber(r.value,"lakh",0)+'</span></div>'
+    ).join("")+'</div><p class="finance-warning">Source: same plan, printed p. 146. KSEBL own fund is not a State treasury grant. State Plan is not evidence of actual release.</p>';
+  const cag=document.getElementById("financeCAG");
+  if(cag)cag.innerHTML=
+   '<div class="finance-audit-list">'+
+   '<div><small>Fiscal deficit / Finance Accounts</small><strong>₹ '+chartNumber(audit.original_finance_accounts.fiscal_deficit_inr_crore,"crore",2)+'</strong></div>'+
+   '<div><small>Fiscal deficit / CAG post-audit</small><strong>₹ '+chartNumber(audit.post_audit.fiscal_deficit_inr_crore,"crore",2)+'</strong></div>'+
+   '<div><small>Overall liabilities / CAG post-audit, 31 March 2025</small><strong>₹ '+chartNumber(audit.post_audit.overall_liabilities_inr_crore,"crore",2)+'</strong></div>'+
+   '<div><small>All-State guarantees outstanding, 31 March 2025</small><strong>₹ '+chartNumber(audit.outstanding_guarantees_inr_crore,"crore",2)+'</strong></div>'+
+   '</div><p class="finance-warning">Two deficit accounting versions are not additive. A guarantee is contingent, not a spent allocation. None of these totals is Kerala2040 financing.</p>'+
+   '<a href="'+chartEsc(finance.sources.cag_state_finances_2024_25.url)+'" target="_blank" rel="noopener noreferrer">CAG Kerala SFAR FY2024–25 · official audit ↗</a>';
+  const chooser=document.getElementById("financeCases"),detail=document.getElementById("financeCaseDetail");
+  if(chooser){
+    chooser.innerHTML=finance.financing_cases.map(row=>
+      '<button type="button" data-finance-case="'+chartEsc(row.id)+'" aria-pressed="'+String(row.id===wp8SelectedCase)+'">'+chartEsc(row.title)+'</button>'
+    ).join("");
+    chooser.querySelectorAll("[data-finance-case]").forEach(button=>
+      button.addEventListener("click",()=>{wp8SelectedCase=button.dataset.financeCase;renderWP8Finance(finance);}));
+  }
+  const selected=finance.financing_cases.find(row=>row.id===wp8SelectedCase)||finance.financing_cases[0];
+  if(detail)detail.innerHTML=
+    '<small>ILLUSTRATIVE FINANCE ARCHITECTURE · NO PROJECT APPROVAL</small>'+
+    '<h4>'+chartEsc(selected.title)+'</h4>'+
+    '<p><b>Funder:</b> '+chartEsc(selected.funder)+'</p>'+
+    '<p><b>Risk bearer:</b> '+chartEsc(selected.risk_bearer)+'</p>'+
+    '<p><b>Possible beneficiary:</b> '+chartEsc(selected.beneficiary)+'</p>'+
+    '<h5>Required evidence before pricing</h5><ul>'+
+    selected.requires.map(t=>'<li>'+chartEsc(t)+'</li>').join("")+'</ul>';
+}
+async function loadWP8Finance(filename){
+  const root=document.getElementById("financeCases");if(!root)return;
+  if(filename!=="wp8-finance.json"){root.textContent="No source-validated WP8 data in this research snapshot.";return;}
+  try{renderWP8Finance(await getJSON(filename));}
+  catch(err){console.error("WP8 finance evidence failed validation:",err);
+    root.textContent="Finance evidence failed release checks; no project cost or financing figures shown.";
+  }
+}
