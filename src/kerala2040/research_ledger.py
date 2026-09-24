@@ -64,6 +64,9 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     solar_phase1 = _json(
         root, "data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json"
     )
+    kmml = _json(
+        root, "data/evidence/industry/kmml_source_bounded_case_2026_09_24.json"
+    )
     model = gis["model_use"]
     gates = audit["release_gates"]
 
@@ -91,6 +94,18 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
     assert hydro["classification"] == "partial_official_hydro_topology_not_dispatch_constraints"
     assert generator["release_gate"] == "partial_or_provisional"
     assert not gates["kmml_case"]["passed"]
+    assert kmml["classification"] == (
+        "KMML_CHAVARA_SOURCE_BOUNDED_PROCESS_CASE_NOT_MEASURED_2024_25_NOT_RECOVERY_FORECAST"
+    )
+    assert len(kmml["units"]) == 9 and len(kmml["streams"]) == 10
+    assert kmml["scientific_scope"]["kmml_case_release_gate_passed"] is False
+    assert kmml["published_numeric_recovery_by_Kerala2040"] is None
+    assert all(
+        stream["annual_tonnes"] is None
+        and stream["annual_mwh"] is None
+        and stream["avoided_co2_t"] is None
+        for stream in kmml["streams"]
+    )
     assert hazard["gsi_total_source_features"] == hazard["gsi_invalid_source_features"] == 39
     assert hazard["wetland_geometries_verified"] == 0
     assert terrain["nwic_kerala_native_grid_dsm_pixel_centres_verified"] is True
@@ -452,7 +467,7 @@ def build_ledger(root: Path, audit: dict | None = None) -> dict:
             "summary": "KMML's 9 distinct production/recovery/utility units, 10 residual loops and FY2022–23 recovery trials are documented; plant-wide recovery unmeasured.",
             "completed": "Official topology and ARP acid loop sourced; historic brick commercialization distinguished from the FY2022–23 oxide-to-sponge-iron, U400 fines and backwash trials. Ten streams retain null annual benefits.",
             "blocked": "No common-period plant meters, chemistry, disposal permits, accepted buyers, energy/water allocation, FY2024–25 site balance or actual commissioning of trials. KMML numerical release gate remains closed.",
-            "action": "Obtain site-approved aligned monthly/interval flow assays, treatment/reuse and purchase meters, KSPCB primary records, current trial status and capex/of-take contracts.",
+            "action": "Obtain site-approved aligned monthly/interval flow assays, treatment/reuse and purchase meters, KSPCB primary records, current trial status and capex/offtake contracts.",
             "route": "industry",
             "evidence": [
                 {"label": "KMML completed process case", "href": ROOT + "docs/KMML_CIRCULAR_INDUSTRY_CASE_2026_09_24.md"},
