@@ -557,3 +557,114 @@ async function loadEnergyGHGBridge(filename){
     root.textContent="2023 energy-emissions source QA failed; figure withheld.";
   }
 }
+
+
+/* WP6 results are recomputed at build time from a plainly synthetic 1R1C
+ * model. Never connect a 24-hour demonstration to Kerala capacity or tariffs. */
+function validateWP6Pilot(d){
+  const keys=["conventional","precooling","chilled_water_storage"];
+  if(d?.classification!=="WP6_SYNTHETIC_24H_1R1C_COOLING_COMPARISON_NOT_KERALA_GRID_RESULT"||
+     d?.inputs?.classification!=="synthetic_illustrative_1R1C_24_hour_cooling_only_NOT_Kerala_observations"||
+     d?.inputs?.hourly_outdoor_C?.length!==24||
+     d?.inputs?.peak_window?.start_hour_inclusive!==17||
+     d?.inputs?.peak_window?.end_hour_inclusive!==21||
+     keys.some(k=>d?.cases?.[k]?.hourly?.length!==24||
+       d?.cases?.[k]?.summary?.comfort_violation_hours!==0||
+       d?.cases?.[k]?.summary?.end_store_kWh_th!==0||
+       d?.cases?.[k]?.summary?.end_room_C!==25.5)||
+     d?.sensitivity?.length!==9||
+     !d?.science_gates||
+     Object.values(d.science_gates).some(v=>v!==false)||
+     d.cases.chilled_water_storage.summary.evening_grid_kWh_e>=
+       d.cases.conventional.summary.evening_grid_kWh_e||
+     d.cases.chilled_water_storage.summary.total_grid_kWh_e<=
+       d.cases.conventional.summary.total_grid_kWh_e){
+    throw new Error("WP6 cannot publish unbalanced, non-synthetic or Kerala-claimed cooling results");
+  }
+}
+function renderWP6Pilot(d){
+  validateWP6Pilot(d);
+  const keyLabels={
+    conventional:"Conventional AC",
+    precooling:"Thermal-mass pre-cooling",
+    chilled_water_storage:"Cold-water TES"
+  };
+  const keys=Object.keys(keyLabels);
+  const status=document.getElementById("wp6Status");
+  if(status)status.innerHTML=
+    '<span><b>24h</b> authored outdoor-temperature profile, not ERA5</span>'+
+    '<span><b>24–26°C</b> shared comfort envelope</span>'+
+    '<span><b>17–21</b> illustrative evening window</span>'+
+    '<span><b>9</b> actual sensitivity reruns</span>';
+  const cards=document.getElementById("wp6CaseCards");
+  if(cards)cards.innerHTML=keys.map(k=>{
+    const s=d.cases[k].summary,base=d.cases.conventional.summary;
+    const shift=k==="conventional"?"Reference for both peak metrics":
+      "Change from conventional: "+chartNumber(
+        s.evening_grid_kWh_e-base.evening_grid_kWh_e,"kWh_e in evening",3);
+    return '<article class="wp6-case-card"><small>'+chartEsc(keyLabels[k])+
+     ' · SYNTHETIC</small><h3>'+chartEsc(chartNumber(s.total_grid_kWh_e,"kWh_e",3))+
+     '</h3><p>Whole-day grid electricity</p><dl><div><dt>Whole-day maximum</dt><dd>'+
+     chartEsc(chartNumber(s.whole_day_peak_kW_e,"kW_e",3))+'</dd></div>'+
+     '<div><dt>Evening maximum</dt><dd>'+chartEsc(chartNumber(s.evening_peak_kW_e,"kW_e",3))+'</dd></div>'+
+     '<div><dt>Evening total</dt><dd>'+chartEsc(chartNumber(s.evening_grid_kWh_e,"kWh_e",3))+'</dd></div>'+
+     '<div><dt>Comfort violations</dt><dd>'+s.comfort_violation_hours+
+     ' hours</dd></div></dl><p class="wp6-case-note">'+chartEsc(shift)+
+     '; pre-cooling early-setpoint shortfall '+chartEsc(
+        chartNumber(s.room_cooling_target_shortfall_kWh_th,"kWh_th",3))+
+     ' (not occupant comfort loss).</p></article>';
+  }).join("");
+  const caseRow=(i,field)=>Object.fromEntries(keys.map(k=>[k,d.cases[k].hourly[i][field]]));
+  const source="Kerala2040 WP6 authored synthetic 24-hour one-zone physics; NOT measured Kerala hourly load, annual savings, tariffs or a solved 2040 dispatch.";
+  mountResearchChart("wp6PowerChart",{
+    style:"vertical",source,
+    rows:Array.from({length:24},(_,i)=>({
+      label:String(i).padStart(2,"0")+":00",
+      values:caseRow(i,"grid_kWh_e"),
+      note:(i>=17&&i<=21?"Within 17–21 illustrative window. ":"Outside evening window. ")+
+        "Grid kWh during ONE hour; direct + charging chiller + discharge pump."
+    })),
+    series:keys.map(k=>({key:k,label:keyLabels[k],unit:"kWh_e/h",decimals:3}))
+  });
+  mountResearchChart("wp6RoomChart",{
+    style:"vertical",source:source+" All cases share allowed 24–26°C; pre-cooling early target is NOT an occupied discomfort penalty.",
+    rows:Array.from({length:24},(_,i)=>({
+      label:String(i).padStart(2,"0")+":00",
+      values:caseRow(i,"room_C"),
+      note:"End-of-hour room temperature; common comfort range 24–26°C."
+    })),
+    series:keys.map(k=>({key:k,label:keyLabels[k],unit:"°C",decimals:3}))
+  });
+  mountResearchChart("wp6StoreChart",{
+    style:"vertical",source:source+" Only cold-water TES has a storage state; both terminal and initial storage equal zero.",
+    rows:Array.from({length:24},(_,i)=>({
+      label:String(i).padStart(2,"0")+":00",
+      values:{store:d.cases.chilled_water_storage.hourly[i].store_kWh_th},
+      note:"End-of-hour cold-energy inventory, includes self-discharge, charge and withdrawal."
+    })),
+    series:[{key:"store",label:"Thermal stock",unit:"kWh_th",decimals:3}]
+  });
+  const sensitivity=document.getElementById("wp6Sensitivity");
+  if(sensitivity)sensitivity.innerHTML=
+    '<div class="table-scroll"><table><thead><tr><th>Cold store (kWh_th)</th>'+
+    '<th>Charge COP multiplier</th><th>Grid total (kWh_e)</th>'+
+    '<th>Evening peak (kW_e)</th><th>Whole-day peak (kW_e)</th>'+
+    '<th>Comfort violations</th></tr></thead><tbody>'+
+    d.sensitivity.map(r=>'<tr><td>'+chartEsc(chartNumber(r.storage_kWh_th,"",1))+
+       '</td><td>'+chartEsc(chartNumber(r.charging_cop_multiplier,"",2))+
+       '</td><td>'+chartEsc(chartNumber(r.total_grid_kWh_e,"",3))+
+       '</td><td>'+chartEsc(chartNumber(r.evening_peak_kW_e,"",3))+
+       '</td><td>'+chartEsc(chartNumber(r.whole_day_peak_kW_e,"",3))+
+       '</td><td>'+r.comfort_violation_hours+'</td></tr>').join("")+
+    '</tbody></table></div>';
+}
+async function loadWP6Pilot(filename){
+  const root=document.getElementById("wp6PowerChart");if(!root)return;
+  if(filename!=="wp6-cooling-pilot.json"){
+    root.textContent="No reproducible WP6 cooling output in this research release.";return;
+  }
+  try{renderWP6Pilot(await getJSON(filename));}
+  catch(err){console.error("WP6 cooling source/physics admission failed",err);
+    root.textContent="Cooling experiment failed its scientific checks; results withheld.";
+  }
+}
