@@ -355,6 +355,16 @@
  <div id="wp6StorageSensitivity" class="wp6-flex-sensitivity" aria-live="polite">Loading eighteen sensitivity cells…</div>
  <p class="wp6-links"><a href="https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/docs/WP6_BESS_PUMPED_STORAGE_SCREEN_2026_09_24.md" target="_blank" rel="noopener noreferrer">Read physical assumptions and real hydro evidence gates ↗</a> <a href="data/wp6-bess-psp.json" download>Download both 24-hour runs + 18 sensitivity cells ↓</a></p>
  <p class="wp6-caveat"><strong>Release boundary:</strong> 300 m is an invented head for a small hydraulic unit cell, not a Kerala reservoir measurement; no storage MW/MWh, site permission, environmental clearance, actual grid service, annual savings, rupees, emissions or preferred real technology are inferred.</p>
+</section>
+<section class="wp6-flex-study" aria-labelledby="wp6IntegratedTitle">
+ <div class="section-eyebrow">WP6 / SYNCHRONIZED DISPATCH / സംയോജിത മാതൃക</div>
+ <h2 id="wp6IntegratedTitle" class="display-title">One timeline. <em>No double-counted peaks.</em></h2>
+ <p>Four co-located <strong>fictional</strong> 24-hour cases: unmanaged, managed cooling/EV/industry, battery only and combined. A single authored background is counted once; the site peak is recomputed hour by hour. The source SLDC daily MU and selected extrema are <strong>not measured hourly demand</strong>. No observed renewables, coincident Kerala MW or pumped-storage site is inferred.</p>
+ <div id="wp6IntegratedStatus" class="wp6-flex-status" aria-live="polite">Loading synchronized dispatch…</div>
+ <div id="wp6IntegratedCases" class="wp6-flex-cases" aria-live="polite">Loading four scenarios…</div>
+ <figure class="wp6-flex-plot"><h3>Net site demand across all 24 hours</h3><div id="wp6IntegratedChart" class="live-research-chart" aria-live="polite">Loading hourly profiles…</div></figure>
+ <p class="wp6-links"><a href="https://github.com/abhijith-sivaprasadan/kerala2040/blob/main/docs/WP6_KERALA_GRID_INTEGRATION_GATE_2026_09_24.md" target="_blank" rel="noopener noreferrer">Source and project admission gates ↗</a> <a href="data/wp6-integrated-dispatch.json" download>Download synchronized hourly results ↓</a></p>
+ <p class="wp6-caveat">This is an illustrative shared-site accounting experiment, not optimal control, measured Kerala grid dispatch, statewide potential or a pumped-storage project assessment.</p>
 </section><div class="story-split"><h2 class="display-title">A credible result must survive <em>stress.</em></h2><p>Dry years, monsoon extremes, extreme demand, import constraints, financing exposure and land restrictions can change what is feasible. The scientific gates remain open until measured chronology, source-linked costs, grid and hydro constraints and ecological screening are sufficient.</p></div></div></section>
 
     <section class="view" data-view="atlas" aria-labelledby="atlasTitle"><div class="page-head page-head-forest"><div class="section-wrap"><div class="section-eyebrow light"><span class="number">02</span> ഭൂമി / LAND, WATER AND ECOLOGY</div><h1 id="atlasTitle">The landscape is<br><em>part of the energy system.</em></h1><p>The Ghats, forests, wetlands, rivers, settlements and disaster exposure set real limits. A map may show a resource without proving that anyone can build on it.</p></div></div><div class="section-wrap page-content"><section class="land-intro"><div class="land-art" aria-hidden="true"><span class="land-art-sun"></span><span class="land-art-range"></span><span class="land-art-water"></span><span class="land-art-palm">❧</span></div><div><div class="section-eyebrow">THE SITING QUESTION</div><h2>Where could energy infrastructure go <em>without crossing the wrong lines?</em></h2><p>The illustration is a cultural landscape, <strong>not a GIS map or legal boundary.</strong> The source layers below report actual acquisition and verification status, including the completed wind-resource × slope analysis and the LRIS portal investigation.</p></div></section><div class="section-title-line"><div><div class="section-eyebrow">SOURCE → QA → ADMISSION</div><h2 class="display-title">What we know about <em>the land.</em></h2></div><p>Tap each layer to inspect what was acquired, what is missing and the documentary trail.</p></div><section class="wind-evidence" aria-labelledby="windEvidenceTitle">
@@ -444,5 +454,65 @@
   </main>
 
   <footer class="footer"><div class="section-wrap footer-grid"><div><span class="footer-mark" lang="ml">ക</span><strong>Kerala2040</strong><p lang="ml">നമ്മുടെ നാട്. നമ്മുടെ ഊർജഭാവി.</p><p>Independent energy-systems research. Not an official Government of Kerala, KSEBL or regulatory publication.</p></div><div><strong>EXPLORE</strong><button data-route="electricity">Observed electricity</button><button data-route="pathways">2040 questions</button><button data-route="atlas">Land and water</button><button data-route="industry">Circular industry</button></div><div><strong>VERIFY</strong><button data-route="workbench">Research log</button><button data-route="audit">Scientific release gates</button><button data-route="data">Source library</button><a href="https://github.com/abhijith-sivaprasadan/kerala2040" target="_blank" rel="noopener noreferrer">Open-source repository ↗</a></div></div><div class="section-wrap footer-bottom"><span>KERALA / INDIA · STUDY HORIZON 2040</span><span id="footerResearchIdentity">Loading pinned source revision…</span><span>Made to be questioned, not merely believed.</span></div></footer>
+<script>
+/* WP6 synthetic synchronized experiment; no observed hourly Kerala data. */
+(async function () {
+  const status = document.getElementById('wp6IntegratedStatus');
+  const cards = document.getElementById('wp6IntegratedCases');
+  const chart = document.getElementById('wp6IntegratedChart');
+  if (!status || !cards || !chart) return;
+  try {
+    const response = await fetch('data/wp6-integrated-dispatch.json');
+    if (!response.ok) throw new Error('Dataset unavailable (' + response.status + ')');
+    const data = await response.json();
+    if (data.classification !== 'WP6_SYNTHETIC_SYNCHRONIZED_SITE_NOT_KERALA_GRID_DISPATCH'
+        || Object.values(data.release).some(Boolean)) throw new Error('Provenance gate failed');
+    const names = {unmanaged:'Unmanaged', flexibility_only:'Flexibility only',
+                   bess_only:'Battery only', combined:'Combined'};
+    const entries = Object.entries(data.cases);
+    if (entries.length !== 4 || entries.some(([,v]) => v.hourly.length !== 24))
+      throw new Error('Incomplete synchronized cases');
+    status.textContent = 'Illustrative 24-hour shared-site experiment · not SLDC telemetry';
+    cards.replaceChildren();
+    for (const [key, value] of entries) {
+      const box = document.createElement('article');
+      const title = document.createElement('h3');
+      title.textContent = names[key];
+      const detail = document.createElement('p');
+      const m = value.summary;
+      detail.textContent = 'Daily grid: ' + m.daily_grid_kwh.toFixed(2) +
+        ' kWh · evening peak: ' + m.evening_peak_kw.toFixed(2) +
+        ' kW · whole-day peak: ' + m.whole_day_peak_kw.toFixed(2) + ' kW';
+      box.append(title, detail); cards.append(box);
+    }
+    const width=720, height=270, left=48, top=20, bottom=235;
+    const max=Math.max(...entries.flatMap(([,v])=>v.hourly.map(r=>r.net_site_kw)))*1.08;
+    const ns='http://www.w3.org/2000/svg';
+    const svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox','0 0 '+width+' '+height);
+    svg.setAttribute('role','img');
+    svg.setAttribute('aria-label','Four synthetic synchronized hourly net-site demand curves in kW');
+    const colors=['#d97706','#2e7d32','#2563eb','#9333ea'];
+    entries.forEach(([key,value],index)=>{
+      const line=document.createElementNS(ns,'polyline');
+      line.setAttribute('fill','none');
+      line.setAttribute('stroke',colors[index]);
+      line.setAttribute('stroke-width','2.5');
+      line.setAttribute('points',value.hourly.map((r,h)=>
+        (left+h*(width-left-20)/23).toFixed(2)+','+
+        (bottom-r.net_site_kw/max*(bottom-top)).toFixed(2)).join(' '));
+      svg.append(line);
+    });
+    chart.replaceChildren(svg);
+    const legend=document.createElement('p');
+    legend.textContent='Orange: unmanaged · Green: flexibility · Blue: battery · Purple: combined. Horizontal: hour 00–23; vertical: net site kW (0–'+max.toFixed(1)+').';
+    chart.append(legend);
+  } catch (error) {
+    status.textContent='Integrated dataset could not be validated: '+error.message;
+    cards.textContent='No unverified result displayed.';
+    chart.textContent='';
+  }
+})();
+</script>
 </body>
 </html>

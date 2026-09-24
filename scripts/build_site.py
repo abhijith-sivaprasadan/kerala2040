@@ -20,6 +20,7 @@ from kerala2040.audit_readiness import build_audit
 from kerala2040.energy_ghg_bridge import validate_energy_ghg_bridge
 from kerala2040.flexibility_cooling import build_pilot
 from kerala2040.flexibility_dispatch import build_demonstration
+from kerala2040.flexibility_integrated import build_integrated
 from kerala2040.flexibility_storage import build_screen
 from kerala2040.ppac_full_year import validate_ppac_sales
 from kerala2040.research_ledger import build_ledger
@@ -601,6 +602,21 @@ def build_site(root: Path, output: Path) -> None:
     site["metadata"]["files"]["wp6_storage_screen"] = "wp6-bess-psp.json"
     (data_dir / "wp6-bess-psp.json").write_text(
         json.dumps(storage, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "site-data.json").write_text(
+        json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    (data_dir / "metadata.json").write_text(
+        json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+    integrated = build_integrated()
+    if (integrated["classification"] != "WP6_SYNTHETIC_SYNCHRONIZED_SITE_NOT_KERALA_GRID_DISPATCH"
+            or any(integrated["release"].values())
+            or any(len(case["hourly"]) != 24 for case in integrated["cases"].values())):
+        raise ValueError("Integrated WP6 synthetic-only gate failed")
+    site["metadata"]["files"]["wp6_integrated_dispatch"] = "wp6-integrated-dispatch.json"
+    (data_dir / "wp6-integrated-dispatch.json").write_text(
+        json.dumps(integrated, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     (data_dir / "site-data.json").write_text(
         json.dumps(site, indent=2, allow_nan=False) + "\n", encoding="utf-8"
