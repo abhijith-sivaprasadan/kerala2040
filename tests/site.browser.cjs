@@ -238,7 +238,7 @@ async function main(){
     console.log("PASS pathways: options and explicitly unsolved specification download");
 
     await route("atlas");
-    await page.locator("#windDistrictChart .research-point").first().waitFor();
+    await page.locator("#windDistrictChart svg").waitFor({state:"visible"});
     check(await page.locator("#windDistrictChart .research-point").count()===14,
       "Wind district chart must display all fourteen NWIC districts");
     check(await page.locator("#windSlopeChart .research-point").count()===4,
