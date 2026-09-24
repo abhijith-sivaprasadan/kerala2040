@@ -44,7 +44,7 @@ def validate_total_energy_source_register(value: dict) -> dict:
     if emc["coal_captive_pct"] is not None:
         raise ValueError("Unreported coal share manufactured")
     disagreement = emc["internal_discrepancy"]
-    if disagreement["figure_3_fy2015_mtoe"] != 9.18 or disagreement["section_3_prose_fy2015_mtoe"] != 9.81 or disagreement["status"] != "unresolved_publisher_internal_disagreement":
+    if disagreement.get("figure_3_fy2015_mtoe") != 9.18 or disagreement.get("section_3_prose_fy2015_mtoe") != 9.81 or disagreement.get("status") != "unresolved_publisher_internal_disagreement":
         raise ValueError("EMC figure/prose source discrepancy was concealed")
     ppac = value["ppac_provisional_half_year_2024_25"]
     if (ppac["start_date"], ppac["end_date"]) != ("2024-04-01", "2024-09-30"):
