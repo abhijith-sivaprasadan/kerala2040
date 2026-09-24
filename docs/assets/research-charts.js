@@ -505,3 +505,55 @@ async function loadPPACAnnualSales(filename){
       if(node)node.textContent="Annual sales source QA failed; figure withheld.";});
   }
 }
+
+
+/* Current DoECC 2023 inventory belongs on a different emissions accounting
+ * perimeter than EMC FY2019–20 final energy and PPAC FY2024–25 sales mass.
+ */
+function validateEnergyGHGBridge(d){
+  const vals=[["transport",13.59,65.87],["residential",3.2,15.48],
+    ["industrial",1.89,9.16]];
+  if(d?.classification!=="KERALA_GHG_2023_OFFICIAL_SECTOR_EMISSIONS_NOT_FINAL_ENERGY_OR_2024_25"||
+    d?.period!=="calendar_2023"||d?.unit!=="MtCO2e"||
+    d?.energy_sector_2023_mtco2e!==20.64||
+    d?.categories?.length!==3||
+    d.categories.some((r,i)=>r.id!==vals[i][0]||r.mtco2e!==vals[i][1]||
+      r.share_of_energy_pct!==vals[i][2])||
+    d?.historic_source_vintage_conflict?.old_report_energy_mtco2e!==16.96||
+    d?.historic_source_vintage_conflict?.current_portal_energy_mtco2e!==17.09||
+    d?.historical_seeap_gcv?.values?.length!==7||
+    d?.historical_seeap_gcv?.basis?.startsWith("GROSS CALORIFIC VALUE")!==true||
+    d?.no_assumed_energy_2024_25_mtoe!==null||
+    d?.no_assumed_2024_25_sectoral_emissions_mtco2e!==null||
+    d?.no_current_kerala_import_share!==null||
+    d?.no_externally_verified_2023_fuel_by_sector_matrix!==null||
+    d?.no_raw_seeap_workbook!==true){
+    throw new Error("2023 emissions cannot become 2024–25 fuel, energy or CO2 conversion");
+  }
+}
+function renderEnergyGHGBridge(d){
+  validateEnergyGHGBridge(d);
+  const status=document.getElementById("totalEnergyGHGStatus");
+  if(status)status.innerHTML=
+    '<span><b>20.64 MtCO₂e</b> official CY2023 modelled energy-sector emissions</span>'+
+    '<span><b>~80%</b> of statewide gross GHG excluding LULUCF</span>'+
+    '<span><b>Three categories shown</b> not the complete energy-sector category set</span>';
+  mountResearchChart("totalEnergyGHGChart",{
+    style:"horizontal",
+    source:"DoECC Kerala GHG Portal, energy-sector 2023 estimates; calendar year and MtCO2e, NOT final energy, petroleum tonnes, or FY2024–25. Source inventories disagree on 2020: older 16.96 vs portal 17.09 MtCO2e.",
+    rows:d.categories.map(r=>({label:r.name,values:{emission:r.mtco2e},
+      note:"Official 2023 energy-emissions share "+chartNumber(r.share_of_energy_pct,"%",2)+
+        ". "+r.comment})),
+    series:[{key:"emission",label:"Emissions (official 2023)",unit:"MtCO₂e",decimals:2}]
+  });
+}
+async function loadEnergyGHGBridge(filename){
+  const root=document.getElementById("totalEnergyGHGChart");if(!root)return;
+  if(filename!=="energy-ghg-bridge.json"){
+    root.textContent="Official 2023 emissions source not packaged in this research release.";return;
+  }
+  try{renderEnergyGHGBridge(await getJSON(filename));}
+  catch(error){console.error("Energy GHG source validation failed:",error);
+    root.textContent="2023 energy-emissions source QA failed; figure withheld.";
+  }
+}
