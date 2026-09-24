@@ -1,0 +1,226 @@
+{
+  "classification": "HISTORICAL_KERALA_FINAL_ENERGY_AND_H1_PETROLEUM_SALES_NOT_CURRENT_COMPLETE_ENERGY_BALANCE",
+  "created_utc_date": "2026-09-24",
+  "study_scope": "Kerala statewide; periods and demand/population separated by source, no interpolated year or reconstructed final-energy series",
+  "sources": {
+    "emc_seeap": {
+      "publisher": "Energy Management Centre Kerala / CII",
+      "title": "Kerala State Energy Efficiency Action Plan",
+      "url": "https://keralaenergy.gov.in/files/PDF2023/State_energy_efficiency_action_plan.pdf",
+      "locator": {
+        "printed_pages": [
+          12,
+          13,
+          14,
+          15,
+          20
+        ],
+        "pdf_pages_zero_based": [
+          11,
+          12,
+          13,
+          14,
+          19
+        ],
+        "figures": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          9
+        ]
+      },
+      "data_tier": "publisher chart directly visually reviewed for Fig. 3 and Fig. 4; FY2019-20 stated baseline",
+      "reprint_status": "original figure values transcribed; not raw energy-statistics microdata"
+    },
+    "ppac_h1_fy2024_25": {
+      "publisher": "Petroleum Planning and Analysis Cell, Ministry of Petroleum and Natural Gas",
+      "title": "India's Oil & Gas Ready Reckoner, H1 FY2024–25, State-wise sales Table 6.3(A)",
+      "url": "https://ppac.gov.in/download.php?file=rep_studies%2F1733114272_Ready+Reckoner_H1_FY+2024-25_Final.pdf",
+      "locator": {
+        "printed_page": 80,
+        "table": "6.3(A)"
+      },
+      "data_tier": "publisher indexed PDF text; page visual/download access not recovered, requires independent confirmation before full source admission",
+      "time_boundary": "April–September 2024 only",
+      "status": "provisional"
+    },
+    "ppac_state_portal": {
+      "publisher": "PPAC",
+      "title": "State-wise petroleum sales",
+      "url": "https://ppac.gov.in/consumption/state-wise",
+      "data_tier": "portal; links/API not admitted as date-level extraction",
+      "status": "source_discovery"
+    },
+    "ppac_snapshot": {
+      "publisher": "PPAC",
+      "title": "Oil and Gas Snapshot of States, Volume 2024–25 Edition II",
+      "url": "https://ppac.gov.in/download.php?file=rep_studies%2F1729769716_State_one_pager_Volume_2024-25_Edition_II_Apr_Sep.pdf",
+      "locator": {
+        "section": "KERALA",
+        "printed_page": 25
+      },
+      "data_tier": "historical infrastructure snapshot, 30 Sept 2024, not petroleum consumption",
+      "status": "source_discovery_and_report_transcription"
+    },
+    "official_electricity": {
+      "publisher": "Kerala State Planning Board / KSEBL",
+      "title": "Economic Review 2025, Volume I",
+      "url": "https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume1%20Eng%20final.pdf",
+      "data_tier": "separate published annual electricity consumer accounts; boundary differs from EMC final energy",
+      "status": "reference_only"
+    }
+  },
+  "emc_final_energy": {
+    "time_basis": "FY2014–15 through FY2019–20 (source Figure 3 labels years FY 2015 to FY 2020, fiscal ending year)",
+    "observed_years": [
+      {
+        "fy": "2014-15",
+        "value_mtoe": 9.18
+      },
+      {
+        "fy": "2015-16",
+        "value_mtoe": 9.35
+      },
+      {
+        "fy": "2016-17",
+        "value_mtoe": 9.61
+      },
+      {
+        "fy": "2017-18",
+        "value_mtoe": 10.17
+      },
+      {
+        "fy": "2018-19",
+        "value_mtoe": 10.33
+      },
+      {
+        "fy": "2019-20",
+        "value_mtoe": 10.78
+      }
+    ],
+    "baseline_fy": "2019-20",
+    "baseline_total_mtoe": 10.78,
+    "rounded_mix_pct": [
+      {
+        "fuel": "Oil",
+        "pct": 64
+      },
+      {
+        "fuel": "Electricity (utilities)",
+        "pct": 19
+      },
+      {
+        "fuel": "Coal (imported)",
+        "pct": 16
+      },
+      {
+        "fuel": "Gas",
+        "pct": 1
+      },
+      {
+        "fuel": "Coal (non-power)",
+        "pct": 0
+      }
+    ],
+    "coal_captive_pct": null,
+    "mix_reconstruction_allowed": false,
+    "notes": [
+      "Source years mean fiscal years ending 2015–2020; not calendar years and not FY2015–16 through FY2020–21.",
+      "Figure 3 total values are two-decimal labels visually read from the publisher graphic, not original calculation files.",
+      "Figure 4 fuel percentages are integer-rounded graphic labels; no original precise Mtoe-by-fuel table recovered.",
+      "Zero percent is a display-rounded figure, not proof no coal consumption.",
+      "The source's electricity series and later KSEBL or SLDC figures have distinct vintages and boundaries; no splice.",
+      "FY2030 17.98 Mtoe in the report is a projection, not an observed total and not adopted as Kerala2040 forecast."
+    ]
+  },
+  "emc_2019_20_electricity_sector_share_context": {
+    "classification": "sector_shares_of_electricity_only_NOT_sector_shares_of_total_final_energy",
+    "publisher_prose_shares_pct": {
+      "domestic": 51,
+      "commercial": 18,
+      "industrial": 18,
+      "bulk_licensees": 3,
+      "open_access_cross_sectoral": 3,
+      "municipal": 2,
+      "transport": 1,
+      "agriculture": 1
+    },
+    "note": "Published percentages approximate and do not necessarily sum to 100; open access cannot be assigned to a consuming sector without source crosswalk; municipality excludes pump electricity mapped elsewhere."
+  },
+  "ppac_provisional_half_year_2024_25": {
+    "start_date": "2024-04-01",
+    "end_date": "2024-09-30",
+    "place": "Kerala",
+    "unit": "thousand_metric_tonnes_sold_in_Kerala",
+    "items": [
+      {
+        "product": "LPG",
+        "tmt": 579
+      },
+      {
+        "product": "Motor spirit (petrol)",
+        "tmt": 937
+      },
+      {
+        "product": "Superior kerosene oil",
+        "tmt": 3.41
+      },
+      {
+        "product": "High-speed diesel",
+        "tmt": 1169.5
+      },
+      {
+        "product": "Aviation turbine fuel",
+        "tmt": 283.7
+      }
+    ],
+    "naphtha_tmt": 0,
+    "scope": "Selected petroleum products and half-year provisional sales; NOT all petroleum products, NOT annual demand, NOT sector-allocation, NOT Kerala end-use energy",
+    "publisher_pdf_visual_validation": false,
+    "additional_expected_columns": [
+      "LDO",
+      "FO/LSHS",
+      "bitumen",
+      "petroleum coke",
+      "lubricants",
+      "others",
+      "total all POL products"
+    ],
+    "admission_warning": "Original page visual unavailable on 2026-09-24; publisher-indexed text only. Values must remain provisional evidence awaiting PDF byte and image cross-check.",
+    "no_annualisation": true
+  },
+  "ppac_infrastructure_2024_09_30": {
+    "as_of": "2024-09-30",
+    "refinery_count": 1,
+    "refinery_capacity_mmtpa": 15.5,
+    "lng_terminals": 1,
+    "lng_terminal_capacity_mmtpa": 5,
+    "cng_stations": 160,
+    "retail_outlets": 2859,
+    "ev_chargers_at_retail_outlets": 627,
+    "qualification": "Installed/nominal infrastructure counts or capacities, neither energy consumed within Kerala nor proven import dependence."
+  },
+  "quantities_deliberately_null": {
+    "kerala_total_final_energy_fy2024_25_mtoe": null,
+    "kerala_transport_final_energy_fy2024_25_mtoe": null,
+    "kerala_industry_final_energy_fy2024_25_mtoe": null,
+    "kerala_buildings_final_energy_fy2024_25_mtoe": null,
+    "kerala_combined_petro_and_electricity_fy2024_25_mtoe": null,
+    "petroleum_import_share_pct": null,
+    "useful_energy_by_service": null,
+    "emissions_fy2024_25_mtco2e": null,
+    "electricity_share_2024_25_pct": null
+  },
+  "release_rules": [
+    "Do not multiply PPAC half-year sales by two or treat it as fiscal-year energy consumption.",
+    "Do not sum selected PPAC products as total POL or treat Kerala refinery throughput as Kerala final use.",
+    "Do not add EMC old FY2019-20 total to FY2024-25 KSEBL electricity annual number.",
+    "Do not multiply integer-rounded shares by rounded total to publish measured fuel Mtoe.",
+    "Transport 1% in EMC refers only to electricity, not transport share of total final energy.",
+    "Do not infer import dependence from fuel mix; imported coal is a source label, not an audited border flow share.",
+    "Never turn announced LNG or refinery capacity into fuel energy consumption.",
+    "FY2030 EMC projection remains externally authored sensitivity, not actual observation or Kerala2040 model output."
+  ]
+}
