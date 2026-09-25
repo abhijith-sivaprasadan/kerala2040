@@ -17,6 +17,7 @@ sources:
   research_input_selection_v0_2: configs/research_input_selection_v0_2.yaml
   hydro_flexibility_bracket_v0_3: configs/full_pypsa_hydro_flexibility_v0_3.yaml
   future_adequacy_v0_4: configs/full_pypsa_future_adequacy_v0_4.yaml
+  research_cost_finance_v0_5: configs/research_cost_finance_v0_5.yaml
 
 requirements:
   base_system:
@@ -236,9 +237,12 @@ requirements:
     rule: no single snapshot may be stretched into an annual or 2040 limit
 
   import_price_series:
-    status: blocked
+    status: blocked_average_procurement_cost_acquired_for_crosscheck
     evidence:
       - configs/grid_transfer_contract_evidence_2024_25.yaml
+    acquired:
+      FY2024_25_approved_average_power_procurement_cost_4_70_INR_per_kWh: true
+      average_cost_excludes_transmission_and_not_promoted_to_marginal_price: true
     remaining:
       - landed Kerala-periphery contract/exchange cost by block and source
       - transmission charges losses DSM banking/swap obligations
@@ -315,21 +319,34 @@ requirements:
       - private and central project treatment
 
   technology_costs:
-    status: published_benchmarks_selected_as_context_not_optimisation_input
+    status: research_2030_cost_finance_benchmark_selected_later_years_blocked
     evidence:
       - configs/techno_economics.yaml
       - configs/research_input_selection_v0_2.yaml
-    rule: external CEA/CERC benchmarks remain non-optimising context until price years, finance and missing storage/import cost fields are harmonised
+      - configs/research_cost_finance_v0_5.yaml
+    acquired:
+      CEA_real_2021_22_solar_wind_and_4h_BESS_planning_costs: true
+      CERC_FY2026_27_post_tax_WACC_9_08pct_research_anchor: true
+      2030_annualized_research_costs_derived_and_tested: true
+    remaining:
+      - source-bounded 2035 and 2040 cost trajectories
+      - generic BESS power/energy capex split if using Store+Link formulation
+      - Kerala site-specific pumped-storage cost
+      - import marginal price chronology and thermal variable costs
+    rule: >-
+      v0.5 admits a 2030 research benchmark only. It does not make economic
+      dispatch or capacity expansion ready and may not be extrapolated to 2035/2040.
 
 release:
   research_proxy_adequacy_screen_possible_now: true
   research_hydro_flexibility_bracket_possible_now: true
   future_demand_counterfactual_screen_possible_now: true
+  research_2030_cost_finance_benchmark_possible_now: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
-    and v0.4 adds source-anchor future-demand counterfactuals with frozen FY2024-25
-    internal generation and explicit ATC bounds. Economic dispatch,
+    v0.4 adds source-anchor future-demand counterfactuals, and v0.5 selects a
+    price-year-explicit 2030 research cost/finance benchmark. Economic dispatch,
     probabilistic reliability and capacity expansion remain blocked by unresolved
     chronology, costs, outages, hydro physics and import-price inputs.
   validated_run_possible_now: false
