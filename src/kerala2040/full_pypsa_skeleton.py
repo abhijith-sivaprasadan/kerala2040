@@ -37,7 +37,7 @@ def build_full_pypsa_skeleton(selection: dict[str, Any]):
     network.add("Carrier", "hydro_existing")
     network.add("Carrier", "thermal_existing")
     network.add("Carrier", "solar_existing")
-    network.add("Carrier", "renewable_unresolved")
+    network.add("Carrier", "wind_existing")
     network.add("Carrier", "external_grid")
 
     network.add("Bus", "kerala_system")
@@ -71,14 +71,29 @@ def build_full_pypsa_skeleton(selection: dict[str, Any]):
             gen["private_thermal"]["capacity_mw"],
         ),
         (
+            "state_wind",
+            "wind_existing",
+            gen["state_wind"]["capacity_mw"],
+        ),
+        (
+            "private_wind",
+            "wind_existing",
+            gen["private_wind"]["capacity_mw"],
+        ),
+        (
+            "state_solar_ge_1mw",
+            "solar_existing",
+            gen["state_solar_ge_1mw"]["capacity_mw"],
+        ),
+        (
+            "private_solar_ge_1mw",
+            "solar_existing",
+            gen["private_solar_ge_1mw"]["capacity_mw"],
+        ),
+        (
             "kayamkulam_floating_solar",
             "solar_existing",
             gen["central_floating_solar"]["capacity_mw"],
-        ),
-        (
-            "renewable_ge_1mw_residual",
-            "renewable_unresolved",
-            gen["renewable_ge_1mw_residual"]["capacity_mw"],
         ),
     ]
     for name, carrier, p_nom in components:
