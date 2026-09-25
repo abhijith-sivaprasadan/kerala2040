@@ -1,0 +1,39 @@
+version: 1
+classification: full_pypsa_hydro_reported_peak_envelope_v0_4_not_validated_dispatch
+prepared_date: "2026-09-25"
+base_bracket: configs/full_pypsa_hydro_flexibility_v0_3.yaml
+station_source: data/external/sldc_fy2024_25/hydro_station_daily.csv
+daily_source_energy: data/external/sldc_fy2024_25/daily_balance.csv
+qa: data/external/sldc_fy2024_25/qa_report.json
+purpose: >-
+  Replace the deliberately optimistic installed-hydro MW ceiling with a dated,
+  source-derived intraday redispatch envelope based on the sum of each station's
+  reported maximum output MW for that day.
+
+derivation:
+  observed_days:
+    rule: sum nonblank reported_maximum_output_mw across hydro_station_daily rows
+    do_not_fill_blank_station_maximum_rows: true
+    reason: source README states blanks are unknown, not zero
+  missing_report_days:
+    expected_count: 11
+    rule: linear time interpolation between neighbouring observed daily aggregate envelopes
+    classification: model_only_interpolation_not_observation
+  hydro_energy:
+    rule: conserve the same daily hydro MWh used by the v0.2/v0.3 chronology
+  hourly_power:
+    rule: 0 <= aggregate hydro MW <= that day's derived reported-station envelope
+
+interpretation:
+  - Individual station maxima may occur at different hours, so their daily sum is not a measured simultaneous Kerala hydro maximum.
+  - Blank station maximum fields are not imputed on observed days, so the envelope may omit capability from rows with unknown maxima.
+  - The station table does not cover the entire March-2026 hydro fleet, while daily_balance hydro is broader than the station-table generation sum.
+  - The envelope is therefore an empirical research constraint, not a physical availability or reservoir model.
+  - For total unserved energy it should lie between the flat replay and the installed-capacity redispatch upper bound because the flat daily average remains feasible under the derived daily ceiling.
+
+release:
+  research_reported_peak_envelope_ready: true
+  measured_simultaneous_hydro_capability: false
+  validated_hydro_dispatch_ready: false
+  reservoir_model_ready: false
+  capacity_expansion_ready: false
