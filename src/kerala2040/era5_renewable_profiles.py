@@ -119,7 +119,12 @@ def read_location_quarter(artifact_dir: Path) -> pd.DataFrame:
             overlap = (set(by_time.columns) & set(component.columns)) - {"timestamp_utc"}
             if overlap:
                 raise ValueError(f"duplicate ERA5 variables across source components: {overlap}")
-            by_time = by_time.merge(component, on="timestamp_utc", how="outer", validate="one_to_one")
+            by_time = by_time.merge(
+                component,
+                on="timestamp_utc",
+                how="outer",
+                validate="one_to_one",
+            )
 
     if by_time is None or variables_seen != _REQUIRED_VARIABLES:
         missing = sorted(_REQUIRED_VARIABLES - variables_seen)
@@ -160,7 +165,9 @@ def recover_full_year_weather(root: Path) -> tuple[pd.DataFrame, dict[str, Any]]
             freq="h",
         )
         if not frame["timestamp_utc"].reset_index(drop=True).equals(pd.Series(expected)):
-            raise ValueError(f"FY2024-25 timestamps do not match expected UTC chronology for {point}")
+            raise ValueError(
+                f"FY2024-25 timestamps do not match expected UTC chronology for {point}"
+            )
         coordinates = frame[["era5_latitude", "era5_longitude"]].drop_duplicates()
         if len(coordinates) != 1:
             raise ValueError(f"selected ERA5 grid cell changed across quarters for {point}")
