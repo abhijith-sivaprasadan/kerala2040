@@ -282,3 +282,50 @@ The result reports imports, unserved energy, affected hours, maximum unserved MW
 the exact demand-morph parameters for every demand × transfer case. The next gate is
 cost/finance harmonisation and candidate renewable/storage physics before any
 least-cost capacity-expansion solve is admitted.
+
+
+## Implementation checkpoint 7 · research cost and finance selection v0.5
+
+The programme now has a price-year-explicit **2030 research economics benchmark**
+in `configs/research_cost_finance_v0_5.yaml`. This closes the ambiguity between
+technology investment cost, financing and annual power-purchase accounting without
+yet enabling an optimisation.
+
+The selected investment benchmark uses CEA's 2029-30 national planning assumptions,
+whose capex is explicitly stated on a **real 2021-22 cost basis with no inflation
+applied**. For the first 2030 research sensitivity it records:
+
+- solar PV: **₹41,000/kW**, 1% fixed O&M, 25-year life;
+- onshore wind: **₹60,000/kW**, 1% fixed O&M, 25-year life;
+- 4-hour BESS: **₹47,200/kW of power**, 1% fixed O&M, 14-year life and 88% round-trip efficiency.
+
+The 4-hour BESS number is explicitly the lower endpoint of CEA's published
+2022-30 planning cost range. It is a research selection, not a Kerala tender capex,
+and no unsupported power/energy-capex split is created.
+
+For financing, v0.5 uses CERC's FY2026-27 regulatory calculation as a transparent
+current anchor: 70:30 normative debt/equity, 10.71% debt interest and a **9.08%
+post-tax WACC discount factor** for non-small-hydro RE. The resulting annualised
+investment-plus-fixed-O&M benchmarks are approximately:
+
+- solar PV: **₹4,611/kW-year**;
+- onshore wind: **₹6,748/kW-year**;
+- 4-hour BESS: **₹6,561/kW-year**.
+
+Kerala's FY2024-25 approved average power-procurement cost of **₹4.70/kWh**
+(excluding transmission charges) is recorded separately only as an accounting
+cross-check. It is **not** used as an hourly or blockwise marginal import price.
+
+The gate remains fail-closed:
+
+- no 2035/2040 cost decline is extrapolated beyond the admitted source horizon;
+- generic pumped-storage expansion remains blocked pending Kerala site cost and
+  hydraulic evidence;
+- thermal variable cost remains blocked;
+- import-price chronology remains blocked;
+- S5 public-capital accounting remains blocked.
+
+Therefore v0.5 makes the cost basis auditable, but **does not yet enable least-cost
+capacity expansion**. The next checkpoint must admit candidate renewable/storage
+physics and bounded capacity ceilings, or explicitly define a sensitivity envelope
+for a first 2030 research-only expansion run.
