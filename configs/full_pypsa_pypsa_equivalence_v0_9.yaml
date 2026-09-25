@@ -1,0 +1,66 @@
+version: 1
+classification: full_pypsa_v0_9_direct_pypsa_equivalence_to_v0_8_proxy_expansion
+prepared_date: "2026-09-25"
+purpose: >-
+  Rebuild the v0.8 adequacy-first 2030 proxy expansion formulation through a
+  direct PyPSA Network/Linopy model and compare its full-year results against
+  the SciPy/HiGHS reference implementation.
+
+inherits:
+  reference_formulation: configs/full_pypsa_proxy_expansion_v0_8.yaml
+  future_demand: configs/full_pypsa_future_adequacy_v0_4.yaml
+  cost_finance: configs/full_pypsa_cost_finance_v0_5.yaml
+  renewable_profiles: configs/full_pypsa_era5_renewable_profiles_v0_6.yaml
+  renewable_capacity: configs/full_pypsa_renewable_capacity_v0_7.yaml
+
+solver:
+  engine: PyPSA_Network_optimize
+  modelling_backend: Linopy
+  LP_solver: HiGHS
+  method: >-
+    Create one PyPSA/Linopy model per case, solve stage 1 with an overwritten
+    unserved-energy objective, add the minimum-shortage constraint, solve stage 2
+    with an overwritten annualized investment objective, then fix candidate
+    capacities and solve stage 3 with an import-energy objective.
+
+comparison:
+  reference_engine: scipy.optimize.linprog_HiGHS_v0_8
+  case_count_full_year: 36
+  require_all_cases: true
+  tolerances:
+    stage1_unserved_mwh_abs: 0.05
+    stage2_unserved_mwh_abs: 0.05
+    stage3_unserved_mwh_abs: 0.05
+    candidate_capacity_mw_abs: 0.05
+    annualized_investment_million_inr_per_year_abs: 0.5
+    stage3_imports_mwh_abs: 2.0
+  required_metrics:
+    - stage1_minimum_unserved_mwh
+    - stage2_unserved_mwh
+    - stage3_reporting_unserved_mwh
+    - built.solar_combined_mw
+    - built.wind_onshore_mw
+    - built.bess_4h_power_mw
+    - annualized_candidate_investment_million_inr_per_year
+    - stage3_minimum_imports_mwh
+
+formulation_alignment:
+  load: residual_demand_after_frozen_v0_8_hydro_nonhydro_replay
+  solar: extendable_PyPSA_Generator_with_v0_8_profile_and_cap
+  wind: extendable_PyPSA_Generator_with_v0_8_profile_and_cap
+  imports: fixed_capacity_PyPSA_Generator_zero_price_for_equivalence
+  unserved: fixed_capacity_PyPSA_Generator_custom_lexicographic_objective
+  bess: extendable_PyPSA_StorageUnit_4h_cyclic_SOC
+  renewable_curtailment: endogenous_dispatch_below_p_max_pu
+  explicit_spill_variable: false
+  spill_equivalence_note: >-
+    v0.8's non-negative spill slack is redundant because solar/wind dispatch are
+    upper-bounded rather than must-take. PyPSA represents the same feasible
+    curtailment through dispatch below availability.
+
+release:
+  direct_pypsa_equivalence_checkpoint: true
+  v0_8_reference_replaced: false
+  full_economic_capacity_expansion_ready: false
+  validated_capacity_plan: false
+  scenario_recommendation: false
