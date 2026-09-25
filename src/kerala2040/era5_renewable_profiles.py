@@ -97,9 +97,10 @@ def read_location_quarter(artifact_dir: Path) -> pd.DataFrame:
         raise ValueError(f"unknown representative point {point!r}")
     target_lat, target_lon = POINTS[point]
 
-    by_time: pd.DataFrame | None = None
+    series_by_variable: dict[str, list[pd.Series]] = {
+        variable: [] for variable in _REQUIRED_VARIABLES
+    }
     selected_grids: set[tuple[float, float]] = set()
-    variables_seen: set[str] = set()
 
     for entry in report["files"]:
         source = artifact_dir / "source_files" / Path(entry["path"]).name
@@ -109,33 +110,33 @@ def read_location_quarter(artifact_dir: Path) -> pd.DataFrame:
             target_lon=target_lon,
         )
         selected_grids.add((selected_lat, selected_lon))
-        component = pd.DataFrame({"timestamp_utc": times, **values})
-        if component["timestamp_utc"].duplicated().any():
-            raise ValueError("duplicate timestamps inside ERA5 component")
-        variables_seen.update(values)
-        if by_time is None:
-            by_time = component
-        else:
-            overlap = (set(by_time.columns) & set(component.columns)) - {"timestamp_utc"}
-            if overlap:
-                raise ValueError(f"duplicate ERA5 variables across source components: {overlap}")
-            by_time = by_time.merge(
-                component,
-                on="timestamp_utc",
-                how="outer",
-                validate="one_to_one",
+        for variable, array in values.items():
+            series_by_variable[variable].append(
+                pd.Series(array, index=times, name=variable)
             )
 
-    if by_time is None or variables_seen != _REQUIRED_VARIABLES:
-        missing = sorted(_REQUIRED_VARIABLES - variables_seen)
-        raise ValueError(f"incomplete ERA5 quarter variables: {missing}")
+    missing = [name for name, items in series_by_variable.items() if not items]
+    if missing:
+        raise ValueError(f"incomplete ERA5 quarter variables: {sorted(missing)}")
     if len(selected_grids) != 1:
-        raise ValueError("instant/accum components selected different ERA5 grid cells")
+        raise ValueError("ERA5 source components selected different grid cells")
+
+    assembled: dict[str, pd.Series] = {}
+    for variable, items in series_by_variable.items():
+        combined = pd.concat(items).sort_index()
+        if combined.index.has_duplicates:
+            raise ValueError(f"overlapping timestamps for ERA5 variable {variable}")
+        assembled[variable] = combined
+
+    by_time = pd.concat(assembled, axis=1, join="outer").sort_index()
     if by_time.isna().any().any():
-        raise ValueError("ERA5 location-quarter contains missing merged values")
+        raise ValueError("ERA5 location-quarter variables do not share complete chronology")
+    if by_time.index.has_duplicates:
+        raise ValueError("duplicate timestamps after ERA5 quarter assembly")
 
     selected_lat, selected_lon = next(iter(selected_grids))
-    by_time = by_time.sort_values("timestamp_utc").reset_index(drop=True)
+    by_time.index.name = "timestamp_utc"
+    by_time = by_time.reset_index()
     by_time["point"] = point
     by_time["target_latitude"] = target_lat
     by_time["target_longitude"] = target_lon
