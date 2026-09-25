@@ -79,6 +79,7 @@ requirements:
     status: partial_station_level_hydro_thermal_wind_reconciled
     evidence:
       - data/evidence/assets/kerala_existing_fleet_2026_03_31.json
+      - data/evidence/assets/kerala_re_crosswalk_2026_03_31.json
       - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
       - configs/generator_reconciliation_2024_25.yaml
     acquired:
@@ -92,10 +93,15 @@ requirements:
       private_hydro_88_06_mw_asset_decomposition_reconciled: true
       private_thermal_PCBl_17_mw_identity_reconciled: true
       FY2024_25_private_wind_69_50_mw_asset_decomposition_reconciled: true
+      March_2026_ge1_renewables_split_into_wind_and_solar_ownership_buckets: true
+      March_2026_state_solar_ge1_residual_22_715_mw: true
+      March_2026_private_solar_ge1_residual_214_10_mw: true
+      March_2026_central_solar_92_mw_asset_identified: true
     remaining:
-      - decompose 308.34 MW March-2026 >=1 MW nonhydro renewable residual by technology and plant
-      - reconcile the FY2024-25 wind asset list to the March-2026 CEA renewable boundary
-      - reconcile March-2026 solar plant fleet to the same-date >=1 MW boundary
+      - verify the FY2024-25 wind ownership split against a same-date March-2026 official unit register
+      - identify the 22.715 MW state solar >=1 MW population at plant/project level
+      - identify the 214.10 MW private solar >=1 MW population at plant/project level without double counting
+      - reconcile March-2026 solar plant identities to the CEA >=1 MW ownership boundary
       - verify operational status and dispatch parameters for the 17 MW PCBL captive plant
       - plant-level actual generation and outage/derating history
       - dispatch parameters for all admitted thermal and hydro assets
