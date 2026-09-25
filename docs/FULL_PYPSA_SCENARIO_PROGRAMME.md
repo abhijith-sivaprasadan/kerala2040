@@ -724,7 +724,14 @@ availability sensitivities:
 
 - **100% available power** — aggregate installed-hydro ceiling;
 - **85% available power** — synthetic 15% aggregate derate;
-- **70% available power** — synthetic 30% aggregate derate.
+- **71% available power** — near-feasibility-floor aggregate derate.
+
+The lowest case is data-bounded. FY2024-25's maximum hydro day is **5 August 2024**
+at **38.8073 MU**. Preserving that daily energy exactly requires at least
+**1,616.97 MW** continuously available on average over the day, or **70.783%** of
+the observed 2,284.42 MW installed hydel capacity. A 70% case is therefore
+mathematically incompatible with exact preservation of the historical daily energy
+and is rejected rather than silently relaxing the energy constraint.
 
 These are not historical forced-outage rates. They test how much the expansion
 result depends on the amount of hydro power available to reshape the same daily
