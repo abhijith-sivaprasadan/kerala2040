@@ -20,6 +20,8 @@ sources:
   cost_finance_v0_5: configs/full_pypsa_cost_finance_v0_5.yaml
   era5_renewable_profiles_v0_6: configs/full_pypsa_era5_renewable_profiles_v0_6.yaml
   era5_renewable_profile_evidence_v0_6: data/evidence/weather/era5_renewable_profiles_v0_6_2026_09_25.json
+  renewable_capacity_envelope_v0_7: configs/full_pypsa_renewable_capacity_v0_7.yaml
+  wri_kerala_re_2025: data/evidence/solar/wri_kerala_re_technology_assessment_2025_09_25.json
 
 requirements:
   base_system:
@@ -155,24 +157,52 @@ requirements:
       buildable capacity or validated plant dispatch.
 
   solar_capacity_ceiling:
-    status: blocked
+    status: published_research_envelope_ready_statutory_siting_blocked
     evidence:
-      - data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json
+      - configs/full_pypsa_renewable_capacity_v0_7.yaml
+      - data/external/cstep_2024/renewable_potential_benchmarks.csv
+      - data/evidence/solar/nwdp_sac_kerala_waterbodies_2026_09_22.json
+      - data/evidence/solar/wri_kerala_re_technology_assessment_2025_09_25.json
+    acquired:
+      ground_PV_CSTEP_2423MW_screened_scenario: true
+      utility_PV_WRI_DoECC_6110MW_broader_scenario: true
+      floating_PV_CSTEP_920MW_scenario: true
+      floating_PV_NISE_2220_5730MW_scenarios: true
+      March2026_same_date_conservative_ground_existing_bridge: true
+      floating_92MW_existing_asset_exact: true
+      rooftop_Aug2026_installed_floor_2259_5MW: true
+      rooftop_technical_ceiling: false
     remaining:
       - legal forest wetland paddy ESZ and waterbody exclusions
-      - technology-specific rooftop ground floating land/water availability
+      - technology-specific rooftop ground floating land/water eligibility
       - grid connection and hosting constraints
-      - source-rights and geometry admission
+      - district/site spatial allocation and source-rights admission
+      - numeric rooftop technical ceiling
+    rule: >-
+      v0.7 values are published scenario envelopes for research sensitivity, not
+      statutory buildable MW. Rooftop remains exogenous because no current
+      source-bounded technical ceiling is admitted.
 
   wind_capacity_ceiling:
-    status: blocked
+    status: published_research_envelope_ready_statutory_siting_blocked
     evidence:
+      - configs/full_pypsa_renewable_capacity_v0_7.yaml
+      - data/evidence/solar/nwdp_sac_kerala_waterbodies_2026_09_22.json
+      - data/evidence/solar/wri_kerala_re_technology_assessment_2025_09_25.json
       - data/evidence/gis/niwe_nwic_district_normalized_wind_terrain_2026_09_23.json
+    acquired:
+      NIWE_2019_120m_2311MW_scenario: true
+      WRI_NIWE_2621MW_benchmark: true
+      CSTEP_2024_2993MW_scenario: true
+      canonical_March2026_wind_71_525MW_headroom_bridge: true
     remaining:
-      - turbine model and power curve
+      - turbine-specific power curve and wake layout
       - legal/ecological siting exclusions
       - setbacks roads access and grid hosting
-      - eligible area and spacing/layout methodology
+      - eligible-area spacing/layout and district/site allocation
+    rule: >-
+      v0.7 wind bounds are statewide published scenario sensitivities. They do not
+      convert NIWE atlas cells into project-ready MW.
 
   battery_cost_performance:
     status: project_specific_benchmarks_partial
@@ -358,13 +388,15 @@ release:
   research_hydro_flexibility_bracket_possible_now: true
   future_demand_counterfactual_screen_possible_now: true
   research_renewable_profile_screen_possible_now: true
+  research_proxy_capacity_expansion_candidate_limits_possible_now: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
     v0.4 adds source-anchor future-demand counterfactuals, v0.5 harmonises a bounded
-    2030 research cost/finance package, and v0.6 builds reproducible ERA5-derived
-    five-point solar/wind screening profiles. Economic dispatch, probabilistic
-    reliability and capacity expansion remain blocked by buildable renewable capacity
-    ceilings, capacity-weighted spatial aggregation, outages, hydro/PSP physics,
-    import-price inputs and other unresolved operational constraints.
+    2030 research cost/finance package, v0.6 builds reproducible ERA5-derived
+    five-point solar/wind screening profiles, and v0.7 adds source-bounded statewide
+    renewable-capacity envelopes for proxy expansion sensitivity. Full economic
+    capacity expansion remains blocked by statutory/site-level siting, rooftop
+    technical potential, capacity-weighted spatial allocation, outages, hydro/PSP
+    physics, import-price inputs and other unresolved operational constraints.
   validated_run_possible_now: false

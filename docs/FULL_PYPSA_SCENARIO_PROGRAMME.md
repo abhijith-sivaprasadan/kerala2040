@@ -378,3 +378,71 @@ The durable evidence summary is
 Capacity expansion therefore remains disabled. The next gate is now narrower:
 derive defensible **buildable renewable capacity bounds and spatial weights**, while
 separately pursuing measured hourly generation for profile validation.
+
+
+## Implementation checkpoint 9 · source-bounded renewable capacity envelope v0.7
+
+v0.7 separates **published research-potential scenarios** from **statutory/site-level
+buildable capacity**. The latter remains fail-closed. The former is now explicit
+enough to support a tightly labelled statewide proxy expansion sensitivity.
+
+For ground/utility PV, the envelope retains CSTEP 2024's **2,423 MW** usable
+ground-mounted scenario as the low/reference case and WRI India's 2025 synthesis of
+the DoECC estimate, **6,110 MW**, as a broader high case. The same-date March-2026
+MNRE accounting view preserved in the solar crosswalk reports **340.26 MW**
+ground-mounted solar. Subtracting that whole category yields conservative new-build
+headroom of **2,082.74 MW** in the CSTEP case and **5,769.74 MW** in the broader
+case. This is deliberately conservative because MNRE's category may contain
+floating/mixed project classifications.
+
+For floating PV, three alternative published scenarios are kept separate:
+
+- **920 MW** CSTEP usable-potential case (10% of 9.2 GW gross);
+- **2,220 MW** NISE 2026 20%-surface case;
+- **5,730 MW** NISE broader feasible-area case.
+
+The verified 92 MW NTPC Kayamkulam floating plant is subtracted only for additional
+headroom, giving **828 / 2,128 / 5,638 MW**. The NISE alternatives are not added
+together and are not treated as reservoir/operator permits.
+
+For onshore wind, v0.7 packages:
+
+- **2,311 MW** older NIWE 2019 120 m scenario;
+- **2,621 MW** WRI 2025 / NIWE benchmark;
+- **2,993 MW** CSTEP 2024 GIS scenario.
+
+Against the canonical March-2026 **71.525 MW** wind decomposition, the corresponding
+new-build headroom is **2,239.475 / 2,549.475 / 2,921.475 MW**.
+
+Rooftop PV is intentionally different. August-2026 MNRE evidence already shows
+**2,259.5 MW installed**, while the CEA/KSERC RA evidence contains **3,698 MW** of
+planned rooftop-DRE additions over FY2025-26 to FY2035-36. These are retained as
+deployment/planning evidence, but no numeric technical ceiling is invented: WRI
+2025 explicitly notes that more studies are required to determine Kerala's rooftop
+potential. Rooftop therefore stays **exogenous**, not an unconstrained PyPSA
+investment variable.
+
+The packaged v0.7 low/reference/high cases are statewide total-potential scenarios:
+
+| Case | Ground/utility PV MW | Floating PV MW | Onshore wind MW | Rooftop |
+|---|---:|---:|---:|---|
+| Low | 2,423 | 920 | 2,311 | exogenous |
+| Reference | 2,423 | 2,220 | 2,621 | exogenous |
+| High | 6,110 | 5,730 | 2,993 | exogenous |
+
+These values are suitable only for a **proxy capacity-expansion sensitivity**.
+They do not provide legal forest/wetland/paddy/ESZ clearance, reservoir operating
+permission, road/setback/access checks, candidate-site grid hosting or district
+capacity allocation. Full least-cost capacity expansion and validated S0-S5
+investment results therefore remain blocked.
+
+Validate the checkpoint with:
+
+```bash
+python scripts/validate_full_pypsa_renewable_capacity_v0_7.py
+pytest -q tests/test_full_pypsa_renewable_capacity_v0_7.py
+```
+
+The next implementation step can now be a first **2030 proxy expansion
+counterfactual** combining v0.4 demand, v0.5 costs, v0.6 hourly profiles and v0.7
+candidate limits, while retaining explicit slack/import/hydro caveats.
