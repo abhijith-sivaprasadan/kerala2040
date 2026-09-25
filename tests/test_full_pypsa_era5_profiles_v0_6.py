@@ -1,9 +1,10 @@
 """QA for Full-PyPSA ERA5 renewable profile pipeline v0.6."""
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-import pytest
 import yaml
 
 from kerala2040.era5_renewable_profiles import (
