@@ -1,0 +1,133 @@
+version: 1
+classification: full_pypsa_renewable_capacity_envelope_v0_7_source_bounded_research_sensitivity_not_statutory_siting
+prepared_date: "2026-09-25"
+purpose: >-
+  Assemble published Kerala-specific renewable-capacity scenarios into a bounded
+  research sensitivity envelope. These are not legal/ecological/grid-cleared MW and
+  do not replace the fail-closed GIS siting gate.
+
+sources:
+  cstep_2024: data/external/cstep_2024/renewable_potential_benchmarks.csv
+  nise_and_niwe_context: data/evidence/solar/nwdp_sac_kerala_waterbodies_2026_09_22.json
+  current_capacity: data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+  wri_2025: data/evidence/solar/wri_kerala_re_technology_assessment_2025_09_25.json
+  fail_closed_gate: data/evidence/solar/solar_wind_feasible_capacity_gates_2026_09_22.json
+
+technology_envelopes:
+  rooftop_pv:
+    endogenous_expansion_admitted: false
+    demonstrated_installed_floor_mw:
+      value: 2259.5
+      as_of: "2026-08-31"
+      source: MNRE_location_based_snapshot
+    technical_ceiling_mw: null
+    planning_path:
+      source: CEA_KSERC_resource_adequacy
+      planned_additions_2025_26_to_2035_36_mw: 3698
+      interpretation: exogenous_planning_trajectory_not_additive_to_aug2026_snapshot_without_overlap_reconciliation
+    reason: >-
+      No current source-bounded Kerala rooftop technical ceiling is available.
+      WRI 2025 explicitly states that more studies are required.
+
+  ground_utility_pv:
+    endogenous_expansion_admitted: research_sensitivity_only
+    published_total_capacity_scenarios_mw:
+      low:
+        value: 2423
+        source: CSTEP_2024_usable_ground_mounted_potential
+        method_note: 3_percent_wasteland_usability_rule
+      reference:
+        value: 2423
+        source: CSTEP_2024_usable_ground_mounted_potential
+        method_note: retained_as_reference_because_it_has_explicit_screening_method
+      high:
+        value: 6110
+        source: WRI_2025_citing_DoECC_2022_utility_scale_solar_potential
+        method_note: broader_utility_scale_technical_potential
+    existing_capacity_subtraction_ready: false
+    reason: >-
+      Current MNRE ground-mounted category may include floating or mixed project
+      classifications, so exact new-build headroom is not derived here.
+
+  floating_pv:
+    endogenous_expansion_admitted: research_sensitivity_only
+    known_existing_floor_mw: 92
+    known_existing_asset: NTPC_Kayamkulam_floating_solar
+    published_total_capacity_scenarios_mw:
+      low:
+        value: 920
+        source: CSTEP_2024_usable_floating_potential
+        method_note: 10_percent_of_9_2GW_gross
+      reference:
+        value: 2220
+        source: NISE_2026_20percent_surface_scenario
+        method_note: same_waterbody_inventory_alternative_to_broader_case
+      high:
+        value: 5730
+        source: NISE_2026_broader_feasible_area_scenario
+        method_note: same_waterbody_inventory_alternative_to_20percent_case
+    derived_additional_headroom_mw:
+      low: 828
+      reference: 2128
+      high: 5638
+    headroom_rule: scenario_total_minus_verified_92MW_existing_asset
+    caveat: NISE_and_CSTEP_scenarios_are_not_site_permits
+
+  onshore_wind:
+    endogenous_expansion_admitted: research_sensitivity_only
+    current_installed_mw:
+      value: 71.52
+      as_of: "2026-08-31"
+      source: MNRE_location_based_snapshot
+    published_total_capacity_scenarios_mw:
+      low:
+        value: 2311
+        source: NIWE_2019_120m_Kerala_scenario
+        method_note: older_120m_published_scenario
+      reference:
+        value: 2621
+        source: WRI_2025_citing_NIWE_2023
+        method_note: later_Kerala_potential_benchmark
+      high:
+        value: 2993
+        source: CSTEP_2024_GIS_assessment
+        method_note: 272_sq_km_suitable_area_reported_by_CSTEP
+    derived_additional_headroom_mw:
+      low: 2239.48
+      reference: 2549.48
+      high: 2921.48
+    headroom_rule: scenario_total_minus_MNRE_Aug2026_installed_wind
+    caveat: no_statutory_forest_ESZ_setback_access_or_grid_screen
+
+packaged_research_cases:
+  low:
+    ground_utility_pv_total_mw: 2423
+    floating_pv_total_mw: 920
+    onshore_wind_total_mw: 2311
+    rooftop_pv: exogenous_only
+  reference:
+    ground_utility_pv_total_mw: 2423
+    floating_pv_total_mw: 2220
+    onshore_wind_total_mw: 2621
+    rooftop_pv: exogenous_only
+  high:
+    ground_utility_pv_total_mw: 6110
+    floating_pv_total_mw: 5730
+    onshore_wind_total_mw: 2993
+    rooftop_pv: exogenous_only
+
+spatial_and_grid_status:
+  statewide_single_bus_sensitivity_possible: true
+  district_capacity_weights_admitted: false
+  legal_siting_polygons_admitted: false
+  grid_hosting_by_candidate_site_admitted: false
+  note: >-
+    v0.7 bounds total statewide research sensitivities only. It does not claim
+    district allocation, project locations or interconnection feasibility.
+
+release:
+  published_capacity_envelope_ready: true
+  rooftop_endogenous_expansion_ready: false
+  statewide_2030_capacity_expansion_sensitivity_ready: true
+  validated_capacity_expansion_ready: false
+  statutory_buildable_capacity_ready: false
