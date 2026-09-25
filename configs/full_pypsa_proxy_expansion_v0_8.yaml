@@ -1,0 +1,86 @@
+version: 1
+classification: full_pypsa_2030_proxy_capacity_expansion_v0_8_adequacy_first_not_system_cost_plan
+prepared_date: "2026-09-25"
+purpose: >-
+  Run a first 2030 statewide single-bus capacity-expansion counterfactual by combining
+  source-bounded demand, costs, hourly renewable screening profiles and candidate
+  capacity envelopes. Because landed import prices remain unresolved, the solve is
+  lexicographic: minimize unserved energy first, then minimize annualized candidate
+  investment cost while preserving the minimum shortage.
+
+inherits:
+  future_demand: configs/full_pypsa_future_adequacy_v0_4.yaml
+  cost_finance: configs/full_pypsa_cost_finance_v0_5.yaml
+  renewable_profiles: configs/full_pypsa_era5_renewable_profiles_v0_6.yaml
+  renewable_capacity: configs/full_pypsa_renewable_capacity_v0_7.yaml
+  resource_adequacy: data/evidence/demand/kerala_resource_adequacy_2025_2035_36_2026_09_25.json
+
+profile_input:
+  required_file: results/models/full_pypsa/era5_renewables_v0_6/statewide_equal_weight_profile.parquet
+  solar_column: solar_p_max_pu
+  wind_column: wind_p_max_pu_150m_niwe_anchored
+  aggregation: equal_weight_five_point_screening
+  measured_generation_profile: false
+
+demand_cases:
+  - lower_FY2030
+  - reference_FY2030_31
+
+transfer_cases:
+  - atc_snapshot_reference
+  - atc_80pct_stress
+  - atc_60pct_stress
+
+capacity_envelope_cases:
+  - low
+  - reference
+  - high
+
+bess_cost_cases:
+  - low
+  - high
+
+candidate_treatment:
+  solar:
+    optimization_variable: combined_ground_plus_floating_new_build_mw
+    reason: >-
+      v0.5 assigns the same generic solar cost and v0.6 supplies one solar proxy profile,
+      so ground versus floating allocation is not identifiable in this checkpoint.
+    subtype_allocation_report: feasible_range_within_separate_v0_7_headroom_caps
+  wind:
+    optimization_variable: new_onshore_wind_mw
+  bess_4h:
+    optimization_variable: new_bess_power_mw
+    max_power_mw: 250
+    duration_hours: 4
+    cap_source: CEA_KSERC_RA_planned_4h_BESS_additions_through_2030
+    existing_operational_bess_assumed_mw: 0
+    existing_operational_status: unresolved_not_added_to_base
+
+objective:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: minimize_annualized_candidate_investment_cost_at_stage_1_minimum_shortage
+  unserved_tolerance_mwh: 0.001
+  import_marginal_cost_inr_per_mwh: null
+  import_treatment: zero_cost_bounded_balancing_resource_because_landed_price_unresolved
+  existing_generation_marginal_cost: not_modelled
+  objective_currency_stage_2: million_real_2021_22_INR_per_year
+  interpretation: adequacy_first_minimum_new_build_not_total_system_cost
+
+existing_system:
+  load_shape: FY2024_25_proxy_affine_morphed_to_2030_energy_and_peak
+  hydro: FY2024_25_daily_average_source_energy_replay_frozen
+  nonhydro: FY2024_25_daily_average_source_energy_replay_frozen
+  imports: bounded_by_selected_ATC_sensitivity
+  rooftop: embedded_in_net_demand_and_not_endogenous
+  additional_hydro_or_thermal: none
+
+release:
+  research_proxy_capacity_expansion_counterfactual: true
+  full_economic_dispatch: false
+  total_system_cost_optimization: false
+  import_economics_validated: false
+  statutory_siting_validated: false
+  candidate_spatial_allocation_validated: false
+  scenario_recommendation: false
+  validated_capacity_plan: false
