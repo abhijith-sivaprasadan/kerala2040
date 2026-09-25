@@ -1,5 +1,11 @@
 # Kerala 2040: next research steps
 
+## Step 9 PyPSA equivalence gate closed · 25 September 2026
+
+The full [Step 9 independent PyPSA reproduction](../research/step9_pypsa/README.md) has now passed all **3,186** daily LP comparisons: 354 admitted SLDC days × three synthetic quarter-hour demand shapes × three balancing cases. Every solve was optimal and the maximum absolute daily unserved/surplus difference against the Step 8 SciPy reference was **1.2732925824820995e-10 MWh**, far below the predeclared 0.001 MWh tolerance. The compact result is frozen in [verification_summary.json](../research/step9_pypsa/verification_summary.json).
+
+**Next modelling task:** build the independent OSeMOSYS capacity-expansion benchmark and compare its accounting/technology representation with the Kerala2040 formulation. Do not interpret Step 9 as empirical validation: measured interval demand/interchange, physical hydro/grid limits, technology costs and spatial/environmental constraints remain separate release gates.
+
 ## WP6 BESS/pumped-storage: bounded electrical service screen · 24 September 2026
 
 The [BESS/PSP executable study](WP6_BESS_PUMPED_STORAGE_SCREEN_2026_09_24.md) runs two zero-initial/zero-terminal synthetic stores against a fictional site and fixed five-hour evening duty. Grid charging, stored-state losses, auxiliary power, round-trip ratio, separate whole-day/evening peaks and a hypothetical 300 m hydraulic m³ conversion are source-labelled. Nine capacity×efficiency combinations per store preserve infeasible cases as null. Neither actual Kerala pumping MW nor net import reduction is inferred. CEA's 2026 report index and dated 2025 Kerala project text are **discovery only** (original page-image check failed), not current approval.
