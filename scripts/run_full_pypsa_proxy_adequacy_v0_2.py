@@ -29,7 +29,9 @@ def main() -> int:
     )
     args = parser.parse_args()
     if not args.acknowledge_proxy:
-        parser.error("Pass --acknowledge-proxy; this chronology is NOT measured hourly telemetry")
+        parser.error(
+            "Pass --acknowledge-proxy; this chronology is NOT measured hourly telemetry"
+        )
 
     result = run_proxy_adequacy_suite(args.root, hours=args.hours)
     output = args.root / args.output
