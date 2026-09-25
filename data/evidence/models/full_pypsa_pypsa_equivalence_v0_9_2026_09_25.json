@@ -1,0 +1,68 @@
+{
+  "classification": "FULL_PYPSA_V0_9_DIRECT_PYPSA_EQUIVALENCE_TO_V0_8_PROXY_EXPANSION",
+  "prepared_date": "2026-09-25",
+  "workflow": {
+    "run_id": 36189063549,
+    "head_sha": "e0e611f18054ed3518f933fe7438d4107fed920b",
+    "artifact_id": 10887822154,
+    "artifact_name": "full-pypsa-direct-equivalence-v0.9-NOT-VALIDATED-PLAN",
+    "artifact_digest_sha256": "dc909886d0d394211f5c1132b557b08d50701df3cb578f71b1e99c3d5795b1ce",
+    "artifact_expires_at": "2026-12-24T21:00:11Z"
+  },
+  "formulation": {
+    "reference": "v0.8 custom scipy.optimize.linprog sparse LP / HiGHS",
+    "verification": "direct PyPSA Network + Linopy / HiGHS",
+    "cases_compared": 36,
+    "hours_per_case": 8760,
+    "lexicographic_stages": [
+      "minimize unserved MWh",
+      "preserve minimum shortage and minimize annualized candidate investment",
+      "fix candidate capacities within numerical tolerance and minimize reporting imports"
+    ],
+    "technologies": [
+      "combined solar",
+      "onshore wind",
+      "4-hour BESS"
+    ],
+    "explicit_import_price": false,
+    "statutory_siting": false
+  },
+  "result": {
+    "all_cases_passed": true,
+    "maximum_absolute_differences": {
+      "stage1_minimum_unserved_mwh": 1.862645149230957e-9,
+      "stage2_unserved_mwh": 4.6566128730773926e-8,
+      "stage3_reporting_unserved_mwh": 0.0000010048970580101013,
+      "built_solar_combined_mw": 1.8571881810203195e-9,
+      "built_wind_onshore_mw": 2.5920599000528455e-11,
+      "built_bess_4h_power_mw": 1.0260237104375847e-11,
+      "annualized_candidate_investment_million_inr_per_year": 8.571078069508076e-9,
+      "stage3_minimum_imports_mwh": 0.000001866370439529419
+    },
+    "declared_tolerances": {
+      "stage1_unserved_mwh_abs": 0.05,
+      "stage2_unserved_mwh_abs": 0.05,
+      "stage3_unserved_mwh_abs": 0.05,
+      "candidate_capacity_mw_abs": 0.05,
+      "annualized_investment_million_inr_per_year_abs": 0.5,
+      "stage3_imports_mwh_abs": 2
+    },
+    "interpretation": "Direct PyPSA/Linopy reproduces the v0.8 SciPy/HiGHS expansion formulation to numerical solver precision across the complete 36-case full-year matrix."
+  },
+  "model_admission": {
+    "direct_pypsa_formulation_equivalence_verified": true,
+    "v0_8_results_numerically_reproduced": true,
+    "full_economic_capacity_expansion_ready": false,
+    "validated_capacity_plan": false,
+    "scenario_recommendation": false
+  },
+  "remaining_blockers": [
+    "landed import economics and forward transfer assumptions",
+    "validated existing-fleet variable costs and availability/outage treatment",
+    "reservoir/cascade hydro operation and firm/flexible hydro representation",
+    "statutory renewable siting and site-level grid hosting",
+    "capacity-weighted or measured renewable fleet profiles",
+    "probabilistic reliability",
+    "endogenous rooftop, additional hydro/thermal, PSP, demand response and transmission expansion"
+  ]
+}
