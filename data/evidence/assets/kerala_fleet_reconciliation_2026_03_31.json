@@ -46,7 +46,22 @@
         "heat rate",
         "availability",
         "commercial dispatch terms"
-      ]
+      ],
+      "units": [
+        {
+          "unit": "GT1",
+          "capacity_mw": 116.6
+        },
+        {
+          "unit": "GT2",
+          "capacity_mw": 116.6
+        },
+        {
+          "unit": "ST",
+          "capacity_mw": 126.38
+        }
+      ],
+      "unit_source_note": "NTPC tariff/petition source gives approved 359.58 MW = 2x116.6 MW gas turbines + 126.38 MW steam turbine."
     },
     {
       "id": "ksebl_brahmapuram_bdpp",
@@ -61,7 +76,25 @@
         "unit availability",
         "heat rate",
         "fuel cost"
-      ]
+      ],
+      "units": [
+        {
+          "unit": "1",
+          "capacity_mw": 21.32,
+          "cod": "1997-05-06"
+        },
+        {
+          "unit": "4",
+          "capacity_mw": 21.32,
+          "cod": "1997-12-17"
+        },
+        {
+          "unit": "5",
+          "capacity_mw": 21.32,
+          "cod": "1998-11-24"
+        }
+      ],
+      "unit_source_note": "KSEBL plant-characteristics record: units 2 and 3 decommissioned; surviving units 1,4,5 total 63.96 MW; primary fuel LSHS, secondary HSD."
     },
     {
       "id": "ksebl_kozhikode_kdpp",
@@ -76,7 +109,34 @@
         "unit availability",
         "heat rate",
         "fuel cost"
-      ]
+      ],
+      "units": [
+        {
+          "unit": "2",
+          "capacity_mw": 16
+        },
+        {
+          "unit": "3",
+          "capacity_mw": 16
+        },
+        {
+          "unit": "5",
+          "capacity_mw": 16
+        },
+        {
+          "unit": "6",
+          "capacity_mw": 16
+        },
+        {
+          "unit": "7",
+          "capacity_mw": 16
+        },
+        {
+          "unit": "8",
+          "capacity_mw": 16
+        }
+      ],
+      "unit_source_note": "KSEBL Power System Statistics lists units 2,3,5,6,7,8 at 16 MW each; KSEBL records units 1 and 4 as decommissioned."
     },
     {
       "id": "unresolved_private_thermal_cpp",
@@ -93,7 +153,28 @@
         "fuel",
         "availability",
         "cost"
-      ]
+      ],
+      "candidate_evidence": [
+        {
+          "candidate": "MPS Steel Castings, Kanjikode",
+          "reported_capacity_mw": 10,
+          "source_status": "KSERC-documented combined cogeneration/thermal plant",
+          "admitted_to_17mw_bucket": false
+        },
+        {
+          "candidate": "PCBL / Philips Carbon co-generation",
+          "reported_capacity_mw": 10,
+          "source_status": "historical KSEBL CPP listing",
+          "admitted_to_17mw_bucket": false
+        },
+        {
+          "candidate": "FACT captive power plant",
+          "reported_capacity_mw": 16,
+          "source_status": "FACT current process-page ancillary-facility description",
+          "admitted_to_17mw_bucket": false
+        }
+      ],
+      "candidate_note": "Candidate source capacities do not reconcile uniquely to KSEBL's 17 MW FY2024-25 Thermal:CPP aggregate. Keep the entire 17 MW as unresolved until a same-date CPP register identifies the counted plant population."
     }
   ],
   "hydro_station_seed": [
@@ -558,6 +639,28 @@
       "source_status": "CEA_and_Economic_Review_commissioned_FY2024_25",
       "status_at_2026_03_31": "commissioned_before_base_date",
       "dispatch_admitted": false
+    },
+    {
+      "id": "perumthenaruvi_shep",
+      "station": "Perumthenaruvi SHEP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 6,
+      "district": "Pathanamthitta",
+      "source_status": "KSEBL_Dam_Safety_and_Power_System_Statistics_confirm_2x3MW",
+      "status_at_2026_03_31": "commissioned_before_base_date_same_date_operation_not_independently_rechecked",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "poringalkuthu_micro",
+      "station": "Poringalkuthu Micro (Screw type Turbine)",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 0.011,
+      "district": "Thrissur",
+      "source_status": "KSEBL_Power_System_Statistics_confirms_0_011MW",
+      "status_at_2026_03_31": "commissioned_before_base_date_same_date_operation_not_independently_rechecked",
+      "dispatch_admitted": false
     }
   ],
   "hydro_reconciliation": {
@@ -569,15 +672,15 @@
     },
     "small_hydro": {
       "exact_mw": 276.52,
-      "station_seed_mw": 177.6,
-      "residual_unresolved_mw": 98.92,
-      "station_seed_count": 26
+      "station_seed_mw": 183.611,
+      "residual_unresolved_mw": 92.909,
+      "station_seed_count": 28
     },
     "total": {
       "exact_mw": 2284.67,
-      "station_seed_mw": 2180.95,
-      "residual_unresolved_mw": 103.72,
-      "station_seed_count": 42
+      "station_seed_mw": 2186.961,
+      "residual_unresolved_mw": 97.709,
+      "station_seed_count": 44
     }
   },
   "wind": {
@@ -665,14 +768,6 @@
     {
       "id": "kasaragod_power_thermal",
       "reason": "historical portal asset not in current physical thermal aggregate"
-    },
-    {
-      "id": "poringalkuthu_micro_screw_bad_unit",
-      "reason": "portal name says 1x11kW while numeric capacity field says 11 MW; excluded pending correction"
-    },
-    {
-      "id": "perumthenaruvi_capacity_null",
-      "reason": "portal row has no numeric capacity; retained outside arithmetic until independently sourced"
     }
   ],
   "reconciliation_checks": {
@@ -693,11 +788,23 @@
     "capacity_expansion_ready": false
   },
   "next_blockers": [
-    "Resolve 103.72 MW hydro station-level residual, especially missing small-hydro/IPP/CPP rows.",
+    "Resolve 97.709 MW hydro station-level residual, primarily missing small-hydro/IPP/CPP/current-status rows.",
     "Resolve 42.49 MW wind residual and same-date status of portal wind assets.",
     "Resolve 148.26 MW ground-solar residual and map named plants without double-counting portfolio assets.",
     "Identify the 17 MW private thermal CPP and establish March-2026 operating status.",
     "Resolve 2.50 MW bio-power station decomposition if it is to participate in grid dispatch.",
     "Obtain unit availability, outage/derating, efficiency/heat-rate and variable-cost parameters."
+  ],
+  "source_corrections": [
+    {
+      "issue": "KSEB project-portal Perumthenaruvi capacity null",
+      "resolution": "KSEBL Dam Safety / Power System Statistics establish 6 MW = 2x3 MW",
+      "effect": "added 6 MW to small-hydro station seed"
+    },
+    {
+      "issue": "KSEB project-portal Poringalkuthu micro numeric field 11 MW while name says 11 kW",
+      "resolution": "KSEBL Power System Statistics establish 0.011 MW",
+      "effect": "added 0.011 MW to small-hydro station seed; 11 MW value rejected"
+    }
   ]
 }
