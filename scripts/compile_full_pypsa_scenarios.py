@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Compile the full Kerala2040 S0-S5 structural matrix without solving PyPSA."""
 from __future__ import annotations
 
