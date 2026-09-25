@@ -13,6 +13,8 @@ sources:
   technology_costs: configs/techno_economics.yaml
   grid_transfer: configs/grid_transfer_contract_evidence_2024_25.yaml
   hydro_topology: configs/hydro_topology_evidence_2024_25.yaml
+  solar_identity_crosswalk: data/evidence/assets/kerala_solar_ge1_identity_crosswalk_2026_03_31.json
+  research_input_selection_v0_2: configs/research_input_selection_v0_2.yaml
 
 requirements:
   base_system:
@@ -34,7 +36,7 @@ requirements:
     rule: no later snapshot may silently mutate the March-2026 canonical base
 
   demand_chronology:
-    status: proxy_only_blocked_for_validated_run
+    status: proxy_admitted_for_research_screen_not_validated
     evidence:
       - public/hourly-load-proxy-summary.json
       - data/external/sldc_fy2024_25/daily_balance.csv
@@ -42,11 +44,12 @@ requirements:
       observed_daily_energy_354_days: true
       CEA_peak_and_duration_reference: true
       synthetic_8760_proxy: true
+      v0_2_proxy_adequacy_screen_admitted: true
     remaining:
       - authenticated hourly or 15-minute Kerala demand chronology
       - same-clock actual interchange and technology generation
       - daily reconciliation and boundary QA
-    rule: proxy chronology may support research sensitivity only and cannot satisfy validated-run chronology
+    rule: proxy chronology may support deterministic research sensitivity only and cannot satisfy validated-run chronology
 
   existing_storage_fleet:
     status: blocked_operational_COD_not_verified
@@ -63,15 +66,17 @@ requirements:
     rule: award, PPA, regulatory approval or planning assumption is not operational storage
 
   demand_trajectory:
-    status: external_benchmark_available_not_canonical
+    status: named_low_reference_high_families_selected
     evidence:
       - data/evidence/demand/kerala_resource_adequacy_2025_2035_36_2026_09_25.json
       - data/external/cstep_2024/demand_projection_fy2023_fy2040.csv
     acquired:
       official_CEA_KSERC_RA_2025_36: true
       CSTEP_2024: true
+      lower_CSTEP_reference_CEA_KSERC_higher_CEA_transmission_families_selected: true
+      higher_case_is_peak_only: true
     remaining:
-      - choose canonical Kerala2040 reference/lower/higher trajectory without silently averaging sources
+      - acquire or define a source-bounded energy trajectory for the higher transmission-load case
       - define whether PyPSA load is gross system requirement or net grid demand after behind-the-meter generation
       - acquire measured interval chronology for shape calibration
 
@@ -80,6 +85,7 @@ requirements:
     evidence:
       - data/evidence/assets/kerala_existing_fleet_2026_03_31.json
       - data/evidence/assets/kerala_re_crosswalk_2026_03_31.json
+      - data/evidence/assets/kerala_solar_ge1_identity_crosswalk_2026_03_31.json
       - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
       - configs/generator_reconciliation_2024_25.yaml
     acquired:
@@ -97,10 +103,14 @@ requirements:
       March_2026_state_solar_ge1_residual_22_715_mw: true
       March_2026_private_solar_ge1_residual_214_10_mw: true
       March_2026_central_solar_92_mw_asset_identified: true
+      state_solar_ge1_historical_named_seed_14_5_mw: true
+      state_solar_later_identity_candidates_near_reconcile_but_not_forced: true
+      private_solar_FY2024_25_IPP_204_mw_aggregate_bridge: true
+      alternate_MNRE_same_date_boundary_from_PR72_preserved_not_adopted: true
     remaining:
       - verify the FY2024-25 wind ownership split against a same-date March-2026 official unit register
-      - identify the 22.715 MW state solar >=1 MW population at plant/project level
-      - identify the 214.10 MW private solar >=1 MW population at plant/project level without double counting
+      - close the remaining state solar identity/AC-MWp/overlap gap without patching 0.035 MW
+      - map the private 214.10 MW CEA >=1 MW bucket to plant/project rows without mixing prosumer boundaries
       - reconcile March-2026 solar plant identities to the CEA >=1 MW ownership boundary
       - verify operational status and dispatch parameters for the 17 MW PCBL captive plant
       - plant-level actual generation and outage/derating history
@@ -185,13 +195,14 @@ requirements:
       - head/efficiency curves and cascade routing
 
   interstate_transfer_limit:
-    status: partial_snapshots_not_chronology
+    status: snapshot_selected_for_proxy_sensitivity_not_chronology
     evidence:
       - configs/grid_transfer_contract_evidence_2024_25.yaml
       - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
     acquired:
       jan2025_TTC_4350_RM_90_derived_ATC_4260: true
       mar2025_SRLDC_TTC_4575_RM_120_derived_ATC_4455: true
+      v0_2_ATC_reference_4455_and_80_60pct_stress_haircuts_selected: true
     remaining:
       - effective timestamped ATC/TTC revisions for import and export
       - N_minus_1/topology/outage constraints
@@ -209,11 +220,19 @@ requirements:
       - forward fuel/market-price scenario
 
   reliability_criterion:
-    status: blocked_definition_required
+    status: research_benchmark_selected_probabilistic_evaluation_blocked
+    evidence:
+      - configs/research_input_selection_v0_2.yaml
+    acquired:
+      KSERC_review_metrics_LOLP_and_NENS: true
+      CEA_state_RA_research_benchmark_LOLP_0_2pct_NENS_0_05pct: true
+      benchmark_explicitly_not_Kerala_statutory_threshold: true
+      deterministic_proxy_unserved_energy_metrics_defined: true
     remaining:
-      - explicit planning reserve / LOLE / EENS / unserved-energy criterion
-      - outage assumptions and contingency treatment
-      - decide consistency with CEA RA benchmark while retaining independent Kerala2040 formulation
+      - forced-outage distributions by technology/unit
+      - stochastic demand and renewable sampling
+      - contingency treatment and Monte-Carlo convergence
+    rule: deterministic proxy unserved energy is not a LOLP estimate
 
   ev_charging:
     status: synthetic_only
@@ -271,15 +290,18 @@ requirements:
       - private and central project treatment
 
   technology_costs:
-    status: blocked
+    status: published_benchmarks_selected_as_context_not_optimisation_input
     evidence:
       - configs/techno_economics.yaml
-    rule: external CEA/CERC benchmarks remain benchmarks until a harmonised price-year and Kerala2040 selection method is approved
+      - configs/research_input_selection_v0_2.yaml
+    rule: external CEA/CERC benchmarks remain non-optimising context until price years, finance and missing storage/import cost fields are harmonised
 
 release:
-  research_assumption_run_possible_now: false
+  research_proxy_adequacy_screen_possible_now: true
+  research_assumption_capacity_expansion_possible_now: false
   reason: >-
-    The evidence acquisition sprint materially closes demand, current RE capacity and
-    storage-pipeline gaps, but a full expansion run still needs a deliberate input-selection
-    layer for costs, existing fleet, chronology, transfer limits and reliability.
+    v0.2 admits a deterministic 8760-hour proxy adequacy sensitivity using observed
+    daily source-energy accounting and explicit ATC bounds. Economic dispatch,
+    probabilistic reliability and capacity expansion remain blocked by unresolved
+    chronology, costs, outages, hydro physics and import-price inputs.
   validated_run_possible_now: false
