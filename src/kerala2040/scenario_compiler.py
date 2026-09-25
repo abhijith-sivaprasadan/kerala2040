@@ -100,10 +100,9 @@ def _required_inputs(framework: dict[str, Any], levers: dict[str, str]) -> tuple
         if value not in allowed:
             raise ValueError(f"Invalid {dimension} value: {value}")
         flag, requirement = _REQUIREMENT_KEYS[dimension]
-        if dims[dimension].get(flag):
-            # Fixed/off/none levers do not require expansion/flexibility evidence.
-            if value not in {"fixed_existing", "off", "none"}:
-                required.add(requirement)
+        # Fixed/off/none levers do not require expansion/flexibility evidence.
+        if dims[dimension].get(flag) and value not in {"fixed_existing", "off", "none"}:
+            required.add(requirement)
         if dimension == "interstate_trade":
             required.add("import_price_series")
     return tuple(sorted(required))
