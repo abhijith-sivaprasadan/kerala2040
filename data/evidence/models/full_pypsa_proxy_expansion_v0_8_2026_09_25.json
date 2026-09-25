@@ -34,7 +34,9 @@
     "stage_3": "fix stage-2 capacities within numerical tolerance and minimize import MWh for reporting",
     "import_price": "unresolved_not_in_objective",
     "existing_generation": "FY2024-25 daily-average hydro/nonhydro replay frozen",
-    "rooftop": "embedded/exogenous, not an investment variable"
+    "rooftop": "embedded/exogenous, not an investment variable",
+    "optimization_engine": "scipy.optimize.linprog / HiGHS custom sparse LP",
+    "direct_pypsa_network_optimize": false
   },
   "chronology_alignment": {
     "ERA5_UTC_hours_to_IST_clock": "linear interpolation from :30 IST source points to :00 IST model hours",
@@ -270,6 +272,7 @@
     "BESS cost sensitivity changes build composition only in the lower-demand/full-ATC non-binding case; binding adequacy cases build to the same candidate limits."
   ],
   "limitations": [
+    "v0.8 optimisation is implemented as a custom SciPy/HiGHS sparse LP inside the Full-PyPSA programme; direct PyPSA Network.optimize equivalence is not established by this checkpoint.",
     "Not total-system least-cost optimisation because landed import prices are unresolved.",
     "Renewable profiles are five-point screening profiles, not validated capacity-weighted fleet output.",
     "Capacity envelopes are published research scenarios, not statutory/site-cleared MW.",
