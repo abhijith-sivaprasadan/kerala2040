@@ -79,6 +79,9 @@ validation_anchors:
     These four values came from the previously documented local proxy run using the
     same source artifacts and [0,0] extraction. They are regression diagnostics only.
     Kannur is excluded because v0.6 explicitly resolves its multi-cell box by nearest cell.
+  full_year_regression_tolerance:
+    solar_kwh_per_kw: 0.5
+    wind_full_load_hours: 0.5
   rule: anchors_are_diagnostics_not_calibration_targets
 
 release:
