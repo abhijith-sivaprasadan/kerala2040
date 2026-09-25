@@ -88,16 +88,16 @@ requirements:
       canonical_MNRE_2026_03_31_location_RE_boundary: true
       exact_March_2026_physical_total_5110_82_mw: true
       thermal_named_plus_residual_reconciled: true
-      hydro_station_seed_2180_95_mw_plus_residual_103_72_mw: true
+      hydro_station_seed_2186_961_mw_plus_residual_97_709_mw: true
       wind_named_seed_29_03_mw_plus_residual_42_49_mw: true
       ground_solar_named_seed_192_mw_plus_residual_148_26_mw: true
       rooftop_1850_40_mw_embedded_in_net_demand: true
       current_aug2026_location_based_RE_snapshot_overlay: true
     remaining:
-      - resolve 103.72 MW hydro station-level residual
+      - resolve 97.709 MW hydro station-level residual
       - resolve 42.49 MW wind station-level residual
       - resolve 148.26 MW ground-solar station-level residual
-      - identify the 17 MW private thermal CPP and current operating status
+      - identify the 17 MW private thermal CPP and current operating status; MPS 10 MW, PCBL 10 MW and FACT 16 MW remain candidate evidence, not a resolved mapping
       - resolve 2.50 MW bio-power plant decomposition if used in grid dispatch
       - plant/unit actual generation, availability, outage and derating history
 
