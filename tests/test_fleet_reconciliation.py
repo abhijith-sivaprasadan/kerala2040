@@ -107,11 +107,14 @@ def test_adding_bses_to_current_thermal_fails_closed(fleet):
 
 def test_surviving_thermal_units_are_explicit(fleet):
     thermal = {row["id"]: row for row in fleet["thermal"]}
-    assert sum(x["capacity_mw"] for x in thermal["ntpc_kayamkulam_rgccpp"]["units"]) == pytest.approx(359.58)
+    kayamkulam = thermal["ntpc_kayamkulam_rgccpp"]["units"]
+    assert sum(x["capacity_mw"] for x in kayamkulam) == pytest.approx(359.58)
     assert [x["unit"] for x in thermal["ksebl_brahmapuram_bdpp"]["units"]] == ["1", "4", "5"]
-    assert sum(x["capacity_mw"] for x in thermal["ksebl_brahmapuram_bdpp"]["units"]) == pytest.approx(63.96)
-    assert [x["unit"] for x in thermal["ksebl_kozhikode_kdpp"]["units"]] == ["2", "3", "5", "6", "7", "8"]
-    assert sum(x["capacity_mw"] for x in thermal["ksebl_kozhikode_kdpp"]["units"]) == pytest.approx(96.0)
+    bdpp = thermal["ksebl_brahmapuram_bdpp"]["units"]
+    assert sum(x["capacity_mw"] for x in bdpp) == pytest.approx(63.96)
+    kdpp = thermal["ksebl_kozhikode_kdpp"]["units"]
+    assert [x["unit"] for x in kdpp] == ["2", "3", "5", "6", "7", "8"]
+    assert sum(x["capacity_mw"] for x in kdpp) == pytest.approx(96.0)
 
 
 def test_private_thermal_cpp_stays_unresolved_despite_candidates(fleet):
