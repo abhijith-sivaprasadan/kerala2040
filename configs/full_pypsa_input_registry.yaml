@@ -16,6 +16,7 @@ sources:
   solar_identity_crosswalk: data/evidence/assets/kerala_solar_ge1_identity_crosswalk_2026_03_31.json
   research_input_selection_v0_2: configs/research_input_selection_v0_2.yaml
   hydro_flexibility_bracket_v0_3: configs/full_pypsa_hydro_flexibility_v0_3.yaml
+  future_adequacy_v0_4: configs/full_pypsa_future_adequacy_v0_4.yaml
 
 requirements:
   base_system:
@@ -46,6 +47,7 @@ requirements:
       CEA_peak_and_duration_reference: true
       synthetic_8760_proxy: true
       v0_2_proxy_adequacy_screen_admitted: true
+      v0_4_future_demand_morphed_counterfactual_admitted: true
     remaining:
       - authenticated hourly or 15-minute Kerala demand chronology
       - same-clock actual interchange and technology generation
@@ -76,6 +78,7 @@ requirements:
       CSTEP_2024: true
       lower_CSTEP_reference_CEA_KSERC_higher_CEA_transmission_families_selected: true
       higher_case_is_peak_only: true
+      lower_and_reference_energy_peak_anchors_mapped_to_v0_4_counterfactual: true
     remaining:
       - acquire or define a source-bounded energy trajectory for the higher transmission-load case
       - define whether PyPSA load is gross system requirement or net grid demand after behind-the-meter generation
@@ -321,10 +324,12 @@ requirements:
 release:
   research_proxy_adequacy_screen_possible_now: true
   research_hydro_flexibility_bracket_possible_now: true
+  future_demand_counterfactual_screen_possible_now: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
-    v0.2 admits a deterministic 8760-hour proxy adequacy sensitivity using observed
-    daily source-energy accounting and explicit ATC bounds. Economic dispatch,
+    v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
+    and v0.4 adds source-anchor future-demand counterfactuals with frozen FY2024-25
+    internal generation and explicit ATC bounds. Economic dispatch,
     probabilistic reliability and capacity expansion remain blocked by unresolved
     chronology, costs, outages, hydro physics and import-price inputs.
   validated_run_possible_now: false
