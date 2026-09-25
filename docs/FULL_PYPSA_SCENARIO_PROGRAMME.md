@@ -549,3 +549,62 @@ therefore import economics/forward transfer assumptions and a more realistic
 firm/flexible supply representation—especially hydro operation, outages and
 additional storage/flexibility—before any economic capacity recommendation is
 defensible.
+
+
+## Implementation checkpoint 11 · direct PyPSA formulation equivalence v0.9
+
+v0.9 closes the numerical-engine gap left deliberately explicit in v0.8. The v0.8
+capacity-expansion counterfactual was implemented as a custom sparse
+`scipy.optimize.linprog` model using HiGHS. v0.9 rebuilds the same admitted
+single-bus formulation as an actual **PyPSA Network**, uses PyPSA's Linopy model,
+and resolves the same three lexicographic stages through the HiGHS backend.
+
+The PyPSA network represents:
+
+- extendable combined solar with the v0.6 hourly screening profile and v0.7 bound;
+- extendable onshore wind with the v0.6 NIWE-anchored screening profile and v0.7 bound;
+- extendable four-hour `StorageUnit` using the v0.5 charge/discharge efficiencies,
+  annualized research costs and 250 MW candidate cap;
+- a fixed import generator at each v0.4 ATC sensitivity;
+- an unserved-load generator;
+- an explicit negative-dispatch spill sink matching the v0.8 feasibility slack.
+
+For each case PyPSA first minimizes unserved MWh. The resulting minimum-shortage
+constraint is then added to the same Linopy model and the objective is replaced by
+annualized candidate investment cost. Finally, the selected solar/wind/BESS
+capacities are fixed within the same numerical tolerance used by v0.8 and the
+reporting dispatch minimizes import MWh.
+
+The artifact-backed full-year run compared **all 36 cases × 8,760 hours** against
+the SciPy/HiGHS reference and every declared equivalence check passed. Maximum
+absolute differences were:
+
+| Metric | Maximum absolute difference |
+|---|---:|
+| Stage-1 unserved energy | 1.86e-9 MWh |
+| Stage-2 unserved energy | 4.66e-8 MWh |
+| Stage-3 reporting unserved energy | 1.00e-6 MWh |
+| Solar capacity | 1.86e-9 MW |
+| Wind capacity | 2.59e-11 MW |
+| 4-hour BESS power | 1.03e-11 MW |
+| Annualized candidate investment | 8.57e-9 million INR/year |
+| Stage-3 imports | 1.87e-6 MWh |
+
+These differences are effectively numerical solver precision and are far below the
+declared v0.9 tolerances. The result therefore verifies that the central v0.8
+adequacy-first expansion results are not an artefact of the custom SciPy matrix
+construction; the direct PyPSA/Linopy formulation reproduces them.
+
+Durable evidence is recorded in
+`data/evidence/models/full_pypsa_pypsa_equivalence_v0_9_2026_09_25.json`.
+
+This remains **formulation verification, not capacity-plan validation**. v0.9 does
+not resolve landed import prices, future transfer capability, existing-fleet
+economic dispatch and forced outages, reservoir/cascade hydro operation, statutory
+renewable siting, site-level grid hosting, fleet-weighted renewable profiles or
+probabilistic reliability.
+
+With the optimization engine now independently reproduced, the next high-value
+checkpoint should move from numerical plumbing to the largest physical/economic
+blockers: first a source-bounded **import-price / forward-transfer package**, then
+a materially better **hydro/flexible-supply representation**.
