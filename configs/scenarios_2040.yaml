@@ -47,6 +47,15 @@ scenarios:
     demand_flexibility: high
     import_option: enabled
 
+  S5_fiscal_conservative:
+    description: >-
+      Integrated sovereignty portfolio with an explicit public-capital exposure constraint,
+      testing how much of the transition remains feasible when Kerala public financing is bounded
+      and private/central financing assumptions are kept separate.
+    ecology_constraint: spatial_suitability
+    demand_flexibility: high
+    import_option: enabled
+
 stress_tests:
   dry_hydro:
     description: Multi-season adverse inflow/hydrology case derived from climate/hydrology data.
