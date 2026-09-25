@@ -1,0 +1,89 @@
+{
+  "classification": "OFFICIAL_SAME_DATE_LOCATION_BASED_CAPACITY_BASE_NOT_DISPATCH_READY",
+  "prepared_date": "2026-09-25",
+  "boundary_date": "2026-03-31",
+  "purpose": "Freeze the same-date physical installed-capacity boundary used by the full Kerala2040 PyPSA base system. Renewable categories are location-based MNRE values; thermal is retained from official Kerala/CEA physical-capacity evidence. Allocation-based interstate shares are excluded from the physical fleet.",
+  "sources": {
+    "mnre_location_based_re": {
+      "publisher": "Ministry of New and Renewable Energy",
+      "title": "State-wise (Location based) installed capacity of Renewable Power as on 31.03.2026",
+      "url": "https://cdnbbsr.s3waas.gov.in/s3716e1b8c6cd17b771da77391355749f3/uploads/2026/04/20260415955675604.pdf",
+      "role": "Same-date Kerala location-based renewable technology split"
+    },
+    "kerala_economic_review_2025": {
+      "publisher": "Kerala State Planning Board",
+      "title": "Economic Review 2025",
+      "url": "https://spb.kerala.gov.in/en/7036/",
+      "role": "31 March 2025 thermal and ownership crosscheck"
+    },
+    "cea_kerala_transmission_ra": {
+      "publisher": "Central Electricity Authority",
+      "title": "Resource Adequacy Plan for Transmission System of Kerala up to the year 2034-35",
+      "url": "https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf",
+      "role": "Kerala physical thermal/network planning crosscheck at the March-2026 boundary"
+    },
+    "cea_monthly_installed_capacity_march2026": {
+      "publisher": "Central Electricity Authority",
+      "title": "Monthly Installed Capacity Report - March 2026",
+      "url": "https://cea.nic.in/installed-capacity-report/?lang=en",
+      "role": "Allocation/accounting crosscheck only",
+      "exclusion_rule": "The state allocation tables contain Kerala shares in outside-state central/joint resources and therefore are not treated as Kerala location-based physical fleet."
+    }
+  },
+  "capacity_mw": {
+    "thermal": 536.54,
+    "renewable": {
+      "large_hydro": 2008.15,
+      "small_hydro": 276.52,
+      "hydro_total": 2284.67,
+      "wind": 71.52,
+      "bio_power": {
+        "biomass_non_bagasse": 2.27,
+        "waste_to_energy_off_grid": 0.23,
+        "total": 2.5
+      },
+      "solar": {
+        "ground_mounted": 340.26,
+        "rooftop_including_pm_surya_ghar": 1850.4,
+        "hybrid_component": 0,
+        "off_grid_or_kusum_component_b": 24.93,
+        "total": 2215.59
+      },
+      "total": 4574.28
+    },
+    "physical_total": 5110.82
+  },
+  "arithmetic_checks": {
+    "hydro_total_equals_large_plus_small": true,
+    "solar_total_equals_categories": true,
+    "bio_total_equals_categories": true,
+    "renewable_total_equals_hydro_wind_bio_solar": true,
+    "physical_total_equals_thermal_plus_renewable": true
+  },
+  "demand_boundary_rule": {
+    "existing_rooftop_solar": "embedded_in_net_grid_demand",
+    "rooftop_explicit_generator": false,
+    "off_grid_solar": "excluded_from_grid_dispatch",
+    "reason": "Avoid double-counting generation that is already reflected in observed net-grid demand until a compatible gross-demand and behind-the-meter generation reconstruction exists."
+  },
+  "comparison_to_august_2026": {
+    "rule": "Keep the 31 August 2026 MNRE snapshot as a later overlay and compare only like-for-like categories.",
+    "march_rooftop_mw": 1850.4,
+    "august_rooftop_mw": 2259.5,
+    "march_ground_solar_mw": 340.26,
+    "august_ground_solar_mw": 342.27,
+    "march_wind_mw": 71.52,
+    "august_wind_mw": 71.52,
+    "march_large_hydro_mw": 2008.15,
+    "august_large_hydro_mw": 2008.15,
+    "march_small_hydro_mw": 276.52,
+    "august_small_hydro_mw": 276.52
+  },
+  "admission": {
+    "same_date_technology_boundary": true,
+    "asset_level_register_complete": false,
+    "dispatch_ready": false,
+    "chronology_ready": false,
+    "capacity_expansion_ready": false
+  }
+}
