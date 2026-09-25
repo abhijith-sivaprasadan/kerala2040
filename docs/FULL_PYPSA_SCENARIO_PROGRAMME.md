@@ -203,3 +203,42 @@ python scripts/run_full_pypsa_proxy_adequacy_v0_2.py --acknowledge-proxy --hours
 
 The output is a **proxy adequacy sensitivity**, not measured hourly validation,
 economic dispatch, probabilistic RA compliance, or an S0-S5 investment result.
+
+
+## Implementation checkpoint 5 · future-demand adequacy counterfactual v0.3
+
+The first forward-looking chronological screen is now implemented in
+`src/kerala2040/full_pypsa_future_adequacy.py`. This is deliberately one step
+before capacity expansion.
+
+The runner preserves the ordering of the FY2024-25 reconstructed 8,760-hour load
+shape and uses an affine transformation to hit each published future annual-energy
+and peak-demand anchor exactly. It currently admits five source-bounded cases:
+
+- CSTEP lower: FY2030, FY2035 and FY2040;
+- CEA/KSERC generation-RA reference: FY2030-31 and FY2034-35.
+
+The CEA transmission-RA higher case remains excluded from this calculation because
+the admitted evidence supplies peak anchors but no matching annual-energy series.
+No energy trajectory is invented for it.
+
+For each demand case, v0.3 holds FY2024-25 daily-average internal generation fixed
+and tests the 4,455 MW dated ATC snapshot plus 80% and 60% transfer-haircut
+sensitivities. This creates a deliberately harsh **no-expansion counterfactual**:
+it asks when the present internal-energy replay plus bounded imports stops serving
+the future demand anchor. It does not forecast future plant generation, future ATC,
+or the capacity Kerala should build.
+
+Run:
+
+```bash
+python scripts/run_full_pypsa_future_adequacy_v0_3.py \
+  --acknowledge-counterfactual \
+  --hours 8760
+```
+
+The result reports unserved energy, hours with unserved load, maximum unserved MW,
+imports and the exact demand-morph parameters for every demand × transfer case.
+It remains non-economic and non-probabilistic. The next gate after this screen is
+cost/finance harmonisation plus renewable/storage candidate physics; only then
+should least-cost capacity expansion be enabled.
