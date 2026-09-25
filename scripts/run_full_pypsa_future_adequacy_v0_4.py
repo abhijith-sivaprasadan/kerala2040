@@ -14,7 +14,8 @@ def main() -> int:
         "--acknowledge-counterfactual",
         action="store_true",
         help=(
-            "Required: future hours are morphed proxy chronology with frozen generation."
+            "Required: future hours are morphed proxy chronology with frozen "
+            "generation."
         ),
     )
     parser.add_argument("--hours", type=int, default=8760)
