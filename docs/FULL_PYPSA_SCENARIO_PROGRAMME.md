@@ -454,6 +454,12 @@ v0.8 combines the source-bounded layers assembled in v0.4-v0.7 into the first
 full-year capacity-expansion counterfactual. It is **not** a total-system least-cost
 plan because landed Kerala import prices remain unresolved.
 
+The v0.8 numerical kernel is implemented with `scipy.optimize.linprog` using the
+HiGHS backend and a custom sparse LP. It consumes the Full-PyPSA programme's admitted
+v0.4-v0.7 inputs, but this checkpoint is **not** a direct
+`PyPSA Network.optimize()` expansion solve. Direct formulation equivalence is a
+separate verification step.
+
 The solve is lexicographic:
 
 1. minimize unserved energy;
