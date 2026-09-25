@@ -57,7 +57,7 @@ def test_expected_structural_components_present(network):
         "kozhikode",
         "ntpc_kayamkulam",
         "private_thermal_residual",
-        "kayankulam_floating_solar",
+        "kayamkulam_floating_solar",
         "renewable_ge_1mw_residual",
     }
     assert set(network.buses.index) == {"kerala_system", "external_grid"}
