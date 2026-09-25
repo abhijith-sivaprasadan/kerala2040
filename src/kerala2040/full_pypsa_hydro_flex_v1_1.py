@@ -305,6 +305,19 @@ def run_hydro_flex_v11_suite(root: Path, *, profile_path: Path, hours: int = 876
     daily_hydro = _daily_targets(hourly_base, hours)
     capacities = observed["electricity"]["capacity_mix_mw"]
     installed_hydro_mw = float(capacities["hydel"])
+    maximum_daily_hydro_mwh = float(daily_hydro.max())
+    minimum_feasible_hydro_power_mw = maximum_daily_hydro_mwh / 24.0
+    minimum_feasible_hydro_fraction = (
+        minimum_feasible_hydro_power_mw / installed_hydro_mw
+    )
+    configured_fractions = [
+        float(x["available_power_fraction"])
+        for x in suite["matrix"]["hydro_availability_cases"]
+    ]
+    if min(configured_fractions) + 1e-12 < minimum_feasible_hydro_fraction:
+        raise ValueError(
+            "configured hydro availability falls below exact-daily-energy feasibility floor"
+        )
 
     solar_full, wind_full, alignment = _align_profiles(
         profile_path, hourly_base["snapshot_ist_naive"]
@@ -378,6 +391,9 @@ def run_hydro_flex_v11_suite(root: Path, *, profile_path: Path, hours: int = 876
         "cases_solved": len(cases),
         "installed_hydro_mw": installed_hydro_mw,
         "daily_hydro_energy_mwh": float(daily_hydro.sum()),
+        "maximum_daily_hydro_mwh": maximum_daily_hydro_mwh,
+        "minimum_feasible_hydro_power_mw": minimum_feasible_hydro_power_mw,
+        "minimum_feasible_hydro_fraction": minimum_feasible_hydro_fraction,
         "renewable_profile_alignment": alignment,
         "cases": cases,
         "release": suite["release"],
