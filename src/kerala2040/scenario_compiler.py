@@ -38,7 +38,17 @@ _REQUIREMENT_KEYS = {
     "ecological_constraint": ("processed_gis_required", "processed_ecology_gis"),
     "fiscal_constraint": ("finance_dataset_required", "public_finance"),
 }
-_ALWAYS_REQUIRED = ("import_price_series", "reliability_criterion")
+_ALWAYS_REQUIRED = (
+    "base_system",
+    "existing_generator_fleet",
+    "existing_storage_fleet",
+    "demand_trajectory",
+    "demand_chronology",
+    "renewable_temporal_profiles",
+    "technology_costs",
+    "import_price_series",
+    "reliability_criterion",
+)
 
 
 @dataclass(frozen=True)
@@ -72,6 +82,11 @@ def load_framework(path: Path) -> dict[str, Any]:
         raise ValueError("Scenario framework must remain classified as scenario_assumption")
     if not data.get("scenarios") or not data.get("dimensions"):
         raise ValueError("Scenario framework is incomplete")
+    configured_years = tuple(int(x) for x in data.get("model_years", ()))
+    if configured_years != MODEL_YEARS:
+        raise ValueError(
+            f"Scenario framework model_years {configured_years} do not match {MODEL_YEARS}"
+        )
     return data
 
 
