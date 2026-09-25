@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Build and summarize the non-optimising March-2026 full-PyPSA skeleton."""
 from __future__ import annotations
 
