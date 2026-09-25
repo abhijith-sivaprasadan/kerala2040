@@ -383,6 +383,20 @@ def build_site(root: Path, output: Path) -> None:
         html = html.replace(f"assets/{name}", f"assets/{versioned}")
     (output / "index.html").write_text(html, encoding="utf-8")
     site = live_manifest(source)
+    # Scenario cards are generated from the canonical public specification rather
+    # than the older pinned site-data snapshot. This prevents S0-S5 vocabulary
+    # and scenario-count drift while keeping them explicitly unsolved.
+    scenario_spec = json.loads(
+        (root / "public" / "scenarios.json").read_text(encoding="utf-8")
+    )
+    scenarios = scenario_spec.get("scenarios", [])
+    if (
+        len(scenarios) != 6
+        or [row.get("code") for row in scenarios] != ["S0", "S1", "S2", "S3", "S4", "S5"]
+        or any(row.get("type") is not None for row in scenarios)
+    ):
+        raise ValueError("Public scenario specification must contain exactly unsolved S0-S5")
+    site["scenarios"] = scenarios
     # Observation data may predate research QA: publish both clocks separately.
     site["metadata"]["research_source_commit"] = source_revision(root)
     # The expanded station-level report is an optional, user-acquired public evidence
