@@ -8,6 +8,16 @@ purpose: >-
   lexicographic: minimize unserved energy first, then minimize annualized candidate
   investment cost while preserving the minimum shortage.
 
+solver:
+  engine: scipy.optimize.linprog
+  backend: HiGHS
+  formulation: custom_sparse_linear_program
+  relation_to_full_pypsa_programme: >-
+    Uses the same admitted Full-PyPSA evidence layers and is an optimisation
+    checkpoint inside that programme, but v0.8 is not executed through a PyPSA
+    Network.optimize call. Direct PyPSA formulation equivalence remains a separate
+    implementation/verification step.
+
 inherits:
   future_demand: configs/full_pypsa_future_adequacy_v0_4.yaml
   cost_finance: configs/full_pypsa_cost_finance_v0_5.yaml
