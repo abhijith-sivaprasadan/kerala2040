@@ -1,0 +1,38 @@
+{
+  "classification": "PUBLISHED_KERALA_RE_TECHNOLOGY_POTENTIAL_CONTEXT_NOT_STATUTORY_SITING_CAPACITY",
+  "reviewed_date": "2026-09-25",
+  "source": {
+    "title": "Assessing technologies for expanding renewable energy in Kerala",
+    "publisher": "WRI India",
+    "publication_date": "2025-02",
+    "doi": "10.46830/wriwp.23.00050",
+    "url": "https://india.wri.org/sites/default/files/Assessing-Technologies-for-Expanding-Renewable-Energy-in-Kerala.pdf",
+    "type": "working_paper"
+  },
+  "extracted_values": {
+    "onshore_wind_potential_mw": 2621,
+    "utility_scale_solar_potential_mw": 6110,
+    "floating_solar_context_gw_range": [
+      3,
+      8
+    ],
+    "solar_total_potential_mw": 10953,
+    "rooftop_potential_numeric": null
+  },
+  "source_context": {
+    "appendix_C_table_C1": {
+      "as_of_installation": "2024-07",
+      "wind_installation_mw": 70.27,
+      "solar_installation_mw": 1164.97
+    },
+    "rooftop_statement": "More studies are required to determine the rooftop solar potential.",
+    "floating_statement": "Published contextual literature range, not a site-eligible capacity assessment.",
+    "limitations": [
+      "Working-paper synthesis based on literature and stakeholder consultations.",
+      "Potential values are not Kerala statutory land, forest, wetland, ESZ, setback or grid-hosting approvals.",
+      "The utility-scale solar value is broader than the CSTEP 2024 2,423 MW usable-ground-solar scenario.",
+      "No numeric rooftop technical ceiling is supplied."
+    ]
+  },
+  "model_admission": "source_benchmark_only"
+}
