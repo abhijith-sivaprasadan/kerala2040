@@ -351,10 +351,40 @@ def _solve_two_stage(
     )
     if achieved_unserved > minimum_unserved + float(unserved_tolerance_mwh) + 1e-6:
         raise RuntimeError("v0.8 stage 2 violated minimum-shortage constraint")
-    return stage2.x, {
+
+    # Import price is unknown, so do not fold import energy into the investment
+    # objective. Instead, freeze the stage-2 capacities exactly and solve one
+    # reporting dispatch that minimizes import MWh while preserving adequacy.
+    stage3_bounds = list(lp["bounds"])
+    for name in ("solar", "wind", "bess"):
+        idx = cap[name]
+        value = float(stage2.x[idx])
+        stage3_bounds[idx] = (value, value)
+    c3 = np.zeros(nvars, dtype=float)
+    c3[blocks["imports"] : blocks["imports"] + n] = 1.0
+    stage3 = linprog(
+        c3,
+        A_ub=a_ub_2,
+        b_ub=b_ub_2,
+        A_eq=lp["a_eq"],
+        b_eq=lp["b_eq"],
+        bounds=stage3_bounds,
+        method="highs",
+    )
+    if not stage3.success:
+        raise RuntimeError(f"v0.8 minimum-import reporting stage failed: {stage3.message}")
+    stage3_unserved = float(
+        stage3.x[blocks["unserved"] : blocks["unserved"] + n].sum()
+    )
+    if stage3_unserved > minimum_unserved + float(unserved_tolerance_mwh) + 1e-6:
+        raise RuntimeError("v0.8 stage 3 violated minimum-shortage constraint")
+
+    return stage3.x, {
         "stage1_minimum_unserved_mwh": minimum_unserved,
         "stage2_unserved_mwh": achieved_unserved,
+        "stage3_reporting_unserved_mwh": stage3_unserved,
         "annualized_candidate_investment_million_inr_per_year": float(c2 @ stage2.x),
+        "stage3_minimum_imports_mwh": float(c3 @ stage3.x),
     }
 
 
@@ -415,6 +445,7 @@ def solve_proxy_expansion_case(
     charge = solution[blocks["charge"] : blocks["charge"] + n]
     discharge = solution[blocks["discharge"] : blocks["discharge"] + n]
     imports = solution[blocks["imports"] : blocks["imports"] + n]
+    unserved = solution[blocks["unserved"] : blocks["unserved"] + n]
     spill = solution[blocks["spill"] : blocks["spill"] + n]
 
     solar_available = float(solar_mw * solar_profile.sum())
@@ -439,6 +470,8 @@ def solve_proxy_expansion_case(
             "bess_discharge_mwh": float(discharge.sum()),
             "imports_mwh": float(imports.sum()),
             "peak_import_mw": float(imports.max()),
+            "hours_with_unserved": int((unserved > 1e-6).sum()),
+            "max_unserved_mw": float(unserved.max()),
             "spill_mwh": float(spill.sum()),
         },
     }
@@ -526,6 +559,11 @@ def run_proxy_expansion_suite(
                             "bess_cost_case": bess_cost_case,
                             "candidate_caps": caps,
                             "annualized_costs": costs,
+                            "unserved_pct_of_target_annual_energy": (
+                                100.0
+                                * float(solved["stage3_reporting_unserved_mwh"])
+                                / (float(demand["annual_energy_mu"]) * 1000.0)
+                            ),
                             **solved,
                         }
                     )
@@ -543,8 +581,8 @@ def run_proxy_expansion_suite(
                 "the stage-1 minimum shortage."
             ),
             (
-                "Imports have no economic price in this checkpoint; zero-cost imports are "
-                "bounded by the selected ATC sensitivity."
+                "Imports have no economic price in this checkpoint. After adequacy and "
+                "investment are fixed, a third reporting stage minimizes import MWh."
             ),
             (
                 "Combined solar build cannot be uniquely split between ground and floating "
