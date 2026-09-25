@@ -324,3 +324,57 @@ available**, but capacity expansion remains disabled. The next gate is candidate
 renewable temporal profiles and buildable-capacity bounds, followed by import
 economics and the remaining operational constraints needed for a meaningful
 least-cost solve.
+
+
+## Implementation checkpoint 8 · verified ERA5 renewable screening profiles v0.6
+
+The retained FY2024-25 ERA5 source artifacts are now exercised directly inside CI
+rather than existing only as source-QA evidence. The v0.6 workflow downloads the
+same **20 location-quarter artifacts**, re-runs byte/hash/chronology/unit/grid QA,
+and reconstructs **8,760 UTC hours at each of five representative locations
+(43,800 point-hours)**.
+
+A previously unresolved spatial ambiguity is now explicit. Where an ERA5 request
+box contains multiple source cells, v0.6 selects the **nearest returned grid cell to
+the representative coordinate**. This matters for Kannur, whose source box is 2x2;
+the selected cell is 11.75 N, 75.25 E. No request-box average is silently applied.
+
+The PV proxy reproduces the previously documented five-site sensitivity method:
+hourly ERA5 SSRD, PR 0.82, -0.004/K temperature coefficient and a simplified
+0.025 K per W/m2 cell-temperature rise. Wind preserves the ERA5 hourly 10 m shape,
+applies a 0.14 shear exponent to 150 m, then mean-anchors each point to the public
+NIWE nearest-cell long-term 150 m mean before applying the generic 3/12/25 m/s
+turbine proxy.
+
+The artifact-backed run produced the following research-screening diagnostics:
+
+| Point | PV proxy kWh/kW-yr | NIWE-anchored wind FLH |
+|---|---:|---:|
+| Kannur | 1,393.0 | 344.1 |
+| Kochi | 1,334.8 | 249.1 |
+| Kozhikode | 1,308.5 | 290.3 |
+| Palakkad | 1,332.1 | 3,316.5 |
+| Thiruvananthapuram | 1,424.5 | 978.4 |
+
+The equal-weight five-point profile has **1,358.6 kWh/kW-year PV** (15.51% proxy
+capacity factor) and **11.82% NIWE-anchored wind proxy capacity factor**. The PV
+specific yield is about **9.03% below** the GSA long-term statewide median
+1,493.5 kWh/kWp/year. This difference is retained rather than calibrated away.
+
+The source-to-profile implementation also reproduces the earlier local proxy results
+for the four unchanged single-cell sites to within 0.04 kWh/kW-year for PV and
+0.05 full-load hours for wind. Kannur is intentionally not forced to its earlier PV
+value because v0.6 corrects the old implicit [0,0] multi-cell selection.
+
+These profiles remain **research screening inputs, not expansion-ready resource
+profiles**. Five equal-weight locations are not a statewide capacity-weighted fleet;
+the PV transform omits project tilt/inverter/soiling effects; the wind transform is
+mean-anchored climatology with a generic turbine curve; annual measured solar
+generation cannot validate hourly shape; and no legal/ecological/grid buildable-MW
+ceiling has been admitted.
+
+The durable evidence summary is
+`data/evidence/weather/era5_renewable_profiles_v0_6_2026_09_25.json`.
+Capacity expansion therefore remains disabled. The next gate is now narrower:
+derive defensible **buildable renewable capacity bounds and spatial weights**, while
+separately pursuing measured hourly generation for profile validation.
