@@ -126,23 +126,26 @@ The first station-census pass now reconciles every March-2026 technology total w
 inventing missing plants. The current fleet record is
 [data/evidence/assets/kerala_fleet_reconciliation_2026_03_31.json](../data/evidence/assets/kerala_fleet_reconciliation_2026_03_31.json).
 
-Known/verified station seeds currently account for **2,180.95 MW of hydro**, leaving
-**103.72 MW** as an explicit unresolved station-level residual. The split is 2,003.35
-MW known large hydro + 4.80 MW residual, and 177.60 MW known small hydro + 98.92 MW
+Known/verified station seeds currently account for **2,186.961 MW of hydro**, leaving
+**97.709 MW** as an explicit unresolved station-level residual. The split is 2,003.35
+MW known large hydro + 4.80 MW residual, and 183.611 MW known small hydro + 92.909 MW
 residual. The wind seed accounts for 29.03 MW of the exact 71.52 MW total, leaving
 42.49 MW unresolved. Named ground-solar assets account for 192 MW of the exact
 340.26 MW category, leaving 148.26 MW unresolved.
 
 Thermal reconciles exactly to 536.54 MW through NTPC Kayamkulam 359.58 MW,
 Brahmapuram 63.96 MW, Kozhikode 96 MW and a deliberately unresolved 17 MW private
-CPP bucket. Historical BSES/Kochi and Kasaragod Power portal rows are explicitly
+CPP bucket. Unit structure is now source-bounded for the three named stations: Kayamkulam
+2×116.6 MW GT + 126.38 MW ST; BDPP surviving units 1/4/5 at 21.32 MW each; KDPP
+surviving units 2/3/5/6/7/8 at 16 MW each. Historical BSES/Kochi and Kasaragod Power portal rows are explicitly
 excluded from current dispatch until newer authoritative operating evidence says
 otherwise.
 
 The KSEB project portal is used only as a **census seed**. Its stale status is overridden
-where CEA/Economic Review independently establish commissioning, notably Thottiyar and
-Pallivasal Extension. The Poringalkuthu micro-screw row whose name says 11 kW but whose
-numeric field says 11 MW is excluded from capacity arithmetic pending source correction.
+where stronger KSEBL/CEA/Economic Review evidence exists, notably Thottiyar and
+Pallivasal Extension. Two portal defects are now resolved from KSEBL technical sources:
+Perumthenaruvi is **6 MW (2×3 MW)** and Poringalkuthu Micro is **0.011 MW**, not 11 MW.
+Those corrected values are included in the station seed.
 
 This closes **aggregate fleet reconciliation**, not station/unit completion. PyPSA
 dispatch remains blocked until the residual plant identities, unit availability,
