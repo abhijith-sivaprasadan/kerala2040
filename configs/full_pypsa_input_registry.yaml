@@ -76,7 +76,7 @@ requirements:
       - acquire measured interval chronology for shape calibration
 
   existing_generator_fleet:
-    status: partial_station_level_state_fleet_reconciled
+    status: partial_station_level_hydro_thermal_wind_reconciled
     evidence:
       - data/evidence/assets/kerala_existing_fleet_2026_03_31.json
       - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
@@ -89,12 +89,14 @@ requirements:
       NTPC_Kayamkulam_units_reconciled_to_359_58_mw: true
       current_aug2026_location_based_RE_snapshot_overlay: true
       named_major_solar: true
-      partial_wind_assets: true
+      private_hydro_88_06_mw_asset_decomposition_reconciled: true
+      private_thermal_PCBl_17_mw_identity_reconciled: true
+      FY2024_25_private_wind_69_50_mw_asset_decomposition_reconciled: true
     remaining:
-      - decompose 88.06 MW non-state hydro into current IPP/CPP plants and units
       - decompose 308.34 MW March-2026 >=1 MW nonhydro renewable residual by technology and plant
-      - reconcile March-2026 wind IPP/CPP units and solar plant fleet to the same-date boundary
-      - identify the 17 MW private/captive thermal row and verify operational status
+      - reconcile the FY2024-25 wind asset list to the March-2026 CEA renewable boundary
+      - reconcile March-2026 solar plant fleet to the same-date >=1 MW boundary
+      - verify operational status and dispatch parameters for the 17 MW PCBL captive plant
       - plant-level actual generation and outage/derating history
       - dispatch parameters for all admitted thermal and hydro assets
 
