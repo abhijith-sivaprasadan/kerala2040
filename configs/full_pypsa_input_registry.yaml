@@ -15,6 +15,53 @@ sources:
   hydro_topology: configs/hydro_topology_evidence_2024_25.yaml
 
 requirements:
+  base_system:
+    status: structurally_reconciled_not_dispatch_ready
+    evidence:
+      - configs/base_system_2026_03_31.yaml
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+      - data/evidence/grid/kerala_transmission_resource_adequacy_2034_35_2026_09_25.json
+    acquired:
+      canonical_base_date_2026_03_31: true
+      CEA_main_capacity_3221_30_mw_reconciled: true
+      sub_1mw_solar_1912_33_mw_separate_boundary: true
+      ownership_totals_reconciled: true
+      august_2026_RE_kept_as_overlay: true
+    remaining:
+      - complete plant/unit decomposition of the March-2026 capacity population
+      - operational storage status
+      - unit availability and variable-operating parameters
+    rule: no later snapshot may silently mutate the March-2026 canonical base
+
+  demand_chronology:
+    status: proxy_only_blocked_for_validated_run
+    evidence:
+      - public/hourly-load-proxy-summary.json
+      - data/external/sldc_fy2024_25/daily_balance.csv
+    acquired:
+      observed_daily_energy_354_days: true
+      CEA_peak_and_duration_reference: true
+      synthetic_8760_proxy: true
+    remaining:
+      - authenticated hourly or 15-minute Kerala demand chronology
+      - same-clock actual interchange and technology generation
+      - daily reconciliation and boundary QA
+    rule: proxy chronology may support research sensitivity only and cannot satisfy validated-run chronology
+
+  existing_storage_fleet:
+    status: blocked_operational_COD_not_verified
+    evidence:
+      - configs/base_system_2026_03_31.yaml
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+    acquired:
+      awarded_BESS_pipeline: true
+      PSP_planning_candidates: true
+    remaining:
+      - verify any operational BESS power and energy capacity at 2026-03-31
+      - verify any operational pumped-storage capacity at 2026-03-31
+      - COD, efficiency, degradation and availability for admitted storage
+    rule: award, PPA, regulatory approval or planning assumption is not operational storage
+
   demand_trajectory:
     status: external_benchmark_available_not_canonical
     evidence:
@@ -29,18 +76,19 @@ requirements:
       - acquire measured interval chronology for shape calibration
 
   existing_generator_fleet:
-    status: partial
+    status: partial_base_boundary_reconciled
     evidence:
       - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
       - configs/generator_reconciliation_2024_25.yaml
     acquired:
       official_fy2024_25_aggregate_capacity: true
-      current_aug2026_location_based_RE_snapshot: true
+      canonical_CEA_2026_03_31_capacity_boundary: true
+      current_aug2026_location_based_RE_snapshot_overlay: true
       named_thermal_core: true
       named_major_solar: true
       partial_wind_assets: true
     remaining:
-      - complete hydro station/unit register
+      - complete March-2026 hydro station/unit register
       - reconcile all solar IPP/CPP/distributed rows to official aggregate buckets
       - reconcile wind IPP and CPP units to current 71.52 MW location-based total
       - current retirement/availability status for thermal and historical private plants
