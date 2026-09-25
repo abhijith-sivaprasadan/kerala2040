@@ -1,0 +1,51 @@
+version: 1
+classification: full_pypsa_hydro_flexibility_bracket_v0_3_not_validated_dispatch
+prepared_date: "2026-09-25"
+base_suite: configs/full_pypsa_proxy_adequacy_v0_2.yaml
+selection: configs/research_input_selection_v0_2.yaml
+purpose: >-
+  Quantify how much the v0.2 adequacy sensitivity depends on the deliberately crude
+  assumption that observed daily hydro energy is spread evenly across all 24 hours.
+
+hydro_modes:
+  flat_daily_average:
+    source_engine: src/kerala2040/chronological_screen.py
+    classification: lower_flexibility_proxy_replay
+    rule: observed daily hydro MWh divided evenly over 24 hours
+  daily_energy_redispatch_upper_bound:
+    classification: optimistic_intraday_hydro_flexibility_bound
+    rule: >-
+      Conserve each day's observed/imputed hydro MWh exactly, allow aggregate hydro
+      output to move freely among the 24 hours subject only to 0 <= p <= installed
+      hydro MW, and optimize it to reduce imports/unserved energy.
+    explicitly_not_modelled:
+      - station availability and outages
+      - reservoir storage state and rule curves
+      - cascade routing and travel time
+      - environmental releases and irrigation constraints
+      - station-specific turbine head/efficiency
+      - unit commitment, minimum output and ramp limits
+      - transmission constraints inside Kerala
+
+comparison:
+  cases_from_v0_2:
+    - replay_control
+    - atc_snapshot_reference
+    - atc_80pct_stress
+    - atc_60pct_stress
+  primary_metrics:
+    - unserved_energy_mwh
+    - deterministic_nens_pct
+    - hours_with_unserved
+    - max_unserved_mw
+    - peak_import_mw_modelled
+    - hydro_peak_mw_modelled
+  interpretation: >-
+    Flat replay and unconstrained daily redispatch form a research bracket around
+    intraday hydro flexibility. Neither bound is a validated historical dispatch.
+
+release:
+  research_hydro_flexibility_bracket_ready: true
+  validated_hydro_dispatch_ready: false
+  reservoir_model_ready: false
+  capacity_expansion_ready: false
