@@ -141,7 +141,7 @@ def run_future_adequacy_suite(root: Path, *, hours: int = 8760) -> dict[str, Any
         metadata = {
             **metadata_base,
             "classification": (
-                "future_demand_counterfactual_on_proxy_shape_not_forecast_hourly_telemetry"
+                "scenario_screening_using_proxy_future_demand_counterfactual_not_forecast_hourly_telemetry"
             ),
             "future_demand_case": demand_case["id"],
             "future_demand_source_family": demand_case["source_family"],
