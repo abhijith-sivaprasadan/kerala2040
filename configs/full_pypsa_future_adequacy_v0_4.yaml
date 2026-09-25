@@ -1,0 +1,64 @@
+version: 1
+classification: full_pypsa_future_demand_adequacy_counterfactual_not_capacity_plan
+prepared_date: "2026-09-25"
+inherits: configs/research_input_selection_v0_2.yaml
+base_chronology: public/hourly-load-proxy.json
+base_daily_source_energy: data/external/sldc_fy2024_25/daily_balance.csv
+qa: data/external/sldc_fy2024_25/qa_report.json
+observed_capacity_reference: public/observed-reference.json
+method:
+  demand_morph: affine_transform_preserving_source_anchor_annual_energy_and_peak
+  chronology_order: FY2024_25_proxy_shape_preserved
+  internal_generation: FY2024_25_daily_average_replay_frozen_counterfactual
+  storage_additions: none
+  renewable_additions: none
+  economic_dispatch: false
+  capacity_expansion: false
+demand_cases:
+  - id: lower_FY2030
+    source_family: cstep_2024_lower
+    source_year: FY2030
+    annual_energy_mu: 32986
+    peak_mw: 5503
+  - id: lower_FY2035
+    source_family: cstep_2024_lower
+    source_year: FY2035
+    annual_energy_mu: 38505
+    peak_mw: 6423
+  - id: lower_FY2040
+    source_family: cstep_2024_lower
+    source_year: FY2040
+    annual_energy_mu: 45519
+    peak_mw: 7594
+  - id: reference_FY2030_31
+    source_family: cea_kserc_generation_ra
+    source_year: FY2030_31
+    annual_energy_mu: 44726
+    peak_mw: 7500
+  - id: reference_FY2034_35
+    source_family: cea_kserc_generation_ra
+    source_year: FY2034_35
+    annual_energy_mu: 53557
+    peak_mw: 8637
+transfer_cases:
+  - id: atc_snapshot_reference
+    import_limit_mw: 4455.0
+    role: dated_2026_03_31_ATC_snapshot_used_as_counterfactual_bound_not_future_commitment
+  - id: atc_80pct_stress
+    import_limit_mw: 3564.0
+    role: synthetic_20pct_ATC_haircut
+  - id: atc_60pct_stress
+    import_limit_mw: 2673.0
+    role: synthetic_40pct_ATC_haircut
+objective:
+  import_per_mwh: 1.0
+  unserved_per_mwh: 10000.0
+  units: abstract_screening_weight_not_INR
+release:
+  research_counterfactual_screen: true
+  measured_future_hourly_demand: false
+  future_generation_forecast: false
+  future_transfer_commitment: false
+  economic_dispatch: false
+  capacity_expansion: false
+  scenario_recommendation: false
