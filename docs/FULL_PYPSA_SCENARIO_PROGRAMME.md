@@ -242,3 +242,43 @@ python scripts/run_full_pypsa_hydro_flexibility_v0_3.py \
 Capacity expansion remains blocked. The purpose of this checkpoint is to determine
 whether the v0.2 ATC shortage signal survives a much more favourable treatment of
 intraday hydro before we invest effort in expansion scenarios.
+
+
+## Implementation checkpoint 6 · future-demand adequacy counterfactual v0.4
+
+After the v0.3 hydro-flexibility bracket, the programme now adds a first
+forward-looking chronological stress screen in
+`src/kerala2040/full_pypsa_future_adequacy.py`.
+
+The runner preserves the ordering of the FY2024-25 reconstructed 8,760-hour load
+shape and uses an affine transformation to hit each published future annual-energy
+and peak-demand anchor exactly. It currently admits five source-bounded cases:
+
+- CSTEP lower: FY2030, FY2035 and FY2040;
+- CEA/KSERC generation-RA reference: FY2030-31 and FY2034-35.
+
+The CEA transmission-RA higher case remains excluded because the admitted evidence
+contains peak anchors but no matching annual-energy series. No energy trajectory is
+invented for it.
+
+For each demand case, v0.4 deliberately freezes FY2024-25 daily-average internal
+generation and tests the 4,455 MW dated ATC snapshot plus 80% and 60% transfer
+haircuts. This is a harsh **no-expansion counterfactual**: it asks how much pressure
+appears if demand follows a published future anchor while today's source-energy
+replay does not grow.
+
+It is not a future hourly demand forecast, future generation forecast, future ATC
+commitment, economic dispatch or capacity recommendation.
+
+Run:
+
+```bash
+python scripts/run_full_pypsa_future_adequacy_v0_4.py \
+  --acknowledge-counterfactual \
+  --hours 8760
+```
+
+The result reports imports, unserved energy, affected hours, maximum unserved MW and
+the exact demand-morph parameters for every demand × transfer case. The next gate is
+cost/finance harmonisation and candidate renewable/storage physics before any
+least-cost capacity-expansion solve is admitted.
