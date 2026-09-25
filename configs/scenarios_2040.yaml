@@ -3,7 +3,7 @@ classification: scenario_assumption
 source_type: structural_scenario_design
 source: Kerala 2040 research design
 provenance_note: Scenario definitions are research choices, not observed data or model results.
-model_year: 2040
+model_years: [2030, 2035, 2040]
 principle: >-
   Energy sovereignty means retaining sufficient controllable generation, storage, flexible
   demand and infrastructure to withstand climate, hydrological and market shocks while using
@@ -12,7 +12,7 @@ principle: >-
 scenarios:
   S0_business_as_usual:
     description: Existing structural import dependence, hydro exposure and moderate local RE growth.
-    ecology_constraint: baseline_legal_exclusions
+    ecology_constraint: legal_minimum
     demand_flexibility: low
     import_option: enabled
 
@@ -21,13 +21,13 @@ scenarios:
       Stress-test aggressive local generation build-out before ecological constraints are tightened.
       Intended to expose land, biodiversity, water and system-cost consequences rather than to be
       presented as a recommendation.
-    ecology_constraint: baseline_legal_exclusions
+    ecology_constraint: legal_minimum
     demand_flexibility: medium
     import_option: enabled
 
   S2_solar_storage:
     description: Rooftop, floating and suitable ground PV with BESS/pumped storage and hydro balancing.
-    ecology_constraint: baseline_legal_exclusions
+    ecology_constraint: legal_minimum
     demand_flexibility: medium
     import_option: enabled
 
@@ -43,7 +43,7 @@ scenarios:
     description: >-
       S3 with strict biodiversity, forest, watershed, wetland, slope, landslide, coastal and land-use
       constraints fed back as technology-specific capacity limits.
-    ecology_constraint: strict_ecological_carrying_capacity
+    ecology_constraint: strict_carrying_capacity
     demand_flexibility: high
     import_option: enabled
 
