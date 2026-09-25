@@ -20,6 +20,10 @@ profile_input:
   solar_column: solar_p_max_pu
   wind_column: wind_p_max_pu_150m_niwe_anchored
   aggregation: equal_weight_five_point_screening
+  local_clock_alignment: linear_interpolation_from_ERA5_half_hour_IST_to_clock_hour
+  boundary_rule: >-
+    The first six IST hours use a one-year cyclic wrap from the tail of the same
+    representative-year profile because the retained source begins 2024-04-01 00:00 UTC.
   measured_generation_profile: false
 
 demand_cases:
