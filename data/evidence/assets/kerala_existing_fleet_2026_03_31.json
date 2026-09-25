@@ -1,0 +1,370 @@
+{
+  "classification": "RECONCILED_MARCH_2026_EXISTING_FLEET_PARTIAL_STATION_LEVEL_NOT_DISPATCH_PARAMETERS",
+  "prepared_date": "2026-09-25",
+  "base_date": "2026-03-31",
+  "source_hierarchy": [
+    {
+      "id": "ksebl_power_system_statistics_2022_23",
+      "publisher": "Kerala State Electricity Board Ltd",
+      "title": "Power System Statistics 2022-23, Table 4 - Installed Generating Capacity Station Wise",
+      "url": "https://old.kseb.in/index.php?Itemid=811&catid=70&id=35634&lang=en&m=0&option=com_jdownloads&task=download.send",
+      "boundary_date": "2023-03-31",
+      "use": "station-level state hydro/thermal/wind base"
+    },
+    {
+      "id": "economic_review_2024",
+      "publisher": "Kerala State Planning Board / KSEBL",
+      "title": "Economic Review 2024",
+      "url": "https://spb.kerala.gov.in/sites/default/files/2025-02/ER_2024EngVol%201.pdf",
+      "use": "Peruvannamoozhy 6 MW addition and 2023-24 KSEBL totals"
+    },
+    {
+      "id": "economic_review_2025",
+      "publisher": "Kerala State Planning Board / KSEBL",
+      "title": "Economic Review 2025",
+      "url": "https://spb.kerala.gov.in/sites/default/files/2026-01/ER%202025%20Volume1%20Eng%20final.pdf",
+      "use": "Thottiyar and Pallivasal Extension additions and 2024-25 KSEBL totals"
+    },
+    {
+      "id": "cea_transmission_ra_2026",
+      "publisher": "Central Electricity Authority",
+      "title": "Resource Adequacy Plan for Transmission System of Kerala up to 2034-35",
+      "url": "https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf",
+      "boundary_date": "2026-03-31",
+      "use": "March-2026 sector totals"
+    },
+    {
+      "id": "cea_list_power_stations_2025",
+      "publisher": "Central Electricity Authority",
+      "title": "List of Thermal and Hydro Power Stations as on 31.03.2025",
+      "url": "https://cea.nic.in/wp-content/uploads/pdm/2025/09/List_of_Power_Station_as_on_31.03.2025.pdf",
+      "use": "current unit ratings for utility-scale thermal and >=25 MW hydro cross-check"
+    }
+  ],
+  "state_hydro": {
+    "source_2023_total_mw": 2090.36,
+    "additions_after_2023": [
+      {
+        "id": "peruvannamoozhy_shep",
+        "name": "Peruvannamoozhy SHEP",
+        "capacity_mw": 6,
+        "admitted_by": "Economic Review 2024",
+        "boundary_effect": "2023-24"
+      },
+      {
+        "id": "thottiyar_hep",
+        "name": "Thottiyar HEP",
+        "capacity_mw": 40,
+        "admitted_by": "Economic Review 2025",
+        "boundary_effect": "2024-25"
+      },
+      {
+        "id": "pallivasal_extension",
+        "name": "Pallivasal Extension Scheme",
+        "capacity_mw": 60,
+        "admitted_by": "Economic Review 2025",
+        "boundary_effect": "2024-25"
+      }
+    ],
+    "reconciled_march_2026_total_mw": 2196.36,
+    "stations": [
+      {
+        "name": "Pallivasal",
+        "capacity_mw": 37.5
+      },
+      {
+        "name": "Sengulam",
+        "capacity_mw": 50.8
+      },
+      {
+        "name": "Neriamangalam",
+        "capacity_mw": 52.65
+      },
+      {
+        "name": "Panniar",
+        "capacity_mw": 32.4
+      },
+      {
+        "name": "Poringalkuthu",
+        "capacity_mw": 36
+      },
+      {
+        "name": "Sholayar",
+        "capacity_mw": 54
+      },
+      {
+        "name": "Sabarigiri",
+        "capacity_mw": 340
+      },
+      {
+        "name": "Kuttiyadi",
+        "capacity_mw": 75
+      },
+      {
+        "name": "Idukki",
+        "capacity_mw": 780
+      },
+      {
+        "name": "Idamalayar",
+        "capacity_mw": 75
+      },
+      {
+        "name": "Kallada",
+        "capacity_mw": 15
+      },
+      {
+        "name": "Peppara",
+        "capacity_mw": 3
+      },
+      {
+        "name": "Lower Periyar",
+        "capacity_mw": 180
+      },
+      {
+        "name": "Mattupetty",
+        "capacity_mw": 2
+      },
+      {
+        "name": "Poringalkuthu Left Bank Extension",
+        "capacity_mw": 16
+      },
+      {
+        "name": "Kakkad",
+        "capacity_mw": 50
+      },
+      {
+        "name": "Kuttiyadi Extension",
+        "capacity_mw": 50
+      },
+      {
+        "name": "Malampuzha",
+        "capacity_mw": 2.5
+      },
+      {
+        "name": "Chembukadavu Stage I",
+        "capacity_mw": 2.7
+      },
+      {
+        "name": "Chembukadavu Stage II",
+        "capacity_mw": 3.75
+      },
+      {
+        "name": "Urumi Stage I",
+        "capacity_mw": 3.75
+      },
+      {
+        "name": "Urumi Stage II",
+        "capacity_mw": 2.4
+      },
+      {
+        "name": "Malankara",
+        "capacity_mw": 10.5
+      },
+      {
+        "name": "Lower Meenmutty",
+        "capacity_mw": 3.5
+      },
+      {
+        "name": "Neriamangalam Extension",
+        "capacity_mw": 25
+      },
+      {
+        "name": "Kuttiyadi Tailrace",
+        "capacity_mw": 3.75
+      },
+      {
+        "name": "Kuttiyadi Additional Extension",
+        "capacity_mw": 100
+      },
+      {
+        "name": "Poozhithode",
+        "capacity_mw": 4.8
+      },
+      {
+        "name": "Ranni Perinad",
+        "capacity_mw": 4
+      },
+      {
+        "name": "Peechi",
+        "capacity_mw": 1.25
+      },
+      {
+        "name": "Vilangad",
+        "capacity_mw": 7.5
+      },
+      {
+        "name": "Chimmony",
+        "capacity_mw": 2.5
+      },
+      {
+        "name": "Adyanpara",
+        "capacity_mw": 3.5
+      },
+      {
+        "name": "Poringalkuthu Micro",
+        "capacity_mw": 0.011
+      },
+      {
+        "name": "Barapole",
+        "capacity_mw": 15
+      },
+      {
+        "name": "Vellathooval",
+        "capacity_mw": 3.6
+      },
+      {
+        "name": "Perunthenaruvi",
+        "capacity_mw": 6
+      },
+      {
+        "name": "Kakkayam SHEP",
+        "capacity_mw": 3
+      },
+      {
+        "name": "Chathankottunada Stage II",
+        "capacity_mw": 6
+      },
+      {
+        "name": "Upper Kallar",
+        "capacity_mw": 2
+      },
+      {
+        "name": "Poringalkuthu New",
+        "capacity_mw": 24
+      },
+      {
+        "name": "Peruvannamoozhy SHEP",
+        "capacity_mw": 6
+      },
+      {
+        "name": "Thottiyar HEP",
+        "capacity_mw": 40
+      },
+      {
+        "name": "Pallivasal Extension Scheme",
+        "capacity_mw": 60
+      }
+    ],
+    "note": "The 2023 station table includes a 0.011 MW micro unit and publishes 2,090.36 MW rounded total. Reconciliation to the later official KSEBL total uses the published aggregate boundary, not a re-rounded manual sum."
+  },
+  "thermal": {
+    "reconciled_total_mw": 536.54,
+    "stations": [
+      {
+        "name": "Brahmapuram Diesel Power Plant",
+        "owner": "KSEBL",
+        "sector": "state",
+        "capacity_mw": 63.96,
+        "units_mw": [
+          21.32,
+          21.32,
+          21.32
+        ],
+        "model_status": "existing_capacity_dispatch_parameters_unresolved"
+      },
+      {
+        "name": "Kozhikode Diesel Power Plant",
+        "owner": "KSEBL",
+        "sector": "state",
+        "capacity_mw": 96,
+        "units_mw": [
+          16,
+          16,
+          16,
+          16,
+          16,
+          16
+        ],
+        "model_status": "existing_capacity_dispatch_parameters_unresolved"
+      },
+      {
+        "name": "Rajiv Gandhi CCPP Kayamkulam",
+        "owner": "NTPC",
+        "sector": "central",
+        "capacity_mw": 359.58,
+        "units_mw": [
+          115.2,
+          115.2,
+          129.18
+        ],
+        "unit_note": "CEA List of Power Stations as on 31.03.2025; unit ratings sum exactly to the admitted 359.58 MW station total.",
+        "model_status": "existing_capacity_dispatch_parameters_unresolved"
+      },
+      {
+        "name": "Private/captive thermal residual",
+        "owner": "unresolved",
+        "sector": "private",
+        "capacity_mw": 17,
+        "model_status": "identity_and_operational_status_unresolved"
+      }
+    ]
+  },
+  "wind": {
+    "march_2026_total_mw": null,
+    "fy2024_25_total_crosscheck_mw": 71.53,
+    "state_ksebl": {
+      "name": "Kanjikode Wind Farm",
+      "capacity_mw": 2.025,
+      "units": 9,
+      "unit_capacity_mw": 0.225
+    },
+    "private_and_captive_residual_mw_fy2024_25": 69.5,
+    "status": "asset_level_private_CPP_decomposition_unresolved"
+  },
+  "hydro_non_state": {
+    "march_2026_total_mw": 88.06,
+    "fy2024_25_components_mw": {
+      "cpp": 33.5,
+      "ipp": 54.56
+    },
+    "status": "aggregate_reconciled_asset_level_decomposition_unresolved",
+    "rule": "Do not invent plant identities or operating constraints to eliminate this residual."
+  },
+  "renewable_ge_1mw_nonhydro": {
+    "march_2026_CEA_total_mw": 400.34,
+    "central_confirmed": [
+      {
+        "name": "NTPC Kayamkulam Floating Solar",
+        "capacity_mw": 92
+      }
+    ],
+    "state_and_private_residual_mw": 308.34,
+    "status": "technology_and_asset_decomposition_incomplete_at_March_2026_boundary"
+  },
+  "distributed_solar_lt_1mw": {
+    "capacity_mw": 1912.33,
+    "pypsa_default": "embedded_in_net_grid_demand",
+    "explicit_generator": false
+  },
+  "storage": {
+    "operational_bess_mw": null,
+    "operational_bess_mwh": null,
+    "operational_psp_mw": null,
+    "status": "not_admitted_until_COD_and_physical_evidence"
+  },
+  "qa": {
+    "state_hydro_target_mw": 2196.36,
+    "thermal_target_mw": 536.54,
+    "non_state_hydro_target_mw": 88.06,
+    "March_2026_CEA_main_total_mw": 3221.3,
+    "fleet_complete": false,
+    "dispatch_ready": false,
+    "state_hydro_station_arithmetic_mw": 2196.361,
+    "state_hydro_rounding_difference_mw": 0.001,
+    "state_hydro_reconciliation_tolerance_mw": 0.01
+  },
+  "historical_location_based_crosschecks": {
+    "cea_2025_bses_kochi": {
+      "physical_location_capacity_mw": 174,
+      "units_mw": [
+        45,
+        45,
+        39,
+        45
+      ],
+      "source_boundary": "CEA utility-scale station list as on 31.03.2025",
+      "admitted_to_march_2026_base": false,
+      "note": "CEA's 31-Mar-2025 station list still records the physical BSES(C) Cochin plant, but the canonical March-2026 Kerala capacity boundary used by the transmission RA study excludes it. Retain as a dated physical-asset cross-check, not dispatchable base capacity."
+    }
+  }
+}
