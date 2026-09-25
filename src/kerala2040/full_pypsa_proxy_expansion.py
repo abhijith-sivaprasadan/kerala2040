@@ -400,6 +400,9 @@ def _solve_two_stage(
         "stage2_unserved_mwh": achieved_unserved,
         "stage3_reporting_unserved_mwh": stage3_unserved,
         "annualized_candidate_investment_million_inr_per_year": float(c2 @ stage2.x),
+        "stage2_built_solar_mw": float(stage2.x[cap["solar"]]),
+        "stage2_built_wind_mw": float(stage2.x[cap["wind"]]),
+        "stage2_built_bess_mw": float(stage2.x[cap["bess"]]),
         "stage3_minimum_imports_mwh": float(c3 @ stage3.x),
     }
 
@@ -453,9 +456,11 @@ def solve_proxy_expansion_case(
     blocks = lp["blocks"]
     cap = lp["cap_indices"]
 
-    solar_mw = float(solution[cap["solar"]])
-    wind_mw = float(solution[cap["wind"]])
-    bess_mw = float(solution[cap["bess"]])
+    solar_mw = float(objective["stage2_built_solar_mw"])
+    wind_mw = float(objective["stage2_built_wind_mw"])
+    bess_mw = float(objective["stage2_built_bess_mw"])
+    dispatch_solar_mw = float(solution[cap["solar"]])
+    dispatch_wind_mw = float(solution[cap["wind"]])
     solar_dispatch = solution[blocks["solar"] : blocks["solar"] + n]
     wind_dispatch = solution[blocks["wind"] : blocks["wind"] + n]
     charge = solution[blocks["charge"] : blocks["charge"] + n]
@@ -464,8 +469,8 @@ def solve_proxy_expansion_case(
     unserved = solution[blocks["unserved"] : blocks["unserved"] + n]
     spill = solution[blocks["spill"] : blocks["spill"] + n]
 
-    solar_available = float(solar_mw * solar_profile.sum())
-    wind_available = float(wind_mw * wind_profile.sum())
+    solar_available = float(dispatch_solar_mw * solar_profile.sum())
+    wind_available = float(dispatch_wind_mw * wind_profile.sum())
     return {
         **objective,
         "built": {
