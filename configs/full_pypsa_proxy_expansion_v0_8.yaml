@@ -64,12 +64,15 @@ candidate_treatment:
 objective:
   stage_1: minimize_total_unserved_mwh
   stage_2: minimize_annualized_candidate_investment_cost_at_stage_1_minimum_shortage
+  stage_3: minimize_import_mwh_with_stage_2_capacities_fixed_for_reporting_dispatch
   unserved_tolerance_mwh: 0.001
   import_marginal_cost_inr_per_mwh: null
   import_treatment: zero_cost_bounded_balancing_resource_because_landed_price_unresolved
   existing_generation_marginal_cost: not_modelled
   objective_currency_stage_2: million_real_2021_22_INR_per_year
-  interpretation: adequacy_first_minimum_new_build_not_total_system_cost
+  interpretation: >-
+    adequacy first, then minimum new-build cost, then minimum-import reporting dispatch;
+    this is not total system cost because landed import economics are unresolved
 
 existing_system:
   load_shape: FY2024_25_proxy_affine_morphed_to_2030_energy_and_peak
