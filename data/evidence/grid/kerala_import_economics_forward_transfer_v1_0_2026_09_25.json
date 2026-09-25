@@ -1,0 +1,113 @@
+{
+  "classification": "SOURCE_BOUNDED_IMPORT_ECONOMICS_AND_FORWARD_TRANSFER_BENCHMARKS_NOT_VALIDATED_LANDED_COST_OR_FUTURE_ATC",
+  "prepared_date": "2026-09-25",
+  "price_basis": {
+    "optimization_basis": "real_2021_22_INR",
+    "deflator": {
+      "source": "Reserve Bank of India Table 165, CPI Combined All India General Index; source NSO/MoSPI",
+      "url": "https://www.rbi.org.in/Scripts/PublicationsView.aspx?id=22639",
+      "fy2021_22_monthly_index": [
+        157.8,
+        160.4,
+        161.3,
+        162.5,
+        162.9,
+        163.2,
+        165.5,
+        166.7,
+        166.2,
+        165.7,
+        166.1,
+        167.7
+      ],
+      "fy2023_24_monthly_index": [
+        178.1,
+        179.1,
+        181,
+        186.3,
+        186.2,
+        184.1,
+        185.3,
+        186.3,
+        185.7,
+        185.5,
+        185.8,
+        185.8
+      ],
+      "fy2021_22_average": 163.83333333333334,
+      "fy2023_24_average": 184.1,
+      "nominal_2023_24_to_real_2021_22_ratio": 0.8899149013217456,
+      "caveat": "General CPI is a transparent common-price-basis research deflator, not a power-sector-specific escalation index."
+    }
+  },
+  "import_price_benchmarks": {
+    "ksebl_weighted_average_purchase_fy2023_24": {
+      "nominal_inr_per_kwh": 5.05,
+      "nominal_inr_per_mwh": 5050,
+      "real_2021_22_inr_per_mwh": 4494.070251674815,
+      "source": "KSERC truing-up evidence quoting KSEBL weighted average power purchase cost FY2023-24",
+      "url": "https://dev.erckerala.org/api/storage/orders/hAZqAxunwIOSKnz6uF2fU6ezFk6yCJAfO4DIRlPz.pdf",
+      "role": "reference_procurement_cost_proxy",
+      "boundary_warning": "Annual weighted power-purchase accounting, not interval landed Kerala-periphery price."
+    },
+    "iex_dam_fy2023_24": {
+      "nominal_inr_per_kwh": 5.24,
+      "nominal_inr_per_mwh": 5240,
+      "real_2021_22_inr_per_mwh": 4663.154082925947,
+      "source": "IEX reported FY2023-24 average Day-Ahead Market clearing price",
+      "url": "https://www.business-standard.com/markets/capital-market-news/iex-records-18-yoy-rise-in-traded-electricity-volume-in-q4-fy25-125040400568_1.html",
+      "role": "wholesale_market_price_proxy",
+      "boundary_warning": "Exchange MCP excludes Kerala-specific transmission charges, losses, fees, DSM and contract obligations."
+    },
+    "downstream_bulk_supply_stress_fy2023_24": {
+      "nominal_inr_per_kwh": 7.13,
+      "nominal_inr_per_mwh": 7130,
+      "real_2021_22_inr_per_mwh": 6345.093246424046,
+      "source": "KSERC order reporting FY2023-24 average power purchase cost for a Kerala bulk-supply licensee purchasing from KSEBL",
+      "url": "https://dev.erckerala.org/api/storage/orders/GQFCSIbnHcWACwNSX6KQphpI7stE49k2jCvDEWFr.pdf",
+      "role": "high_delivered_cost_stress_proxy",
+      "boundary_warning": "Downstream bulk-supply cost includes a different delivery/accounting boundary and is not Kerala-border import cost."
+    }
+  },
+  "transfer_evidence": {
+    "source": "Central Electricity Authority Resource Adequacy Plan for Transmission System of Kerala up to 2034-35",
+    "url": "https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf",
+    "current_2026": {
+      "ttc_mw": 4575,
+      "atc_import_mw": 4455
+    },
+    "planning_2029_30": {
+      "peak_demand_mw": 7916,
+      "total_availability_mw": 5220,
+      "additional_import_expected_mw": 2696,
+      "ists_additions": {
+        "transformation_mva": 2500,
+        "transmission_line_ckm": 474
+      }
+    },
+    "planning_2034_35": {
+      "peak_demand_mw": 9780,
+      "total_availability_mw": 7760,
+      "additional_import_expected_mw": 2020,
+      "ists_additions_2030_35": {
+        "transformation_mva": 1000,
+        "transmission_line_ckm": 280
+      }
+    },
+    "future_atc_mw": null,
+    "interpretation": [
+      "2696 MW and 2020 MW are peak load-generation-balance import requirements in the CEA planning cases, not published future ATC values.",
+      "MVA and circuit-km additions cannot be arithmetically converted to statewide ATC without power-flow/contingency studies.",
+      "v1.0 therefore keeps 4455 MW as the only source-valued ATC cap and preserves 80%/60% stress sensitivities; it does not invent a higher 2030 ATC."
+    ]
+  },
+  "model_admission": {
+    "import_price_sensitivity_ready": true,
+    "real_2021_22_price_harmonisation_ready": true,
+    "current_atc_sensitivity_ready": true,
+    "forward_import_requirement_benchmarks_ready": true,
+    "future_atc_validated": false,
+    "landed_import_cost_validated": false,
+    "interval_import_price_chronology_ready": false
+  }
+}
