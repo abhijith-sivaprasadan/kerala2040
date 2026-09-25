@@ -1,0 +1,41 @@
+version: 1
+classification: full_pypsa_proxy_adequacy_sensitivity_not_validated_dispatch
+prepared_date: "2026-09-25"
+selection: configs/research_input_selection_v0_2.yaml
+period: FY2024-25
+chronology: public/hourly-load-proxy.json
+daily_source_energy: data/external/sldc_fy2024_25/daily_balance.csv
+qa: data/external/sldc_fy2024_25/qa_report.json
+observed_capacity_reference: public/observed-reference.json
+engine: src/kerala2040/chronological_screen.py
+objective:
+  import_per_mwh: 1.0
+  unserved_per_mwh: 10000.0
+  units: abstract_screening_weight_not_INR
+cases:
+  - id: replay_control
+    import_limit_mw: 6500.0
+    role: solver_and_daily_energy_replay_control_not_network_capability
+  - id: atc_snapshot_reference
+    import_limit_mw: 4455.0
+    role: dated_2026_03_31_ATC_snapshot_used_as_screening_bound_not_annual_guarantee
+  - id: atc_80pct_stress
+    import_limit_mw: 3564.0
+    role: synthetic_20pct_ATC_haircut
+  - id: atc_60pct_stress
+    import_limit_mw: 2673.0
+    role: synthetic_40pct_ATC_haircut
+reliability_comparison:
+  deterministic_nens_reference_pct: 0.05
+  source_role: published_CEA_state_RA_benchmark_not_Kerala_statutory_threshold
+  lolp_evaluation_enabled: false
+  reason: this deterministic chronological screen is not a stochastic resource-adequacy simulation
+additions:
+  solar_mw: 0.0
+  bess_power_mw: 0.0
+release:
+  measured_hourly_telemetry_used: false
+  economic_dispatch: false
+  capacity_expansion: false
+  investment_recommendation: false
+  proxy_adequacy_screen: true

@@ -1,0 +1,156 @@
+{
+  "classification": "PARTIAL_SOLAR_IDENTITY_CROSSWALK_FAIL_CLOSED_NOT_DISPATCH_ADMISSION",
+  "prepared_date": "2026-09-25",
+  "base_date": "2026-03-31",
+  "purpose": "Improve plant identity evidence for the canonical CEA >=1 MW solar ownership buckets without forcing historical MWp/nameplate rows to equal a later CEA accounting boundary.",
+  "canonical_cea_boundary": {
+    "source": "data/evidence/grid/kerala_transmission_resource_adequacy_2034_35_2026_09_25.json",
+    "state_solar_ge_1mw_mw": 22.715,
+    "private_solar_ge_1mw_mw": 214.1,
+    "central_solar_ge_1mw_mw": 92.0,
+    "total_solar_ge_1mw_mw": 328.815,
+    "derivation_note": "State/private solar are the CEA March-2026 renewable ownership buckets after subtracting the independently reconciled wind ownership capacities. Central 92 MW is NTPC Kayamkulam floating solar."
+  },
+  "state_solar": {
+    "firm_named_seed_from_ksebl_2021_22": {
+      "source": {
+        "publisher": "Kerala State Electricity Board Ltd",
+        "title": "11th Annual Report 2021-22",
+        "url": "https://old.kseb.in/index.php?Itemid=522&catid=80&id=30853&lang=en&m=0&option=com_jdownloads&task=download.send",
+        "boundary_date": "2022-03-31"
+      },
+      "rule": "Only explicitly named rows with individual capacity >=1 MW are counted in this seed. The report's 'other small solar installations' and Soura portfolio are not decomposed into >=1 MW plants here.",
+      "plants": [
+        {"name": "KSEBL Solar PV Kanjikode", "capacity_mw": 1.0},
+        {"name": "KSEBL Solar PV Edayar", "capacity_mw": 1.25},
+        {"name": "KSEBL Solar PV Kollengode", "capacity_mw": 1.0},
+        {"name": "Barapole Solar Canal Top", "capacity_mw": 3.0},
+        {"name": "Barapole Solar Canal Bank", "capacity_mw": 1.0},
+        {"name": "Muvattupuzha", "capacity_mw": 1.25},
+        {"name": "Pothencode", "capacity_mw": 2.0},
+        {"name": "Agali Ground Mounted", "capacity_mw": 1.0},
+        {"name": "Kanjikode Ground Mounted 2021-22 addition", "capacity_mw": 3.0}
+      ],
+      "sum_mw": 14.5,
+      "unresolved_against_2026_bucket_mw": 8.215
+    },
+    "later_project_identity_candidates": [
+      {
+        "name": "Brahmapuram ground-mounted solar",
+        "capacity_mw": 2.75,
+        "evidence": "KSEBL FY2024-25 annual report says the 8 MW BAK clubbed portfolio had 6.75 MW completed with 1.25 MW balance at Kanjikode; older KSEBL project evidence identifies the completed set as Agali 1 MW, Kanjikode 3 MW and Brahmapuram 2.75 MW.",
+        "admitted_to_exact_2026_bucket": false,
+        "reason": "Later-date identity is useful, but CEA's >=1 MW accounting convention and AC/MWp basis must be matched before arithmetic admission."
+      },
+      {
+        "name": "Nenmara ground-mounted solar",
+        "capacity_mw": 1.5,
+        "evidence_url": "https://inkel.in/wp-content/uploads/2025/06/INKEL-Annual-Report-2025.pdf",
+        "evidence": "INKEL FY2024-25 annual report describes a commissioned 1500 kWp KSEBL plant at Nenmara.",
+        "admitted_to_exact_2026_bucket": false
+      },
+      {
+        "name": "Mananthavady ground-mounted solar",
+        "capacity_mw": 2.0,
+        "evidence_url": "https://inkel.in/wp-content/uploads/2025/06/INKEL-Annual-Report-2025.pdf",
+        "evidence": "INKEL FY2024-25 annual report describes a 2000 kWp plant at the KSEBL Pole Cast Yard, Mananthavady.",
+        "admitted_to_exact_2026_bucket": false
+      },
+      {
+        "name": "Kanjikode ground-mounted solar (INKEL 2 MW listing)",
+        "capacity_mw": 2.0,
+        "evidence_url": "https://inkel.in/wp-content/uploads/2025/06/INKEL-Annual-Report-2025.pdf",
+        "evidence": "INKEL FY2024-25 annual report describes a 2000 kWp plant at the KSEBL wind farm, Kanjikode.",
+        "admitted_to_exact_2026_bucket": false,
+        "reason": "Potential overlap/reconfiguration with earlier Kanjikode solar rows is unresolved."
+      }
+    ],
+    "candidate_arithmetic_diagnostic": {
+      "firm_2022_named_seed_mw": 14.5,
+      "if_brahmapuram_nenmara_mananthavady_and_inkel_kanjikode_all_distinct_mw": 22.75,
+      "canonical_2026_state_bucket_mw": 22.715,
+      "difference_mw": 0.035,
+      "interpretation": "The near-match is evidence that the identity set is converging, not permission to patch 0.035 MW. MWp versus MW/AC, rounding and possible Kanjikode overlap remain unresolved."
+    },
+    "status": "capacity_bucket_exact_identity_partial"
+  },
+  "private_solar": {
+    "canonical_2026_bucket_mw": 214.1,
+    "strong_aggregate_bridge": {
+      "source": "KSEBL 14th Annual Report 2024-25 searchable copy",
+      "boundary_date": "2025-03-31",
+      "reported_ipp_solar_mw": 204.0,
+      "gap_to_cea_2026_private_ge1_bucket_mw": 10.1,
+      "warning": "Do not fill the 10.1 MW gap by cherry-picking captive/prosumer rows. KSEBL and CEA sector/size-threshold classifications are not proven identical."
+    },
+    "named_identity_candidates": [
+      {
+        "name": "Cochin International Airport solar portfolio",
+        "capacity_mw": 50.0,
+        "source_url": "https://cial.aero/ckeditor/upload/CIAL-Annual-Report-2024-25.pdf",
+        "source_boundary": "FY2024-25",
+        "note": "CIAL reports 50 MW total installed solar capacity. Portfolio/site and MW versus MWp mapping to the CEA >=1 MW private bucket remains unresolved.",
+        "admitted_to_exact_2026_bucket": false
+      },
+      {
+        "name": "RPCKL Ambalathara Solar Park",
+        "capacity_mw": 50.0,
+        "source": "KSEBL 11th Annual Report 2021-22 IPP solar table",
+        "admitted_to_exact_2026_bucket": false
+      },
+      {
+        "name": "Paivalike Solar Plant",
+        "capacity_mw": 50.0,
+        "source": "KSEBL 11th Annual Report 2021-22 IPP solar table",
+        "admitted_to_exact_2026_bucket": false
+      },
+      {
+        "name": "ANERT Kuzhalmandam",
+        "capacity_mw": 2.0,
+        "source": "KSEBL 11th Annual Report 2021-22 IPP solar table",
+        "admitted_to_exact_2026_bucket": false
+      }
+    ],
+    "fy2024_25_ksebl_private_solar_context": {
+      "source": "KSEBL 14th Annual Report 2024-25 searchable copy",
+      "rows_mw": {
+        "Bharath_Hospital_captive": 1.1,
+        "Moulana_Hospital": 2.7,
+        "Pyarelal_farms": 1.0,
+        "CIAL": 39.44,
+        "HINDALCO": 5.0,
+        "KMRL": 4.39,
+        "other_HT_EHT_solar_prosumers": 109.26,
+        "other_LT_solar_prosumers": 1081.87,
+        "other_licensees_solar_HT_prosumers": 19.47
+      },
+      "reported_private_solar_total_mw": 1264.23,
+      "reason_not_used_as_cea_ge1_sum": "This table mixes captive/prosumer and LT/HT portfolios and is not the same population as CEA's private renewable >=1 MW ownership bucket."
+    },
+    "status": "aggregate_bridge_found_plant_level_mapping_incomplete"
+  },
+  "central_solar": {
+    "canonical_2026_bucket_mw": 92.0,
+    "plant": "NTPC Kayamkulam Floating Solar",
+    "identity_reconciled": true
+  },
+  "alternate_same_date_boundary_preserved_from_pr72": {
+    "source_family": "MNRE state-wise location-based renewable capacity as on 2026-03-31",
+    "canonical_base": false,
+    "solar_ground_mounted_mw": 340.26,
+    "solar_rooftop_mw": 1850.4,
+    "solar_offgrid_or_kusum_b_mw": 24.93,
+    "purpose": "Preserve the useful alternate accounting view from superseded PR #72 without replacing the CEA transmission-RA physical/accounting base."
+  },
+  "qa": {
+    "canonical_ge1_sum_mw": 328.815,
+    "canonical_ge1_sum_check": true,
+    "state_bucket_exact": true,
+    "private_bucket_exact": true,
+    "central_identity_exact": true,
+    "state_identity_complete": false,
+    "private_identity_complete": false,
+    "safe_for_capacity_accounting": true,
+    "safe_for_plant_level_dispatch": false
+  }
+}

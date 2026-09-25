@@ -1,0 +1,164 @@
+version: 2
+classification: research_input_selection_v0_2_proxy_screen_ready_not_validated
+prepared_date: "2026-09-25"
+base_date: "2026-03-31"
+purpose: >-
+  Lock named research-input families for the next Kerala2040 full-PyPSA stage while
+  keeping every unresolved operational/economic input fail-closed. This selection
+  permits an explicitly proxy-based chronological adequacy screen, not validated
+  historical dispatch, probabilistic resource adequacy, or capacity expansion.
+
+inherits_structural_selection: configs/research_input_selection_v0_1.yaml
+
+selected:
+  base_system:
+    source: configs/base_system_2026_03_31.yaml
+    status: admitted_structural_base
+  existing_generation:
+    source: data/evidence/assets/kerala_existing_fleet_2026_03_31.json
+    solar_identity_crosswalk: data/evidence/assets/kerala_solar_ge1_identity_crosswalk_2026_03_31.json
+    canonical_cea_main_capacity_mw: 3221.30
+    distributed_solar_lt_1mw_mw: 1912.33
+    distributed_solar_treatment: embedded_in_net_grid_demand
+    plant_level_solar_dispatch_ready: false
+
+  demand_scenarios:
+    rule: preserve_source_boundaries_and_fiscal_year_labels_no_averaging
+    lower:
+      id: cstep_2024_lower
+      source: data/external/cstep_2024/demand_projection_fy2023_fy2040.csv
+      classification: published_external_scenario
+      anchors:
+        FY2030: {energy_mu: 32986, peak_mw: 5503}
+        FY2035: {energy_mu: 38505, peak_mw: 6423}
+        FY2040: {energy_mu: 45519, peak_mw: 7594}
+    reference:
+      id: cea_kserc_generation_ra
+      source: data/evidence/demand/kerala_resource_adequacy_2025_2035_36_2026_09_25.json
+      classification: official_external_resource_adequacy_benchmark
+      anchors:
+        FY2030_31: {energy_mu: 44726, peak_mw: 7500}
+        FY2034_35: {energy_mu: 53557, peak_mw: 8637}
+        FY2035_36: {energy_mu: 55996, peak_mw: 8926}
+      source_sensitivity: "CEA study also reports +/-10% demand sensitivities."
+    higher:
+      id: cea_transmission_ra_ksebl_loadflow
+      source: data/evidence/grid/kerala_transmission_resource_adequacy_2034_35_2026_09_25.json
+      classification: official_transmission_planning_high_load_case
+      peak_only: true
+      anchors:
+        FY2029_30: {peak_mw: 7916}
+        FY2030_31: {peak_mw: 8255}
+        FY2034_35: {peak_mw: 9780}
+      energy_trajectory_selected: false
+      reason: source does not provide a matching full energy series in the admitted evidence
+    mapping_status: named_low_reference_high_families_selected
+    extrapolation_beyond_source_horizon: blocked
+
+  chronology:
+    id: fy2024_25_proxy_screen
+    load_proxy: public/hourly-load-proxy.json
+    load_proxy_summary: public/hourly-load-proxy-summary.json
+    daily_source_energy: data/external/sldc_fy2024_25/daily_balance.csv
+    daily_qa: data/external/sldc_fy2024_25/qa_report.json
+    engine: src/kerala2040/chronological_screen.py
+    snapshots: 8760
+    timezone: Asia/Kolkata
+    observed_daily_source_days: 354
+    interpolated_daily_source_days: 11
+    classification: proxy_reconstruction_not_measured_telemetry
+    admission: proxy_adequacy_screen_only
+    measured_interval_dispatch_claim_allowed: false
+
+  interstate_transfer:
+    source: data/evidence/grid/kerala_transmission_resource_adequacy_2034_35_2026_09_25.json
+    dated_snapshot:
+      as_of: "2026-03-31"
+      ttc_mw: 4575
+      atc_mw: 4455
+    sensitivity_cases:
+      replay_control:
+        import_limit_mw: 6500
+        evidence_role: solver_replay_control_not_transfer_capability
+      atc_snapshot_reference:
+        import_limit_mw: 4455
+        evidence_role: dated_current_ATC_snapshot_not_annual_guarantee
+      atc_80pct_stress:
+        import_limit_mw: 3564
+        derivation: 0.80_x_4455
+        evidence_role: modelled_transfer_haircut_not_observed_limit
+      atc_60pct_stress:
+        import_limit_mw: 2673
+        derivation: 0.60_x_4455
+        evidence_role: modelled_transfer_haircut_not_observed_limit
+    annual_availability_guarantee: false
+    future_transfer_limit_selected: false
+
+  reliability:
+    kerala_regulatory_direction:
+      source: KSERC_Order_30_Dec_2025_on_Resource_Adequacy
+      metrics_requested_for_review: [LOLP, NENS]
+    research_benchmark:
+      source_family: CEA_state_resource_adequacy_study
+      source_state: Tamil_Nadu
+      lolp_pct_max: 0.2
+      nens_pct_max: 0.05
+      classification: published_CEA_state_RA_benchmark_not_Kerala_statutory_threshold
+    deterministic_proxy_screen:
+      metrics: [unserved_energy_mwh, unserved_energy_pct, hours_with_unserved, max_unserved_mw]
+      may_be_compared_numerically_to_nens_benchmark: true
+      counts_as_LOLP_estimate: false
+    stochastic_resource_adequacy_ready: false
+    reason: forced_outage_distributions_and_stochastic_demand_RE_sampling_not_admitted
+
+  technology_costs:
+    source: configs/techno_economics.yaml
+    status: published_benchmarks_selected_as_context_only
+    optimisation_admitted: false
+    reason: price-year harmonisation and unresolved storage/import cost fields remain open
+
+  import_price:
+    status: blocked_for_economic_dispatch
+    adequacy_screen_objective: abstract_priority_weights_only
+    reason: landed import-price chronology not admitted
+
+not_yet_selected:
+  measured_interval_demand_and_dispatch:
+    status: unavailable
+  renewable_profiles_for_existing_fleet:
+    status: not_admitted_for_baseline_dispatch
+  hydro_dispatch:
+    status: blocked
+    reason: inflow, storage, head, rule curves and cascade constraints incomplete
+  thermal_dispatch:
+    status: blocked
+    reason: fuel price, heat rate, availability and commercial constraints incomplete
+  ecological_capacity:
+    status: blocked
+  public_finance:
+    status: blocked
+
+allowed_now:
+  - structural network construction and capacity-accounting QA
+  - named demand-scenario comparison without averaging source families
+  - 8760-hour proxy adequacy screening using observed daily source-energy constraints
+  - import-transfer sensitivity screening with explicit provenance labels
+  - deterministic unserved-energy diagnostics
+
+forbidden_now:
+  - claim that proxy hours are measured telemetry
+  - probabilistic LOLP claim
+  - claim that the 0.2%/0.05% benchmark is a Kerala statutory reliability standard
+  - economic dispatch using the abstract screening objective
+  - least-cost capacity expansion
+  - storage sizing recommendation
+  - plant-level dispatch of unresolved state/private solar identities
+  - S0-S5 result publication as validated outcomes
+
+release:
+  network_skeleton_smoke_ready: true
+  chronological_proxy_screen_ready: true
+  chronological_validated_dispatch_ready: false
+  stochastic_resource_adequacy_ready: false
+  capacity_expansion_ready: false
+  publishable_scenario_results_ready: false
