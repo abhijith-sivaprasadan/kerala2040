@@ -53,10 +53,15 @@ def test_bses_is_not_admitted_to_march_2026_base(fleet):
     assert bses["admitted_to_march_2026_base"] is False
 
 
-def test_private_hydro_residual_remains_explicit(fleet):
-    residual = fleet["hydro_non_state"]
-    assert residual["march_2026_total_mw"] == pytest.approx(88.06)
-    assert residual["status"] == "aggregate_reconciled_asset_level_decomposition_unresolved"
+def test_private_hydro_decomposition_reconciles(fleet):
+    hydro = fleet["hydro_non_state"]
+    assert hydro["march_2026_total_mw"] == pytest.approx(88.06)
+    cpp = sum(row["capacity_mw"] for row in hydro["stations"] if row["category"] == "CPP")
+    ipp = sum(row["capacity_mw"] for row in hydro["stations"] if row["category"] == "IPP")
+    assert cpp == pytest.approx(33.50)
+    assert ipp == pytest.approx(54.56)
+    assert cpp + ipp == pytest.approx(88.06)
+    assert hydro["status"].startswith("asset_level_capacity_decomposition_reconciled")
 
 
 def test_distributed_solar_is_not_explicit_generator(fleet):
@@ -77,3 +82,17 @@ def test_fleet_is_not_dispatch_ready(fleet):
     qa = fleet["qa"]
     assert qa["fleet_complete"] is False
     assert qa["dispatch_ready"] is False
+
+
+def test_private_thermal_identity_reconciles(fleet):
+    private = next(row for row in fleet["thermal"]["stations"] if row["sector"] == "private")
+    assert private["name"] == "PCBL captive co-generation plant"
+    assert private["capacity_mw"] == pytest.approx(17.0)
+
+
+def test_private_wind_decomposition_reconciles_fy2024_25(fleet):
+    wind = fleet["wind"]
+    private = sum(row["capacity_mw"] for row in wind["stations"])
+    assert private == pytest.approx(69.50)
+    assert private + wind["state_ksebl"]["capacity_mw"] == pytest.approx(71.525)
+    assert wind["qa"]["official_rounded_total_mw"] == pytest.approx(71.53)
