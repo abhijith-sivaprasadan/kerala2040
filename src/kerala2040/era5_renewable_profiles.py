@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from kerala2040.renewables import solar_p_max_pu, wind_p_max_pu
+from kerala2040.renewables import wind_p_max_pu
 from kerala2040.sources.era5 import POINTS
 
 SUITE_CLASS = "full_pypsa_era5_renewable_profile_screen_v0_6_not_expansion_admitted"
@@ -226,9 +226,26 @@ def build_era5_screening_profiles(
             "era5_longitude",
         ]
     ].copy()
-    point_profiles["solar_p_max_pu"] = solar_p_max_pu(
-        point_profiles["ghi_wh_m2"],
-        point_profiles["temp_c"],
+    solar_cfg = suite["profile_models"]["solar"]
+    ghi = point_profiles["ghi_wh_m2"].to_numpy(dtype=float)
+    ambient = point_profiles["temp_c"].to_numpy(dtype=float)
+    cell_temp = ambient + float(
+        solar_cfg["cell_temperature_rise_K_per_W_m2"]
+    ) * ghi
+    temp_factor = np.clip(
+        1.0
+        + float(solar_cfg["temperature_coefficient_per_K"])
+        * (cell_temp - 25.0),
+        0.0,
+        1.5,
+    )
+    point_profiles["solar_p_max_pu"] = np.clip(
+        ghi
+        / 1000.0
+        * float(solar_cfg["performance_ratio"])
+        * temp_factor,
+        0.0,
+        1.0,
     )
     point_profiles["wind_p_max_pu_100m"] = wind_p_max_pu(
         point_profiles["wind10_m_s"],
@@ -267,6 +284,20 @@ def build_era5_screening_profiles(
         name: float(item["fy2024_25_generation_mu"]) * 1000.0 / float(item["capacity_mw"])
         for name, item in measured.items()
     }
+    regression_expected = suite["validation_anchors"][
+        "prior_local_single_cell_regression_kwh_per_kw"
+    ]
+    regression = {
+        point: {
+            "expected_kwh_per_kw": float(expected),
+            "v0_6_kwh_per_kw": float(per_point[point]["solar_specific_yield_proxy_kwh_per_kw_year"]),
+            "difference_kwh_per_kw": float(
+                per_point[point]["solar_specific_yield_proxy_kwh_per_kw_year"]
+                - float(expected)
+            ),
+        }
+        for point, expected in regression_expected.items()
+    }
 
     summary = {
         "classification": SUITE_CLASS,
@@ -284,6 +315,7 @@ def build_era5_screening_profiles(
             "gsa_statewide_median_annual_pvout_kwh_per_kwp": gsa,
             "era5_proxy_minus_gsa_pct": 100.0 * (solar_yield - gsa) / gsa,
             "measured_specific_yield_kwh_per_kw": measured_specific_yield,
+            "prior_local_single_cell_regression": regression,
             "rule": "diagnostic comparison only; no profile calibration or force-fit",
         },
         "limitations": [
