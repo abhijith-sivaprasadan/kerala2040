@@ -77,7 +77,10 @@ def load_cost_finance_suite(path: Path) -> dict[str, Any]:
         raise ValueError("BESS charge/discharge efficiencies do not reproduce RTE")
 
     psp = tech["pumped_storage"]
-    if psp["capex_inr_per_kw"] is not None or psp["expansion_cost_admitted_for_research"] is not False:
+    if (
+        psp["capex_inr_per_kw"] is not None
+        or psp["expansion_cost_admitted_for_research"] is not False
+    ):
         raise ValueError("site-specific PSP expansion must remain blocked")
 
     admission = data["model_year_admission"]
