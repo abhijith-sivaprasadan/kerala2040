@@ -98,7 +98,7 @@ def morph_load_to_energy_and_peak(
     }
 
 
-def _load_base(root: Path, suite: dict[str, Any]) -> tuple[pd.DataFrame, dict[str, Any], dict]:
+def _load_base(\n    root: Path, suite: dict[str, Any]\n) -> tuple[pd.DataFrame, dict[str, Any], dict]:
     proxy = json.loads((root / suite["base_chronology"]).read_text(encoding="utf-8"))
     qa = json.loads((root / suite["qa"]).read_text(encoding="utf-8"))
     daily = pd.read_csv(root / suite["base_daily_source_energy"])
@@ -141,7 +141,7 @@ def run_future_adequacy_suite(root: Path, *, hours: int = 8760) -> dict[str, Any
         metadata = {
             **metadata_base,
             "classification": (
-                "scenario_screening_using_proxy_future_demand_counterfactual_not_forecast_hourly_telemetry"
+                "scenario_screening_using_proxy_future_demand_counterfactual_"\n                "not_forecast_hourly_telemetry"
             ),
             "future_demand_case": demand_case["id"],
             "future_demand_source_family": demand_case["source_family"],
@@ -215,7 +215,7 @@ def run_future_adequacy_suite(root: Path, *, hours: int = 8760) -> dict[str, Any
                 "no-expansion counterfactual, not a forecast of future generation."
             ),
             (
-                "Transfer limits are current/synthetic sensitivity bounds, not committed "
+                "Transfer limits are current/synthetic sensitivity bounds, not "\n                "committed "
                 "2030-2040 import capability."
             ),
             (
