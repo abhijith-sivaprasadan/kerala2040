@@ -71,7 +71,7 @@ def build_full_pypsa_skeleton(selection: dict[str, Any]):
             gen["private_thermal"]["capacity_mw"],
         ),
         (
-            "kayankulam_floating_solar",
+            "kayamkulam_floating_solar",
             "solar_existing",
             gen["central_floating_solar"]["capacity_mw"],
         ),
