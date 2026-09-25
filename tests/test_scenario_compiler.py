@@ -40,13 +40,24 @@ def test_s5_requires_public_finance_and_integrated_inputs(framework):
     assert "ev_charging" in case.required_inputs
 
 
-def test_s0_does_not_invent_fixed_storage_or_ev_requirements(framework):
+def test_s0_requires_common_base_but_not_expandable_storage_inputs(framework):
     case = compile_scenario(framework, ScenarioRequest("S0_business_as_usual", 2030))
+    for required in (
+        "base_system",
+        "existing_generator_fleet",
+        "existing_storage_fleet",
+        "demand_trajectory",
+        "demand_chronology",
+        "renewable_temporal_profiles",
+        "technology_costs",
+        "interstate_transfer_limit",
+        "import_price_series",
+        "reliability_criterion",
+    ):
+        assert required in case.required_inputs
     assert "battery_cost_performance" not in case.required_inputs
     assert "pumped_storage_constraints" not in case.required_inputs
     assert "ev_charging" not in case.required_inputs
-    assert "interstate_transfer_limit" in case.required_inputs
-    assert "reliability_criterion" in case.required_inputs
 
 
 @pytest.mark.parametrize("stress", STRESSES)
@@ -79,3 +90,8 @@ def test_invalid_requests_are_rejected(framework):
         compile_scenario(
             framework, ScenarioRequest("S0_business_as_usual", 2040, stress="magic")
         )
+
+
+def test_s2_uses_same_legal_minimum_rule_as_public_specification(framework):
+    case = compile_scenario(framework, ScenarioRequest("S2_solar_storage", 2040))
+    assert case.levers["ecological_constraint"] == "legal_minimum"
