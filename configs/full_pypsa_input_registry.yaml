@@ -23,12 +23,13 @@ requirements:
       - data/evidence/grid/kerala_transmission_resource_adequacy_2034_35_2026_09_25.json
     acquired:
       canonical_base_date_2026_03_31: true
-      CEA_main_capacity_3221_30_mw_reconciled: true
-      sub_1mw_solar_1912_33_mw_separate_boundary: true
-      ownership_totals_reconciled: true
+      MNRE_same_date_location_RE_4574_28_mw_reconciled: true
+      thermal_536_54_mw_reconciled: true
+      physical_total_5110_82_mw_reconciled: true
+      rooftop_1850_40_mw_net_demand_boundary_locked: true
       august_2026_RE_kept_as_overlay: true
     remaining:
-      - complete plant/unit decomposition of the March-2026 capacity population
+      - complete station/unit decomposition of the March-2026 capacity population
       - operational storage status
       - unit availability and variable-operating parameters
     rule: no later snapshot may silently mutate the March-2026 canonical base
@@ -76,23 +77,29 @@ requirements:
       - acquire measured interval chronology for shape calibration
 
   existing_generator_fleet:
-    status: partial_base_boundary_reconciled
+    status: partial_exact_aggregate_residual_asset_mapping
     evidence:
+      - data/evidence/assets/kerala_location_capacity_2026_03_31.json
+      - data/evidence/assets/kerala_fleet_reconciliation_2026_03_31.json
       - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
       - configs/generator_reconciliation_2024_25.yaml
     acquired:
       official_fy2024_25_aggregate_capacity: true
-      canonical_CEA_2026_03_31_capacity_boundary: true
+      canonical_MNRE_2026_03_31_location_RE_boundary: true
+      exact_March_2026_physical_total_5110_82_mw: true
+      thermal_named_plus_residual_reconciled: true
+      hydro_station_seed_2180_95_mw_plus_residual_103_72_mw: true
+      wind_named_seed_29_03_mw_plus_residual_42_49_mw: true
+      ground_solar_named_seed_192_mw_plus_residual_148_26_mw: true
+      rooftop_1850_40_mw_embedded_in_net_demand: true
       current_aug2026_location_based_RE_snapshot_overlay: true
-      named_thermal_core: true
-      named_major_solar: true
-      partial_wind_assets: true
     remaining:
-      - complete March-2026 hydro station/unit register
-      - reconcile all solar IPP/CPP/distributed rows to official aggregate buckets
-      - reconcile wind IPP and CPP units to current 71.52 MW location-based total
-      - current retirement/availability status for thermal and historical private plants
-      - plant-level actual generation and outage/derating history
+      - resolve 103.72 MW hydro station-level residual
+      - resolve 42.49 MW wind station-level residual
+      - resolve 148.26 MW ground-solar station-level residual
+      - identify the 17 MW private thermal CPP and current operating status
+      - resolve 2.50 MW bio-power plant decomposition if used in grid dispatch
+      - plant/unit actual generation, availability, outage and derating history
 
   renewable_temporal_profiles:
     status: partial_validation_sources_available
