@@ -1,7 +1,7 @@
 """Regression tests for the canonical March-2026 Kerala base system."""
+import copy
 from pathlib import Path
 
-import copy
 import pytest
 
 from kerala2040.base_system import load_base_system, summarize_base_system, validate_base_system
