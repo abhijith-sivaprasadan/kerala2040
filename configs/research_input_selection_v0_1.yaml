@@ -37,15 +37,31 @@ selected:
         mode: aggregate_residual_only
         capacity_mw: 17.00
         dispatch_enabled: false
+      state_wind:
+        mode: ownership_capacity_reconciled
+        capacity_mw: 2.025
+        dispatch_enabled: false
+        reason: hourly wind profile not yet admitted
+      private_wind:
+        mode: asset_capacity_reconciled_fy2024_25_bridge_to_march2026
+        capacity_mw: 69.50
+        dispatch_enabled: false
+        reason: same-date ownership crosscheck and hourly wind profile unresolved
+      state_solar_ge_1mw:
+        mode: derived_ownership_residual
+        capacity_mw: 22.715
+        dispatch_enabled: false
+        reason: plant identities and hourly profile unresolved
+      private_solar_ge_1mw:
+        mode: derived_ownership_residual
+        capacity_mw: 214.10
+        dispatch_enabled: false
+        reason: plant identities and hourly profile unresolved
       central_floating_solar:
         mode: explicit_capacity_candidate
         capacity_mw: 92.00
         dispatch_enabled: false
         reason: hourly profile not yet admitted
-      renewable_ge_1mw_residual:
-        mode: aggregate_unresolved
-        capacity_mw: 308.34
-        dispatch_enabled: false
       distributed_solar_lt_1mw:
         mode: embedded_in_net_grid_demand
         capacity_mw: 1912.33
