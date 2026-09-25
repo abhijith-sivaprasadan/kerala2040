@@ -242,3 +242,66 @@ python scripts/run_full_pypsa_hydro_flexibility_v0_3.py \
 Capacity expansion remains blocked. The purpose of this checkpoint is to determine
 whether the v0.2 ATC shortage signal survives a much more favourable treatment of
 intraday hydro before we invest effort in expansion scenarios.
+
+
+## Implementation checkpoint 6 · SLDC-reported hydro peak envelope v0.4
+
+v0.3 proved that the 4,455 MW ATC shortage signal disappears if all
+**2,284.42 MW** of installed hydro is allowed to reshape freely within each day.
+That was useful as an optimistic bound, but the solution repeatedly reached the
+full nameplate ceiling and therefore could not be treated as a realistic
+availability assumption.
+
+The FY2024-25 SLDC station table contains a more informative operational field:
+`reported_maximum_output_mw` for individual hydro stations, together with daily
+energy, shutdown fields and machine-availability fields. v0.4 derives a dated
+aggregate envelope by summing only the **nonblank reported station maxima** for each
+observed day.
+
+The source coverage is strong enough to use as a research constraint:
+
+- **5,779** station-day rows across **354** observed days;
+- **17** reported station/group names;
+- a reported maximum on about **90.28%** of station-day rows;
+- those rows cover a median **99.44%** of the station-table hydro energy;
+- observed daily summed station maxima range roughly **1.085–1.826 GW**, with a
+  median near **1.617 GW**.
+
+The same 11 dates missing from the SLDC daily archive are the only dates whose
+aggregate envelope is linearly interpolated, and those dates remain explicitly
+classified as model-only.
+
+For every day the model still conserves the admitted daily hydro MWh exactly, but
+the hourly hydro output is constrained by:
+
+```text
+0 <= hydro(t) <= sum(nonblank station-reported daily maximum MW)
+sum_day hydro(t) * 1 h = daily hydro MWh
+```
+
+This creates a three-way research bracket:
+
+```text
+flat daily replay
+    ↓ more intraday flexibility
+SLDC reported-station peak envelope
+    ↓ more intraday flexibility
+full installed-capacity redispatch upper bound
+```
+
+The middle case is **not** a measured simultaneous Kerala hydro capability.
+Individual station maxima can occur at different times, blank maxima are not filled
+on observed days, and the station table does not span the entire hydro fleet. It is
+an evidence-based operating envelope, not a reservoir/cascade model.
+
+Run the full three-way comparison with:
+
+```bash
+python scripts/run_full_pypsa_hydro_reported_peak_v0_4.py \
+  --acknowledge-proxy \
+  --hours 8760
+```
+
+Capacity expansion remains blocked until this hydro timing uncertainty is narrowed
+further and the remaining chronology, outage, import-price and reservoir constraints
+are admitted.
