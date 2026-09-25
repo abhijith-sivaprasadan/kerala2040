@@ -16,6 +16,7 @@ sources:
   solar_identity_crosswalk: data/evidence/assets/kerala_solar_ge1_identity_crosswalk_2026_03_31.json
   research_input_selection_v0_2: configs/research_input_selection_v0_2.yaml
   hydro_flexibility_bracket_v0_3: configs/full_pypsa_hydro_flexibility_v0_3.yaml
+  hydro_reported_peak_envelope_v0_4: configs/full_pypsa_hydro_reported_peak_v0_4.yaml
 
 requirements:
   base_system:
@@ -190,12 +191,18 @@ requirements:
     status: research_intraday_flexibility_bracket_selected_reservoir_physics_blocked
     evidence:
       - configs/full_pypsa_hydro_flexibility_v0_3.yaml
+      - configs/full_pypsa_hydro_reported_peak_v0_4.yaml
       - data/external/sldc_fy2024_25/daily_balance.csv
+      - data/external/sldc_fy2024_25/hydro_station_daily.csv
     acquired:
       observed_daily_hydro_energy_354_days: true
       flat_daily_average_lower_flexibility_replay: true
       exact_daily_energy_redispatch_upper_bound: true
       aggregate_installed_hydro_power_ceiling_enforced: true
+      SLDC_station_reported_daily_peak_rows_available: true
+      reported_peak_rows_fraction_0_90275: true
+      reported_peak_energy_coverage_median_0_99437: true
+      three_way_flat_reported_peak_installed_cap_bracket: true
     remaining:
       - station availability and outage chronology
       - reservoir storage states and rule curves
@@ -203,8 +210,10 @@ requirements:
       - station-specific head efficiency minimum output and ramp constraints
       - same-clock measured hydro dispatch for validation
     rule: >-
-      v0.3 brackets sensitivity to intraday hydro flexibility; the redispatch mode
-      is deliberately optimistic and may not be reported as validated hydro operation
+      v0.4 adds a source-derived middle envelope using the sum of each day's nonblank
+      station-reported maximum outputs. Individual station maxima are not simultaneous
+      and blank maxima remain unknown, so neither v0.3 nor v0.4 may be reported as
+      validated hydro operation or physical availability.
 
   hydrology:
     status: blocked_but_phase5_pipeline_prepared
@@ -321,6 +330,7 @@ requirements:
 release:
   research_proxy_adequacy_screen_possible_now: true
   research_hydro_flexibility_bracket_possible_now: true
+  research_hydro_reported_peak_envelope_possible_now: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits a deterministic 8760-hour proxy adequacy sensitivity using observed
