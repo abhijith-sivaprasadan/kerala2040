@@ -77,6 +77,14 @@ Six **full-fiscal-year** Kerala PPAC all-petroleum-product sales rows FY2019–2
 
 This **new non-electricity workstream** admits EMC/CII's original six **FY2014–15–FY2019–20** Kerala total-final-energy graphic (9.18 → 10.78 Mtoe), and its **FY2019–20 integer-rounded** source shares: oil 64%, utility electricity 19%, imported coal 16%, gas 1%. The year-ending labels, rounded-share limitations and historical reporting boundary are recorded in the source register. A separate **PPAC provisional April–September 2024 selected-product sales** panel adds LPG, petrol, diesel, ATF and SKO in thousand metric tonnes. PPAC PDF indexed text was retrieved, but direct original-PDF visual/download access failed; these provisional sales **remain page-image-QA pending**, and are not annualised. PPAC 2024 nominal refinery/LNG/retail infrastructure is tagged context only. Three new homepage graphs render interactive source values and coverage notes. A **current FY2024–25 all-carrier final-energy balance, sector demand, fuel import share and emissions remain null**, not filled using unrelated annual electricity or infrastructure.
 
+## Step 9 cross-solver verification · 25 September 2026
+
+**The bounded SciPy daily balancing formulation has now been independently reproduced in PyPSA/HiGHS across the full admitted dataset.** The verification covers **354 observed SLDC days × 3 synthetic quarter-hour demand shapes × 3 balancing cases = 3,186 LP solves**. Every PyPSA solve was optimal; the maximum absolute daily unserved/surplus difference versus the Step 8 SciPy reference was **1.2732925824820995e-10 MWh**, against a predeclared **0.001 MWh** tolerance.
+
+[Step 9 executable verification](research/step9_pypsa/README.md) · [Machine-readable frozen result](research/step9_pypsa/verification_summary.json) · [Methodology interpretation](docs/methodology.md).
+
+**Scope:** this is implementation-equivalence evidence, not empirical validation. The quarter-hour profiles remain synthetic daily-energy-anchored sensitivity shapes and the flexibility caps remain scenario assumptions. It does not establish measured interval grid behaviour, physical hydro/import limits or a validated 2040 capacity-expansion pathway. The next independent modelling benchmark is OSeMOSYS.
+
 ## Latest verified milestone · 22 September 2026
 
 **The NIWE 150 m Kerala wind-resource × GLO-90 surface-terrain analysis has been executed on real, hash-verified inputs.** From 19,475,568 national atlas rows, the original NWIC Kerala polygon selects **200,692** onshore resource point centres; the modelled wind-speed median is **3.91 m/s at 150 m**. Sampling the independently derived 90 m GLO-90 DSM slope yields **199,853** finite slope results and **839** missing samples. The median sampled DSM slope is **4.96°**.
