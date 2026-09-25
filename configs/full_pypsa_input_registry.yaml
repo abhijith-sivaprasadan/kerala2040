@@ -26,6 +26,8 @@ sources:
   proxy_expansion_v0_8: configs/full_pypsa_proxy_expansion_v0_8.yaml
   proxy_expansion_evidence_v0_8: data/evidence/models/full_pypsa_proxy_expansion_v0_8_2026_09_25.json
   wri_kerala_re_2025: data/evidence/solar/wri_kerala_re_technology_assessment_2025_09_25.json
+  import_economics_v1_0: configs/full_pypsa_import_economics_v1_0.yaml
+  import_economics_evidence_v1_0: data/evidence/grid/kerala_import_economics_forward_transfer_v1_0_2026_09_25.json
 
 requirements:
   base_system:
@@ -296,29 +298,48 @@ requirements:
       - head/efficiency curves and cascade routing
 
   interstate_transfer_limit:
-    status: snapshot_selected_for_proxy_sensitivity_not_chronology
+    status: current_ATC_and_forward_import_requirements_selected_future_ATC_blocked
     evidence:
       - configs/grid_transfer_contract_evidence_2024_25.yaml
-      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+      - data/evidence/grid/kerala_transmission_resource_adequacy_2034_35_2026_09_25.json
+      - data/evidence/grid/kerala_import_economics_forward_transfer_v1_0_2026_09_25.json
     acquired:
       jan2025_TTC_4350_RM_90_derived_ATC_4260: true
-      mar2025_SRLDC_TTC_4575_RM_120_derived_ATC_4455: true
+      mar2026_CEA_TTC_4575_ATC_4455: true
       v0_2_ATC_reference_4455_and_80_60pct_stress_haircuts_selected: true
+      CEA_2029_30_peak_import_requirement_2696_mw: true
+      CEA_2034_35_peak_import_requirement_2020_mw: true
+      CEA_2029_30_ISTS_additions_2500MVA_474ckm_preserved: true
+      CEA_2030_35_ISTS_additions_1000MVA_280ckm_preserved: true
     remaining:
       - effective timestamped ATC/TTC revisions for import and export
       - N_minus_1/topology/outage constraints
       - actual blockwise interchange and meter boundary
-      - forward 2030_2035_2040 corridor assumptions
-    rule: no single snapshot may be stretched into an annual or 2040 limit
+      - explicit future 2030_2035_2040 ATC/TTC capability
+    rule: >-
+      CEA future import-requirement MW and planned MVA/circuit-km are not future ATC.
+      v1.0 keeps 4455 MW as the only source-valued ATC and does not infer a higher cap.
 
   import_price_series:
-    status: blocked
+    status: source_bounded_annual_price_sensitivity_ready_interval_landed_cost_blocked
     evidence:
       - configs/grid_transfer_contract_evidence_2024_25.yaml
+      - configs/full_pypsa_import_economics_v1_0.yaml
+      - data/evidence/grid/kerala_import_economics_forward_transfer_v1_0_2026_09_25.json
+    acquired:
+      KSEBL_FY2023_24_weighted_purchase_cost_5_05_INR_per_kWh: true
+      IEX_FY2023_24_DAM_5_24_INR_per_kWh: true
+      delivered_bulk_supply_7_13_INR_per_kWh_stress_proxy: true
+      RBI_NSO_CPI_common_real_2021_22_basis: true
+      partial_import_vs_candidate_investment_objective_v1_0: true
     remaining:
       - landed Kerala-periphery contract/exchange cost by block and source
       - transmission charges losses DSM banking/swap obligations
-      - forward fuel/market-price scenario
+      - interval market/contract price chronology and volume rights
+      - forward 2030 fuel/market-price scenario
+    rule: >-
+      v1.0 admits annual source-bounded price proxies only as research sensitivities.
+      They do not constitute a validated landed Kerala import-price series.
 
   reliability_criterion:
     status: research_benchmark_selected_probabilistic_evaluation_blocked
@@ -421,6 +442,7 @@ release:
   research_proxy_capacity_expansion_candidate_limits_possible_now: true
   research_proxy_capacity_expansion_counterfactual_completed: true
   direct_pypsa_proxy_expansion_equivalence_verified: true
+  research_import_economic_sensitivity_possible_now: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
@@ -428,9 +450,11 @@ release:
     2030 research cost/finance package, v0.6 builds reproducible ERA5-derived
     five-point solar/wind screening profiles, v0.7 adds source-bounded statewide
     renewable-capacity envelopes, v0.8 completes an adequacy-first 2030 proxy
-    expansion counterfactual, and v0.9 reproduces all 36 full-year v0.8 cases through
-    direct PyPSA/Linopy to solver precision. Full economic capacity expansion remains blocked by
-    import economics, statutory/site-level siting, rooftop
-    technical potential, capacity-weighted spatial allocation, outages, hydro/PSP
-    physics, import-price inputs and other unresolved operational constraints.
+    expansion counterfactual, v0.9 reproduces all 36 full-year v0.8 cases through
+    direct PyPSA/Linopy to solver precision, and v1.0 adds source-bounded annual
+    import-price sensitivities plus forward import-requirement benchmarks. Full
+    economic capacity expansion remains blocked by validated landed/interval import
+    economics, explicit future ATC, statutory/site-level siting, rooftop technical
+    potential, capacity-weighted spatial allocation, outages, hydro/PSP physics and
+    unresolved existing-fleet operating costs.
   validated_run_possible_now: false

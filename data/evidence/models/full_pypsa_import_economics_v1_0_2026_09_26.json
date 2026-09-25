@@ -1,0 +1,127 @@
+{
+  "classification": "FULL_PYPSA_IMPORT_ECONOMICS_V1_0_PARTIAL_ECONOMIC_SENSITIVITY_NOT_TOTAL_SYSTEM_COST",
+  "prepared_date": "2026-09-26",
+  "workflow": {
+    "run_id": 36195878000,
+    "head_sha": "b0817ea2a50a12fc48217b2e9ff0946bf389ff6e",
+    "artifact_id": 10891756061,
+    "artifact_name": "full-pypsa-import-economics-v1.0-NOT-TOTAL-SYSTEM-COST",
+    "artifact_digest_sha256": "3397131a7033da09207623bc5f16e41b013b1d834d28aa6dc8bcbce73fe29268"
+  },
+  "matrix": {
+    "cases_solved": 108,
+    "hours_per_case": 8760,
+    "demand_cases": [
+      "lower_FY2030",
+      "reference_FY2030_31"
+    ],
+    "transfer_limits_mw": [
+      4455,
+      3564,
+      2673
+    ],
+    "renewable_envelopes": [
+      "low",
+      "reference",
+      "high"
+    ],
+    "bess_cost_cases": [
+      "low",
+      "high"
+    ],
+    "import_price_cases_real_2021_22_inr_per_mwh": {
+      "ksebl_weighted_purchase": 4494.070251674815,
+      "iex_dam_wholesale": 4663.154082925947,
+      "delivered_bulk_stress": 6345.093246424046
+    }
+  },
+  "key_results": {
+    "lower_FY2030_full_ATC_reference_envelope_low_BESS": {
+      "ksebl_weighted_purchase": {
+        "solar_mw": 4210.74,
+        "wind_mw": 0,
+        "bess_mw": 9.03,
+        "imports_gwh": 19000.7,
+        "partial_cost_million_inr": 104866.08
+      },
+      "iex_dam_wholesale": {
+        "solar_mw": 4210.74,
+        "wind_mw": 0,
+        "bess_mw": 9.03,
+        "imports_gwh": 19000.7,
+        "partial_cost_million_inr": 108078.79
+      },
+      "delivered_bulk_stress": {
+        "solar_mw": 4210.74,
+        "wind_mw": 119.34,
+        "bess_mw": 0,
+        "imports_gwh": 18879.29,
+        "partial_cost_million_inr": 140012.45
+      }
+    },
+    "lower_FY2030_full_ATC_high_envelope_low_BESS": {
+      "ksebl_weighted_purchase": {
+        "solar_mw": 5513.224346,
+        "wind_mw": 0,
+        "bess_mw": 9.034867,
+        "imports_gwh": 17415.687
+      },
+      "iex_dam_wholesale": {
+        "solar_mw": 5628.603088,
+        "wind_mw": 0,
+        "bess_mw": 9.034867,
+        "imports_gwh": 17299.59
+      },
+      "delivered_bulk_stress": {
+        "solar_mw": 6474.175689,
+        "wind_mw": 0,
+        "bess_mw": 9.034867,
+        "imports_gwh": 16576.366
+      },
+      "interpretation": "Where adequacy is non-binding, higher import price shifts the partial-economic optimum toward more local solar and lower imports."
+    },
+    "reference_FY2030_31_reference_envelope_low_BESS": {
+      "full_ATC": {
+        "unserved_mwh": 375030.3,
+        "solar_mw": 4210.74,
+        "wind_mw": 2549.475,
+        "bess_mw": 250,
+        "imports_gwh": 27739.98
+      },
+      "ATC_80pct": {
+        "unserved_mwh": 2301611.7,
+        "solar_mw": 4210.74,
+        "wind_mw": 2549.475,
+        "bess_mw": 250,
+        "imports_gwh": 25829.91
+      },
+      "ATC_60pct": {
+        "unserved_mwh": 6600273.1,
+        "solar_mw": 4210.74,
+        "wind_mw": 2549.475,
+        "bess_mw": 250,
+        "imports_gwh": 21532.96
+      },
+      "interpretation": "Adequacy constraints force all candidate limits to bind, so import-price variation changes accounting cost but not the capacity mix."
+    }
+  },
+  "interpretation": [
+    "The KSEBL and IEX annual price cases are close enough that many cap-bound cases retain the same build; the delivered-bulk stress price can induce additional local generation in non-binding cases.",
+    "Reference FY2030-31 demand remains an adequacy-constrained problem under the admitted candidate limits, so price sensitivity cannot repair the residual shortage.",
+    "The partial objective includes annualized candidate investment plus import-energy cost only. Existing hydro/nonhydro are frozen and unpriced."
+  ],
+  "limitations": [
+    "No validated interval landed Kerala-periphery price chronology.",
+    "No future ATC/TTC capability is inferred from import requirements or planned MVA/circuit-km.",
+    "Existing fleet variable costs, outages and economic redispatch remain unresolved.",
+    "Hydro remains a frozen historical-energy replay rather than reservoir/cascade dispatch.",
+    "Not a total-system-cost plan or scenario recommendation."
+  ],
+  "model_admission": {
+    "import_economic_sensitivity_complete": true,
+    "partial_economic_capacity_expansion_ready": true,
+    "total_system_cost_optimization": false,
+    "validated_capacity_plan": false,
+    "scenario_recommendation": false
+  }
+}

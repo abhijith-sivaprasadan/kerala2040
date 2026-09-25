@@ -608,3 +608,102 @@ With the optimization engine now independently reproduced, the next high-value
 checkpoint should move from numerical plumbing to the largest physical/economic
 blockers: first a source-bounded **import-price / forward-transfer package**, then
 a materially better **hydro/flexible-supply representation**.
+
+
+## Implementation checkpoint 12 · import economics and forward-transfer evidence v1.0
+
+v1.0 moves the direct-PyPSA 2030 expansion screen from **free imports** to a
+source-bounded partial economic sensitivity. It still does not claim total-system
+least cost because existing hydro/nonhydro remain frozen historical energy replays
+without admitted variable costs.
+
+The stage ordering remains fail-closed:
+
+1. minimize unserved MWh;
+2. preserve that minimum shortage;
+3. minimize annualized candidate solar/wind/4-hour-BESS investment **plus import
+   energy cost**.
+
+No value of lost load is invented.
+
+### Common real-price basis
+
+v0.5 investment costs are in real 2021-22 INR. v1.0 therefore does not mix them
+directly with later nominal power prices. FY2023-24 import-price proxies are deflated
+using the RBI/NSO all-India CPI Combined annual-average ratio:
+
+- FY2021-22 average CPI: **163.8333**;
+- FY2023-24 average CPI: **184.1000**;
+- nominal FY2023-24 -> real FY2021-22 ratio: **0.8899149**.
+
+Three annual price sensitivities are retained:
+
+| Case | Source value | Real 2021-22 value | Interpretation |
+|---|---:|---:|---|
+| KSEBL weighted purchase | ₹5.05/kWh | ₹4,494.07/MWh | annual KSEBL purchase-cost proxy |
+| IEX DAM wholesale | ₹5.24/kWh | ₹4,663.15/MWh | exchange MCP proxy before Kerala-specific adders |
+| Delivered bulk stress | ₹7.13/kWh | ₹6,345.09/MWh | downstream KSEBL bulk-supply stress boundary |
+
+The last case is deliberately **not** called Kerala-border import cost. The exchange
+case likewise excludes Kerala-specific transmission charges, losses, fees, DSM and
+contractual obligations. v1.0 is therefore an economic sensitivity, not a landed
+price chronology.
+
+### Forward transfer representation
+
+CEA's transmission RA study provides a current **4,575 MW TTC / 4,455 MW ATC**.
+For future studies it reports peak load-generation-balance import requirements of
+**2,696 MW in 2029-30** and **2,020 MW in 2034-35**, together with planned ISTS
+reinforcements of **2,500 MVA + 474 ckm by 2029-30** and another
+**1,000 MVA + 280 ckm during 2030-35**.
+
+Those future MW figures are **requirements, not ATC**. The MVA/circuit-km additions
+also cannot be arithmetically converted to statewide transfer capability without
+power-flow and contingency studies. v1.0 therefore retains 4,455 MW as the only
+source-valued ATC, plus the existing 80% and 60% stress cases. It does not invent a
+higher 2030 transfer limit.
+
+The full v1.0 matrix combines:
+
+- lower CSTEP FY2030 and CEA/KSERC reference FY2030-31 demand;
+- 4,455 / 3,564 / 2,673 MW transfer sensitivities;
+- low/reference/high v0.7 renewable envelopes;
+- low/high v0.5 BESS costs;
+- all three import-price sensitivities.
+
+That is **108 full-year economic-sensitivity cases**. Results remain partial system
+economics because existing fleet costs, outages, hydro reservoir/cascade operation,
+future ATC, statutory siting and interval landed import prices are unresolved.
+
+The artifact-backed full-year run solved all 108 cases successfully. The economic
+effect depends on whether the case is already **adequacy-cap-bound**.
+
+For lower FY2030 demand with the full 4,455 MW ATC sensitivity and the reference
+renewable envelope, the low-BESS-cost case uses **4,210.74 MW solar + 9.03 MW
+BESS** under the KSEBL and IEX price proxies. Under the higher delivered-bulk stress
+price it substitutes **119.34 MW wind** for the small BESS addition and reduces
+imports from about **19.001 TWh to 18.879 TWh**.
+
+With the high renewable envelope, the price signal is clearer: under the same lower
+FY2030/full-ATC case, solar rises from **5,513.22 MW** at the KSEBL weighted-purchase
+proxy to **6,474.18 MW** at the delivered-bulk stress price, while imports fall from
+**17.416 TWh to 16.576 TWh**. This is the expected import-versus-local-build tradeoff.
+
+By contrast, the CEA/KSERC reference FY2030-31 cases remain adequacy constrained.
+For the reference renewable envelope the model already reaches **4,210.74 MW solar,
+2,549.475 MW wind and 250 MW BESS** at every import-price sensitivity, with residual
+shortage of about **0.375 TWh / 2.302 TWh / 6.600 TWh** under the 100% / 80% / 60%
+ATC cases. In those cap-bound cases, a higher import price changes the reported
+partial economic cost but cannot change the capacity mix because the admitted
+candidate limits are already binding.
+
+Durable result evidence is recorded in
+`data/evidence/models/full_pypsa_import_economics_v1_0_2026_09_26.json`.
+
+Run:
+
+```bash
+python scripts/run_full_pypsa_import_economics_v1_0.py \
+  --acknowledge-partial-economics \
+  --hours 8760
+```
