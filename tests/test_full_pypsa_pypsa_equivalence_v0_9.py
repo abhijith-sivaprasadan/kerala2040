@@ -45,18 +45,18 @@ def test_v09_direct_pypsa_matches_v08_on_synthetic_day():
         "wind_million_inr_per_mw_year": 6.0,
         "bess_million_inr_per_mw_year": 8.0,
     }
-    kwargs = dict(
-        residual_load_mw=residual,
-        solar_profile=solar,
-        wind_profile=wind,
-        import_limit_mw=75.0,
-        caps=caps,
-        annualized_costs=costs,
-        bess_duration_h=4.0,
-        charge_efficiency=0.94,
-        discharge_efficiency=0.94,
-        unserved_tolerance_mwh=1e-6,
-    )
+    kwargs = {
+        "residual_load_mw": residual,
+        "solar_profile": solar,
+        "wind_profile": wind,
+        "import_limit_mw": 75.0,
+        "caps": caps,
+        "annualized_costs": costs,
+        "bess_duration_h": 4.0,
+        "charge_efficiency": 0.94,
+        "discharge_efficiency": 0.94,
+        "unserved_tolerance_mwh": 1e-6,
+    }
     reference = solve_proxy_expansion_case(**kwargs)
     direct = solve_pypsa_equivalence_case(**kwargs)
     comparison = _compare_case(
