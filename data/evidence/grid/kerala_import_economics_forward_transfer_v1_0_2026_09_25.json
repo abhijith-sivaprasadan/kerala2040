@@ -54,10 +54,11 @@
       "nominal_inr_per_kwh": 5.24,
       "nominal_inr_per_mwh": 5240,
       "real_2021_22_inr_per_mwh": 4663.154082925947,
-      "source": "IEX reported FY2023-24 average Day-Ahead Market clearing price",
-      "url": "https://www.business-standard.com/markets/capital-market-news/iex-records-18-yoy-rise-in-traded-electricity-volume-in-q4-fy25-125040400568_1.html",
+      "source": "Indian Energy Exchange FY2023-24 annual reporting / investor financials",
+      "url": "https://www.iexindia.com/investors/financials",
       "role": "wholesale_market_price_proxy",
-      "boundary_warning": "Exchange MCP excludes Kerala-specific transmission charges, losses, fees, DSM and contract obligations."
+      "boundary_warning": "Exchange MCP excludes Kerala-specific transmission charges, losses, fees, DSM and contract obligations.",
+      "source_note": "IEX investor page lists Annual Report FY 2023-24; the report states FY24 DAM average price was Rs 5.24/unit."
     },
     "downstream_bulk_supply_stress_fy2023_24": {
       "nominal_inr_per_kwh": 7.13,
