@@ -10,6 +10,8 @@ sources:
   cstep_2024: data/external/cstep_2024/renewable_potential_benchmarks.csv
   nise_and_niwe_context: data/evidence/solar/nwdp_sac_kerala_waterbodies_2026_09_22.json
   current_capacity: data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+  march_2026_solar_crosswalk: data/evidence/assets/kerala_solar_ge1_identity_crosswalk_2026_03_31.json
+  resource_adequacy: data/evidence/demand/kerala_resource_adequacy_2025_2035_36_2026_09_25.json
   wri_2025: data/evidence/solar/wri_kerala_re_technology_assessment_2025_09_25.json
   fail_closed_gate: data/evidence/solar/solar_wind_feasible_capacity_gates_2026_09_22.json
 
@@ -31,6 +33,11 @@ technology_envelopes:
 
   ground_utility_pv:
     endogenous_expansion_admitted: research_sensitivity_only
+    conservative_existing_floor_mw:
+      value: 340.26
+      as_of: "2026-03-31"
+      source: alternate_same_date_MNRE_ground_mounted_boundary
+      caveat: may_include_floating_or_mixed_MNRE_classification_so_subtraction_is_conservative
     published_total_capacity_scenarios_mw:
       low:
         value: 2423
@@ -44,10 +51,14 @@ technology_envelopes:
         value: 6110
         source: WRI_2025_citing_DoECC_2022_utility_scale_solar_potential
         method_note: broader_utility_scale_technical_potential
-    existing_capacity_subtraction_ready: false
-    reason: >-
-      Current MNRE ground-mounted category may include floating or mixed project
-      classifications, so exact new-build headroom is not derived here.
+    derived_additional_headroom_mw:
+      low: 2082.74
+      reference: 2082.74
+      high: 5769.74
+    headroom_rule: >-
+      published total scenario minus same-date MNRE 340.26 MW ground-mounted category.
+      If that category contains floating/mixed assets, the resulting ground-PV headroom
+      is conservative rather than overstated.
 
   floating_pv:
     endogenous_expansion_admitted: research_sensitivity_only
@@ -76,9 +87,9 @@ technology_envelopes:
   onshore_wind:
     endogenous_expansion_admitted: research_sensitivity_only
     current_installed_mw:
-      value: 71.52
-      as_of: "2026-08-31"
-      source: MNRE_location_based_snapshot
+      value: 71.525
+      as_of: "2026-03-31"
+      source: canonical_CEA_March2026_wind_solar_decomposition
     published_total_capacity_scenarios_mw:
       low:
         value: 2311
@@ -93,10 +104,10 @@ technology_envelopes:
         source: CSTEP_2024_GIS_assessment
         method_note: 272_sq_km_suitable_area_reported_by_CSTEP
     derived_additional_headroom_mw:
-      low: 2239.48
-      reference: 2549.48
-      high: 2921.48
-    headroom_rule: scenario_total_minus_MNRE_Aug2026_installed_wind
+      low: 2239.475
+      reference: 2549.475
+      high: 2921.475
+    headroom_rule: scenario_total_minus_canonical_March2026_installed_wind
     caveat: no_statutory_forest_ESZ_setback_access_or_grid_screen
 
 packaged_research_cases:
@@ -128,6 +139,7 @@ spatial_and_grid_status:
 release:
   published_capacity_envelope_ready: true
   rooftop_endogenous_expansion_ready: false
-  statewide_2030_capacity_expansion_sensitivity_ready: true
+  statewide_2030_proxy_capacity_expansion_candidate_limits_ready: true
+  full_economic_capacity_expansion_ready: false
   validated_capacity_expansion_ready: false
   statutory_buildable_capacity_ready: false
