@@ -53,7 +53,18 @@ def load_proxy_expansion_suite(path: Path) -> dict[str, Any]:
     return data
 
 
-def _align_profiles(profile_path: Path, snapshots: pd.Series) -> tuple[np.ndarray, np.ndarray]:
+def _align_profiles(
+    profile_path: Path,
+    snapshots: pd.Series,
+) -> tuple[np.ndarray, np.ndarray, dict[str, float]]:
+    """Interpolate UTC-hour ERA5 profiles onto exact IST clock hours.
+
+    ERA5 whole UTC hours occur at :30 in IST. The model chronology is on local
+    :00 clock hours. Linear midpoint interpolation is therefore required. The
+    source archive starts at 2024-04-01 00:00 UTC (05:30 IST), so the first six
+    local clock hours use an explicit one-year cyclic wrap from the tail of the
+    same representative-year profile rather than a silent 5.5-hour shift.
+    """
     profile = pd.read_parquet(profile_path)
     required = {
         "timestamp_ist",
@@ -64,29 +75,61 @@ def _align_profiles(profile_path: Path, snapshots: pd.Series) -> tuple[np.ndarra
     if missing:
         raise ValueError(f"v0.6 profile artifact missing columns: {sorted(missing)}")
 
-    ts = pd.to_datetime(profile["timestamp_ist"])
-    if getattr(ts.dt, "tz", None) is not None:
-        ts = ts.dt.tz_localize(None)
-    keyed = profile.assign(_snapshot=ts).set_index("_snapshot")
-    wanted = pd.DatetimeIndex(snapshots)
-    if wanted.has_duplicates:
-        raise ValueError("proxy expansion snapshots are duplicated")
-    if keyed.index.has_duplicates:
-        raise ValueError("v0.6 profile timestamps are duplicated")
-    selected = keyed.reindex(wanted)
+    ts = pd.to_datetime(profile["timestamp_ist"], utc=True).dt.tz_convert("Asia/Kolkata")
+    if ts.duplicated().any() or not ts.is_monotonic_increasing:
+        raise ValueError("v0.6 profile timestamps must be unique and sorted")
+    if len(profile) != 8760:
+        raise ValueError("v0.8 requires the complete 8,760-hour v0.6 profile")
+    if not (ts.dt.minute == 30).all():
+        raise ValueError("expected ERA5 UTC-hour profile to fall on :30 IST")
+    if not (ts.diff().iloc[1:] == pd.Timedelta(hours=1)).all():
+        raise ValueError("v0.6 profile chronology is not hourly")
+
     profile_columns = ["solar_p_max_pu", "wind_p_max_pu_150m_niwe_anchored"]
+    source = profile[profile_columns].copy()
+    source.index = pd.DatetimeIndex(ts)
+
+    # Twelve tail hours are more than enough to provide the six missing local
+    # boundary hours plus an interpolation neighbour after shifting one year.
+    tail = source.iloc[-12:].copy()
+    tail.index = tail.index - pd.DateOffset(years=1)
+    expanded = pd.concat([tail, source]).sort_index()
+    if expanded.index.duplicated().any():
+        raise ValueError("cyclic ERA5 boundary extension produced duplicate timestamps")
+
+    target = pd.DatetimeIndex(snapshots).tz_localize("Asia/Kolkata")
+    if target.has_duplicates or not target.is_monotonic_increasing:
+        raise ValueError("proxy expansion snapshots must be unique and sorted")
+    if not (target.minute == 0).all():
+        raise ValueError("proxy expansion chronology must use exact local clock hours")
+
+    union = expanded.index.union(target).sort_values()
+    interpolated = expanded.reindex(union).interpolate(method="time", limit_area="inside")
+    selected = interpolated.reindex(target)
     if selected[profile_columns].isna().any().any():
-        raise ValueError("v0.6 renewable profile does not cover expansion chronology")
+        raise ValueError("IST-aligned renewable profile still has chronology gaps")
 
     solar = selected["solar_p_max_pu"].to_numpy(dtype=float)
     wind = selected["wind_p_max_pu_150m_niwe_anchored"].to_numpy(dtype=float)
     if not np.isfinite(solar).all() or not np.isfinite(wind).all():
         raise ValueError("renewable profiles contain non-finite values")
     if not ((solar >= 0).all() and (solar <= 1).all()):
-        raise ValueError("solar profile outside [0,1]")
+        raise ValueError("solar profile outside [0,1] after IST interpolation")
     if not ((wind >= 0).all() and (wind <= 1).all()):
-        raise ValueError("wind profile outside [0,1]")
-    return solar, wind
+        raise ValueError("wind profile outside [0,1] after IST interpolation")
+
+    raw_solar_sum = float(source["solar_p_max_pu"].sum())
+    raw_wind_sum = float(source["wind_p_max_pu_150m_niwe_anchored"].sum())
+    diagnostics = {
+        "cyclic_boundary_wrapped_local_hours": 6.0,
+        "solar_raw_full_load_hours": raw_solar_sum,
+        "solar_IST_aligned_full_load_hours": float(solar.sum()),
+        "solar_alignment_change_pct": 100.0 * (float(solar.sum()) - raw_solar_sum) / raw_solar_sum,
+        "wind_raw_full_load_hours": raw_wind_sum,
+        "wind_IST_aligned_full_load_hours": float(wind.sum()),
+        "wind_alignment_change_pct": 100.0 * (float(wind.sum()) - raw_wind_sum) / raw_wind_sum,
+    }
+    return solar, wind, diagnostics
 
 
 def _annualized_costs(root: Path, bess_cost_case: str) -> dict[str, float]:
@@ -416,8 +459,10 @@ def run_proxy_expansion_suite(
         root / "configs/full_pypsa_future_adequacy_v0_4.yaml"
     )
     hourly_base, metadata_base, _ = _load_base(root, future)
-    profiles = _align_profiles(profile_path, hourly_base["snapshot_ist_naive"])
-    solar_full, wind_full = profiles
+    solar_full, wind_full, alignment_diagnostics = _align_profiles(
+        profile_path,
+        hourly_base["snapshot_ist_naive"],
+    )
 
     cost_data = load_cost_finance_suite(root / "configs/full_pypsa_cost_finance_v0_5.yaml")
     bess = cost_data["research_2030"]["bess_4h"]
@@ -517,6 +562,7 @@ def run_proxy_expansion_suite(
         "source_metadata": {
             "base_chronology_classification": metadata_base["classification"],
             "renewable_profile": str(profile_path),
+            "renewable_profile_IST_alignment": alignment_diagnostics,
             "import_economics_validated": False,
             "statutory_siting_validated": False,
         },
