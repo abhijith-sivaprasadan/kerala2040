@@ -49,6 +49,16 @@
       "ecology_constraint": "strict_ecological_carrying_capacity",
       "demand_flexibility": "high",
       "import_option": "enabled"
+    },
+    {
+      "id": "S5_fiscal_conservative",
+      "code": "S5",
+      "name": "Fiscal Conservative",
+      "type": null,
+      "description": "Integrated sovereignty portfolio with an explicit public-capital exposure constraint, testing how much of the transition remains feasible when Kerala public financing is bounded and private/central financing assumptions are kept separate.",
+      "ecology_constraint": "spatial_suitability",
+      "demand_flexibility": "high",
+      "import_option": "enabled"
     }
   ],
   "stress_tests": {
