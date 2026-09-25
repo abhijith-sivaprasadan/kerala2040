@@ -127,9 +127,9 @@ def skeleton_summary(network) -> dict[str, Any]:
     return {
         "classification": network.meta["classification"],
         "base_date": network.meta["base_date"],
-        "buses": int(len(network.buses)),
-        "generators": int(len(network.generators)),
-        "links": int(len(network.links)),
+        "buses": len(network.buses),
+        "generators": len(network.generators),
+        "links": len(network.links),
         "generator_capacity_mw": float(network.generators["p_nom"].sum()),
         "import_boundary_snapshot_mw": float(
             network.links.at["interstate_import_boundary_snapshot", "p_nom"]
@@ -138,8 +138,8 @@ def skeleton_summary(network) -> dict[str, Any]:
             (network.generators["p_max_pu"] == 0.0).all()
         ),
         "all_link_dispatch_disabled": bool((network.links["p_max_pu"] == 0.0).all()),
-        "load_count": int(len(network.loads)),
-        "storage_units": int(len(network.storage_units)),
-        "stores": int(len(network.stores)),
+        "load_count": len(network.loads),
+        "storage_units": len(network.storage_units),
+        "stores": len(network.stores),
         "meta": dict(network.meta),
     }
