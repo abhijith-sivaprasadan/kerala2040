@@ -1,0 +1,160 @@
+{
+  "classification": "ERA5_FY2024_25_RENEWABLE_PROFILE_SCREEN_V0_6_VERIFIED_PIPELINE_NOT_EXPANSION_ADMISSION",
+  "prepared_date": "2026-09-25",
+  "workflow": {
+    "run_id": 36172112678,
+    "head_sha": "a65a881548faddb354c08920ede9e7138dc5dd7f",
+    "artifact_id": 10881111615,
+    "artifact_name": "full-pypsa-era5-renewables-v0.6-SCREENING-NOT-EXPANSION",
+    "artifact_digest_sha256": "1374af61b469cb8fba21810d1f4cfe7acc4fee5a120bf73ec92043c0ca899efa",
+    "artifact_expires_at": "2026-12-24T18:14:05Z"
+  },
+  "source_qa": {
+    "full_year_source_qc_passed": true,
+    "location_quarters_verified": 20,
+    "hours_per_point": 8760,
+    "point_hours_verified": 43800,
+    "variables": [
+      "t2m",
+      "u10",
+      "v10",
+      "ssrd",
+      "tp"
+    ]
+  },
+  "spatial_method": "nearest_era5_grid_cell_to_representative_coordinate",
+  "selected_grid_cells": {
+    "kannur": {
+      "target": [
+        11.8745,
+        75.3704
+      ],
+      "era5": [
+        11.75,
+        75.25
+      ]
+    },
+    "kochi": {
+      "target": [
+        9.9312,
+        76.2673
+      ],
+      "era5": [
+        10,
+        76.25
+      ]
+    },
+    "kozhikode": {
+      "target": [
+        11.2588,
+        75.7804
+      ],
+      "era5": [
+        11.25,
+        75.75
+      ]
+    },
+    "palakkad": {
+      "target": [
+        10.7867,
+        76.6548
+      ],
+      "era5": [
+        10.75,
+        76.75
+      ]
+    },
+    "thiruvananthapuram": {
+      "target": [
+        8.5241,
+        76.9366
+      ],
+      "era5": [
+        8.5,
+        77
+      ]
+    }
+  },
+  "profile_method": {
+    "solar": {
+      "performance_ratio": 0.82,
+      "temperature_coefficient_per_K": -0.004,
+      "cell_temperature_rise_K_per_W_m2": 0.025,
+      "irradiance": "ERA5 hourly SSRD / 3600"
+    },
+    "wind": {
+      "hub_height_m": 150,
+      "shear_exponent": 0.14,
+      "mean_anchor": "NIWE nearest-cell long-term 150 m mean",
+      "generic_cut_in_rated_cut_out_m_s": [
+        3,
+        12,
+        25
+      ]
+    },
+    "statewide_aggregation": "equal_weight_across_five_representative_points"
+  },
+  "statewide_screening": {
+    "solar_specific_yield_proxy_kwh_per_kw_year": 1358.5833679527286,
+    "solar_capacity_factor_proxy": 0.15508942556537997,
+    "wind_150m_NIWE_anchored_capacity_factor_proxy": 0.11822821490597747
+  },
+  "per_point": {
+    "kannur": {
+      "solar_specific_yield_proxy_kwh_per_kw_year": 1393.00662897794,
+      "NIWE_mean_150m_m_s": 3.494,
+      "wind_150m_anchored_capacity_factor_proxy": 0.03928035984891,
+      "wind_150m_anchored_full_load_hours_proxy": 344.0959522764516
+    },
+    "kochi": {
+      "solar_specific_yield_proxy_kwh_per_kw_year": 1334.8268961587296,
+      "NIWE_mean_150m_m_s": 3.193,
+      "wind_150m_anchored_capacity_factor_proxy": 0.02843371750596777,
+      "wind_150m_anchored_full_load_hours_proxy": 249.07936535227765
+    },
+    "kozhikode": {
+      "solar_specific_yield_proxy_kwh_per_kw_year": 1308.481176461268,
+      "NIWE_mean_150m_m_s": 3.336,
+      "wind_150m_anchored_capacity_factor_proxy": 0.03313973097028767,
+      "wind_150m_anchored_full_load_hours_proxy": 290.30404329972
+    },
+    "palakkad": {
+      "solar_specific_yield_proxy_kwh_per_kw_year": 1332.0629729018428,
+      "NIWE_mean_150m_m_s": 7.879,
+      "wind_150m_anchored_capacity_factor_proxy": 0.37859283474468897,
+      "wind_150m_anchored_full_load_hours_proxy": 3316.4732323634753
+    },
+    "thiruvananthapuram": {
+      "solar_specific_yield_proxy_kwh_per_kw_year": 1424.5391652638632,
+      "NIWE_mean_150m_m_s": 4.674,
+      "wind_150m_anchored_capacity_factor_proxy": 0.11169443146003293,
+      "wind_150m_anchored_full_load_hours_proxy": 978.4432195898884
+    }
+  },
+  "validation": {
+    "GSA_statewide_median_annual_PVOUT_kwh_per_kwp": 1493.50696,
+    "ERA5_proxy_minus_GSA_pct": -9.034011602280803,
+    "measured_annual_specific_yield_references_kwh_per_kw": {
+      "ntpc_kayamkulam": 2207.282608695652,
+      "thdc_kasaragod": 1816.2
+    },
+    "prior_local_single_cell_regression_max_abs_difference_kwh_per_kw": 0.03916526386319674,
+    "prior_local_wind_regression_max_abs_difference_flh": 0.043219589888394694,
+    "interpretation": "Regression confirms source extraction and proxy implementation for the four unchanged single-cell sites. Annual measured solar references and GSA climatology are diagnostics only and do not validate hourly plant output."
+  },
+  "model_admission": {
+    "research_screening_profile_built": true,
+    "capacity_weighted_state_profile": false,
+    "measured_hourly_solar_validated": false,
+    "measured_wind_generation_validated": false,
+    "legal_or_grid_buildable_capacity_mw": false,
+    "capacity_expansion_ready": false
+  },
+  "limitations": [
+    "Five representative ERA5 points are not a statewide capacity-weighted fleet.",
+    "PV proxy omits tilt, azimuth, inverter, soiling and project-specific losses.",
+    "Wind is mean-anchored to NIWE climatology with generic shear and turbine curve.",
+    "Measured solar references are annual energy only and cannot validate hourly shape.",
+    "No legal, ecological, land/water or grid-hosting capacity ceiling is admitted."
+  ]
+}

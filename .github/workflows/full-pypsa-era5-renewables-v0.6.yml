@@ -1,0 +1,97 @@
+name: Full PyPSA ERA5 renewable profiles v0.6
+
+on:
+  pull_request:
+    paths:
+      - "configs/full_pypsa_era5_renewable_profiles_v0_6.yaml"
+      - "configs/full_pypsa_input_registry.yaml"
+      - "data/evidence/weather/era5_renewable_profiles_v0_6_2026_09_25.json"
+      - "docs/FULL_PYPSA_SCENARIO_PROGRAMME.md"
+      - "src/kerala2040/era5_renewable_profiles.py"
+      - "scripts/build_full_pypsa_era5_profiles_v0_6.py"
+      - "scripts/verify_era5_source_artifacts.py"
+      - "tests/test_full_pypsa_era5_profiles_v0_6.py"
+      - ".github/workflows/full-pypsa-era5-renewables-v0.6.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build-era5-renewable-profiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install profile and source-QA dependencies
+        run: python -m pip install -e ".[dev,era5]"
+
+      - name: Lint and unit-test v0.6
+        run: |
+          ruff check             src/kerala2040/era5_renewable_profiles.py             scripts/build_full_pypsa_era5_profiles_v0_6.py             tests/test_full_pypsa_era5_profiles_v0_6.py
+          pytest -q tests/test_full_pypsa_era5_profiles_v0_6.py
+
+      - name: Download verified Apr-Dec 2024 source artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35622527064"
+          pattern: era5-*-2024-*_to_2024-*-SOURCE-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2024
+          merge-multiple: false
+
+      - name: Download verified Jan-Mar 2025 source artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35623051780"
+          pattern: era5-*-2025-01_to_2025-03-REACQUIRED-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2025
+          merge-multiple: false
+
+      - name: Require exactly 20 independent location-quarter artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(find results/acquisition/era5/full-year-input             -type f -name retrieval_attempt.json | wc -l)"
+          echo "retrieval manifests: $count"
+          test "$count" -eq 20
+
+      - name: Re-verify source bytes, chronology, variables, units and grids
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t artifacts < <(
+            find results/acquisition/era5/full-year-input               -type f -name retrieval_attempt.json -printf '%h\n' | sort -u
+          )
+          python scripts/verify_era5_source_artifacts.py "${artifacts[@]}"             --require-full-year             --output results/acquisition/era5/v0_6_source_qa.json
+
+      - name: Build v0.6 hourly weather and renewable screening profiles
+        run: |
+          python scripts/build_full_pypsa_era5_profiles_v0_6.py             results/acquisition/era5/full-year-input
+
+      - name: Show v0.6 profile summary
+        run: cat results/models/full_pypsa/era5_renewables_v0_6/summary.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: full-pypsa-era5-renewables-v0.6-SCREENING-NOT-EXPANSION
+          retention-days: 90
+          if-no-files-found: error
+          path: |
+            results/acquisition/era5/v0_6_source_qa.json
+            results/models/full_pypsa/era5_renewables_v0_6/weather_points.parquet
+            results/models/full_pypsa/era5_renewables_v0_6/point_profiles.parquet
+            results/models/full_pypsa/era5_renewables_v0_6/statewide_equal_weight_profile.parquet
+            results/models/full_pypsa/era5_renewables_v0_6/summary.json
+
+# This workflow exercises source-to-profile mechanics only. It does not prove
+# statewide buildable MW, measured hourly generation, or capacity-expansion readiness.

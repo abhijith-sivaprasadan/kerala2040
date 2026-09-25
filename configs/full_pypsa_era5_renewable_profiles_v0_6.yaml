@@ -1,0 +1,94 @@
+version: 1
+classification: full_pypsa_era5_renewable_profile_screen_v0_6_not_expansion_admitted
+prepared_date: "2026-09-25"
+purpose: >-
+  Recover the already verified FY2024-25 ERA5 representative-point source artifacts
+  and convert them into transparent hourly solar/wind screening profiles. This stage
+  validates source-to-profile mechanics and annual resource plausibility; it does not
+  establish legal/buildable MW or validated plant dispatch.
+
+source_artifacts:
+  apr_dec_2024_run_id: 35622527064
+  jan_mar_2025_run_id: 35623051780
+  source_qa: data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json
+  expected_points: [thiruvananthapuram, kochi, palakkad, kozhikode, kannur]
+  expected_hours_per_point: 8760
+  expected_point_hours: 43800
+
+spatial_sampling:
+  method: nearest_era5_grid_cell_to_representative_coordinate
+  reason: >-
+    Some request boxes contain more than one ERA5 grid cell (notably Kannur).
+    Nearest-cell selection is deterministic and avoids silently averaging unequal boxes.
+  interpolation: none
+
+weather_conversion:
+  temperature: t2m_K_minus_273_15
+  wind10: sqrt_u10_squared_plus_v10_squared
+  solar: ssrd_J_m2_divide_3600_to_Wh_m2_per_hour
+  precipitation: tp_m_times_1000_to_mm_per_hour
+
+profile_models:
+  solar:
+    method: documented_five_site_ERA5_proxy
+    performance_ratio: 0.82
+    temperature_coefficient_per_K: -0.004
+    cell_temperature_rise_K_per_W_m2: 0.025
+    caveat: no_tilt_azimuth_inverter_or_soiling_model
+  wind:
+    method: documented_ERA5_shape_mean_anchored_to_NIWE_150m
+    hub_height_m: 150
+    shear_exponent: 0.14
+    generic_cut_in_rated_cut_out_m_s: [3.0, 12.0, 25.0]
+    NIWE_mean_150m_m_s:
+      thiruvananthapuram: 4.674
+      kochi: 3.193
+      palakkad: 7.879
+      kozhikode: 3.336
+      kannur: 3.494
+    NIWE_source: data/evidence/solar/solar_wind_consolidated_numeric_2026_09_22.json
+    caveat: mean_anchoring_is_a_sensitivity_not_measured_height_shear_or_turbine_validation
+
+aggregation:
+  state_screening_profile: equal_weight_across_five_representative_points
+  capacity_weighted_profile: blocked
+  reason: installed_and_candidate_spatial_capacity_weights_not_yet_admitted
+
+validation_anchors:
+  gsa_statewide_median_annual_pvout_kwh_per_kwp: 1493.50696
+  gsa_source: data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json
+  measured_solar_generation:
+    ntpc_kayamkulam:
+      capacity_mw: 92
+      fy2024_25_generation_mu: 203.07
+    thdc_kasaragod:
+      capacity_mw: 50
+      fy2024_25_generation_mu: 90.81
+  asset_source: data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+  prior_local_single_cell_regression_kwh_per_kw:
+    kozhikode: 1308.5
+    kochi: 1334.8
+    palakkad: 1332.1
+    thiruvananthapuram: 1424.5
+  prior_local_wind_proxy_flh:
+    kozhikode: 290.3
+    kochi: 249.1
+    palakkad: 3316.5
+    thiruvananthapuram: 978.4
+  regression_note: >-
+    These four values came from the previously documented local proxy run using the
+    same source artifacts and [0,0] extraction. They are regression diagnostics only.
+    Kannur is excluded because v0.6 explicitly resolves its multi-cell box by nearest cell.
+  full_year_regression_tolerance:
+    solar_kwh_per_kw: 0.5
+    wind_full_load_hours: 0.5
+  rule: anchors_are_diagnostics_not_calibration_targets
+
+release:
+  source_to_hourly_weather_pipeline_ready: true
+  source_to_screening_profiles_ready: true
+  equal_weight_profile_model_admitted_for_expansion: false
+  renewable_capacity_ceiling_ready: false
+  wind_profile_validated_against_measured_generation: false
+  solar_profile_validated_against_hourly_measured_generation: false
+  capacity_expansion_ready: false

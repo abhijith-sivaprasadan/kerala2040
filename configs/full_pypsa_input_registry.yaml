@@ -18,6 +18,8 @@ sources:
   hydro_flexibility_bracket_v0_3: configs/full_pypsa_hydro_flexibility_v0_3.yaml
   future_adequacy_v0_4: configs/full_pypsa_future_adequacy_v0_4.yaml
   cost_finance_v0_5: configs/full_pypsa_cost_finance_v0_5.yaml
+  era5_renewable_profiles_v0_6: configs/full_pypsa_era5_renewable_profiles_v0_6.yaml
+  era5_renewable_profile_evidence_v0_6: data/evidence/weather/era5_renewable_profiles_v0_6_2026_09_25.json
 
 requirements:
   base_system:
@@ -122,22 +124,35 @@ requirements:
       - dispatch parameters for all admitted thermal and hydro assets
 
   renewable_temporal_profiles:
-    status: partial_validation_sources_available
+    status: research_screening_profiles_built_not_expansion_admitted
     evidence:
       - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
       - data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json
+      - data/evidence/weather/era5_renewable_profiles_v0_6_2026_09_25.json
       - data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json
+      - data/evidence/solar/solar_wind_consolidated_numeric_2026_09_22.json
       - data/evidence/gis/niwe_nwic_district_normalized_wind_terrain_2026_09_23.json
     acquired:
       ERA5_source_chronology: true
+      ERA5_20_location_quarters_reverified_in_v0_6: true
+      ERA5_43800_point_hours_converted_to_hourly_weather: true
+      deterministic_nearest_grid_cell_sampling: true
+      five_point_PV_screening_profile_built: true
+      five_point_NIWE_mean_anchored_150m_wind_screening_profile_built: true
+      prior_local_proxy_regression_reproduced: true
       Kayamkulam_92MW_FY2024_25_measured_solar_generation: true
       THDC_Kasaragod_50MW_FY2024_25_measured_solar_generation: true
       GSA_long_term_solar_resource: true
       NIWE_mean_wind_resource: true
     remaining:
-      - validate hourly solar transformation against measured plant generation or inverter data
+      - validate hourly solar shape against measured plant generation or inverter data
       - acquire usable wind generation chronology / met mast height-time metadata
-      - district/state aggregation weights compatible with installed and candidate capacity
+      - derive capacity-weighted spatial aggregation compatible with installed/candidate fleet
+      - replace generic PV/turbine assumptions with technology/site-specific models where needed
+    rule: >-
+      v0.6 is a reproducible source-to-profile research screen. Five equal-weight
+      representative points and NIWE mean anchoring do not establish statewide
+      buildable capacity or validated plant dispatch.
 
   solar_capacity_ceiling:
     status: blocked
@@ -342,12 +357,14 @@ release:
   research_proxy_adequacy_screen_possible_now: true
   research_hydro_flexibility_bracket_possible_now: true
   future_demand_counterfactual_screen_possible_now: true
+  research_renewable_profile_screen_possible_now: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
-    v0.4 adds source-anchor future-demand counterfactuals, and v0.5 harmonises a
-    bounded 2030 research cost/finance package for solar, wind and four-hour BESS.
-    Economic dispatch, probabilistic reliability and capacity expansion remain blocked
-    by renewable candidate profiles/capacity ceilings, outages, hydro/PSP physics,
+    v0.4 adds source-anchor future-demand counterfactuals, v0.5 harmonises a bounded
+    2030 research cost/finance package, and v0.6 builds reproducible ERA5-derived
+    five-point solar/wind screening profiles. Economic dispatch, probabilistic
+    reliability and capacity expansion remain blocked by buildable renewable capacity
+    ceilings, capacity-weighted spatial aggregation, outages, hydro/PSP physics,
     import-price inputs and other unresolved operational constraints.
   validated_run_possible_now: false
