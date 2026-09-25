@@ -3,7 +3,7 @@ classification: scenario_assumption
 source_type: structural_scenario_framework
 source: Kerala 2040 research design
 note: No numerical capacity, demand, cost, transfer-limit or reliability answers are encoded here.
-model_year: 2040
+model_years: [2030, 2035, 2040]
 rule: >-
   This file defines which levers differ between scenarios. It deliberately does not
   contain invented capacity ceilings, demand growth, costs, transfer limits or reliability
@@ -83,7 +83,7 @@ scenarios:
     battery_storage: expandable
     pumped_storage: expandable
     ev_smart_charging: limited
-    ecological_constraint: spatial_suitability
+    ecological_constraint: legal_minimum
     fiscal_constraint: none
 
   S3_integrated_sovereignty:
