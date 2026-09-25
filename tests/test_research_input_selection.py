@@ -20,7 +20,7 @@ def test_selection_uses_canonical_march_base(selection):
 
 
 def test_selected_existing_capacity_matches_reconciled_boundary(selection):
-    gen = selection["selected"]["existing_generation"]
+    gen = selection["selected"]["existing_generation"]["representation"]
     assert gen["ksebl_hydro"]["capacity_mw"] == pytest.approx(2196.36)
     assert gen["non_state_hydro"]["capacity_mw"] == pytest.approx(88.06)
     assert gen["ksebl_thermal"]["brahmapuram_mw"] == pytest.approx(63.96)
@@ -34,7 +34,7 @@ def test_selected_existing_capacity_matches_reconciled_boundary(selection):
 
 
 def test_unresolved_resources_cannot_dispatch(selection):
-    gen = selection["selected"]["existing_generation"]
+    gen = selection["selected"]["existing_generation"]["representation"]
     assert gen["ksebl_thermal"]["dispatch_enabled"] is False
     assert gen["ntpc_kayamkulam"]["dispatch_enabled"] is False
     assert gen["private_thermal"]["dispatch_enabled"] is False
@@ -43,7 +43,7 @@ def test_unresolved_resources_cannot_dispatch(selection):
 
 
 def test_rooftop_stays_embedded_in_net_demand(selection):
-    rooftop = selection["selected"]["existing_generation"]["distributed_solar_lt_1mw"]
+    rooftop = selection["selected"]["existing_generation"]["representation"]["distributed_solar_lt_1mw"]
     assert rooftop["mode"] == "embedded_in_net_grid_demand"
     assert rooftop["explicit_generator"] is False
 
