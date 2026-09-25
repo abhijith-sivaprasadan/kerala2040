@@ -338,6 +338,14 @@ def build_era5_screening_profiles(
         }
         for point, expected in wind_regression_expected.items()
     }
+    if len(statewide) == 8760:
+        tolerance = suite["validation_anchors"]["full_year_regression_tolerance"]
+        solar_max = max(abs(item["difference_kwh_per_kw"]) for item in regression.values())
+        wind_max = max(abs(item["difference_flh"]) for item in wind_regression.values())
+        if solar_max > float(tolerance["solar_kwh_per_kw"]):
+            raise ValueError("full-year v0.6 PV regression exceeded tolerance")
+        if wind_max > float(tolerance["wind_full_load_hours"]):
+            raise ValueError("full-year v0.6 wind regression exceeded tolerance")
 
     summary = {
         "classification": SUITE_CLASS,
