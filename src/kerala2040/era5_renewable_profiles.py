@@ -248,16 +248,34 @@ def build_era5_screening_profiles(
         0.0,
         1.0,
     )
-    point_profiles["wind_p_max_pu_100m"] = wind_p_max_pu(
-        point_profiles["wind10_m_s"],
-        hub_height_m=100.0,
+    wind_cfg = suite["profile_models"]["wind"]
+    alpha = float(wind_cfg["shear_exponent"])
+    hub_height = float(wind_cfg["hub_height_m"])
+    anchors = {
+        point: float(value) for point, value in wind_cfg["NIWE_mean_150m_m_s"].items()
+    }
+    point_profiles["wind150_height_proxy_m_s"] = (
+        point_profiles["wind10_m_s"] * (hub_height / 10.0) ** alpha
     )
-    point_profiles["wind_p_max_pu_150m"] = wind_p_max_pu(
-        point_profiles["wind10_m_s"],
-        hub_height_m=150.0,
-    )
+    point_profiles["wind150_mean_anchored_m_s"] = np.nan
+    point_profiles["wind_p_max_pu_150m_niwe_anchored"] = np.nan
+    for point, indices in point_profiles.groupby("point").groups.items():
+        if point not in anchors:
+            raise ValueError(f"missing NIWE 150 m mean anchor for {point}")
+        height_proxy = point_profiles.loc[indices, "wind150_height_proxy_m_s"]
+        if float(height_proxy.mean()) <= 0:
+            raise ValueError(f"non-positive ERA5 wind mean for {point}")
+        anchored = height_proxy * anchors[point] / float(height_proxy.mean())
+        point_profiles.loc[indices, "wind150_mean_anchored_m_s"] = anchored
+        point_profiles.loc[indices, "wind_p_max_pu_150m_niwe_anchored"] = (
+            wind_p_max_pu(
+                anchored,
+                hub_height_m=10.0,
+                shear_exponent=0.0,
+            ).to_numpy()
+        )
 
-    cols = ["solar_p_max_pu", "wind_p_max_pu_100m", "wind_p_max_pu_150m"]
+    cols = ["solar_p_max_pu", "wind_p_max_pu_150m_niwe_anchored"]
     statewide = (
         point_profiles.groupby("timestamp_utc", as_index=False)[cols]
         .mean()
@@ -272,8 +290,13 @@ def build_era5_screening_profiles(
     for point, frame in point_profiles.groupby("point", sort=True):
         per_point[point] = {
             "solar_specific_yield_proxy_kwh_per_kw_year": float(frame["solar_p_max_pu"].sum()),
-            "wind_100m_capacity_factor_proxy": float(frame["wind_p_max_pu_100m"].mean()),
-            "wind_150m_capacity_factor_proxy": float(frame["wind_p_max_pu_150m"].mean()),
+            "wind_150m_NIWE_anchor_m_s": anchors[point],
+            "wind_150m_anchored_capacity_factor_proxy": float(
+                frame["wind_p_max_pu_150m_niwe_anchored"].mean()
+            ),
+            "wind_150m_anchored_full_load_hours_proxy": float(
+                frame["wind_p_max_pu_150m_niwe_anchored"].sum()
+            ),
         }
 
     solar_yield = float(statewide["solar_p_max_pu"].sum())
@@ -301,6 +324,20 @@ def build_era5_screening_profiles(
         }
         for point, expected in regression_expected.items()
     }
+    wind_regression_expected = suite["validation_anchors"]["prior_local_wind_proxy_flh"]
+    wind_regression = {
+        point: {
+            "expected_flh": float(expected),
+            "v0_6_flh": float(
+                per_point[point]["wind_150m_anchored_full_load_hours_proxy"]
+            ),
+            "difference_flh": float(
+                per_point[point]["wind_150m_anchored_full_load_hours_proxy"]
+                - float(expected)
+            ),
+        }
+        for point, expected in wind_regression_expected.items()
+    }
 
     summary = {
         "classification": SUITE_CLASS,
@@ -310,8 +347,9 @@ def build_era5_screening_profiles(
         "statewide_screening": {
             "solar_specific_yield_proxy_kwh_per_kw_year": solar_yield,
             "solar_capacity_factor_proxy": float(statewide["solar_p_max_pu"].mean()),
-            "wind_100m_capacity_factor_proxy": float(statewide["wind_p_max_pu_100m"].mean()),
-            "wind_150m_capacity_factor_proxy": float(statewide["wind_p_max_pu_150m"].mean()),
+            "wind_150m_NIWE_anchored_capacity_factor_proxy": float(
+                statewide["wind_p_max_pu_150m_niwe_anchored"].mean()
+            ),
         },
         "per_point": per_point,
         "validation_diagnostics": {
@@ -319,12 +357,13 @@ def build_era5_screening_profiles(
             "era5_proxy_minus_gsa_pct": 100.0 * (solar_yield - gsa) / gsa,
             "measured_specific_yield_kwh_per_kw": measured_specific_yield,
             "prior_local_single_cell_regression": regression,
+            "prior_local_wind_proxy_regression": wind_regression,
             "rule": "diagnostic comparison only; no profile calibration or force-fit",
         },
         "limitations": [
             "Five representative points are not a statewide capacity-weighted fleet.",
             "PV proxy has no tilt/azimuth/inverter/soiling model.",
-            "Wind uses generic shear and turbine-curve assumptions, not NIWE site-specific yield.",
+            "Wind shape is mean-anchored to NIWE 150 m atlas values, not measured turbine yield.",
             "No legal/ecological/grid buildable-capacity ceiling is applied.",
             "Measured solar anchors are annual energy only and cannot validate hourly shape.",
         ],
