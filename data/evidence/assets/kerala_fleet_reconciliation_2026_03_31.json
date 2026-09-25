@@ -1,0 +1,703 @@
+{
+  "classification": "PARTIAL_EXACT_AGGREGATE_FLEET_RECONCILIATION_WITH_EXPLICIT_RESIDUALS_NOT_DISPATCH_READY",
+  "prepared_date": "2026-09-25",
+  "base_date": "2026-03-31",
+  "purpose": "Reconcile the physical Kerala generation fleet to exact same-date technology totals while retaining unresolved station-level capacity as explicit residual buckets. No residual is converted into an invented plant.",
+  "sources": {
+    "location_capacity": "data/evidence/assets/kerala_location_capacity_2026_03_31.json",
+    "base_system": "configs/base_system_2026_03_31.yaml",
+    "kseb_portal_seed": "public/kseb-projects.json",
+    "fy2024_25_official_reconciliation": "configs/generator_reconciliation_2024_25.yaml",
+    "asset_register": "data/evidence/assets/kerala_energy_asset_register_2026_09_25.json"
+  },
+  "rules": [
+    "Exact same-date aggregate technology totals take precedence over stale project-portal totals.",
+    "Portal Completed is a census seed, not proof of operation at the March-2026 boundary.",
+    "Thottiyar and Pallivasal Extension are overridden to commissioned because CEA/Economic Review independently verify their FY2024-25 commissioning.",
+    "The Poringalkuthu micro-screw portal row labelled 1x11kW but carrying 11 MW is excluded from arithmetic pending unit correction.",
+    "Distributed rooftop solar remains embedded in net-grid demand and is not an explicit dispatch generator.",
+    "Historical BSES/Kasaragod thermal rows are not reintroduced into the current fleet.",
+    "Residual buckets preserve exact capacity reconciliation without fabricating plant identity."
+  ],
+  "exact_technology_totals_mw": {
+    "thermal": 536.54,
+    "large_hydro": 2008.15,
+    "small_hydro": 276.52,
+    "wind": 71.52,
+    "bio_power": 2.5,
+    "solar_ground_mounted": 340.26,
+    "solar_rooftop": 1850.4,
+    "solar_off_grid_or_kusum_b": 24.93,
+    "solar_hybrid": 0,
+    "total_physical": 5110.82
+  },
+  "thermal": [
+    {
+      "id": "ntpc_kayamkulam_rgccpp",
+      "station": "Rajiv Gandhi CCPP / NTPC Kayamkulam",
+      "technology": "thermal_naphtha_ccgt",
+      "owner": "NTPC",
+      "district": "Alappuzha",
+      "capacity_mw": 359.58,
+      "status_at_2026_03_31": "physical_capacity_identity_confirmed",
+      "dispatch_admitted": false,
+      "blockers": [
+        "fuel price",
+        "heat rate",
+        "availability",
+        "commercial dispatch terms"
+      ]
+    },
+    {
+      "id": "ksebl_brahmapuram_bdpp",
+      "station": "Brahmapuram Diesel Power Plant",
+      "technology": "thermal_liquid_fuel",
+      "owner": "KSEBL",
+      "district": "Ernakulam",
+      "capacity_mw": 63.96,
+      "status_at_2026_03_31": "physical_capacity_identity_confirmed",
+      "dispatch_admitted": false,
+      "blockers": [
+        "unit availability",
+        "heat rate",
+        "fuel cost"
+      ]
+    },
+    {
+      "id": "ksebl_kozhikode_kdpp",
+      "station": "Kozhikode Diesel Power Plant",
+      "technology": "thermal_liquid_fuel",
+      "owner": "KSEBL",
+      "district": "Kozhikode",
+      "capacity_mw": 96,
+      "status_at_2026_03_31": "physical_capacity_identity_confirmed",
+      "dispatch_admitted": false,
+      "blockers": [
+        "unit availability",
+        "heat rate",
+        "fuel cost"
+      ]
+    },
+    {
+      "id": "unresolved_private_thermal_cpp",
+      "station": null,
+      "technology": "thermal_private_cpp_residual",
+      "owner": "private_CPP_unresolved",
+      "district": null,
+      "capacity_mw": 17,
+      "status_at_2026_03_31": "aggregate_capacity_only",
+      "dispatch_admitted": false,
+      "blockers": [
+        "plant identity",
+        "operating status",
+        "fuel",
+        "availability",
+        "cost"
+      ]
+    }
+  ],
+  "hydro_station_seed": [
+    {
+      "id": "peruvannamoozhy_shep",
+      "station": "Peruvannamoozhy SHEP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 6.6,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "idamalayar_hep",
+      "station": "Idamalayar HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 75,
+      "district": "Ernakulam",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "idukki_hep",
+      "station": "Idukki HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 780,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "neriamangalam_hep",
+      "station": "Neriamangalam HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 52.65,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "kuttiyadi_hep",
+      "station": "Kuttiyadi HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 75,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "poringalkuthu_left_bank_project_plb_4x9mw",
+      "station": "Poringalkuthu Left Bank Project - PLB 4x9MW",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 36,
+      "district": "Thrissur",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "madupetty_shp",
+      "station": "Madupetty SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 2,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "kakkad_hep",
+      "station": "Kakkad HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 50,
+      "district": "Pathanamthitta",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "kallada_shp",
+      "station": "Kallada SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 15,
+      "district": "Kollam",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "kuttiyadi_tr_shp",
+      "station": "Kuttiyadi TR SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 3.75,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "kakkayam_shp",
+      "station": "Kakkayam SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 3,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "lower_meenmutty_shp",
+      "station": "Lower Meenmutty SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 3.5,
+      "district": "Thiruvananthapuram",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "lower_periyar_hep",
+      "station": "Lower Periyar HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 180,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "malampuzha_shp",
+      "station": "Malampuzha SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 2.5,
+      "district": "Palakkad",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "malankara_shp",
+      "station": "Malankara SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 10.5,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "pallivasal_hep",
+      "station": "Pallivasal HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 27.5,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "panniar_hep",
+      "station": "Panniar HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 32.4,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "peppara_shp",
+      "station": "Peppara SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 3,
+      "district": "Thiruvananthapuram",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "sabarigiri_hep",
+      "station": "Sabarigiri HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 340,
+      "district": "Pathanamthitta",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "sengulam_hep",
+      "station": "Sengulam HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 50.8,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "neriamangalam_extension",
+      "station": "Neriamangalam Extension",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 25,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "poringalkuthu_left_bank_extension_project_plbe_1x16mw",
+      "station": "Poringalkuthu Left Bank Extension Project - PLBE 1x16MW",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 16,
+      "district": "Thrissur",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "vellathooval_shp",
+      "station": "Vellathooval SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 3.6,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "sholayar_hep",
+      "station": "Sholayar HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 54,
+      "district": "Thrissur",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "chembukadavu_i_shp",
+      "station": "Chembukadavu I SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 2.7,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "chembukadavu_ii_shp",
+      "station": "Chembukadavu II SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 3.75,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "urumi_i",
+      "station": "Urumi I",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 3.75,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "urumi_ii",
+      "station": "Urumi II",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 2.4,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "poozhithode_shp",
+      "station": "Poozhithode SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 4.8,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "ranni_perunadu_shp",
+      "station": "Ranni-Perunadu SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 4,
+      "district": "Pathanamthitta",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "peechi_shp",
+      "station": "Peechi SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 1.25,
+      "district": "Thrissur",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "vilangad_shp",
+      "station": "Vilangad SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 7.5,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "chimmony_shp",
+      "station": "Chimmony SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 2.5,
+      "district": "Thrissur",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "adyanpara_shp",
+      "station": "Adyanpara SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 3.5,
+      "district": "Malappuram",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "barapole_shp",
+      "station": "Barapole SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 15,
+      "district": "Kannur",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "chathankottunada_ii_shp",
+      "station": "Chathankottunada II SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 6,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "upper_kallar_shp",
+      "station": "Upper Kallar SHP",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 2,
+      "district": "Idukki",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "kuttiyadi_extension_scheme",
+      "station": "Kuttiyadi Extension Scheme",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 50,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "kuttiyadi_addl_extension",
+      "station": "Kuttiyadi Addl Extension",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 100,
+      "district": "Kozhikode",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "poringalkuthu_small_hep_1x_24_mw",
+      "station": "Poringalkuthu Small HEP ( 1X 24 MW)",
+      "technology": "hydro",
+      "mnre_category": "small_hydro_seed",
+      "capacity_mw": 24,
+      "district": "Thrissur",
+      "source_status": "KSEB_project_portal_completed",
+      "status_at_2026_03_31": "seed_current_status_requires_same_date_confirmation",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "thottiyar_hep",
+      "station": "Thottiyar HEP",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 40,
+      "district": "Idukki",
+      "source_status": "CEA_and_Economic_Review_commissioned_FY2024_25",
+      "status_at_2026_03_31": "commissioned_before_base_date",
+      "dispatch_admitted": false
+    },
+    {
+      "id": "pallivasal_extension_scheme",
+      "station": "Pallivasal Extension Scheme",
+      "technology": "hydro",
+      "mnre_category": "large_hydro_seed",
+      "capacity_mw": 60,
+      "district": "Idukki",
+      "source_status": "CEA_and_Economic_Review_commissioned_FY2024_25",
+      "status_at_2026_03_31": "commissioned_before_base_date",
+      "dispatch_admitted": false
+    }
+  ],
+  "hydro_reconciliation": {
+    "large_hydro": {
+      "exact_mw": 2008.15,
+      "station_seed_mw": 2003.35,
+      "residual_unresolved_mw": 4.8,
+      "station_seed_count": 16
+    },
+    "small_hydro": {
+      "exact_mw": 276.52,
+      "station_seed_mw": 177.6,
+      "residual_unresolved_mw": 98.92,
+      "station_seed_count": 26
+    },
+    "total": {
+      "exact_mw": 2284.67,
+      "station_seed_mw": 2180.95,
+      "residual_unresolved_mw": 103.72,
+      "station_seed_count": 42
+    }
+  },
+  "wind": {
+    "named_seed": [
+      {
+        "id": "ksebl_kanjikode_wind",
+        "station": "Kanjikode",
+        "capacity_mw": 2.03,
+        "district": "Palakkad",
+        "source_status": "KSEB_portal_completed",
+        "current_status": "requires_same_date_confirmation",
+        "dispatch_admitted": false
+      },
+      {
+        "id": "agali_wind",
+        "station": "Agali",
+        "capacity_mw": 18.6,
+        "district": "Palakkad",
+        "source_status": "KSEB_portal_completed",
+        "current_status": "requires_same_date_confirmation",
+        "dispatch_admitted": false
+      },
+      {
+        "id": "ahalia_kanjikode_wind",
+        "station": "Ahalia, Kanjikode",
+        "capacity_mw": 8.4,
+        "district": "Palakkad",
+        "source_status": "KSEB_portal_completed",
+        "current_status": "requires_same_date_confirmation",
+        "dispatch_admitted": false
+      }
+    ],
+    "exact_mw": 71.52,
+    "named_seed_mw": 29.03,
+    "residual_unresolved_mw": 42.49
+  },
+  "solar": {
+    "ground_mounted": {
+      "named_seed": [
+        {
+          "id": "ntpc_kayamkulam_floating_solar",
+          "station": "NTPC Kayamkulam Floating Solar",
+          "capacity_mw": 92,
+          "district": "Alappuzha",
+          "status": "commissioned_named_asset",
+          "dispatch_admitted": false
+        },
+        {
+          "id": "kasaragod_solar_park",
+          "station": "Kasaragod Solar Park - commissioned Ambalathara + Paivalike components",
+          "capacity_mw": 100,
+          "district": "Kasaragod",
+          "status": "commissioned_named_asset",
+          "dispatch_admitted": false
+        }
+      ],
+      "exact_mw": 340.26,
+      "named_seed_mw": 192,
+      "residual_unresolved_mw": 148.26,
+      "note": "THDC Kasaragod 50 MW is a component within the Kasaragod park subtotal and is not added again."
+    },
+    "rooftop": {
+      "exact_mw": 1850.4,
+      "representation": "embedded_in_net_grid_demand",
+      "explicit_dispatch_generator": false
+    },
+    "off_grid_or_kusum_b": {
+      "exact_mw": 24.93,
+      "representation": "excluded_from_grid_dispatch"
+    },
+    "hybrid": {
+      "exact_mw": 0
+    }
+  },
+  "bio_power": {
+    "exact_mw": 2.5,
+    "station_decomposition_status": "unresolved",
+    "dispatch_admitted": false
+  },
+  "excluded_or_historical": [
+    {
+      "id": "bses_kochi",
+      "reason": "historical portal asset not in current physical thermal aggregate"
+    },
+    {
+      "id": "kasaragod_power_thermal",
+      "reason": "historical portal asset not in current physical thermal aggregate"
+    },
+    {
+      "id": "poringalkuthu_micro_screw_bad_unit",
+      "reason": "portal name says 1x11kW while numeric capacity field says 11 MW; excluded pending correction"
+    },
+    {
+      "id": "perumthenaruvi_capacity_null",
+      "reason": "portal row has no numeric capacity; retained outside arithmetic until independently sourced"
+    }
+  ],
+  "reconciliation_checks": {
+    "thermal_exact": true,
+    "hydro_exact_with_residual": true,
+    "wind_exact_with_residual": true,
+    "solar_ground_exact_with_residual": true,
+    "solar_rooftop_exact_aggregate": true,
+    "bio_exact_aggregate": true,
+    "no_double_count_kasaragod_50mw_component": true,
+    "no_explicit_rooftop_dispatch": true
+  },
+  "release": {
+    "exact_aggregate_fleet_reconciled": true,
+    "station_level_fleet_complete": false,
+    "unit_level_fleet_complete": false,
+    "dispatch_ready": false,
+    "capacity_expansion_ready": false
+  },
+  "next_blockers": [
+    "Resolve 103.72 MW hydro station-level residual, especially missing small-hydro/IPP/CPP rows.",
+    "Resolve 42.49 MW wind residual and same-date status of portal wind assets.",
+    "Resolve 148.26 MW ground-solar residual and map named plants without double-counting portfolio assets.",
+    "Identify the 17 MW private thermal CPP and establish March-2026 operating status.",
+    "Resolve 2.50 MW bio-power station decomposition if it is to participate in grid dispatch.",
+    "Obtain unit availability, outage/derating, efficiency/heat-rate and variable-cost parameters."
+  ]
+}
