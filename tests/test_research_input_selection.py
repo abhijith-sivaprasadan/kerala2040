@@ -28,8 +28,11 @@ def test_selected_existing_capacity_matches_reconciled_boundary(selection):
     assert gen["ntpc_kayamkulam"]["capacity_mw"] == pytest.approx(359.58)
     assert sum(gen["ntpc_kayamkulam"]["units_mw"]) == pytest.approx(359.58)
     assert gen["private_thermal"]["capacity_mw"] == pytest.approx(17.0)
+    assert gen["state_wind"]["capacity_mw"] == pytest.approx(2.025)
+    assert gen["private_wind"]["capacity_mw"] == pytest.approx(69.50)
+    assert gen["state_solar_ge_1mw"]["capacity_mw"] == pytest.approx(22.715)
+    assert gen["private_solar_ge_1mw"]["capacity_mw"] == pytest.approx(214.10)
     assert gen["central_floating_solar"]["capacity_mw"] == pytest.approx(92.0)
-    assert gen["renewable_ge_1mw_residual"]["capacity_mw"] == pytest.approx(308.34)
     assert gen["distributed_solar_lt_1mw"]["capacity_mw"] == pytest.approx(1912.33)
 
 
@@ -38,8 +41,11 @@ def test_unresolved_resources_cannot_dispatch(selection):
     assert gen["ksebl_thermal"]["dispatch_enabled"] is False
     assert gen["ntpc_kayamkulam"]["dispatch_enabled"] is False
     assert gen["private_thermal"]["dispatch_enabled"] is False
+    assert gen["state_wind"]["dispatch_enabled"] is False
+    assert gen["private_wind"]["dispatch_enabled"] is False
+    assert gen["state_solar_ge_1mw"]["dispatch_enabled"] is False
+    assert gen["private_solar_ge_1mw"]["dispatch_enabled"] is False
     assert gen["central_floating_solar"]["dispatch_enabled"] is False
-    assert gen["renewable_ge_1mw_residual"]["dispatch_enabled"] is False
 
 
 def test_rooftop_stays_embedded_in_net_demand(selection):
@@ -68,3 +74,15 @@ def test_optimisation_is_explicitly_forbidden(selection):
     assert "least-cost capacity expansion" in forbidden
     assert "S0-S5 result publication" in forbidden
     assert "storage sizing recommendations" in forbidden
+
+
+def test_reconciled_ge1_renewables_sum_to_cea_boundary(selection):
+    gen = selection["selected"]["existing_generation"]["representation"]
+    total = (
+        gen["state_wind"]["capacity_mw"]
+        + gen["private_wind"]["capacity_mw"]
+        + gen["state_solar_ge_1mw"]["capacity_mw"]
+        + gen["private_solar_ge_1mw"]["capacity_mw"]
+        + gen["central_floating_solar"]["capacity_mw"]
+    )
+    assert total == pytest.approx(400.34)

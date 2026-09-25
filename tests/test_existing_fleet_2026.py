@@ -96,3 +96,15 @@ def test_private_wind_decomposition_reconciles_fy2024_25(fleet):
     assert private == pytest.approx(69.50)
     assert private + wind["state_ksebl"]["capacity_mw"] == pytest.approx(71.525)
     assert wind["qa"]["official_rounded_total_mw"] == pytest.approx(71.53)
+
+
+def test_march_2026_ge1_renewables_reconcile_by_technology_and_ownership(fleet):
+    renew = fleet["renewable_ge_1mw_nonhydro"]
+    wind = renew["wind"]
+    solar = renew["solar_ge_1mw"]
+    assert wind["total_mw"] == pytest.approx(71.525)
+    assert solar["total_mw"] == pytest.approx(328.815)
+    assert renew["arithmetic_total_mw"] == pytest.approx(400.34)
+    assert wind["total_mw"] + solar["total_mw"] == pytest.approx(400.34)
+    assert fleet["qa"]["renewable_ge1_technology_ownership_reconciled"] is True
+    assert fleet["qa"]["renewable_ge1_asset_level_solar_decomposition_complete"] is False

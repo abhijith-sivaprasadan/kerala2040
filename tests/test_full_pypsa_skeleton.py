@@ -57,7 +57,18 @@ def test_expected_structural_components_present(network):
         "kozhikode",
         "ntpc_kayamkulam",
         "private_thermal_residual",
+        "state_wind",
+        "private_wind",
+        "state_solar_ge_1mw",
+        "private_solar_ge_1mw",
         "kayamkulam_floating_solar",
-        "renewable_ge_1mw_residual",
     }
     assert set(network.buses.index) == {"kerala_system", "external_grid"}
+
+
+def test_reconciled_wind_and_solar_groups_present(network):
+    assert network.generators.loc["state_wind", "p_nom"] == pytest.approx(2.025)
+    assert network.generators.loc["private_wind", "p_nom"] == pytest.approx(69.50)
+    assert network.generators.loc["state_solar_ge_1mw", "p_nom"] == pytest.approx(22.715)
+    assert network.generators.loc["private_solar_ge_1mw", "p_nom"] == pytest.approx(214.10)
+    assert network.generators.loc["kayamkulam_floating_solar", "p_nom"] == pytest.approx(92.0)

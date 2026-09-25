@@ -7,6 +7,8 @@ on:
       - "configs/scenarios_2040.yaml"
       - "configs/base_system_2026_03_31.yaml"
       - "configs/research_input_selection_v0_1.yaml"
+      - "data/evidence/assets/kerala_existing_fleet_2026_03_31.json"
+      - "data/evidence/assets/kerala_re_crosswalk_2026_03_31.json"
       - "public/scenarios.json"
       - "src/kerala2040/scenario_compiler.py"
       - "src/kerala2040/base_system.py"
@@ -19,6 +21,7 @@ on:
       - "tests/test_base_system.py"
       - "tests/test_existing_fleet_2026.py"
       - "tests/test_research_input_selection.py"
+      - "tests/test_re_crosswalk_2026.py"
       - "tests/test_full_pypsa_skeleton.py"
       - "tests/test_scenario_specs_sync.py"
       - ".github/workflows/full-pypsa-scenarios.yml"
@@ -29,6 +32,8 @@ on:
       - "configs/scenarios_2040.yaml"
       - "configs/base_system_2026_03_31.yaml"
       - "configs/research_input_selection_v0_1.yaml"
+      - "data/evidence/assets/kerala_existing_fleet_2026_03_31.json"
+      - "data/evidence/assets/kerala_re_crosswalk_2026_03_31.json"
       - "public/scenarios.json"
       - "src/kerala2040/scenario_compiler.py"
       - "src/kerala2040/base_system.py"
@@ -41,6 +46,7 @@ on:
       - "tests/test_base_system.py"
       - "tests/test_existing_fleet_2026.py"
       - "tests/test_research_input_selection.py"
+      - "tests/test_re_crosswalk_2026.py"
       - "tests/test_full_pypsa_skeleton.py"
       - "tests/test_scenario_specs_sync.py"
   workflow_dispatch:
@@ -59,8 +65,8 @@ jobs:
       - run: pip install -e ".[dev]"
       - name: Lint and test structural compiler
         run: |
-          ruff check src/kerala2040/scenario_compiler.py src/kerala2040/base_system.py src/kerala2040/full_pypsa_skeleton.py scripts/compile_full_pypsa_scenarios.py scripts/reconcile_base_system.py scripts/build_full_pypsa_skeleton.py tests/test_scenario_compiler.py tests/test_base_system.py tests/test_existing_fleet_2026.py tests/test_research_input_selection.py tests/test_full_pypsa_skeleton.py tests/test_scenario_specs_sync.py
-          pytest -q tests/test_scenario_compiler.py tests/test_base_system.py tests/test_existing_fleet_2026.py tests/test_research_input_selection.py tests/test_full_pypsa_skeleton.py tests/test_scenario_specs_sync.py
+          ruff check src/kerala2040/scenario_compiler.py src/kerala2040/base_system.py src/kerala2040/full_pypsa_skeleton.py scripts/compile_full_pypsa_scenarios.py scripts/reconcile_base_system.py scripts/build_full_pypsa_skeleton.py tests/test_scenario_compiler.py tests/test_base_system.py tests/test_existing_fleet_2026.py tests/test_research_input_selection.py tests/test_re_crosswalk_2026.py tests/test_full_pypsa_skeleton.py tests/test_scenario_specs_sync.py
+          pytest -q tests/test_scenario_compiler.py tests/test_base_system.py tests/test_existing_fleet_2026.py tests/test_research_input_selection.py tests/test_re_crosswalk_2026.py tests/test_full_pypsa_skeleton.py tests/test_scenario_specs_sync.py
       - name: Reconcile canonical March-2026 base
         run: python scripts/reconcile_base_system.py
       - name: Build disabled full-PyPSA structural skeleton

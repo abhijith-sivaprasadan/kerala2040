@@ -570,14 +570,27 @@
   },
   "renewable_ge_1mw_nonhydro": {
     "march_2026_CEA_total_mw": 400.34,
-    "central_confirmed": [
-      {
+    "reconciliation_method": "CEA ownership renewable buckets minus reconciled wind ownership capacities",
+    "source_crosswalk": "data/evidence/assets/kerala_re_crosswalk_2026_03_31.json",
+    "wind": {
+      "state_mw": 2.025,
+      "private_and_captive_mw": 69.5,
+      "central_mw": 0,
+      "total_mw": 71.525
+    },
+    "solar_ge_1mw": {
+      "state_mw_derived": 22.715,
+      "private_mw_derived": 214.1,
+      "central_mw": 92,
+      "total_mw": 328.815,
+      "central_confirmed_asset": {
         "name": "NTPC Kayamkulam Floating Solar",
         "capacity_mw": 92
-      }
-    ],
-    "state_and_private_residual_mw": 308.34,
-    "status": "technology_and_asset_decomposition_incomplete_at_March_2026_boundary"
+      },
+      "state_private_asset_level_status": "ownership_capacity_reconciled_asset_identity_incomplete"
+    },
+    "arithmetic_total_mw": 400.34,
+    "status": "technology_and_ownership_capacity_reconciled_asset_level_solar_decomposition_incomplete"
   },
   "distributed_solar_lt_1mw": {
     "capacity_mw": 1912.33,
@@ -602,7 +615,9 @@
     "state_hydro_reconciliation_tolerance_mw": 0.01,
     "non_state_hydro_asset_decomposition_reconciled": true,
     "private_thermal_identity_reconciled": true,
-    "wind_fy2024_25_asset_decomposition_reconciled": true
+    "wind_fy2024_25_asset_decomposition_reconciled": true,
+    "renewable_ge1_technology_ownership_reconciled": true,
+    "renewable_ge1_asset_level_solar_decomposition_complete": false
   },
   "historical_location_based_crosschecks": {
     "cea_2025_bses_kochi": {
