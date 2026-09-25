@@ -1,7 +1,6 @@
 """2030 adequacy-first proxy capacity expansion for Full-PyPSA v0.8."""
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
