@@ -39,6 +39,15 @@
       "title": "List of Thermal and Hydro Power Stations as on 31.03.2025",
       "url": "https://cea.nic.in/wp-content/uploads/pdm/2025/09/List_of_Power_Station_as_on_31.03.2025.pdf",
       "use": "current unit ratings for utility-scale thermal and >=25 MW hydro cross-check"
+    },
+    {
+      "id": "ksebea_technical_document_2025",
+      "publisher": "KSEB Engineers' Association",
+      "source_tier": "professional_technical_compilation_crosschecked_to_official_KSEBL_totals",
+      "title": "Technical Documents - private hydro, thermal and wind station register",
+      "url": "https://www.ksebea.in/wp-content/uploads/2025/12/Technical_Documents-Final25-50-102.pdf",
+      "use": "asset/unit decomposition only where category totals reconcile exactly to Kerala Economic Review 2025 / KSEBL",
+      "limitation": "Not used to override statutory/official aggregate totals; OCR/unit-count inconsistencies are retained as unresolved rather than forced."
     }
   ],
   "state_hydro": {
@@ -291,16 +300,16 @@
         "model_status": "existing_capacity_dispatch_parameters_unresolved"
       },
       {
-        "name": "Private/captive thermal residual",
-        "owner": "unresolved",
+        "name": "PCBL captive co-generation plant",
+        "owner": "PCBL / Phillips Carbon Black",
         "sector": "private",
         "capacity_mw": 17,
-        "model_status": "identity_and_operational_status_unresolved"
+        "model_status": "existing_capacity_identity_reconciled_dispatch_parameters_unresolved",
+        "source_role": "technical register decomposition crosschecked to official Thermal: CPP 17.00 MW total"
       }
     ]
   },
   "wind": {
-    "march_2026_total_mw": null,
     "fy2024_25_total_crosscheck_mw": 71.53,
     "state_ksebl": {
       "name": "Kanjikode Wind Farm",
@@ -308,8 +317,101 @@
       "units": 9,
       "unit_capacity_mw": 0.225
     },
-    "private_and_captive_residual_mw_fy2024_25": 69.5,
-    "status": "asset_level_private_CPP_decomposition_unresolved"
+    "private_and_captive_total_mw_fy2024_25": 69.5,
+    "status": "asset_level_capacity_decomposition_reconciled_to_fy2024_25_total_march_2026_same_date_split_unverified",
+    "source_rule": "Private/CPP plant capacities from KSEB Engineers' Association technical register; aggregate 69.50 MW independently matches Economic Review 2025.",
+    "stations": [
+      {
+        "name": "Malayala Manorama",
+        "category": "CPP",
+        "capacity_mw": 10,
+        "units_mw": [
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      {
+        "name": "Ramakkalmedu Wind Farm - RPPL",
+        "category": "CPP",
+        "capacity_mw": 1,
+        "units_mw": null,
+        "note": "Parsed unit-count text conflicts with published 1.00 MW plant total; capacity total retained, unit count not admitted."
+      },
+      {
+        "name": "Ramakkalmedu Wind Farm - Vestas",
+        "category": "IPP",
+        "capacity_mw": 14.25,
+        "units_mw": null,
+        "note": "Published plant total retained; staged unit text available in source but not required for capacity reconciliation."
+      },
+      {
+        "name": "Agali Wind Farm",
+        "category": "IPP",
+        "capacity_mw": 13.8,
+        "units_mw": null
+      },
+      {
+        "name": "Koundikkal",
+        "category": "IPP",
+        "capacity_mw": 4.8,
+        "units_mw": null
+      },
+      {
+        "name": "Ahalia Alternate Energy, Kanjikode",
+        "category": "IPP",
+        "capacity_mw": 8.4,
+        "units_mw": [
+          2.1,
+          2.1,
+          2.1,
+          2.1
+        ]
+      },
+      {
+        "name": "INOX Wind Energy",
+        "category": "IPP",
+        "capacity_mw": 16,
+        "units_mw": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      {
+        "name": "Kosamattom Finance",
+        "category": "IPP",
+        "capacity_mw": 1,
+        "units_mw": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      {
+        "name": "Ramakkalmedu Wind Farm - RPPL 2024 addition",
+        "category": "IPP",
+        "capacity_mw": 0.25,
+        "units_mw": [
+          0.25
+        ],
+        "commissioned_date": "2024-09-08"
+      }
+    ],
+    "qa": {
+      "private_cpp_sum_mw": 69.5,
+      "state_sum_mw": 2.025,
+      "arithmetic_total_mw": 71.525,
+      "official_rounded_total_mw": 71.53
+    }
   },
   "hydro_non_state": {
     "march_2026_total_mw": 88.06,
@@ -317,8 +419,154 @@
       "cpp": 33.5,
       "ipp": 54.56
     },
-    "status": "aggregate_reconciled_asset_level_decomposition_unresolved",
-    "rule": "Do not invent plant identities or operating constraints to eliminate this residual."
+    "status": "asset_level_capacity_decomposition_reconciled_dispatch_parameters_unresolved",
+    "source_rule": "Plant/unit decomposition from KSEB Engineers' Association technical register; CPP/IPP subtotals independently reconcile exactly to official Economic Review 2025 KSEBL totals.",
+    "stations": [
+      {
+        "name": "Maniyar",
+        "category": "CPP",
+        "capacity_mw": 12,
+        "units_mw": [
+          4,
+          4,
+          4
+        ]
+      },
+      {
+        "name": "Kuthungal",
+        "category": "CPP",
+        "capacity_mw": 21,
+        "units_mw": [
+          7,
+          7,
+          7
+        ]
+      },
+      {
+        "name": "Kannan Devan hydel prosumer",
+        "category": "CPP",
+        "capacity_mw": 0.5,
+        "units_mw": [
+          0.5
+        ]
+      },
+      {
+        "name": "Ullunkal",
+        "category": "IPP",
+        "capacity_mw": 7,
+        "units_mw": [
+          3.5,
+          3.5
+        ]
+      },
+      {
+        "name": "Iruttukkanam",
+        "category": "IPP",
+        "capacity_mw": 4.5,
+        "units_mw": [
+          1.5,
+          1.5,
+          1.5
+        ]
+      },
+      {
+        "name": "Pampumkayam (Mankulam)",
+        "category": "IPP",
+        "capacity_mw": 0.11,
+        "units_mw": [
+          0.055,
+          0.055
+        ]
+      },
+      {
+        "name": "Karikkayam",
+        "category": "IPP",
+        "capacity_mw": 15,
+        "units_mw": [
+          3.5,
+          3.5,
+          3.5,
+          4.5
+        ]
+      },
+      {
+        "name": "Meenvallom",
+        "category": "IPP",
+        "capacity_mw": 3,
+        "units_mw": [
+          1.5,
+          1.5
+        ]
+      },
+      {
+        "name": "Western Kallar",
+        "category": "IPP",
+        "capacity_mw": 0.05,
+        "units_mw": [
+          0.05
+        ]
+      },
+      {
+        "name": "Pathankayam",
+        "category": "IPP",
+        "capacity_mw": 8,
+        "units_mw": [
+          3.5,
+          3.5,
+          1
+        ]
+      },
+      {
+        "name": "Deviyar",
+        "category": "IPP",
+        "capacity_mw": 0.05,
+        "units_mw": [
+          0.025,
+          0.025
+        ]
+      },
+      {
+        "name": "Anakkampoil",
+        "category": "IPP",
+        "capacity_mw": 8,
+        "units_mw": [
+          3.5,
+          3.5,
+          1
+        ]
+      },
+      {
+        "name": "Arippara SHEP",
+        "category": "IPP",
+        "capacity_mw": 4.5,
+        "units_mw": [
+          2.25,
+          2.25
+        ]
+      },
+      {
+        "name": "Mukkudam",
+        "category": "IPP",
+        "capacity_mw": 4,
+        "units_mw": [
+          2,
+          2
+        ]
+      },
+      {
+        "name": "Ezhamkadavu Micro HEP",
+        "category": "IPP",
+        "capacity_mw": 0.35,
+        "units_mw": [
+          0.35
+        ]
+      }
+    ],
+    "qa": {
+      "cpp_sum_mw": 33.5,
+      "ipp_sum_mw": 54.56,
+      "total_sum_mw": 88.06
+    }
   },
   "renewable_ge_1mw_nonhydro": {
     "march_2026_CEA_total_mw": 400.34,
@@ -351,7 +599,10 @@
     "dispatch_ready": false,
     "state_hydro_station_arithmetic_mw": 2196.361,
     "state_hydro_rounding_difference_mw": 0.001,
-    "state_hydro_reconciliation_tolerance_mw": 0.01
+    "state_hydro_reconciliation_tolerance_mw": 0.01,
+    "non_state_hydro_asset_decomposition_reconciled": true,
+    "private_thermal_identity_reconciled": true,
+    "wind_fy2024_25_asset_decomposition_reconciled": true
   },
   "historical_location_based_crosschecks": {
     "cea_2025_bses_kochi": {
