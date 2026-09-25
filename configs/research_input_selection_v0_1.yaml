@@ -1,0 +1,115 @@
+version: 1
+classification: research_input_selection_partial_not_run_ready
+prepared_date: "2026-09-25"
+base_date: "2026-03-31"
+purpose: >-
+  First explicit selection layer for the full Kerala2040 PyPSA research model.
+  This file says which reconciled evidence may be used now and which inputs remain
+  blocked. It does not invent missing values and does not make the model solve-ready.
+
+selected:
+  base_system:
+    source: configs/base_system_2026_03_31.yaml
+    status: admitted_structural_base
+  existing_generation:
+    source: data/evidence/assets/kerala_existing_fleet_2026_03_31.json
+    representation:
+      ksebl_hydro:
+        mode: station_level_capacity_with_aggregate_dispatch_until_hydrology_is_admitted
+        capacity_mw: 2196.36
+      non_state_hydro:
+        mode: aggregate_residual_only
+        capacity_mw: 88.06
+        expandable: false
+      ksebl_thermal:
+        mode: station_and_unit_capacity
+        brahmapuram_mw: 63.96
+        kozhikode_mw: 96.00
+        dispatch_enabled: false
+        reason: variable cost, heat rate and operational availability unresolved
+      ntpc_kayamkulam:
+        mode: unit_capacity
+        capacity_mw: 359.58
+        units_mw: [115.2, 115.2, 129.18]
+        dispatch_enabled: false
+        reason: fuel economics and commercial availability unresolved
+      private_thermal:
+        mode: aggregate_residual_only
+        capacity_mw: 17.00
+        dispatch_enabled: false
+      central_floating_solar:
+        mode: explicit_capacity_candidate
+        capacity_mw: 92.00
+        dispatch_enabled: false
+        reason: hourly profile not yet admitted
+      renewable_ge_1mw_residual:
+        mode: aggregate_unresolved
+        capacity_mw: 308.34
+        dispatch_enabled: false
+      distributed_solar_lt_1mw:
+        mode: embedded_in_net_grid_demand
+        capacity_mw: 1912.33
+        explicit_generator: false
+  network:
+    current_import_ATC_crosscheck_mw: 4455
+    current_import_TTC_crosscheck_mw: 4575
+    annual_limit_admitted: false
+    future_limit_admitted: false
+  storage:
+    operational_bess_power_mw: null
+    operational_bess_energy_mwh: null
+    operational_psp_power_mw: null
+    rule: pipeline and planning projects remain outside the base fleet until COD/physical evidence
+
+not_yet_selected:
+  demand_trajectory:
+    status: blocked_for_single_canonical_mapping
+    reason: >-
+      CEA/KSERC generation RA, CEA transmission RA, CSTEP 2040 and Kerala
+      carbon-neutral pathway use different boundaries and trajectories. Preserve as
+      named sensitivities until the lower/reference/higher mapping is formally chosen.
+  demand_chronology:
+    status: proxy_available_but_not_admitted_for_final_research_run
+    reason: measured interval chronology remains unavailable
+  renewable_profiles:
+    status: blocked_for_dispatch
+    reason: weather-to-power transformations still require measured generation validation
+  hydro_dispatch:
+    status: blocked
+    reason: inflow, storage, head, rule curves and cascade constraints incomplete
+  thermal_dispatch:
+    status: blocked
+    reason: fuel price, heat rate, availability and commercial constraints incomplete
+  import_price:
+    status: blocked
+  reliability:
+    status: blocked
+  technology_costs:
+    status: blocked
+  ecological_capacity:
+    status: blocked
+  flexible_demand:
+    status: synthetic_only
+  public_finance:
+    status: blocked
+
+allowed_now:
+  - structural network construction tests with all unresolved dispatch resources disabled
+  - capacity-accounting QA
+  - scenario compilation
+  - source/ownership reconciliation
+  - non-optimising PyPSA network assembly smoke tests
+
+forbidden_now:
+  - least-cost capacity expansion
+  - claims of adequacy or shortage elimination
+  - economic dispatch of thermal or imports
+  - storage sizing recommendations
+  - explicit existing rooftop generation on top of net-grid demand
+  - S0-S5 result publication
+
+release:
+  network_skeleton_smoke_ready: true
+  chronological_dispatch_ready: false
+  capacity_expansion_ready: false
+  publishable_scenario_results_ready: false
