@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - "configs/full_pypsa_era5_renewable_profiles_v0_6.yaml"
+      - "configs/full_pypsa_input_registry.yaml"
+      - "data/evidence/weather/era5_renewable_profiles_v0_6_2026_09_25.json"
+      - "docs/FULL_PYPSA_SCENARIO_PROGRAMME.md"
       - "src/kerala2040/era5_renewable_profiles.py"
       - "scripts/build_full_pypsa_era5_profiles_v0_6.py"
       - "scripts/verify_era5_source_artifacts.py"
