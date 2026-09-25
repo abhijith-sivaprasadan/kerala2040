@@ -170,7 +170,7 @@ def _add_daily_hydro_constraints(model, snapshots, daily_hydro_mwh: pd.Series) -
     codes, unique_days = pd.factorize(days, sort=False)
     grouper = xr.DataArray(
         codes,
-        coords={"snapshot": snapshots},
+        coords={"snapshot": np.asarray(snapshots)},
         dims="snapshot",
         name="hydro_day",
     )
@@ -329,7 +329,10 @@ def run_hydro_flex_v11_suite(root: Path, *, profile_path: Path, hours: int = 876
             morphed.to_numpy(dtype=float)
             - hourly_base["nonhydro_fixed_mw"].to_numpy(dtype=float)
         )[:hours]
-        snapshots = pd.DatetimeIndex(hourly_base["snapshot_ist_naive"].iloc[:hours])
+        snapshots = pd.DatetimeIndex(
+            hourly_base["snapshot_ist_naive"].iloc[:hours].to_numpy(),
+            name="snapshot",
+        )
         for transfer_id in suite["matrix"]["transfer_cases"]:
             transfer = transfer_lookup[transfer_id]
             for hydro_case in suite["matrix"]["hydro_availability_cases"]:
