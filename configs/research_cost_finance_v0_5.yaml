@@ -1,0 +1,105 @@
+version: 1
+classification: research_cost_finance_selection_not_validated_kerala_tariff
+prepared_date: "2026-09-25"
+purpose: >-
+  Admit one transparent 2030 research cost/finance benchmark for future capacity-
+  expansion development without inventing 2035/2040 trajectories or treating an
+  average KSEBL procurement cost as an hourly marginal import price.
+
+sources:
+  cea_optimal_mix_2029_30_v2:
+    publisher: Central Electricity Authority
+    title: Report on Optimal Generation Capacity Mix for 2029-30, Version 2.0
+    publication_date: "2023-05-04"
+    url: https://cea.nic.in/wp-content/uploads/notification/2023/05/Optimal_mix_report__2029_30_Version_2.0__For_Uploading.pdf
+    verified_page_financial_parameters: 48
+    verified_page_operating_parameters: 47
+    capex_price_basis: actual_2021_22_cost_level_no_inflation
+  cerc_re_tariff_order_fy2026_27:
+    publisher: Central Electricity Regulatory Commission
+    title: CERC RE Tariff Order for third year of Control Period FY 2026-27
+    petition: 12/SM/2026
+    order_date: "2026-08-23"
+    url: https://cercind.gov.in/2026/Orders/12-SM-2026.pdf
+    finance:
+      normative_debt_equity_ratio: [70, 30]
+      debt_interest_pct: 10.71
+      post_tax_roe_pct_non_shp: 14.0
+      corporate_tax_pct: 34.94
+      post_tax_wacc_discount_rate_pct_non_shp: 9.08
+    role: research_finance_anchor_not_project_specific_cost_of_capital
+  rec_regulatory_parameters_kerala:
+    publisher: REC Limited
+    title: Key Regulatory Parameters of Power Utilities
+    publication_status: official_compilation_from_tariff_and_true_up_orders
+    kerala_fy2024_25_approved_power_procurement_cost_inr_per_kwh: 4.70
+    transmission_charges_included: false
+    role: accounting_crosscheck_only_not_hourly_import_marginal_cost
+
+selection:
+  model_year: 2030
+  price_basis: real_2021_22_INR
+  inflation_escalation_applied: false
+  discount_rate:
+    pct: 9.08
+    source: cerc_re_tariff_order_fy2026_27
+    treatment: research_sensitivity
+  technologies:
+    solar_pv:
+      capex_inr_per_kw: 41000
+      fixed_om_pct_capex_per_year: 1.0
+      lifetime_years: 25
+      source: cea_optimal_mix_2029_30_v2
+      source_interpretation: explicit_2029_30_solar_endpoint
+    wind_onshore:
+      capex_inr_per_kw: 60000
+      fixed_om_pct_capex_per_year: 1.0
+      lifetime_years: 25
+      source: cea_optimal_mix_2029_30_v2
+      source_interpretation: published_onshore_wind_planning_value
+    bess_4h:
+      capex_inr_per_kw_power_at_4h: 47200
+      max_hours: 4
+      fixed_om_pct_capex_per_year: 1.0
+      lifetime_years: 14
+      round_trip_efficiency: 0.88
+      source: cea_optimal_mix_2029_30_v2
+      source_interpretation: >-
+        Lower endpoint of CEA's 2022-30 4-hour BESS planning cost range selected
+        explicitly as the 2030 research sensitivity. It is not a Kerala tender capex.
+      split_power_energy_capex_available: false
+    pumped_storage:
+      admitted_for_generic_expansion: false
+      reason: CEA_range_is_project_specific_and_Kerala_site_hydraulics_costs_are_unresolved
+
+derived:
+  method: annualized_capex_plus_fixed_om
+  annuity_formula: r_divided_by_1_minus_1_plus_r_to_minus_n
+  annualized_cost_inr_per_kw_year:
+    solar_pv: 4611.14276356068
+    wind_onshore: 6748.013800332702
+    bess_4h: 6561.3577204818685
+  note: >-
+    Values use r=9.08%; fixed O&M is added as the stated percentage of capex.
+    BESS remains a fixed-duration 4-hour StorageUnit-style benchmark.
+
+blocked:
+  years_2035_2040:
+    reason: no post_source_horizon_cost_trajectory_admitted
+  marginal_import_price:
+    reason: >-
+      KSEBL average procurement cost is an annual accounting benchmark and excludes
+      transmission charges; it is not a landed hourly/blockwise marginal import series.
+  thermal_variable_cost:
+    reason: fuel_price_heat_rate_and_contract_dispatch_not_harmonised
+  generic_pumped_storage_cost:
+    reason: Kerala_site_specific_cost_and_hydraulic_constraints_missing
+  public_finance_S5:
+    reason: state_public_capital_boundary_and_grant_debt_equity_treatment_unresolved
+
+release:
+  research_2030_cost_finance_benchmark: true
+  economic_dispatch_with_import_prices: false
+  capacity_expansion_2030: false
+  capacity_expansion_2035_2040: false
+  validated_cost_case: false
