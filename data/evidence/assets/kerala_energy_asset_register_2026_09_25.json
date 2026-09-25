@@ -100,6 +100,18 @@
       "tier": "official_central",
       "title": "Ministry of Power parliamentary answer, 23 March 2026",
       "url": "https://powermin.gov.in/sites/default/files/uploads/RS23032026_Eng.pdf"
+    },
+    "cea_transmission_ra_2034_35": {
+      "tier": "official_central",
+      "title": "CEA Resource Adequacy Plan for Transmission System of Kerala up to 2034-35",
+      "url": "https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf",
+      "role": "31 March 2026 capacity boundary, current network, 2029-30/2034-35 transmission and generation planning cases"
+    },
+    "thdc_psp_progress_2024": {
+      "tier": "official_operator",
+      "title": "THDCIL Pump Storage Plants progress report",
+      "url": "https://thdc.co.in/sites/default/files/employee-login/New_PSP_Progress_Report_September24.pdf",
+      "role": "Source-bounded status of THDCIL Idukki and Pallivasal PSP PFRs"
     }
   },
   "official_fy2024_25_capacity_anchor_mw": {
@@ -450,6 +462,50 @@
       "technology": "pumped_storage",
       "power_mw": 200,
       "status": "KSEB_project_portal_planning_lead_only"
+    },
+    {
+      "id": "thdc_idukki_psp",
+      "technology": "pumped_storage",
+      "power_mw": 700,
+      "status": "PFR_accepted_by_KSEBL_allocation_DPR_not_verified",
+      "source_status_date": "2024-09",
+      "note": "Distinct from the conventional Idukki Extension HEP. THDCIL reports PFR submitted and accepted; requested project allocation for DPR/implementation."
+    },
+    {
+      "id": "thdc_pallivasal_psp",
+      "technology": "pumped_storage",
+      "power_mw": 600,
+      "status": "PFR_accepted_by_KSEBL_allocation_DPR_not_verified",
+      "source_status_date": "2024-09",
+      "note": "THDCIL PFR-stage pumped-storage proposal; not the already commissioned 60 MW Pallivasal Extension hydro scheme."
+    },
+    {
+      "id": "cea_mudirapuzha_psp",
+      "technology": "pumped_storage",
+      "power_mw": 100,
+      "status": "CEA_transmission_planning_candidate",
+      "expected": "2032-33"
+    },
+    {
+      "id": "cea_kakkayam_psp",
+      "technology": "pumped_storage",
+      "power_mw": 800,
+      "status": "CEA_transmission_planning_candidate",
+      "expected": "2034-35"
+    },
+    {
+      "id": "cea_poringalkuth_psp",
+      "technology": "pumped_storage",
+      "power_mw": 400,
+      "status": "CEA_transmission_planning_candidate",
+      "expected": "2034-35"
+    },
+    {
+      "id": "cea_upper_chaliyar_psp",
+      "technology": "pumped_storage",
+      "power_mw": 360,
+      "status": "CEA_transmission_planning_candidate",
+      "expected": "2034-35"
     }
   ],
   "grid_and_sector_coupling": [
@@ -524,6 +580,7 @@
     }
   ],
   "unresolved_before_full_pypsa": [
+    "Reconcile the CEA 31 March 2026 capacity boundary (3,221.30 MW excluding 1,912.33 MW <1 MW solar) with MNRE 31 August 2026 location-based renewable capacity before choosing the current model base year.",
     "Complete station/unit register reconciling every current hydro, thermal, wind, solar and captive/IPP asset to official aggregate buckets.",
     "Current 2026 non-renewable installed-capacity snapshot with retirement/availability status; do not infer by adding current RE to FY2024-25 thermal.",
     "Actual unit availability, outage/derating history, minimum stable generation, ramp/start constraints and heat rates for thermal/hydro units.",
@@ -538,5 +595,19 @@
     "Distribution hosting constraints for 2.2595 GW rooftop solar already reported by MNRE at August 2026.",
     "Hydrogen/electrification demand trajectories with explicit commissioning, utilisation and flexibility assumptions.",
     "Technology-specific investment/O&M costs, financing and price year for the capacity-expansion objective."
-  ]
+  ],
+  "official_mar2026_capacity_boundary": {
+    "as_of": "2026-03-31",
+    "source": "CEA transmission resource adequacy plan",
+    "main_installed_capacity_mw": 3221.3,
+    "main_components_mw": {
+      "thermal": 536.54,
+      "hydro": 2284.42,
+      "renewable_wind_solar_ge_1MW": 400.34
+    },
+    "solar_less_than_1MW_reported_separately_mw": 1912.33,
+    "arithmetic_combined_boundary_mw": 5133.63,
+    "interpretation": "CEA intentionally excludes <1 MW solar from the 3,221.30 MW main total and reports it separately. This explains the 3,221 + 1,912 formulation seen in secondary summaries; it is an accounting-boundary issue, not necessarily an arithmetic error.",
+    "warning": "Do not splice this 31 March 2026 CEA boundary directly with the 31 August 2026 MNRE location-based RE snapshot."
+  }
 }
