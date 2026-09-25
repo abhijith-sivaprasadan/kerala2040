@@ -356,16 +356,32 @@ def _solve_two_stage(
     # objective. Instead, freeze the stage-2 capacities exactly and solve one
     # reporting dispatch that minimizes import MWh while preserving adequacy.
     stage3_bounds = list(lp["bounds"])
+    capacity_fix_tolerance_mw = 1e-5
     for name in ("solar", "wind", "bess"):
         idx = cap[name]
         value = float(stage2.x[idx])
-        stage3_bounds[idx] = (value, value)
+        original_lower, original_upper = lp["bounds"][idx]
+        lower = max(float(original_lower), value - capacity_fix_tolerance_mw)
+        upper = value + capacity_fix_tolerance_mw
+        if original_upper is not None:
+            upper = min(float(original_upper), upper)
+        stage3_bounds[idx] = (lower, upper)
     c3 = np.zeros(nvars, dtype=float)
     c3[blocks["imports"] : blocks["imports"] + n] = 1.0
+    stage3_b_ub = np.concatenate(
+        [
+            lp["b_ub"],
+            [
+                minimum_unserved
+                + float(unserved_tolerance_mwh)
+                + 1e-6
+            ],
+        ]
+    )
     stage3 = linprog(
         c3,
         A_ub=a_ub_2,
-        b_ub=b_ub_2,
+        b_ub=stage3_b_ub,
         A_eq=lp["a_eq"],
         b_eq=lp["b_eq"],
         bounds=stage3_bounds,
@@ -376,7 +392,7 @@ def _solve_two_stage(
     stage3_unserved = float(
         stage3.x[blocks["unserved"] : blocks["unserved"] + n].sum()
     )
-    if stage3_unserved > minimum_unserved + float(unserved_tolerance_mwh) + 1e-6:
+    if stage3_unserved > minimum_unserved + float(unserved_tolerance_mwh) + 2e-6:
         raise RuntimeError("v0.8 stage 3 violated minimum-shortage constraint")
 
     return stage3.x, {
