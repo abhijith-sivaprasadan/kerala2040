@@ -19,7 +19,6 @@ import yaml
 
 from kerala2040.chronological_screen import (
     ScreeningAssumptions,
-    dispatch_summary,
     prepare_inputs,
 )
 from kerala2040.full_pypsa_proxy_adequacy import (
