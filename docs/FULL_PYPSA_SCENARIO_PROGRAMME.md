@@ -203,3 +203,42 @@ python scripts/run_full_pypsa_proxy_adequacy_v0_2.py --acknowledge-proxy --hours
 
 The output is a **proxy adequacy sensitivity**, not measured hourly validation,
 economic dispatch, probabilistic RA compliance, or an S0-S5 investment result.
+
+
+## Implementation checkpoint 5 · intraday hydro-flexibility bracket v0.3
+
+The first 8,760-hour v0.2 screen exposed a material modelling uncertainty: the
+historical SLDC hydro evidence is daily energy, but v0.2 replayed that energy as a
+flat 24-hour average. That is intentionally conservative about intraday flexibility
+and is not how reservoir hydro is normally used for peak support.
+
+v0.3 therefore adds a second, deliberately optimistic bound while preserving the
+same source energy. For every modelled day it enforces:
+
+```text
+sum(hourly hydro MW × 1 h) = that day's SLDC hydro MWh
+0 <= hourly aggregate hydro <= installed hydro MW
+```
+
+The optimizer may move the day's hydro energy among the 24 hours to reduce imports
+and unserved load. It **cannot** move water across days. The flat replay and this
+free intraday redispatch form a sensitivity bracket around hydro timing.
+
+This is not a reservoir or cascade model. The upper bound does not yet include
+station outages, reservoir level-volume curves, river/cascade travel times,
+environmental releases, head-dependent efficiency, minimum output, ramp limits or
+internal Kerala transmission constraints. A reduction in proxy shortage therefore
+means “the result is sensitive to hydro timing,” not “Kerala can definitely dispatch
+hydro this way.”
+
+Run the full comparison with:
+
+```bash
+python scripts/run_full_pypsa_hydro_flexibility_v0_3.py \
+  --acknowledge-proxy \
+  --hours 8760
+```
+
+Capacity expansion remains blocked. The purpose of this checkpoint is to determine
+whether the v0.2 ATC shortage signal survives a much more favourable treatment of
+intraday hydro before we invest effort in expansion scenarios.
