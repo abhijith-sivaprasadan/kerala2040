@@ -707,3 +707,64 @@ python scripts/run_full_pypsa_import_economics_v1_0.py \
   --acknowledge-partial-economics \
   --hours 8760
 ```
+
+
+## Implementation checkpoint 13 · daily-energy-constrained hydro flexibility v1.1
+
+v1.1 replaces the frozen hourly hydro replay used by v1.0 with endogenous intraday
+hydro dispatch inside the same direct-PyPSA expansion framework.
+
+The key constraint is deliberately simple and auditable: **each FY2024-25 observed
+or imputed daily hydro MWh total is conserved exactly**, but the model may move that
+energy among the 24 hours of the same day. Hydro therefore gains intraday flexibility
+without gaining interday reservoir storage.
+
+Hydro power is bounded by aggregate installed hydel MW multiplied by one of three
+availability sensitivities:
+
+- **100% available power** — aggregate installed-hydro ceiling;
+- **85% available power** — synthetic 15% aggregate derate;
+- **70% available power** — synthetic 30% aggregate derate.
+
+These are not historical forced-outage rates. They test how much the expansion
+result depends on the amount of hydro power available to reshape the same daily
+energy.
+
+To isolate the hydro question, v1.1 uses a focused 54-case matrix:
+
+- lower FY2030 and reference FY2030-31 demand;
+- 4,455 / 3,564 / 2,673 MW ATC sensitivities;
+- the v0.7 **reference** renewable envelope;
+- the v0.5 **low-BESS-cost** case;
+- all three v1.0 import-price sensitivities;
+- all three hydro-availability sensitivities.
+
+The direct PyPSA formulation includes candidate solar, wind and four-hour BESS,
+screened imports, unserved load, endogenous curtailment/spill and the new
+daily-energy-constrained hydro generator.
+
+The stage ordering remains adequacy-first:
+
+1. minimize unserved MWh;
+2. preserve the minimum shortage;
+3. minimize annualized candidate investment plus import-energy cost.
+
+Hydro carries zero marginal cost in this checkpoint because station-specific water
+value, O&M and reservoir opportunity cost are not yet admitted. That is a modelling
+limitation, not a claim that hydro is economically free.
+
+v1.1 is **not a reservoir model**. It still excludes interday water shifting,
+reservoir storage state, cascade routing/travel time, environmental/irrigation
+releases, head-dependent efficiency, station-specific outage histories, unit
+commitment/ramping and Kerala internal transmission constraints.
+
+Run:
+
+```bash
+python scripts/run_full_pypsa_hydro_flex_v1_1.py \
+  --acknowledge-hydro-sensitivity-only \
+  --hours 8760
+```
+
+The checkpoint passes only if every modelled day's hydro MWh is conserved to
+numerical tolerance and all 54 configured cases solve successfully.
