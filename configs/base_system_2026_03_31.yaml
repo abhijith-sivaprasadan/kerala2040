@@ -1,20 +1,27 @@
-version: 1
+version: 2
 classification: reconciled_structural_base_not_dispatch_ready
 base_date: "2026-03-31"
 timezone: Asia/Kolkata
 purpose: >-
   Canonical physical starting boundary for the full Kerala2040 PyPSA programme.
-  This file reconciles official capacity-accounting populations at one date.
-  It is not yet a dispatch-ready network because chronology, costs, unit
-  availability, hydro physics and several asset-level decompositions remain blocked.
+  Renewable capacity uses MNRE's same-date location-based 31 March 2026 table.
+  Thermal capacity is retained from the official Kerala/CEA planning evidence at the
+  same 536.54 MW physical in-state level. This is not yet a dispatch-ready network.
 
 source_priority:
-  primary_base:
-    id: cea_transmission_ra_2034_35
-    publisher: Central Electricity Authority
-    title: Resource Adequacy Plan for Transmission System of Kerala up to 2034-35
-    url: https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf
+  renewable_location_base:
+    id: mnre_2026_03_31_location_based_re
+    publisher: Ministry of New and Renewable Energy
+    title: State-wise (Location based) installed capacity of Renewable Power as on 31.03.2026
+    url: https://cdnbbsr.s3waas.gov.in/s3716e1b8c6cd17b771da77391355749f3/uploads/2026/04/20260415955675604.pdf
     boundary_date: "2026-03-31"
+    rule: authoritative technology split for Kerala renewable capacity at the base date
+  thermal_base:
+    id: cea_kerala_resource_adequacy_2026
+    publisher: Central Electricity Authority / Kerala resource-adequacy evidence
+    boundary_date: "2026-03-31"
+    thermal_mw: 536.54
+    rule: physical Kerala thermal capacity; do not substitute allocation-based state tables
   historical_crosscheck:
     id: economic_review_2025
     boundary_date: "2025-03-31"
@@ -26,37 +33,35 @@ source_priority:
     rule: later evidence is an overlay only and is never silently merged into the March base
 
 capacity_boundary_mw:
-  cea_main_table:
-    thermal: 536.54
-    hydro: 2284.42
-    renewable_wind_and_solar_ge_1mw: 400.34
-    total: 3221.30
-  solar_below_1mw_reported_separately:
-    state: 3.16
-    private: 1909.17
-    central: 0.0
-    total: 1912.33
-  physical_arithmetic_total_including_reported_sub_1mw_solar: 5133.63
+  thermal: 536.54
+  renewable_location_based:
+    large_hydro: 2008.15
+    small_hydro: 276.52
+    hydro_total: 2284.67
+    wind: 71.52
+    bio_power:
+      biomass_non_bagasse: 2.27
+      waste_to_energy_off_grid: 0.23
+      total: 2.50
+    solar:
+      ground_mounted: 340.26
+      rooftop_including_pm_surya_ghar: 1850.40
+      hybrid_component: 0.00
+      off_grid_or_kusum_component_b: 24.93
+      total: 2215.59
+    total: 4574.28
+  physical_capacity_total_mw: 5110.82
+  arithmetic_rule: thermal + MNRE location-based renewable total
 
-ownership_boundary_mw:
-  state:
-    thermal: 159.96
-    hydro: 2196.36
-    renewable_wind_and_solar_ge_1mw: 24.74
-    solar_lt_1mw: 3.16
-    main_table_total: 2381.06
-  private:
-    thermal: 17.00
-    hydro: 88.06
-    renewable_wind_and_solar_ge_1mw: 283.60
-    solar_lt_1mw: 1909.17
-    main_table_total: 388.66
-  central:
-    thermal: 359.58
-    hydro: 0.0
-    renewable_wind_and_solar_ge_1mw: 92.00
-    solar_lt_1mw: 0.0
-    main_table_total: 451.58
+historical_ownership_crosscheck_2025_03_31:
+  status: prior_year_only_not_2026_ownership_allocation
+  state_mw: 2409.77
+  central_mw: 359.58
+  private_mw: 1642.79
+  rule: >-
+    These ownership totals are retained only as a 31 March 2025 crosscheck. They are
+    not forced to reconcile the 31 March 2026 technology totals without a same-date
+    ownership register.
 
 named_asset_crosschecks:
   thermal:
@@ -75,47 +80,49 @@ named_asset_crosschecks:
       ownership: state
       dispatch_ready: false
       blocker: unit availability, heat rate and fuel cost unresolved
-    - id: residual_private_thermal
+    - id: residual_private_thermal_cpp
       accounting_mw: 17.00
       ownership: private
       dispatch_ready: false
-      blocker: plant identity/status must be reconciled before dispatch
-  renewable_ge_1mw:
+      blocker: exact plant identity/status must be reconciled before dispatch
+  solar:
     - id: ntpc_kayamkulam_floating_solar
-      accounting_mw: 92.00
-      ownership: central
+      capacity_mw: 92.00
+      status: named_component_of_340_26_mw_ground_mounted_category
       dispatch_ready: false
       blocker: hourly generation profile not yet admitted
-    - id: state_re_ge_1mw_residual
-      accounting_mw: 24.74
-      ownership: state
+    - id: kasargod_solar_park_confirmed
+      capacity_mw: 100.00
+      status: named_component_of_340_26_mw_ground_mounted_category
       dispatch_ready: false
-      blocker: exact wind/solar plant decomposition not reconciled at 2026-03-31
-    - id: private_re_ge_1mw_residual
-      accounting_mw: 283.60
-      ownership: private
+      blocker: plant-level March-2026 mapping/profile reconciliation remains
+  wind:
+    - id: ksebl_kanjikode_wind
+      capacity_mw: 2.03
+      status: named_component_of_71_52_mw_wind_category
       dispatch_ready: false
-      blocker: exact wind/solar plant decomposition not reconciled at 2026-03-31
+      blocker: current full wind asset decomposition remains incomplete
 
 distributed_solar_boundary:
-  reported_capacity_mw: 1912.33
-  source_population: CEA solar plants below 1 MW, reported separately from the main installed-capacity table
-  pypsa_treatment_default: embedded_in_net_grid_demand
-  explicit_generator_allowed: false
+  rooftop_capacity_mw: 1850.40
+  off_grid_or_kusum_component_b_mw: 24.93
+  source_population: MNRE location-based renewable-capacity categories at 31 March 2026
+  rooftop_pypsa_treatment_default: embedded_in_net_grid_demand
+  rooftop_explicit_generator_allowed: false
+  off_grid_pypsa_treatment_default: excluded_from_grid_dispatch
   reason: >-
-    Historical/current demand observations already reflect behind-the-meter
-    generation and self-consumption. Until gross demand is reconstructed by adding
-    source-matched behind-the-meter generation, the existing sub-1-MW solar fleet
-    must not also be injected as an explicit PyPSA generator.
-  gross_demand_reconstruction_required_for_explicit_model:
+    Historical/current grid-demand observations already reflect behind-the-meter
+    rooftop self-generation and exports at their measurement boundary. Existing
+    rooftop capacity must not also be injected as explicit generation until gross
+    demand and behind-the-meter production are reconstructed consistently.
+  gross_demand_reconstruction_required_for_explicit_rooftop:
     - measured or validated rooftop PV generation profile
     - self-consumption/export treatment
     - distribution-loss boundary
     - same-date installed capacity and availability
   future_increment_rule: >-
-    Incremental rooftop solar added after the base date may be represented explicitly
-    only if the demand trajectory is defined consistently as gross demand or if the
-    increment is represented as a documented net-load reduction.
+    Incremental rooftop solar after the base date may be represented explicitly only
+    with a compatible gross-demand definition, or as a documented net-load reduction.
 
 storage_boundary:
   operational_bess_power_mw: null
@@ -149,9 +156,9 @@ later_august_2026_renewable_overlay:
   large_hydro_mw: 2008.15
   total_re_mw: 4985.53
   comparison_rules:
-    - do not subtract March sub-1-MW solar from August rooftop and call the difference commissioned capacity without a definition crosswalk
-    - do not overwrite March hydro using the August large/small hydro split without checking commissioning/reclassification
-    - use this overlay for a later sensitivity/update case after reconciliation, not the canonical base solve
+    - compare like-for-like MNRE categories between March and August
+    - do not infer individual project COD from category growth
+    - use this overlay for a later update case, not the canonical March base solve
 
 demand_boundary:
   default: net_grid_demand_after_existing_behind_meter_generation
@@ -163,7 +170,7 @@ demand_boundary:
     alternatives. No averaging or silent splicing is permitted.
 
 base_release:
-  structural_capacity_reconciled: true
+  same_date_technology_capacity_reconciled: true
   asset_level_fleet_reconciled: false
   chronological_dispatch_ready: false
   capacity_expansion_ready: false
@@ -172,7 +179,8 @@ base_release:
 
 blocking_inputs:
   - complete station/unit fleet at 2026-03-31
-  - exact >=1 MW wind/solar decomposition by ownership and plant
+  - exact ground-solar, wind, small-hydro and bio-power plant decomposition
+  - resolve the 17 MW private thermal CPP identity and current operating status
   - operational BESS/PSP COD evidence or explicit zero-capacity proof
   - measured interval demand, generation and actual interchange chronology
   - plant availability/outage, heat-rate and variable-cost data
