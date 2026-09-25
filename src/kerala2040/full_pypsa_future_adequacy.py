@@ -119,7 +119,7 @@ def run_future_adequacy_suite(root: Path, *, hours: int = 8760) -> dict[str, Any
         raise ValueError("hours must be whole days between 24 and 8760")
 
     suite = load_future_adequacy_suite(
-        root / "configs/full_pypsa_future_adequacy_v0_3.yaml"
+        root / "configs/full_pypsa_future_adequacy_v0_4.yaml"
     )
     hourly_base, metadata_base, observed = _load_base(root, suite)
     capacities = observed["electricity"]["capacity_mix_mw"]
