@@ -116,3 +116,90 @@ S0-S5 case. Fixed-existing technologies therefore no longer bypass their underly
 fleet evidence. S0-S5 public/config vocabulary is also synchronized, including the
 S2 `legal_minimum` ecological rule and the common 2030/2035/2040 model years.
 
+
+
+## Implementation checkpoint 4 · research input selection v0.2 and chronological proxy adequacy
+
+The next admission layer is now explicit in
+`configs/research_input_selection_v0_2.yaml`. It does **not** make the full model
+validated or expansion-ready. It selects source families and a bounded research
+screen so that chronology can be exercised without turning missing evidence into
+assumed facts.
+
+### Solar identity crosswalk
+
+The March-2026 CEA >=1 MW solar ownership buckets remain canonical:
+**22.715 MW state + 214.10 MW private + 92 MW central = 328.815 MW**.
+The new
+`data/evidence/assets/kerala_solar_ge1_identity_crosswalk_2026_03_31.json`
+records what can actually be named.
+
+KSEBL's 2021-22 station table gives a firm **14.50 MW** seed of individually named
+state solar plants at or above 1 MW. Later KSEBL/INKEL evidence identifies
+Brahmapuram, Nenmara, Mananthavady and another Kanjikode listing. If every later
+listing were treated as distinct, the candidate arithmetic would be **22.75 MW**,
+only 0.035 MW above CEA's 22.715 MW state bucket. That near-match is deliberately
+**not patched**: MWp-versus-AC treatment, rounding and possible Kanjikode overlap
+must be resolved first.
+
+For private solar, KSEBL's FY2024-25 report provides a strong aggregate bridge of
+**204 MW IPP solar** against CEA's later **214.10 MW** private >=1 MW solar bucket,
+but the remaining 10.10 MW cannot be filled by cherry-picking captive/prosumer rows
+because KSEBL and CEA classification boundaries have not been proven identical.
+The 92 MW NTPC Kayamkulam floating-solar identity is already exact.
+
+The alternate 31-March-2026 MNRE renewable boundary explored in superseded PR #72
+is preserved in the crosswalk as an alternate accounting view; it does not replace
+the CEA transmission-resource-adequacy base.
+
+### Named demand cases
+
+v0.2 selects, without averaging them:
+
+- **lower:** CSTEP 2024 published pathway through FY2040;
+- **reference:** CEA/KSERC generation Resource Adequacy trajectory through FY2035-36;
+- **higher:** CEA transmission-RA/KSEBL load-flow case, currently **peak-only** in
+  the admitted evidence.
+
+The higher case therefore remains incomplete for annual-energy modelling. No hidden
+energy series or post-source-horizon extrapolation is permitted.
+
+### Reliability and interstate-transfer research bounds
+
+KSERC's RA review direction uses **LOLP and NENS** as reliability metrics. For a
+research benchmark, v0.2 records the **0.2% LOLP / 0.05% NENS** thresholds used in
+a CEA state Resource Adequacy study, but labels them explicitly as a
+**CEA state-RA benchmark, not a Kerala statutory threshold**.
+
+The first deterministic screen cannot estimate LOLP. It reports unserved MWh,
+unserved-energy percentage, hours with unserved load and maximum unserved MW.
+Probabilistic adequacy remains blocked until forced-outage distributions and
+stochastic demand/renewable sampling are admitted.
+
+The CEA transmission study's dated **4,575 MW TTC / 4,455 MW ATC** snapshot is used
+only as a screening bound. v0.2 adds explicit 80% and 60% ATC haircut sensitivities
+(3,564 MW and 2,673 MW) plus a 6,500 MW replay-control bound. None is described as
+a historical FY2024-25 hourly transfer series or an annual guarantee.
+
+### First chronological PyPSA research screen
+
+The repository already had a provenance-gated chronology engine in
+`src/kerala2040/chronological_screen.py`. v0.2 reuses it rather than creating a
+second model. The screen uses:
+
+- the 8,760-hour FY2024-25 **reconstructed** load shape;
+- 354 observed SLDC daily source-energy balances;
+- model-only interpolation on the 11 dates without an SLDC daily report;
+- observed daily hydro and residual internal generation replayed as flat daily
+  averages;
+- explicit import-cap sensitivities and an unserved-energy slack;
+- no economic import price, no capacity expansion and no new storage/solar.
+
+Run the full suite with:
+
+```bash
+python scripts/run_full_pypsa_proxy_adequacy_v0_2.py --acknowledge-proxy --hours 8760
+```
+
+The output is a **proxy adequacy sensitivity**, not measured hourly validation,
+economic dispatch, probabilistic RA compliance, or an S0-S5 investment result.
