@@ -27,10 +27,23 @@ sources:
     title: CERC Terms and Conditions for Tariff determination from Renewable Energy Sources Regulations, 2024
     landing_page: https://cercind.gov.in/Current_reg.html
     evidence: current_regulatory_reference
-    extraction_status: source_verified_values_not_yet_transcribed
+
+  cerc_re_tariff_order_fy2026_27:
+    publisher: Central Electricity Regulatory Commission
+    title: CERC RE Tariff Order for third year of Control Period FY 2026-27
+    petition: 12/SM/2026
+    order_date: "2026-08-23"
+    pdf: https://cercind.gov.in/2026/Orders/12-SM-2026.pdf
+    evidence: current_regulatory_finance_reference
+    verified_finance:
+      normative_debt_equity_ratio: [70, 30]
+      debt_interest_pct: 10.71
+      post_tax_roe_pct_non_shp: 14.0
+      corporate_tax_pct: 34.94
+      post_tax_wacc_discount_rate_pct_non_shp: 9.08
     note: >-
-      The regulation exists and is retained as a future source. No numerical value from it
-      is used in this registry until individually verified.
+      The 9.08% post-tax WACC is admitted only as a transparent 2030 research
+      finance sensitivity. It is not asserted to be KSEBL's project-specific WACC.
 
 verified_external_benchmarks:
   cea_optimal_mix_2029_30_v2:
@@ -125,3 +138,9 @@ system_finance:
   price_year: null
   inflation_treatment: null
   selection_status: unresolved
+  research_2030_sensitivity:
+    discount_rate_pct: 9.08
+    source: cerc_re_tariff_order_fy2026_27
+    price_basis: real_2021_22_INR_for_CEA_capex
+    selection_file: configs/research_cost_finance_v0_5.yaml
+    classification: research_sensitivity_not_validated_finance
