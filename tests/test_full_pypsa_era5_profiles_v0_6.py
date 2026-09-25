@@ -67,7 +67,7 @@ def test_profile_build_is_bounded_and_diagnostic_only():
     point_profiles, statewide, summary = build_era5_screening_profiles(weather, suite)
     assert len(point_profiles) == 120
     assert len(statewide) == 24
-    for col in ["solar_p_max_pu", "wind_p_max_pu_100m", "wind_p_max_pu_150m"]:
+    for col in ["solar_p_max_pu", "wind_p_max_pu_150m_niwe_anchored"]:
         assert point_profiles[col].between(0, 1).all()
         assert statewide[col].between(0, 1).all()
     assert summary["model_admitted_for_capacity_expansion"] is False
