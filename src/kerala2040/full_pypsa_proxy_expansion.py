@@ -75,7 +75,8 @@ def _align_profiles(profile_path: Path, snapshots: pd.Series) -> tuple[np.ndarra
     if keyed.index.has_duplicates:
         raise ValueError("v0.6 profile timestamps are duplicated")
     selected = keyed.reindex(wanted)
-    if selected[list(required - {"timestamp_ist"})].isna().any().any():
+    profile_columns = ["solar_p_max_pu", "wind_p_max_pu_150m_niwe_anchored"]
+    if selected[profile_columns].isna().any().any():
         raise ValueError("v0.6 renewable profile does not cover expansion chronology")
 
     solar = selected["solar_p_max_pu"].to_numpy(dtype=float)
@@ -253,26 +254,32 @@ def _solve_two_stage(
     *,
     annualized_costs: dict[str, float],
     unserved_tolerance_mwh: float,
+    stage1_minimum_unserved_mwh: float | None = None,
 ) -> tuple[np.ndarray, dict[str, float]]:
     nvars = int(lp["nvars"])
     n = int(lp["n"])
     blocks = lp["blocks"]
     cap = lp["cap_indices"]
 
-    c1 = np.zeros(nvars, dtype=float)
-    c1[blocks["unserved"] : blocks["unserved"] + n] = 1.0
-    stage1 = linprog(
-        c1,
-        A_ub=lp["a_ub"],
-        b_ub=lp["b_ub"],
-        A_eq=lp["a_eq"],
-        b_eq=lp["b_eq"],
-        bounds=lp["bounds"],
-        method="highs",
-    )
-    if not stage1.success:
-        raise RuntimeError(f"v0.8 adequacy stage failed: {stage1.message}")
-    minimum_unserved = float(c1 @ stage1.x)
+    if stage1_minimum_unserved_mwh is None:
+        c1 = np.zeros(nvars, dtype=float)
+        c1[blocks["unserved"] : blocks["unserved"] + n] = 1.0
+        stage1 = linprog(
+            c1,
+            A_ub=lp["a_ub"],
+            b_ub=lp["b_ub"],
+            A_eq=lp["a_eq"],
+            b_eq=lp["b_eq"],
+            bounds=lp["bounds"],
+            method="highs",
+        )
+        if not stage1.success:
+            raise RuntimeError(f"v0.8 adequacy stage failed: {stage1.message}")
+        minimum_unserved = float(c1 @ stage1.x)
+    else:
+        minimum_unserved = float(stage1_minimum_unserved_mwh)
+        if minimum_unserved < 0:
+            raise ValueError("stage-1 minimum unserved energy cannot be negative")
 
     shortage_row = np.zeros(nvars, dtype=float)
     shortage_row[blocks["unserved"] : blocks["unserved"] + n] = 1.0
@@ -336,6 +343,7 @@ def solve_proxy_expansion_case(
     charge_efficiency: float,
     discharge_efficiency: float,
     unserved_tolerance_mwh: float,
+    stage1_minimum_unserved_mwh: float | None = None,
 ) -> dict[str, Any]:
     lp = _build_lp(
         residual_load_mw,
@@ -351,6 +359,7 @@ def solve_proxy_expansion_case(
         lp,
         annualized_costs=annualized_costs,
         unserved_tolerance_mwh=unserved_tolerance_mwh,
+        stage1_minimum_unserved_mwh=stage1_minimum_unserved_mwh,
     )
     n = int(lp["n"])
     blocks = lp["blocks"]
@@ -440,6 +449,7 @@ def run_proxy_expansion_suite(
             transfer = transfer_lookup[transfer_id]
             for envelope_case in suite["capacity_envelope_cases"]:
                 caps = _candidate_caps(root, envelope_case, suite)
+                stage1_minimum: float | None = None
                 for bess_cost_case in suite["bess_cost_cases"]:
                     costs = _annualized_costs(root, bess_cost_case)
                     solved = solve_proxy_expansion_case(
@@ -455,7 +465,9 @@ def run_proxy_expansion_suite(
                         unserved_tolerance_mwh=float(
                             suite["objective"]["unserved_tolerance_mwh"]
                         ),
+                        stage1_minimum_unserved_mwh=stage1_minimum,
                     )
+                    stage1_minimum = float(solved["stage1_minimum_unserved_mwh"])
                     results.append(
                         {
                             "demand_case": demand_id,
