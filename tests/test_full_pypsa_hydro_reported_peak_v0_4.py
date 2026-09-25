@@ -1,4 +1,5 @@
 """Tests for the v0.4 SLDC-reported hydro peak envelope."""
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -28,9 +29,10 @@ def test_station_peak_envelope_matches_admitted_sldc_coverage():
     station = pd.read_csv(
         ROOT / "data/external/sldc_fy2024_25/hydro_station_daily.csv"
     )
-    qa = pd.read_json(
-        ROOT / "data/external/sldc_fy2024_25/qa_report.json",
-        typ="series",
+    qa = json.loads(
+        (
+            ROOT / "data/external/sldc_fy2024_25/qa_report.json"
+        ).read_text(encoding="utf-8")
     )
     full_dates = pd.date_range("2024-04-01", "2025-03-31", freq="D")
     envelope, summary = derive_reported_station_peak_envelope(
