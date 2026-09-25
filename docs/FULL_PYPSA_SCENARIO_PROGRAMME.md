@@ -89,30 +89,61 @@ The acquisition resolved several previously ambiguous claims: CEA's 31-March-202
 
 The next checkpoint is therefore **base-year and input-selection reconciliation**. No capacity-expansion solve should begin by silently splicing the FY2024-25 Economic Review, March-2026 CEA and August-2026 MNRE boundaries. The model must choose a declared base date, reconcile every current asset into that boundary, preserve alternative official demand forecasts as named sensitivities, and only then map costs, chronology, reliability and physical constraints into PyPSA.
 
-## Implementation checkpoint 3 · canonical March-2026 base system
+## Implementation checkpoint 3 · corrected same-date March-2026 base system
 
-The full model now has a declared **31 March 2026** structural base in
-`configs/base_system_2026_03_31.yaml`. CEA's main installed-capacity population
-reconciles to **3,221.30 MW**: 536.54 MW thermal, 2,284.42 MW hydro and 400.34 MW
-wind/solar at or above 1 MW. The same source reports **1,912.33 MW of solar below
-1 MW separately**, giving a purely arithmetic physical-capacity population of
-**5,133.63 MW** when that separately reported solar is included.
+The canonical physical base remains **31 March 2026**, but the renewable technology
+split is now sourced from MNRE's exact same-date **location-based** table rather than
+the broader CEA planning-study split. The corrected physical population is:
 
-This is a boundary reconciliation, not a dispatch-ready fleet. Existing sub-1-MW
-solar is treated as **embedded in net-grid demand** by default; it may not also be
-injected as a PyPSA generator until a gross-demand reconstruction with compatible
-behind-the-meter generation is available. The MNRE 31-August-2026 renewable snapshot
-is retained as an explicit later overlay and cannot silently mutate the March base.
+- thermal: **536.54 MW**;
+- large hydro: **2,008.15 MW**;
+- small hydro: **276.52 MW**;
+- wind: **71.52 MW**;
+- bio-power: **2.50 MW**;
+- solar: **2,215.59 MW**, comprising 340.26 MW ground-mounted, 1,850.40 MW rooftop,
+  24.93 MW off-grid/KUSUM-B and zero hybrid component.
 
-The base validator and tests enforce ownership/technology arithmetic, keep unverified
-operational BESS/PSP values null, prevent the August overlay from being silently
-applied, and reject an explicit rooftop generator while the declared load boundary is
-net-grid demand.
+This gives **4,574.28 MW renewable capacity** and **5,110.82 MW total physical
+capacity** at the declared base boundary.
 
-The scenario compiler now requires the reconciled base system, existing generation
-and storage fleet evidence, demand chronology, renewable temporal profiles,
-technology costs, transfer/price inputs and reliability definition for **every**
-S0-S5 case. Fixed-existing technologies therefore no longer bypass their underlying
-fleet evidence. S0-S5 public/config vocabulary is also synchronized, including the
-S2 `legal_minimum` ecological rule and the common 2030/2035/2040 model years.
+The earlier CEA **3,221.30 MW + 1,912.33 MW** formulation is retained only as a
+planning/accounting crosscheck because that study separates sub-1-MW solar and uses a
+different reporting structure. It no longer defines the canonical physical technology
+split. CEA monthly state allocation tables are also not used as the physical Kerala
+fleet because they include Kerala shares in outside-state central/joint generation.
 
+Existing **1,850.40 MW rooftop solar remains embedded in net-grid demand** by default.
+The 24.93 MW off-grid/KUSUM-B category is excluded from grid dispatch. Both rules
+prevent generation from being double counted before a compatible gross-demand
+reconstruction exists.
+
+Canonical source record:
+[data/evidence/assets/kerala_location_capacity_2026_03_31.json](../data/evidence/assets/kerala_location_capacity_2026_03_31.json).
+
+## Implementation checkpoint 4 · exact aggregate fleet with explicit residuals
+
+The first station-census pass now reconciles every March-2026 technology total without
+inventing missing plants. The current fleet record is
+[data/evidence/assets/kerala_fleet_reconciliation_2026_03_31.json](../data/evidence/assets/kerala_fleet_reconciliation_2026_03_31.json).
+
+Known/verified station seeds currently account for **2,180.95 MW of hydro**, leaving
+**103.72 MW** as an explicit unresolved station-level residual. The split is 2,003.35
+MW known large hydro + 4.80 MW residual, and 177.60 MW known small hydro + 98.92 MW
+residual. The wind seed accounts for 29.03 MW of the exact 71.52 MW total, leaving
+42.49 MW unresolved. Named ground-solar assets account for 192 MW of the exact
+340.26 MW category, leaving 148.26 MW unresolved.
+
+Thermal reconciles exactly to 536.54 MW through NTPC Kayamkulam 359.58 MW,
+Brahmapuram 63.96 MW, Kozhikode 96 MW and a deliberately unresolved 17 MW private
+CPP bucket. Historical BSES/Kochi and Kasaragod Power portal rows are explicitly
+excluded from current dispatch until newer authoritative operating evidence says
+otherwise.
+
+The KSEB project portal is used only as a **census seed**. Its stale status is overridden
+where CEA/Economic Review independently establish commissioning, notably Thottiyar and
+Pallivasal Extension. The Poringalkuthu micro-screw row whose name says 11 kW but whose
+numeric field says 11 MW is excluded from capacity arithmetic pending source correction.
+
+This closes **aggregate fleet reconciliation**, not station/unit completion. PyPSA
+dispatch remains blocked until the residual plant identities, unit availability,
+outage/derating history, efficiencies/heat rates and variable costs are resolved.
