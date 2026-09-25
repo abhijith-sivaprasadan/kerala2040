@@ -89,3 +89,30 @@ The acquisition resolved several previously ambiguous claims: CEA's 31-March-202
 
 The next checkpoint is therefore **base-year and input-selection reconciliation**. No capacity-expansion solve should begin by silently splicing the FY2024-25 Economic Review, March-2026 CEA and August-2026 MNRE boundaries. The model must choose a declared base date, reconcile every current asset into that boundary, preserve alternative official demand forecasts as named sensitivities, and only then map costs, chronology, reliability and physical constraints into PyPSA.
 
+## Implementation checkpoint 3 · canonical March-2026 base system
+
+The full model now has a declared **31 March 2026** structural base in
+`configs/base_system_2026_03_31.yaml`. CEA's main installed-capacity population
+reconciles to **3,221.30 MW**: 536.54 MW thermal, 2,284.42 MW hydro and 400.34 MW
+wind/solar at or above 1 MW. The same source reports **1,912.33 MW of solar below
+1 MW separately**, giving a purely arithmetic physical-capacity population of
+**5,133.63 MW** when that separately reported solar is included.
+
+This is a boundary reconciliation, not a dispatch-ready fleet. Existing sub-1-MW
+solar is treated as **embedded in net-grid demand** by default; it may not also be
+injected as a PyPSA generator until a gross-demand reconstruction with compatible
+behind-the-meter generation is available. The MNRE 31-August-2026 renewable snapshot
+is retained as an explicit later overlay and cannot silently mutate the March base.
+
+The base validator and tests enforce ownership/technology arithmetic, keep unverified
+operational BESS/PSP values null, prevent the August overlay from being silently
+applied, and reject an explicit rooftop generator while the declared load boundary is
+net-grid demand.
+
+The scenario compiler now requires the reconciled base system, existing generation
+and storage fleet evidence, demand chronology, renewable temporal profiles,
+technology costs, transfer/price inputs and reliability definition for **every**
+S0-S5 case. Fixed-existing technologies therefore no longer bypass their underlying
+fleet evidence. S0-S5 public/config vocabulary is also synchronized, including the
+S2 `legal_minimum` ecological rule and the common 2030/2035/2040 model years.
+
