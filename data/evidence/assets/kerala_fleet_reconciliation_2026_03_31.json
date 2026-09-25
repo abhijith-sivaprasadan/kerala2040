@@ -806,5 +806,39 @@
       "resolution": "KSEBL Power System Statistics establish 0.011 MW",
       "effect": "added 0.011 MW to small-hydro station seed; 11 MW value rejected"
     }
-  ]
+  ],
+  "external_sources": {
+    "kseb_power_system_statistics": {
+      "url": "https://old.kseb.in/index.php?Itemid=811&catid=70&id=32724&lang=en&m=0&option=com_jdownloads&task=download.send",
+      "use": "0.011 MW Poringalkuthu Micro, 6 MW Perunthenaruvi and hydro station/unit crosschecks"
+    },
+    "kseb_dam_safety_perunthenaruvi": {
+      "url": "https://dams.kseb.in/?p=190",
+      "use": "Perunthenaruvi 6 MW (2x3 MW) independent KSEBL technical confirmation"
+    },
+    "kseb_bdpp_characteristics": {
+      "url": "https://old.kseb.in/index.php?Itemid=654&catid=64&id=7769&lang=en&m=0&option=com_jdownloads&task=download.send",
+      "use": "BDPP surviving units 1,4,5 at 21.32 MW each; units 2 and 3 decommissioned; LSHS/HSD fuel definition"
+    },
+    "kseb_kdpp_status": {
+      "url": "https://old.kseb.in/index.php?Itemid=673&catid=2&id=19557&lang=en&m=0&option=com_jdownloads&task=download.send",
+      "use": "KDPP units 1 and 4 decommissioned; six 16 MW DG sets remain"
+    },
+    "kseb_power_system_thermal_units": {
+      "url": "https://old.kseb.in/index.php?Itemid=810&catid=70&id=24151&lang=en&m=0&option=com_jdownloads&task=download.send",
+      "use": "KDPP unit numbers 2,3,5,6,7,8 and Kayamkulam unit structure crosscheck"
+    },
+    "ntpc_kayamkulam_tariff_record": {
+      "url": "https://ntpc.co.in/sites/default/files/inline-files/Kayamkulam-Petition-2019-24.pdf",
+      "use": "359.58 MW approved capacity = 2x116.6 MW GT + 126.38 MW ST"
+    },
+    "kserc_mps_steel": {
+      "url": "https://dev.erckerala.org/api/storage/orders/X9RmPHTwL9D7OROTtiKXSDbvL9uaR6xZxmh5iDar.pdf",
+      "use": "10 MW MPS Steel combined cogeneration/thermal candidate evidence; not sufficient to map current 17 MW Thermal:CPP bucket"
+    },
+    "fact_cpp": {
+      "url": "https://fact.co.in/home/Dynamicpages?MenuId=14",
+      "use": "FACT page describes a 16 MW captive power plant; candidate evidence only, not mapped to KSEBL 17 MW Thermal:CPP bucket"
+    }
+  }
 }
