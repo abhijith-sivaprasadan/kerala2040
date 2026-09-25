@@ -1,7 +1,7 @@
 """Validate and summarize the canonical 31 March 2026 Kerala base system."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
@@ -13,20 +13,25 @@ CLASSIFICATION = "reconciled_structural_base_not_dispatch_ready"
 @dataclass(frozen=True)
 class BaseSystemSummary:
     base_date: str
-    cea_main_capacity_mw: float
-    solar_lt_1mw_mw: float
-    physical_arithmetic_capacity_mw: float
     thermal_mw: float
-    hydro_mw: float
-    renewable_ge_1mw_mw: float
-    distributed_solar_treatment: str
-    structural_capacity_reconciled: bool
+    large_hydro_mw: float
+    small_hydro_mw: float
+    hydro_total_mw: float
+    wind_mw: float
+    bio_power_mw: float
+    solar_total_mw: float
+    rooftop_solar_mw: float
+    ground_solar_mw: float
+    renewable_total_mw: float
+    physical_capacity_total_mw: float
+    rooftop_solar_treatment: str
+    same_date_technology_capacity_reconciled: bool
     dispatch_ready: bool
     expansion_ready: bool
     blocker_count: int
 
     def to_dict(self) -> dict[str, Any]:
-        return self.__dict__.copy()
+        return asdict(self)
 
 
 def _near(a: float, b: float, tol: float = 1e-6) -> bool:
@@ -46,63 +51,56 @@ def validate_base_system(cfg: dict[str, Any]) -> None:
         raise ValueError("canonical base date must remain 2026-03-31")
 
     cap = cfg["capacity_boundary_mw"]
-    main = cap["cea_main_table"]
+    re = cap["renewable_location_based"]
+    solar = re["solar"]
+    bio = re["bio_power"]
+
+    if not _near(re["large_hydro"] + re["small_hydro"], re["hydro_total"]):
+        raise ValueError("hydro categories do not reconcile")
     if not _near(
-        main["thermal"] + main["hydro"] + main["renewable_wind_and_solar_ge_1mw"],
-        main["total"],
+        solar["ground_mounted"]
+        + solar["rooftop_including_pm_surya_ghar"]
+        + solar["hybrid_component"]
+        + solar["off_grid_or_kusum_component_b"],
+        solar["total"],
     ):
-        raise ValueError("CEA main capacity table does not reconcile")
-
-    solar_lt = cap["solar_below_1mw_reported_separately"]
+        raise ValueError("MNRE solar categories do not reconcile")
     if not _near(
-        solar_lt["state"] + solar_lt["private"] + solar_lt["central"],
-        solar_lt["total"],
+        bio["biomass_non_bagasse"] + bio["waste_to_energy_off_grid"],
+        bio["total"],
     ):
-        raise ValueError("sub-1-MW solar ownership does not reconcile")
-
+        raise ValueError("MNRE bio-power categories do not reconcile")
     if not _near(
-        main["total"] + solar_lt["total"],
-        cap["physical_arithmetic_total_including_reported_sub_1mw_solar"],
+        re["hydro_total"] + re["wind"] + bio["total"] + solar["total"],
+        re["total"],
     ):
-        raise ValueError("combined physical capacity arithmetic does not reconcile")
+        raise ValueError("MNRE location-based renewable total does not reconcile")
+    if not _near(cap["thermal"] + re["total"], cap["physical_capacity_total_mw"]):
+        raise ValueError("physical March-2026 capacity total does not reconcile")
 
-    ownership = cfg["ownership_boundary_mw"]
-    for owner, row in ownership.items():
-        if not _near(
-            row["thermal"] + row["hydro"] + row["renewable_wind_and_solar_ge_1mw"],
-            row["main_table_total"],
-        ):
-            raise ValueError(f"{owner} main-table capacity does not reconcile")
-
-    if not _near(sum(row["main_table_total"] for row in ownership.values()), main["total"]):
-        raise ValueError("ownership main-table totals do not reconcile to CEA total")
-    for technology, key in (
-        ("thermal", "thermal"),
-        ("hydro", "hydro"),
-        ("renewable_wind_and_solar_ge_1mw", "renewable_wind_and_solar_ge_1mw"),
-    ):
-        if not _near(sum(row[key] for row in ownership.values()), main[technology]):
-            raise ValueError(f"ownership {technology} does not reconcile")
-    if not _near(sum(row["solar_lt_1mw"] for row in ownership.values()), solar_lt["total"]):
-        raise ValueError("ownership sub-1-MW solar does not reconcile")
-
-    assets = cfg["named_asset_crosschecks"]
-    thermal_sum = sum(float(row["accounting_mw"]) for row in assets["thermal"])
-    if not _near(thermal_sum, main["thermal"]):
+    thermal_sum = sum(
+        float(row["accounting_mw"]) for row in cfg["named_asset_crosschecks"]["thermal"]
+    )
+    if not _near(thermal_sum, cap["thermal"]):
         raise ValueError("named/residual thermal rows do not reconcile")
-    re_sum = sum(float(row["accounting_mw"]) for row in assets["renewable_ge_1mw"])
-    if not _near(re_sum, main["renewable_wind_and_solar_ge_1mw"]):
-        raise ValueError("named/residual >=1 MW renewable rows do not reconcile")
 
     distributed = cfg["distributed_solar_boundary"]
-    if distributed["pypsa_treatment_default"] != "embedded_in_net_grid_demand":
-        raise ValueError("distributed-solar default would change the declared demand boundary")
-    if distributed["explicit_generator_allowed"] is not False:
-        raise ValueError("existing sub-1-MW solar cannot be explicit with net-grid demand")
+    if not _near(
+        distributed["rooftop_capacity_mw"], solar["rooftop_including_pm_surya_ghar"]
+    ):
+        raise ValueError("rooftop solar boundary disagrees with MNRE capacity")
+    if distributed["rooftop_pypsa_treatment_default"] != "embedded_in_net_grid_demand":
+        raise ValueError("rooftop default would change the declared demand boundary")
+    if distributed["rooftop_explicit_generator_allowed"] is not False:
+        raise ValueError("existing rooftop solar cannot be explicit with net-grid demand")
+    if distributed["off_grid_pypsa_treatment_default"] != "excluded_from_grid_dispatch":
+        raise ValueError("off-grid solar cannot enter grid dispatch by default")
 
     overlay = cfg["later_august_2026_renewable_overlay"]
     if overlay["applied_to_base"] is not False:
         raise ValueError("August 2026 overlay must not silently mutate March base")
+    if overlay["as_of"] != "2026-08-31":
+        raise ValueError("later renewable overlay date changed")
 
     storage = cfg["storage_boundary"]
     for key in (
@@ -114,8 +112,8 @@ def validate_base_system(cfg: dict[str, Any]) -> None:
             raise ValueError("unverified operational storage inserted into base")
 
     release = cfg["base_release"]
-    if release["structural_capacity_reconciled"] is not True:
-        raise ValueError("base must expose completed structural capacity reconciliation")
+    if release["same_date_technology_capacity_reconciled"] is not True:
+        raise ValueError("same-date technology reconciliation must remain explicit")
     if any(
         release[key] is not False
         for key in (
@@ -134,22 +132,28 @@ def validate_base_system(cfg: dict[str, Any]) -> None:
 def summarize_base_system(cfg: dict[str, Any]) -> BaseSystemSummary:
     validate_base_system(cfg)
     cap = cfg["capacity_boundary_mw"]
-    main = cap["cea_main_table"]
+    re = cap["renewable_location_based"]
+    solar = re["solar"]
     release = cfg["base_release"]
     return BaseSystemSummary(
         base_date=cfg["base_date"],
-        cea_main_capacity_mw=float(main["total"]),
-        solar_lt_1mw_mw=float(cap["solar_below_1mw_reported_separately"]["total"]),
-        physical_arithmetic_capacity_mw=float(
-            cap["physical_arithmetic_total_including_reported_sub_1mw_solar"]
-        ),
-        thermal_mw=float(main["thermal"]),
-        hydro_mw=float(main["hydro"]),
-        renewable_ge_1mw_mw=float(main["renewable_wind_and_solar_ge_1mw"]),
-        distributed_solar_treatment=cfg["distributed_solar_boundary"][
-            "pypsa_treatment_default"
+        thermal_mw=float(cap["thermal"]),
+        large_hydro_mw=float(re["large_hydro"]),
+        small_hydro_mw=float(re["small_hydro"]),
+        hydro_total_mw=float(re["hydro_total"]),
+        wind_mw=float(re["wind"]),
+        bio_power_mw=float(re["bio_power"]["total"]),
+        solar_total_mw=float(solar["total"]),
+        rooftop_solar_mw=float(solar["rooftop_including_pm_surya_ghar"]),
+        ground_solar_mw=float(solar["ground_mounted"]),
+        renewable_total_mw=float(re["total"]),
+        physical_capacity_total_mw=float(cap["physical_capacity_total_mw"]),
+        rooftop_solar_treatment=cfg["distributed_solar_boundary"][
+            "rooftop_pypsa_treatment_default"
         ],
-        structural_capacity_reconciled=bool(release["structural_capacity_reconciled"]),
+        same_date_technology_capacity_reconciled=bool(
+            release["same_date_technology_capacity_reconciled"]
+        ),
         dispatch_ready=bool(release["chronological_dispatch_ready"]),
         expansion_ready=bool(release["capacity_expansion_ready"]),
         blocker_count=len(cfg["blocking_inputs"]),
