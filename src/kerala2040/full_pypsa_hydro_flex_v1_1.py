@@ -228,7 +228,11 @@ def solve_hydro_flex_case(
     status1, condition1 = n.optimize.solve_model(solver_name="highs")
     if status1 != "ok" or condition1 != "optimal":
         raise RuntimeError(f"v1.1 stage 1 failed: {status1} / {condition1}")
-    minimum_unserved = float(np.asarray(unserved.solution).sum())
+    minimum_unserved = float(
+        np.asarray(
+            model.variables["Generator-p"].solution.sel(name="unserved_load")
+        ).sum()
+    )
 
     model.add_constraints(
         unserved.sum() <= minimum_unserved + float(unserved_tolerance_mwh),
@@ -255,9 +259,11 @@ def solve_hydro_flex_case(
     p = model.variables["Generator-p"].solution
     hydro = np.asarray(p.sel(name="daily_energy_hydro"), dtype=float)
     stage2_unserved = float(np.asarray(p.sel(name="unserved_load")).sum())
-    solar_mw = float(np.asarray(gen_nom.solution.sel(name="candidate_solar")).item())
-    wind_mw = float(np.asarray(gen_nom.solution.sel(name="candidate_wind")).item())
-    bess_mw = float(np.asarray(storage_nom.solution.sel(name="candidate_bess")).item())
+    solved_gen_nom = model.variables["Generator-p_nom"].solution
+    solved_storage_nom = model.variables["StorageUnit-p_nom"].solution
+    solar_mw = float(np.asarray(solved_gen_nom.sel(name="candidate_solar")).item())
+    wind_mw = float(np.asarray(solved_gen_nom.sel(name="candidate_wind")).item())
+    bess_mw = float(np.asarray(solved_storage_nom.sel(name="candidate_bess")).item())
     imports_mwh = float(np.asarray(p.sel(name="screened_import")).sum())
     hydro_by_day = pd.Series(hydro, index=snapshots).groupby(snapshots.normalize()).sum()
     target = daily_hydro_mwh.reindex(hydro_by_day.index.strftime("%Y-%m-%d"))
