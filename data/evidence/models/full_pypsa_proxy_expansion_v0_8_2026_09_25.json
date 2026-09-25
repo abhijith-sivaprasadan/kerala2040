@@ -1,0 +1,289 @@
+{
+  "classification": "FULL_PYPSA_2030_PROXY_EXPANSION_V0_8_ADEQUACY_FIRST_NOT_VALIDATED_CAPACITY_PLAN",
+  "prepared_date": "2026-09-25",
+  "workflow": {
+    "run_id": 36184640792,
+    "head_sha": "83a9329d9304120c361a6d9178f6b51bcd1f7d58",
+    "artifact_id": 10885088229,
+    "artifact_name": "full-pypsa-proxy-expansion-v0.8-NOT-VALIDATED",
+    "artifact_digest_sha256": "7210bc151af8e3b7fa896231f360986340fc6c3504121900e96c8fda9aac23ca",
+    "expires_at": "2026-12-24T20:15:13Z"
+  },
+  "method": {
+    "horizon_hours": 8760,
+    "demand_cases": [
+      "lower_FY2030",
+      "reference_FY2030_31"
+    ],
+    "transfer_limits_mw": {
+      "atc_snapshot_reference": 4455,
+      "atc_80pct_stress": 3564,
+      "atc_60pct_stress": 2673
+    },
+    "renewable_envelopes": [
+      "low",
+      "reference",
+      "high"
+    ],
+    "bess_cost_cases": [
+      "low",
+      "high"
+    ],
+    "stage_1": "minimize unserved MWh",
+    "stage_2": "minimize annualized candidate investment while preserving stage-1 shortage",
+    "stage_3": "fix stage-2 capacities within numerical tolerance and minimize import MWh for reporting",
+    "import_price": "unresolved_not_in_objective",
+    "existing_generation": "FY2024-25 daily-average hydro/nonhydro replay frozen",
+    "rooftop": "embedded/exogenous, not an investment variable",
+    "optimization_engine": "scipy.optimize.linprog / HiGHS custom sparse LP",
+    "direct_pypsa_network_optimize": false
+  },
+  "chronology_alignment": {
+    "ERA5_UTC_hours_to_IST_clock": "linear interpolation from :30 IST source points to :00 IST model hours",
+    "cyclic_boundary_wrapped_local_hours": 6,
+    "solar_raw_full_load_hours": 1358.5833679527286,
+    "solar_aligned_full_load_hours": 1358.5833679527286,
+    "wind_raw_full_load_hours": 1035.6791625763626,
+    "wind_aligned_full_load_hours": 1035.6791625763626,
+    "annual_full_load_hour_change_pct": 0
+  },
+  "unconstrained_lower_demand_full_ATC": {
+    "minimum_shortage_mwh": 0,
+    "low_BESS_cost": {
+      "solar_mw": 0,
+      "wind_mw": 0,
+      "bess_4h_mw": 126.61867388331049,
+      "bess_energy_mwh": 506.47469553324197,
+      "annualized_candidate_investment_million_inr_per_year": 830.7904134414351,
+      "minimum_imports_mwh": 24713276.801649608
+    },
+    "high_BESS_cost": {
+      "solar_mw": 223.6937924866655,
+      "wind_mw": 0,
+      "bess_4h_mw": 9.035866833460204,
+      "bess_energy_mwh": 36.14346733384082,
+      "annualized_candidate_investment_million_inr_per_year": 1134.734796140564,
+      "minimum_imports_mwh": 24409298.811724916
+    },
+    "interpretation": "Only non-cap-binding family. BESS cost changes the least-investment adequacy mix."
+  },
+  "adequacy_matrix_low_BESS_cost": [
+    [
+      "lower_FY2030",
+      "atc_80pct_stress",
+      "low",
+      26612.98,
+      0.081,
+      146,
+      539.299,
+      1287.905,
+      2239.475,
+      250
+    ],
+    [
+      "lower_FY2030",
+      "atc_80pct_stress",
+      "reference",
+      24689.04,
+      0.075,
+      141,
+      528.507,
+      1149.568,
+      2549.475,
+      250
+    ],
+    [
+      "lower_FY2030",
+      "atc_80pct_stress",
+      "high",
+      22582.883,
+      0.068,
+      136,
+      515.556,
+      1072.466,
+      2921.475,
+      250
+    ],
+    [
+      "lower_FY2030",
+      "atc_60pct_stress",
+      "low",
+      859385.291,
+      2.605,
+      1925,
+      1680.299,
+      2910.74,
+      2239.475,
+      250
+    ],
+    [
+      "lower_FY2030",
+      "atc_60pct_stress",
+      "reference",
+      801716.327,
+      2.43,
+      1825,
+      1669.507,
+      4210.74,
+      2549.475,
+      250
+    ],
+    [
+      "lower_FY2030",
+      "atc_60pct_stress",
+      "high",
+      740127.858,
+      2.244,
+      1683,
+      1609.672,
+      11407.739,
+      2921.475,
+      250
+    ],
+    [
+      "reference_FY2030_31",
+      "atc_snapshot_reference",
+      "low",
+      398597.363,
+      0.891,
+      898,
+      1848.548,
+      2910.74,
+      2239.475,
+      250
+    ],
+    [
+      "reference_FY2030_31",
+      "atc_snapshot_reference",
+      "reference",
+      375030.306,
+      0.839,
+      851,
+      1827.825,
+      4210.74,
+      2549.475,
+      250
+    ],
+    [
+      "reference_FY2030_31",
+      "atc_snapshot_reference",
+      "high",
+      357113.087,
+      0.798,
+      822,
+      1636.722,
+      11407.736,
+      2921.475,
+      250
+    ],
+    [
+      "reference_FY2030_31",
+      "atc_80pct_stress",
+      "low",
+      2591744.475,
+      5.795,
+      3685,
+      2739.548,
+      2910.74,
+      2239.475,
+      250
+    ],
+    [
+      "reference_FY2030_31",
+      "atc_80pct_stress",
+      "reference",
+      2301611.686,
+      5.146,
+      3293,
+      2728.756,
+      4210.74,
+      2549.475,
+      250
+    ],
+    [
+      "reference_FY2030_31",
+      "atc_80pct_stress",
+      "high",
+      2030130.29,
+      4.539,
+      2837,
+      2715.805,
+      11407.74,
+      2921.475,
+      250
+    ],
+    [
+      "reference_FY2030_31",
+      "atc_60pct_stress",
+      "low",
+      7574246.388,
+      16.935,
+      6532,
+      3630.548,
+      2910.74,
+      2239.475,
+      250
+    ],
+    [
+      "reference_FY2030_31",
+      "atc_60pct_stress",
+      "reference",
+      6600273.111,
+      14.757,
+      5661,
+      3619.756,
+      4210.74,
+      2549.475,
+      250
+    ],
+    [
+      "reference_FY2030_31",
+      "atc_60pct_stress",
+      "high",
+      5469867.805,
+      12.23,
+      4506,
+      3606.805,
+      11407.74,
+      2921.475,
+      250
+    ]
+  ],
+  "adequacy_matrix_columns": [
+    "demand_case",
+    "transfer_case",
+    "capacity_envelope_case",
+    "unserved_mwh",
+    "unserved_pct_target_energy",
+    "hours_with_unserved",
+    "max_unserved_mw",
+    "solar_combined_mw",
+    "wind_mw",
+    "bess_4h_mw"
+  ],
+  "key_interpretation": [
+    "Reference FY2030-31 demand retains shortage even at 4,455 MW ATC and the high renewable envelope.",
+    "The reference/high/full-ATC case leaves 357.113 GWh unserved (0.798%), across 822 hours, with 1,636.722 MW maximum hourly shortage.",
+    "At reference demand with 80% ATC and high envelope, shortage is 2.030 TWh (4.539%).",
+    "At reference demand with 60% ATC and high envelope, shortage is 5.470 TWh (12.230%).",
+    "Many shortage-bound cases hit wind and 250 MW four-hour BESS limits; reference-demand cases also hit combined solar limits.",
+    "Lower-demand 80% ATC cases do not always hit the solar cap, indicating shortage timing that extra solar alone cannot remove under the 250 MW BESS cap.",
+    "Large spill can coexist with shortage in high-envelope cases, showing temporal mismatch rather than simple annual-energy scarcity.",
+    "BESS cost sensitivity changes build composition only in the lower-demand/full-ATC non-binding case; binding adequacy cases build to the same candidate limits."
+  ],
+  "limitations": [
+    "v0.8 optimisation is implemented as a custom SciPy/HiGHS sparse LP inside the Full-PyPSA programme; direct PyPSA Network.optimize equivalence is not established by this checkpoint.",
+    "Not total-system least-cost optimisation because landed import prices are unresolved.",
+    "Renewable profiles are five-point screening profiles, not validated capacity-weighted fleet output.",
+    "Capacity envelopes are published research scenarios, not statutory/site-cleared MW.",
+    "Hydro/nonhydro are frozen daily-average historical source-energy replays.",
+    "No forced outages, probabilistic reliability, internal transmission constraints or site-specific grid hosting.",
+    "No endogenous rooftop, new hydro, new thermal, demand response, PSP or transmission expansion."
+  ],
+  "model_admission": {
+    "proxy_2030_capacity_expansion_counterfactual_complete": true,
+    "full_economic_capacity_expansion_ready": false,
+    "validated_capacity_plan": false,
+    "scenario_recommendation": false
+  }
+}

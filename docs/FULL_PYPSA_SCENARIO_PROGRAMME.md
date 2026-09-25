@@ -446,3 +446,106 @@ pytest -q tests/test_full_pypsa_renewable_capacity_v0_7.py
 The next implementation step can now be a first **2030 proxy expansion
 counterfactual** combining v0.4 demand, v0.5 costs, v0.6 hourly profiles and v0.7
 candidate limits, while retaining explicit slack/import/hydro caveats.
+
+
+## Implementation checkpoint 10 · 2030 adequacy-first proxy expansion v0.8
+
+v0.8 combines the source-bounded layers assembled in v0.4-v0.7 into the first
+full-year capacity-expansion counterfactual. It is **not** a total-system least-cost
+plan because landed Kerala import prices remain unresolved.
+
+The v0.8 numerical kernel is implemented with `scipy.optimize.linprog` using the
+HiGHS backend and a custom sparse LP. It consumes the Full-PyPSA programme's admitted
+v0.4-v0.7 inputs, but this checkpoint is **not** a direct
+`PyPSA Network.optimize()` expansion solve. Direct formulation equivalence is a
+separate verification step.
+
+The solve is lexicographic:
+
+1. minimize unserved energy;
+2. preserve that minimum shortage and minimize annualized solar/wind/4-hour-BESS
+   investment cost;
+3. hold the selected investment capacities fixed within numerical tolerance and
+   minimize import MWh for a non-degenerate reporting dispatch.
+
+The model runs the CSTEP lower FY2030 and CEA/KSERC reference FY2030-31 demand
+anchors against 4,455 / 3,564 / 2,673 MW transfer sensitivities, the v0.7
+low/reference/high renewable envelopes, and the v0.5 low/high four-hour BESS cost
+bracket. Four-hour BESS is capped at **250 MW**, matching the admitted RA planning
+additions through 2030.
+
+### ERA5 / IST chronology correction
+
+The v0.6 ERA5 source is hourly in UTC, which maps to :30 local time in India.
+v0.8 therefore interpolates the screening profiles from :30 IST onto the model's
+:00 IST clock hours. The first six local hours use an explicit one-year cyclic
+boundary wrap from the tail of the same representative-year profile. This avoids
+silently shifting the solar day by 5.5 hours.
+
+The interpolation preserves annual full-load hours exactly in this run:
+**1,358.583 solar FLH** and **1,035.679 wind FLH**, both with 0.0% annual change.
+
+### Main results
+
+For the **lower FY2030 demand case with the full 4,455 MW ATC sensitivity**, the
+stage-1 minimum shortage is zero. The least-investment mix depends on the BESS cost
+bracket:
+
+- low BESS cost: **126.619 MW / 506.475 MWh** four-hour BESS, with no new solar or wind;
+- high BESS cost: **223.694 MW solar + 9.036 MW / 36.143 MWh BESS**, with no new wind.
+
+This is the only non-cap-binding family. It should be read as a lower-bound
+adequacy result under favourable, unpriced imports—not as a preferred investment
+mix.
+
+With the **80% ATC stress (3,564 MW)**, even the lower-demand case retains a small
+shortage after optimization. Under the high renewable envelope it is **22.583 GWh
+(0.068%)**, across **136 hours**, with **515.6 MW** maximum hourly shortage.
+The optimizer uses **2,921.475 MW wind, 250 MW BESS and 1,072.466 MW solar**.
+The fact that solar does not hit its very large high-envelope cap shows that these
+remaining shortages occur at times when more solar alone cannot resolve them under
+the admitted storage/firm-capacity assumptions.
+
+At the **60% ATC stress (2,673 MW)**, the lower-demand high-envelope case reaches
+all candidate limits and still leaves **740.128 GWh (2.244%)** unserved across
+**1,683 hours**.
+
+The stronger result is the CEA/KSERC **reference FY2030-31** demand case. Even with
+the full 4,455 MW ATC sensitivity and the high renewable envelope, the proxy model
+hits **11,407.74 MW combined solar headroom, 2,921.475 MW wind and 250 MW BESS**
+and still leaves **357.113 GWh (0.798%)** unserved across **822 hours**, with a
+maximum hourly shortage of **1,636.7 MW**.
+
+Reference-demand shortage worsens sharply with transfer stress:
+
+| ATC sensitivity | Low envelope | Reference envelope | High envelope |
+|---|---:|---:|---:|
+| 4,455 MW | 0.891% | 0.839% | **0.798%** |
+| 3,564 MW | 5.795% | 5.146% | **4.539%** |
+| 2,673 MW | 16.935% | 14.757% | **12.230%** |
+
+The high-envelope 3,564 MW case still leaves **2.030 TWh** unserved; the high-envelope
+2,673 MW case leaves **5.470 TWh**.
+
+Large renewable spill and shortage can coexist in high-envelope cases. That is an
+important chronology signal: under the current proxy assumptions, the problem is
+not simply annual renewable energy. It is the coincidence of demand, renewable
+availability, import capability, only 250 MW / 1 GWh of candidate BESS, and the
+deliberately frozen daily-average historical hydro/nonhydro replay.
+
+The BESS cost bracket changes the investment composition only in the unconstrained
+lower-demand/full-ATC case. Once the adequacy limits bind, the optimizer reaches the
+same candidate MW limits regardless of whether the low or high BESS cost benchmark
+is used.
+
+Durable evidence is recorded in
+`data/evidence/models/full_pypsa_proxy_expansion_v0_8_2026_09_25.json`.
+
+These results do **not** establish that Kerala needs the reported MW. They establish
+that, under this deliberately bounded single-bus counterfactual, the admitted
+renewable/storage envelopes are insufficient for the reference-demand case even
+under the dated 4,455 MW transfer sensitivity. The next high-value blockers are
+therefore import economics/forward transfer assumptions and a more realistic
+firm/flexible supply representation—especially hydro operation, outages and
+additional storage/flexibility—before any economic capacity recommendation is
+defensible.

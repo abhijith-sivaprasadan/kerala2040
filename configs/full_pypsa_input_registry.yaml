@@ -21,6 +21,8 @@ sources:
   era5_renewable_profiles_v0_6: configs/full_pypsa_era5_renewable_profiles_v0_6.yaml
   era5_renewable_profile_evidence_v0_6: data/evidence/weather/era5_renewable_profiles_v0_6_2026_09_25.json
   renewable_capacity_envelope_v0_7: configs/full_pypsa_renewable_capacity_v0_7.yaml
+  proxy_expansion_v0_8: configs/full_pypsa_proxy_expansion_v0_8.yaml
+  proxy_expansion_evidence_v0_8: data/evidence/models/full_pypsa_proxy_expansion_v0_8_2026_09_25.json
   wri_kerala_re_2025: data/evidence/solar/wri_kerala_re_technology_assessment_2025_09_25.json
 
 requirements:
@@ -203,6 +205,32 @@ requirements:
     rule: >-
       v0.7 wind bounds are statewide published scenario sensitivities. They do not
       convert NIWE atlas cells into project-ready MW.
+
+  proxy_capacity_expansion_2030:
+    status: adequacy_first_counterfactual_complete_not_total_system_cost_plan
+    evidence:
+      - configs/full_pypsa_proxy_expansion_v0_8.yaml
+      - data/evidence/models/full_pypsa_proxy_expansion_v0_8_2026_09_25.json
+    acquired:
+      lower_FY2030_and_reference_FY2030_31_demand_cases: true
+      three_ATC_sensitivities: true
+      low_reference_high_RE_capacity_envelopes: true
+      low_high_BESS_cost_sensitivity: true
+      exact_8760_hour_sparse_LP: true
+      ERA5_to_IST_clock_alignment_explicit: true
+      adequacy_first_then_minimum_investment_then_minimum_import_reporting: true
+      full_suite_36_cases_passed: true
+    remaining:
+      - landed import price and contractual/market cost chronology
+      - validated existing fleet variable cost and availability
+      - measured or validated hourly renewable generation and capacity weights
+      - statutory/site-level renewable siting and internal grid hosting
+      - reservoir/cascade hydro physics and forced outages
+      - probabilistic reliability evaluation
+    rule: >-
+      v0.8 is a minimum-new-build adequacy counterfactual under bounded imports.
+      It is not a total-system least-cost plan, investment recommendation or
+      validated Kerala capacity pathway.
 
   battery_cost_performance:
     status: project_specific_benchmarks_partial
@@ -389,14 +417,16 @@ release:
   future_demand_counterfactual_screen_possible_now: true
   research_renewable_profile_screen_possible_now: true
   research_proxy_capacity_expansion_candidate_limits_possible_now: true
+  research_proxy_capacity_expansion_counterfactual_completed: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
     v0.4 adds source-anchor future-demand counterfactuals, v0.5 harmonises a bounded
     2030 research cost/finance package, v0.6 builds reproducible ERA5-derived
-    five-point solar/wind screening profiles, and v0.7 adds source-bounded statewide
-    renewable-capacity envelopes for proxy expansion sensitivity. Full economic
-    capacity expansion remains blocked by statutory/site-level siting, rooftop
+    five-point solar/wind screening profiles, v0.7 adds source-bounded statewide
+    renewable-capacity envelopes, and v0.8 completes an adequacy-first 2030 proxy
+    expansion counterfactual. Full economic capacity expansion remains blocked by
+    import economics, statutory/site-level siting, rooftop
     technical potential, capacity-weighted spatial allocation, outages, hydro/PSP
     physics, import-price inputs and other unresolved operational constraints.
   validated_run_possible_now: false
