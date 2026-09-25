@@ -21,6 +21,8 @@ sources:
   era5_renewable_profiles_v0_6: configs/full_pypsa_era5_renewable_profiles_v0_6.yaml
   era5_renewable_profile_evidence_v0_6: data/evidence/weather/era5_renewable_profiles_v0_6_2026_09_25.json
   renewable_capacity_envelope_v0_7: configs/full_pypsa_renewable_capacity_v0_7.yaml
+  pypsa_equivalence_v0_9: configs/full_pypsa_pypsa_equivalence_v0_9.yaml
+  pypsa_equivalence_evidence_v0_9: data/evidence/models/full_pypsa_pypsa_equivalence_v0_9_2026_09_25.json
   proxy_expansion_v0_8: configs/full_pypsa_proxy_expansion_v0_8.yaml
   proxy_expansion_evidence_v0_8: data/evidence/models/full_pypsa_proxy_expansion_v0_8_2026_09_25.json
   wri_kerala_re_2025: data/evidence/solar/wri_kerala_re_technology_assessment_2025_09_25.json
@@ -418,14 +420,16 @@ release:
   research_renewable_profile_screen_possible_now: true
   research_proxy_capacity_expansion_candidate_limits_possible_now: true
   research_proxy_capacity_expansion_counterfactual_completed: true
+  direct_pypsa_proxy_expansion_equivalence_verified: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
     v0.4 adds source-anchor future-demand counterfactuals, v0.5 harmonises a bounded
     2030 research cost/finance package, v0.6 builds reproducible ERA5-derived
     five-point solar/wind screening profiles, v0.7 adds source-bounded statewide
-    renewable-capacity envelopes, and v0.8 completes an adequacy-first 2030 proxy
-    expansion counterfactual. Full economic capacity expansion remains blocked by
+    renewable-capacity envelopes, v0.8 completes an adequacy-first 2030 proxy
+    expansion counterfactual, and v0.9 reproduces all 36 full-year v0.8 cases through
+    direct PyPSA/Linopy to solver precision. Full economic capacity expansion remains blocked by
     import economics, statutory/site-level siting, rooftop
     technical potential, capacity-weighted spatial allocation, outages, hydro/PSP
     physics, import-price inputs and other unresolved operational constraints.
