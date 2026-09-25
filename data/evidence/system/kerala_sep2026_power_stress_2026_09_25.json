@@ -1,0 +1,106 @@
+{
+  "classification": "SECONDARY_CURRENT_EVENT_EVIDENCE_NOT_PERMANENT_SYSTEM_DEFICIT_OR_MODEL_INPUT",
+  "prepared_date": "2026-09-25",
+  "event_period": "September 2026",
+  "purpose": "Preserve dated evidence of Kerala's September 2026 supply stress for later stress-scenario calibration. These reports are not a substitute for SLDC interval telemetry or a fixed structural shortage assumption.",
+  "sources": [
+    {
+      "publisher": "Onmanorama",
+      "date": "2026-09-10",
+      "url": "https://www.onmanorama.com/news/kerala/2026/09/09/kerala-power-crisis-september-kseb-load-restrictions-announced.amp.html",
+      "attribution": "Reports statements/data attributed to KSEB officials"
+    },
+    {
+      "publisher": "Onmanorama",
+      "date": "2026-09-17",
+      "url": "https://www.onmanorama.com/news/kerala/2026/09/17/apart-from-kseb-national-factors-impose-additional-bouts-of-load-shedding-on-kerala.html",
+      "attribution": "Reports KSEB/system-operation figures"
+    },
+    {
+      "publisher": "Onmanorama",
+      "date": "2026-09-20",
+      "url": "https://www.onmanorama.com/news/kerala/2026/09/20/friday-miracle-kseb-power-cuts-on-september-18.amp.html",
+      "attribution": "Reports day-to-day peak-shortage variability"
+    },
+    {
+      "publisher": "Onmanorama",
+      "date": "2026-09-24",
+      "url": "https://www.onmanorama.com/news/kerala/2026/09/24/kerala-power-demand-urge-conserve-electricity-peak-hours.html",
+      "attribution": "Reports Kerala Power Department conservation circular"
+    }
+  ],
+  "reported_conditions": [
+    {
+      "date_context": "early September 2026",
+      "peak_demand_mw_context": ">5000",
+      "comparison_previous_september_mw_range": [
+        3600,
+        3700
+      ],
+      "reported_average_shortage_mw_approx": 900,
+      "assured_supply_normal_mu_day_approx": 65,
+      "assured_supply_mid_august_onward_mu_day_approx": 50
+    },
+    {
+      "date": "2026-09-05",
+      "consumption_mu": 95,
+      "assured_supply_mu": 53,
+      "open_market_mu": 7.7,
+      "stoa_mu_less_than": 4
+    },
+    {
+      "date": "2026-09-16",
+      "consumption_mu": 95.82,
+      "reported_shortage_mw_over": 900,
+      "reported_shortage_at_22_23_mw_approx": 700,
+      "hydel_solar_wind_plus_assured_sources_mu": 81,
+      "short_term_market_mu": 3.5
+    },
+    {
+      "date": "2026-09-18",
+      "consumption_mu": 100,
+      "reported_shortage_at_daily_max_mw": 21,
+      "interpretation": "High energy demand did not imply a large peak shortage on this day because procurement/availability changed."
+    },
+    {
+      "date": "2026-09-19",
+      "consumption_mu": 98,
+      "reported_shortage_at_daily_max_mw": 752
+    },
+    {
+      "date_context": "Power Department circular reported 2026-09-24",
+      "september_consumption_mu_reported": 95.39,
+      "peak_demand_mw_reported": 5400,
+      "requested_peak_conservation_window": "19:00-24:00",
+      "encouraged_solar_hours": "09:00-16:00"
+    }
+  ],
+  "procurement_stress": [
+    {
+      "context": "September short-term tender",
+      "peak_requirement_mw": 500,
+      "peak_window": "18:30-24:00",
+      "reported_peak_bids": "none",
+      "rtc_requirement_mw": 200,
+      "night_offpeak_requirement_mw": 500,
+      "note": "Secondary reporting says private supply offers were extremely limited for September; this is market-availability evidence, not a permanent resource requirement."
+    },
+    {
+      "context": "central/contracted supply disruption",
+      "note": "Secondary reporting attributes part of the September stress to lower availability from central generating stations and long-/medium-term contracted sources, not solely to insufficient Kerala nameplate capacity."
+    }
+  ],
+  "interpretation_rules": [
+    "Do not encode 700-900 MW as a permanent Kerala shortage. Reported shortfall varied from about 21 MW to more than 900 MW across individual days.",
+    "Do not infer that an 800 MW battery would remove the event; storage duration, charge availability, transmission, procurement and multi-day energy adequacy all matter.",
+    "Use this event to define stress scenarios only after matching exact SLDC/market/contract chronology.",
+    "The event demonstrates the importance of modeling external-supply availability and price jointly with demand, hydro and storage.",
+    "Media-reported values must be replaced or cross-checked with first-party SLDC/KSEBL/KSERC records before empirical calibration."
+  ],
+  "model_use": {
+    "permanent_baseline_deficit_mw": null,
+    "fixed_bess_solution_mw": null,
+    "admissible_now": "qualitative and bounded stress-scenario design only",
+    "desired_next_data": "15-minute demand, actual interchange, contracted/market supply, exchange prices, hydro generation and load-shedding/curtailment timestamps for September 2026"
+  }
+}

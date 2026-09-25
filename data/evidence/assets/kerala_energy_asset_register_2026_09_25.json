@@ -1,0 +1,613 @@
+{
+  "classification": "SOURCE_BOUNDED_KERALA_ENERGY_ASSET_AND_PIPELINE_REGISTER_NOT_MODEL_ADMISSION",
+  "prepared_date": "2026-09-25",
+  "scope": "Kerala electricity assets, awarded/contracted pipeline, storage, grid reinforcement and sector-coupling leads relevant to a full PyPSA model. Dated statuses are preserved; project announcement is never treated as current installed capacity.",
+  "rules": [
+    "Do not add named assets on top of official aggregate installed-capacity totals unless the ownership/technology bucket has been reconciled.",
+    "Keep current/commissioned, awarded/contracted, proposed/planning and historical/non-admitted assets separate.",
+    "Allocated/contracted power outside Kerala is a procurement resource, not Kerala location-based installed capacity.",
+    "MW power capacity and MWh energy capacity are distinct for storage.",
+    "A tender, PPA, PSA, LoA, regulatory approval or planning-study assumption does not prove COD.",
+    "Rooftop solar snapshots at different dates must not be summed with earlier all-solar totals.",
+    "Hydro extension, conventional hydro and pumped storage are distinct technologies unless source documents establish reversible pumping topology."
+  ],
+  "sources": {
+    "economic_review_2025": {
+      "tier": "official_state",
+      "title": "Kerala Economic Review 2025",
+      "url": "https://spb.kerala.gov.in/en/7036/",
+      "role": "FY2024-25 installed-capacity anchor"
+    },
+    "kerala_development_report_2026": {
+      "tier": "official_state",
+      "title": "Kerala Development Report 2026",
+      "url": "https://spb.kerala.gov.in/wp-content/uploads/2026/01/kerala-development-report_2026.pdf",
+      "role": "August-2025 rooftop solar and Transgrid context"
+    },
+    "mnre_aug2026_re": {
+      "tier": "official_central",
+      "title": "State-wise location-based installed renewable capacity as on 31.08.2026",
+      "url": "https://cdnbbsr.s3waas.gov.in/s3716e1b8c6cd17b771da77391355749f3/uploads/2026/09/202609081073775955.pdf",
+      "role": "Current renewable-capacity snapshot"
+    },
+    "kserc_resource_adequacy_2025": {
+      "tier": "official_regulator",
+      "title": "KSERC order on Kerala Resource Adequacy Plan 2025-26 to 2035-36",
+      "url": "https://dev.erckerala.org/api/storage/orders/ugND0Sut53zUQ1JY3pAe7Qjyt4oV2mujlFv10G5D.pdf",
+      "role": "Dated pipeline and capacity-planning benchmark"
+    },
+    "kserc_mylatti_bess": {
+      "tier": "official_regulator",
+      "title": "KSERC order - Mylatti 125 MW / 500 MWh BESS",
+      "url": "https://dev.erckerala.org/api/storage/orders/hlLdMbCFMxZf5L3tpNwoarJKUTMY2hsu6ZEZLFTW.pdf"
+    },
+    "kserc_nhpc_bess_cluster": {
+      "tier": "official_regulator",
+      "title": "KSERC order - NHPC 125 MW / 500 MWh BESS at four substations",
+      "url": "https://dev.erckerala.org/api/storage/orders/EMAAWFRY1YmU95F3bQMAxYh5Qmeax7mbQKJ75s5q.pdf"
+    },
+    "srpc_2025": {
+      "tier": "official_regional_grid",
+      "title": "Minutes of 51st TCC / 54th SRPC, March 2025",
+      "url": "https://www.srpc.kar.nic.in/website/2025/meetings/srpc/m51tcc-54srpc.pdf"
+    },
+    "ntpc_gas": {
+      "tier": "official_operator",
+      "title": "NTPC gas stations",
+      "url": "https://ntpc.co.in/power-generation/gas-stations"
+    },
+    "ntpc_fuel": {
+      "tier": "official_operator",
+      "title": "NTPC RTI fuel-resource statement",
+      "url": "https://ntpc.co.in/rti/chapter-i"
+    },
+    "cea_re_generation_mar2025": {
+      "tier": "official_central",
+      "title": "CEA Broad Overview of RE Generation, March 2025",
+      "url": "https://cea.nic.in/wp-content/uploads/resd/2025/04/Broad_Overview_of_RE_Generation_March_2025.pdf"
+    },
+    "cial_annual_2024_25": {
+      "tier": "official_operator",
+      "title": "CIAL Annual Report 2024-25",
+      "url": "https://cial.aero/ckeditor/upload/CIAL-Annual-Report-2024-25.pdf"
+    },
+    "cial_about": {
+      "tier": "official_operator",
+      "title": "CIAL About Us / green-energy assets",
+      "url": "https://cial.aero/About-Us"
+    },
+    "cial_2025_agm": {
+      "tier": "official_operator",
+      "title": "CIAL 31st AGM update",
+      "url": "https://www.cial.aero/News-Updates/AGM2025"
+    },
+    "kial_solar_tender": {
+      "tier": "official_operator",
+      "title": "KIAL 4 MWp solar tender corrigendum",
+      "url": "https://kannurairport.aero/kial/public/uploads/tender/67aae6b86ed2c.pdf"
+    },
+    "anert_hydrogen_roadmap": {
+      "tier": "official_state",
+      "title": "Kochi Green Hydrogen Valley Roadmap",
+      "url": "https://anert.gov.in/assets/ckeditor/ckfinder/uploads/files/green%20pdf/Kochi-GreenH2-Valley-Roadmap_FinalPublishVersion.pdf"
+    },
+    "anert_draft_h2_policy": {
+      "tier": "official_state_draft",
+      "title": "Draft Kerala Green Hydrogen Policy",
+      "url": "https://anert.gov.in/assets/ckeditor/ckfinder/uploads/files/policy/policy%203/Green%20Hydrogen%20Policy-Kerala-Draft_v9%284%29_WM.pdf"
+    },
+    "mop_gec_2026": {
+      "tier": "official_central",
+      "title": "Ministry of Power parliamentary answer, 23 March 2026",
+      "url": "https://powermin.gov.in/sites/default/files/uploads/RS23032026_Eng.pdf"
+    },
+    "cea_transmission_ra_2034_35": {
+      "tier": "official_central",
+      "title": "CEA Resource Adequacy Plan for Transmission System of Kerala up to 2034-35",
+      "url": "https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf",
+      "role": "31 March 2026 capacity boundary, current network, 2029-30/2034-35 transmission and generation planning cases"
+    },
+    "thdc_psp_progress_2024": {
+      "tier": "official_operator",
+      "title": "THDCIL Pump Storage Plants progress report",
+      "url": "https://thdc.co.in/sites/default/files/employee-login/New_PSP_Progress_Report_September24.pdf",
+      "role": "Source-bounded status of THDCIL Idukki and Pallivasal PSP PFRs"
+    }
+  },
+  "official_fy2024_25_capacity_anchor_mw": {
+    "as_of": "2025-03-31",
+    "total": 4412.14,
+    "technology": {
+      "hydel": 2284.42,
+      "thermal": 536.54,
+      "solar": 1519.66,
+      "wind": 71.53
+    },
+    "ownership": {
+      "state": 2409.77,
+      "central": 359.58,
+      "private": 1642.79
+    },
+    "detailed_buckets": {
+      "ksebl_hydel": 2196.36,
+      "ksebl_thermal": 159.96,
+      "ksebl_wind": 2.03,
+      "ksebl_solar": 51.43,
+      "solar_other_than_ksebl": 1264.23,
+      "solar_ipp": 204,
+      "ntpc_thermal_central": 359.58,
+      "thermal_cpp": 17,
+      "hydel_cpp": 33.5,
+      "hydel_ipp": 54.56,
+      "wind_ipp": 58.5,
+      "wind_cpp": 11
+    },
+    "reconciliation_rule": "Named FY2024-25 assets must eventually reconcile to these official buckets without double-counting."
+  },
+  "current_re_snapshot_aug2026": {
+    "as_of": "2026-08-31",
+    "source_boundary": "MNRE location-based installed renewable capacity",
+    "solar_mw": {
+      "ground_mounted": 342.27,
+      "rooftop_including_pm_surya_ghar": 2259.5,
+      "hybrid_solar_component": 0,
+      "off_grid_or_kusum_component_b": 25.07,
+      "total": 2626.84
+    },
+    "wind_mw": 71.52,
+    "bio_power_mw": 2.5,
+    "small_hydro_mw": 276.52,
+    "large_hydro_mw": 2008.15,
+    "total_re_mw": 4985.53,
+    "interpretation": "This later renewable snapshot is not added to the FY2024-25 total. It shows rapid rooftop growth and supplies a current RE baseline for 2026 scenarios."
+  },
+  "commissioned_or_current_assets": [
+    {
+      "id": "ntpc_kayamkulam_rgccpp",
+      "name": "Rajiv Gandhi Combined Cycle Power Project, Kayamkulam",
+      "technology": "thermal_naphtha_ccgt",
+      "owner": "NTPC",
+      "district": "Alappuzha",
+      "commissioned_capacity_mw_operator": 360,
+      "official_fy2024_25_bucket_mw": 359.58,
+      "status": "existing_physical_asset",
+      "fuel_note": "NTPC states Kayamkulam uses naphtha as primary fuel; generic NTPC gas stations currently rely on RLNG where applicable, but Kayamkulam fuel/dispatch economics must be sourced separately.",
+      "model_admission": "capacity_identity_yes_dispatch_cost_and_availability_unresolved"
+    },
+    {
+      "id": "ksebl_brahmapuram_bdpp",
+      "name": "Brahmapuram Diesel Power Plant",
+      "technology": "thermal_liquid_fuel",
+      "owner": "KSEBL",
+      "district": "Ernakulam",
+      "capacity_mw": 63.96,
+      "status": "existing_fy2024_25_capacity",
+      "model_admission": "capacity_yes_unit_availability_fuel_cost_heat_rate_unresolved"
+    },
+    {
+      "id": "ksebl_kozhikode_kdpp",
+      "name": "Kozhikode Diesel Power Plant",
+      "technology": "thermal_liquid_fuel",
+      "owner": "KSEBL",
+      "district": "Kozhikode",
+      "capacity_mw": 96,
+      "status": "existing_fy2024_25_capacity",
+      "model_admission": "capacity_yes_unit_availability_fuel_cost_heat_rate_unresolved"
+    },
+    {
+      "id": "ntpc_kayamkulam_floating_solar",
+      "name": "NTPC Kayamkulam Floating Solar",
+      "technology": "solar_floating",
+      "owner": "NTPC",
+      "district": "Alappuzha",
+      "capacity_mw": 92,
+      "status": "commissioned",
+      "validation_evidence": {
+        "fy2024_25_generation_mu": 203.07,
+        "march_2025_generation_mu": 19.63,
+        "source": "CEA CPSU renewable generation report"
+      },
+      "model_admission": "capacity_and_annual_generation_validation_reference_yes_hourly_profile_unresolved"
+    },
+    {
+      "id": "kasaragod_solar_park_commissioned",
+      "name": "Kasaragod Solar Park - Ambalathara + Paivalike",
+      "technology": "solar_ground",
+      "owner": "RPCKL/project developers",
+      "district": "Kasaragod",
+      "capacity_mw": 100,
+      "status": "commissioned_components_confirmed",
+      "components": [
+        {
+          "name": "Ambalathara",
+          "capacity_mw": 50,
+          "commissioned_date": "2017-09-14"
+        },
+        {
+          "name": "Paivalike",
+          "capacity_mw": 50,
+          "commissioned_date": "2020-12-31"
+        }
+      ],
+      "note": "Original 200 MW concept was revised to 105 MW due land availability. The remaining 5 MW Nellithadam should not be treated as commissioned without COD evidence.",
+      "model_admission": "100_mw_capacity_yes_hourly_profile_unresolved"
+    },
+    {
+      "id": "thdc_solar_kasaragod",
+      "name": "THDC Solar Kasaragod",
+      "technology": "solar_ground",
+      "district": "Kasaragod",
+      "capacity_mw": 50,
+      "status": "commissioned_component_with_measured_generation",
+      "validation_evidence": {
+        "fy2024_25_generation_mu": 90.81,
+        "march_2025_generation_mu": 9.46
+      },
+      "note": "This 50 MW is part of the Kasaragod commissioned complex and must not be added again to the 100 MW park subtotal.",
+      "model_admission": "generation_validation_reference_only_no_double_count"
+    },
+    {
+      "id": "cial_solar_portfolio",
+      "name": "CIAL solar portfolio",
+      "technology": "solar_mixed_ground_rooftop_carport",
+      "owner": "Cochin International Airport Limited",
+      "capacity_mw": 50,
+      "status": "existing_as_of_fy2024_25",
+      "note": "CIAL states 50 MW total installed solar capacity; this includes Payyanur and airport-premises plants. Mapping to the official Kerala ownership bucket remains to be reconciled before asset-level summation.",
+      "model_admission": "portfolio_capacity_reference_yes_bucket_mapping_and_hourly_profile_unresolved"
+    },
+    {
+      "id": "cial_arippara_hydro",
+      "name": "CIAL Arippara small hydro",
+      "technology": "small_hydro",
+      "owner": "Cochin International Airport Limited",
+      "district": "Kozhikode",
+      "capacity_mw": 4.5,
+      "status": "existing_operator_reported",
+      "model_admission": "identity_reference_bucket_mapping_and_generation_unresolved"
+    },
+    {
+      "id": "ksebl_kanjikode_wind",
+      "name": "Kanjikode wind farm",
+      "technology": "wind_onshore",
+      "owner": "KSEBL",
+      "district": "Palakkad",
+      "capacity_mw": 2.03,
+      "status": "existing_fy2024_25_capacity",
+      "model_admission": "capacity_yes_temporal_generation_profile_unresolved"
+    },
+    {
+      "id": "agali_wind",
+      "name": "Agali wind farm",
+      "technology": "wind_onshore",
+      "district": "Palakkad",
+      "capacity_mw_historical_portal": 18.6,
+      "status": "asset_discovery_current_unit_mapping_unresolved",
+      "model_admission": "not_yet_asset_level_admitted"
+    },
+    {
+      "id": "ahalia_kanjikode_wind",
+      "name": "Ahalia Kanjikode wind",
+      "technology": "wind_onshore",
+      "district": "Palakkad",
+      "capacity_mw_historical_portal": 8.4,
+      "status": "asset_discovery_current_unit_mapping_unresolved",
+      "model_admission": "not_yet_asset_level_admitted"
+    }
+  ],
+  "historical_or_not_in_current_capacity": [
+    {
+      "id": "bses_kochi",
+      "name": "BSES Kerala Power / Kochi",
+      "technology": "thermal_gas_naphtha_historical",
+      "historical_portal_capacity_mw": 157,
+      "status": "historical_asset_not_in_fy2024_25_official_installed_capacity_anchor",
+      "rule": "Do not dispatch as current capacity unless a newer authoritative operating/contract source explicitly admits it."
+    },
+    {
+      "id": "kasaragod_power_thermal",
+      "name": "Kasaragod Power",
+      "technology": "thermal_historical",
+      "historical_portal_capacity_mw": 20.44,
+      "status": "historical_asset_not_in_fy2024_25_official_installed_capacity_anchor",
+      "rule": "Do not dispatch as current capacity without newer authoritative evidence."
+    }
+  ],
+  "awarded_or_contracted_pipeline": [
+    {
+      "id": "mylatti_bess",
+      "technology": "bess",
+      "location": "Mylatti substation, Kasaragod",
+      "power_mw": 125,
+      "energy_mwh": 500,
+      "duration_h": 4,
+      "developer": "JSW Neo Energy / project SPV",
+      "implementing_agency": "SECI",
+      "status": "LoA_BESSA_BESPA_regulator_approved_COD_not_verified",
+      "loa_date": "2025-03-20",
+      "bessa_date": "2025-04-10",
+      "bespa_date": "2025-04-29",
+      "capacity_charge_inr_per_mw_month": 441000,
+      "vgf_inr_crore": 135,
+      "tender_rte_benchmark_pct": 85,
+      "tender_capacity_degradation_limit_pct_per_year": 2.5,
+      "expected_period_in_ra_plan": "2026-27",
+      "model_admission": "project_specific_cost_and_performance_benchmark_not_generic_bess_default"
+    },
+    {
+      "id": "nhpc_bess_sreekantapuram",
+      "technology": "bess",
+      "location": "Sreekantapuram",
+      "power_mw": 40,
+      "energy_mwh": 160,
+      "duration_h": 4,
+      "developer": "NTPC Green Energy",
+      "capacity_charge_inr_per_mw_month": 434000,
+      "status": "regulator_approved_pipeline_COD_not_verified"
+    },
+    {
+      "id": "nhpc_bess_mulleria",
+      "technology": "bess",
+      "location": "Mulleria",
+      "power_mw": 15,
+      "energy_mwh": 60,
+      "duration_h": 4,
+      "developer": "Opera Energy",
+      "capacity_charge_inr_per_mw_month": 438000,
+      "status": "regulator_approved_pipeline_COD_not_verified"
+    },
+    {
+      "id": "nhpc_bess_areacode",
+      "technology": "bess",
+      "location": "Areacode",
+      "power_mw": 30,
+      "energy_mwh": 120,
+      "duration_h": 4,
+      "developer": "Tata Power Renewable Energy",
+      "capacity_charge_inr_per_mw_month_after_negotiation": 452000,
+      "status": "regulator_approved_pipeline_COD_not_verified"
+    },
+    {
+      "id": "nhpc_bess_pothencode",
+      "technology": "bess",
+      "location": "Pothencode",
+      "power_mw": 40,
+      "energy_mwh": 160,
+      "duration_h": 4,
+      "developer": "NTPC Green Energy",
+      "capacity_charge_inr_per_mw_month": 457000,
+      "status": "regulator_approved_pipeline_COD_not_verified",
+      "grid_note": "Proposed adjacent to existing 2 MW solar; approximately 300 m of 110 kV underground cable cited for connection."
+    },
+    {
+      "id": "west_kallada_floating_solar",
+      "technology": "solar_floating",
+      "location": "West Kallada",
+      "power_mw": 50,
+      "counterparty": "NHPC",
+      "status": "PPA_reported_in_2025_RA_order_expected_2026_27_COD_not_verified",
+      "note": "Older lease/cancellation history must not be used as the final current status; the later KSERC RA order reports an active PPA."
+    },
+    {
+      "id": "seci_solar_peak_assured",
+      "technology": "external_solar_procurement_with_peak_assurance",
+      "power_mw": 500,
+      "status": "PSA_reported_expected_2026_27",
+      "peak_assurance_h": 2,
+      "model_admission": "contract_resource_not_in_state_capacity"
+    }
+  ],
+  "proposed_or_planning_only": [
+    {
+      "id": "cheemeni_solar",
+      "technology": "solar_ground",
+      "power_mw": 100,
+      "status": "proposed_RA_pipeline",
+      "expected": "2027-28"
+    },
+    {
+      "id": "cheemeni_storage",
+      "technology": "storage",
+      "power_mw": 50,
+      "duration_h": 2,
+      "status": "decision_under_process_in_RA_source",
+      "expected": "2027-28"
+    },
+    {
+      "id": "brahmapuram_bess",
+      "technology": "bess",
+      "power_mw": 250,
+      "duration_h": 2,
+      "energy_mwh_derived": 500,
+      "status": "proposed_RA_pipeline",
+      "expected": "2028-29"
+    },
+    {
+      "id": "kial_solar_4mwp",
+      "technology": "solar_carport_and_ground",
+      "power_mwp": 4,
+      "status": "tendered_2025_COD_not_found",
+      "components": [
+        {
+          "type": "carport",
+          "mwp": 1.75
+        },
+        {
+          "type": "ground",
+          "mwp": 2.25
+        }
+      ]
+    },
+    {
+      "id": "idukki_extension_hep",
+      "technology": "hydro_extension",
+      "power_mw": 800,
+      "status": "planning_or_S_and_I_not_model_admitted",
+      "note": "CEA RA study assumes it in a future hydro case; that does not prove commissioning or pumped-storage capability."
+    },
+    {
+      "id": "latchmi_hep",
+      "technology": "hydro",
+      "power_mw": 240,
+      "status": "planning_assumption_in_RA_study_not_model_admitted"
+    },
+    {
+      "id": "kallarkutty_lp_psp",
+      "technology": "pumped_storage",
+      "power_mw": 200,
+      "status": "KSEB_project_portal_planning_lead_only"
+    },
+    {
+      "id": "kallarkutty_sengulam_psp",
+      "technology": "pumped_storage",
+      "power_mw": 200,
+      "status": "KSEB_project_portal_planning_lead_only"
+    },
+    {
+      "id": "thdc_idukki_psp",
+      "technology": "pumped_storage",
+      "power_mw": 700,
+      "status": "PFR_accepted_by_KSEBL_allocation_DPR_not_verified",
+      "source_status_date": "2024-09",
+      "note": "Distinct from the conventional Idukki Extension HEP. THDCIL reports PFR submitted and accepted; requested project allocation for DPR/implementation."
+    },
+    {
+      "id": "thdc_pallivasal_psp",
+      "technology": "pumped_storage",
+      "power_mw": 600,
+      "status": "PFR_accepted_by_KSEBL_allocation_DPR_not_verified",
+      "source_status_date": "2024-09",
+      "note": "THDCIL PFR-stage pumped-storage proposal; not the already commissioned 60 MW Pallivasal Extension hydro scheme."
+    },
+    {
+      "id": "cea_mudirapuzha_psp",
+      "technology": "pumped_storage",
+      "power_mw": 100,
+      "status": "CEA_transmission_planning_candidate",
+      "expected": "2032-33"
+    },
+    {
+      "id": "cea_kakkayam_psp",
+      "technology": "pumped_storage",
+      "power_mw": 800,
+      "status": "CEA_transmission_planning_candidate",
+      "expected": "2034-35"
+    },
+    {
+      "id": "cea_poringalkuth_psp",
+      "technology": "pumped_storage",
+      "power_mw": 400,
+      "status": "CEA_transmission_planning_candidate",
+      "expected": "2034-35"
+    },
+    {
+      "id": "cea_upper_chaliyar_psp",
+      "technology": "pumped_storage",
+      "power_mw": 360,
+      "status": "CEA_transmission_planning_candidate",
+      "expected": "2034-35"
+    }
+  ],
+  "grid_and_sector_coupling": [
+    {
+      "id": "kerala_green_energy_corridor_phase_ii",
+      "type": "transmission_reinforcement",
+      "transmission_line_circuit_km": 224,
+      "substation_capacity_mva": 620,
+      "renewable_integration_mw": 452,
+      "sanctioned_support_inr_crore": 138.71,
+      "status": "sanctioned_under_GEC_phase_II_implementation_by_KSEBL",
+      "model_use": "network-development evidence; individual line impedances, topology, COD and simultaneous transfer capability still required."
+    },
+    {
+      "id": "kerala_import_ttc_atc_mar2025",
+      "type": "interstate_transfer_snapshot",
+      "ttc_mw": 4575,
+      "reliability_margin_mw": 120,
+      "derived_atc_mw": 4455,
+      "effective_proposal_date": "2025-03-01",
+      "status": "SRLDC_study_finding_reported_by_SRPC",
+      "model_use": "dated snapshot only; not an 8760-hour import bound."
+    },
+    {
+      "id": "kochi_green_hydrogen_valley",
+      "type": "future_sector_coupling",
+      "status": "roadmap_not_operating_statewide_hydrogen_load",
+      "roadmap_re_aggregation_mw_range": [
+        200,
+        300
+      ],
+      "note": "Roadmap calls for provision/aggregation of renewable energy and transmission infrastructure; treat future electrolysis as electricity demand, not generation."
+    },
+    {
+      "id": "kerala_green_hydrogen_first_100mw_policy",
+      "type": "policy_sensitivity",
+      "electrolyser_mw": 100,
+      "status": "draft_policy_incentive_target_not_committed_load",
+      "note": "The draft policy provides an incentive concept for the first 100 MW electrolyser deployment; it is not an installed-capacity statistic."
+    },
+    {
+      "id": "cial_bpcl_green_hydrogen_pilot",
+      "type": "hydrogen_pilot",
+      "status": "operator_reports_final_stage_2025_26",
+      "source_definition_note": "CIAL material refers to a 1000 kW pilot project while ANERT material refers to a 500 kW electrolyser system; preserve this scope difference and do not collapse to one MW value without engineering documentation."
+    },
+    {
+      "id": "cial_bess",
+      "type": "bess",
+      "status": "operator_reports_project_underway_2025_26",
+      "power_mw": null,
+      "energy_mwh": null,
+      "model_use": "project lead only until capacity, COD and performance terms are sourced."
+    }
+  ],
+  "high_value_validation_sources": [
+    {
+      "id": "kayankulam_floating_solar_measured_generation",
+      "purpose": "solar profile validation",
+      "capacity_mw": 92,
+      "fy2024_25_generation_mu": 203.07,
+      "implied_annual_capacity_factor_derived": 0.25197290053603333,
+      "caveat": "Annual capacity factor is derived from CEA reported generation and nameplate; use monthly/interval data where available for temporal validation."
+    },
+    {
+      "id": "thdc_kasaragod_solar_measured_generation",
+      "purpose": "solar profile validation",
+      "capacity_mw": 50,
+      "fy2024_25_generation_mu": 90.81,
+      "implied_annual_capacity_factor_derived": 0.20732876712328768,
+      "caveat": "This is a named 50 MW component; avoid double-counting it with the 100 MW Kasaragod park total."
+    }
+  ],
+  "unresolved_before_full_pypsa": [
+    "Reconcile the CEA 31 March 2026 capacity boundary (3,221.30 MW excluding 1,912.33 MW <1 MW solar) with MNRE 31 August 2026 location-based renewable capacity before choosing the current model base year.",
+    "Complete station/unit register reconciling every current hydro, thermal, wind, solar and captive/IPP asset to official aggregate buckets.",
+    "Current 2026 non-renewable installed-capacity snapshot with retirement/availability status; do not infer by adding current RE to FY2024-25 thermal.",
+    "Actual unit availability, outage/derating history, minimum stable generation, ramp/start constraints and heat rates for thermal/hydro units.",
+    "Kayamkulam naphtha delivered fuel price, operating cost, PPA/dispatch availability and restart constraints.",
+    "Current exact wind IPP/CPP unit ownership map reconciling to the 71.52 MW August-2026 location-based wind total.",
+    "Hourly or 15-minute measured statewide demand, technology generation and interchange chronology.",
+    "Revision-controlled interstate ATC/TTC chronology and network/contingency limits.",
+    "Verified solar/wind generation profiles; CEA named-plant monthly generation can be used as validation evidence.",
+    "COD confirmation for Mylatti and NHPC BESS sites before moving them from pipeline to existing assets.",
+    "Technical/degradation/cost assumptions for generic future BESS beyond project-specific tender requirements.",
+    "Verified PSP reservoir pairs, head, volume curves, pump/generation efficiency and environmental operating limits.",
+    "Distribution hosting constraints for 2.2595 GW rooftop solar already reported by MNRE at August 2026.",
+    "Hydrogen/electrification demand trajectories with explicit commissioning, utilisation and flexibility assumptions.",
+    "Technology-specific investment/O&M costs, financing and price year for the capacity-expansion objective."
+  ],
+  "official_mar2026_capacity_boundary": {
+    "as_of": "2026-03-31",
+    "source": "CEA transmission resource adequacy plan",
+    "main_installed_capacity_mw": 3221.3,
+    "main_components_mw": {
+      "thermal": 536.54,
+      "hydro": 2284.42,
+      "renewable_wind_solar_ge_1MW": 400.34
+    },
+    "solar_less_than_1MW_reported_separately_mw": 1912.33,
+    "arithmetic_combined_boundary_mw": 5133.63,
+    "interpretation": "CEA intentionally excludes <1 MW solar from the 3,221.30 MW main total and reports it separately. This explains the 3,221 + 1,912 formulation seen in secondary summaries; it is an accounting-boundary issue, not necessarily an arithmetic error.",
+    "warning": "Do not splice this 31 March 2026 CEA boundary directly with the 31 August 2026 MNRE location-based RE snapshot."
+  }
+}

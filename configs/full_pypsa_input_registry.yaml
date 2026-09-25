@@ -1,0 +1,273 @@
+version: 1
+classification: evidence_admission_registry_not_optimisation_input
+prepared_date: "2026-09-25"
+purpose: >-
+  Map the newly acquired Kerala electricity evidence to the requirement keys used by
+  the full PyPSA scenario programme. An evidence source being present does not mean
+  its numerical values are automatically admitted as optimisation inputs.
+
+sources:
+  asset_register: data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+  resource_adequacy: data/evidence/demand/kerala_resource_adequacy_2025_2035_36_2026_09_25.json
+  historical_daily: data/external/sldc_fy2024_25/daily_balance.csv
+  technology_costs: configs/techno_economics.yaml
+  grid_transfer: configs/grid_transfer_contract_evidence_2024_25.yaml
+  hydro_topology: configs/hydro_topology_evidence_2024_25.yaml
+
+requirements:
+  base_system:
+    status: structurally_reconciled_not_dispatch_ready
+    evidence:
+      - configs/base_system_2026_03_31.yaml
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+      - data/evidence/grid/kerala_transmission_resource_adequacy_2034_35_2026_09_25.json
+    acquired:
+      canonical_base_date_2026_03_31: true
+      CEA_main_capacity_3221_30_mw_reconciled: true
+      sub_1mw_solar_1912_33_mw_separate_boundary: true
+      ownership_totals_reconciled: true
+      august_2026_RE_kept_as_overlay: true
+    remaining:
+      - complete plant/unit decomposition of the March-2026 capacity population
+      - operational storage status
+      - unit availability and variable-operating parameters
+    rule: no later snapshot may silently mutate the March-2026 canonical base
+
+  demand_chronology:
+    status: proxy_only_blocked_for_validated_run
+    evidence:
+      - public/hourly-load-proxy-summary.json
+      - data/external/sldc_fy2024_25/daily_balance.csv
+    acquired:
+      observed_daily_energy_354_days: true
+      CEA_peak_and_duration_reference: true
+      synthetic_8760_proxy: true
+    remaining:
+      - authenticated hourly or 15-minute Kerala demand chronology
+      - same-clock actual interchange and technology generation
+      - daily reconciliation and boundary QA
+    rule: proxy chronology may support research sensitivity only and cannot satisfy validated-run chronology
+
+  existing_storage_fleet:
+    status: blocked_operational_COD_not_verified
+    evidence:
+      - configs/base_system_2026_03_31.yaml
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+    acquired:
+      awarded_BESS_pipeline: true
+      PSP_planning_candidates: true
+    remaining:
+      - verify any operational BESS power and energy capacity at 2026-03-31
+      - verify any operational pumped-storage capacity at 2026-03-31
+      - COD, efficiency, degradation and availability for admitted storage
+    rule: award, PPA, regulatory approval or planning assumption is not operational storage
+
+  demand_trajectory:
+    status: external_benchmark_available_not_canonical
+    evidence:
+      - data/evidence/demand/kerala_resource_adequacy_2025_2035_36_2026_09_25.json
+      - data/external/cstep_2024/demand_projection_fy2023_fy2040.csv
+    acquired:
+      official_CEA_KSERC_RA_2025_36: true
+      CSTEP_2024: true
+    remaining:
+      - choose canonical Kerala2040 reference/lower/higher trajectory without silently averaging sources
+      - define whether PyPSA load is gross system requirement or net grid demand after behind-the-meter generation
+      - acquire measured interval chronology for shape calibration
+
+  existing_generator_fleet:
+    status: partial_base_boundary_reconciled
+    evidence:
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+      - configs/generator_reconciliation_2024_25.yaml
+    acquired:
+      official_fy2024_25_aggregate_capacity: true
+      canonical_CEA_2026_03_31_capacity_boundary: true
+      current_aug2026_location_based_RE_snapshot_overlay: true
+      named_thermal_core: true
+      named_major_solar: true
+      partial_wind_assets: true
+    remaining:
+      - complete March-2026 hydro station/unit register
+      - reconcile all solar IPP/CPP/distributed rows to official aggregate buckets
+      - reconcile wind IPP and CPP units to current 71.52 MW location-based total
+      - current retirement/availability status for thermal and historical private plants
+      - plant-level actual generation and outage/derating history
+
+  renewable_temporal_profiles:
+    status: partial_validation_sources_available
+    evidence:
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+      - data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json
+      - data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json
+      - data/evidence/gis/niwe_nwic_district_normalized_wind_terrain_2026_09_23.json
+    acquired:
+      ERA5_source_chronology: true
+      Kayamkulam_92MW_FY2024_25_measured_solar_generation: true
+      THDC_Kasaragod_50MW_FY2024_25_measured_solar_generation: true
+      GSA_long_term_solar_resource: true
+      NIWE_mean_wind_resource: true
+    remaining:
+      - validate hourly solar transformation against measured plant generation or inverter data
+      - acquire usable wind generation chronology / met mast height-time metadata
+      - district/state aggregation weights compatible with installed and candidate capacity
+
+  solar_capacity_ceiling:
+    status: blocked
+    evidence:
+      - data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json
+    remaining:
+      - legal forest wetland paddy ESZ and waterbody exclusions
+      - technology-specific rooftop ground floating land/water availability
+      - grid connection and hosting constraints
+      - source-rights and geometry admission
+
+  wind_capacity_ceiling:
+    status: blocked
+    evidence:
+      - data/evidence/gis/niwe_nwic_district_normalized_wind_terrain_2026_09_23.json
+    remaining:
+      - turbine model and power curve
+      - legal/ecological siting exclusions
+      - setbacks roads access and grid hosting
+      - eligible area and spacing/layout methodology
+
+  battery_cost_performance:
+    status: project_specific_benchmarks_partial
+    evidence:
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+      - configs/techno_economics.yaml
+    acquired:
+      Mylatti_capacity_charge_and_RtE_tender_benchmark: true
+      four_site_NHPC_capacity_charges: true
+      power_and_energy_capacities: true
+    remaining:
+      - investment capex split INR_per_kW and INR_per_kWh for generic expansion
+      - fixed and variable O&M treatment
+      - replacement/degradation/lifetime formulation
+      - charging/discharging efficiency convention and auxiliary load
+      - price year and financing treatment
+    rule: project tariffs are not generic BESS capex defaults
+
+  pumped_storage_constraints:
+    status: blocked
+    evidence:
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+      - configs/hydro_topology_evidence_2024_25.yaml
+    remaining:
+      - verified reservoir pairs and hydraulic routes
+      - upper/lower level-volume curves and usable storage
+      - net head and head-dependent efficiency
+      - pumping/generating MW
+      - water rights rule curves environmental releases and flood headroom
+      - project status and site-specific cost
+
+  hydrology:
+    status: blocked_but_phase5_pipeline_prepared
+    evidence:
+      - data/evidence/sldc/idukki_hydro_energy_phase4_2026_09_23.json
+    remaining:
+      - verified Idukki reservoir-intercepted catchment geometry
+      - multi-year area-weighted ERA5-Land catchment series
+      - spill/release/diversion/evaporation data
+      - head/efficiency curves and cascade routing
+
+  interstate_transfer_limit:
+    status: partial_snapshots_not_chronology
+    evidence:
+      - configs/grid_transfer_contract_evidence_2024_25.yaml
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+    acquired:
+      jan2025_TTC_4350_RM_90_derived_ATC_4260: true
+      mar2025_SRLDC_TTC_4575_RM_120_derived_ATC_4455: true
+    remaining:
+      - effective timestamped ATC/TTC revisions for import and export
+      - N_minus_1/topology/outage constraints
+      - actual blockwise interchange and meter boundary
+      - forward 2030_2035_2040 corridor assumptions
+    rule: no single snapshot may be stretched into an annual or 2040 limit
+
+  import_price_series:
+    status: blocked
+    evidence:
+      - configs/grid_transfer_contract_evidence_2024_25.yaml
+    remaining:
+      - landed Kerala-periphery contract/exchange cost by block and source
+      - transmission charges losses DSM banking/swap obligations
+      - forward fuel/market-price scenario
+
+  reliability_criterion:
+    status: blocked_definition_required
+    remaining:
+      - explicit planning reserve / LOLE / EENS / unserved-energy criterion
+      - outage assumptions and contingency treatment
+      - decide consistency with CEA RA benchmark while retaining independent Kerala2040 formulation
+
+  ev_charging:
+    status: synthetic_only
+    evidence:
+      - configs/wp6_ev_charging_illustrative.yaml
+    remaining:
+      - current Kerala EV stock by vehicle type
+      - arrival/departure and charging-power distributions
+      - public/private charger geography
+      - 2030_2035_2040 adoption and managed-charging participation
+
+  demand_flexibility:
+    status: synthetic_only
+    evidence:
+      - configs/wp6_cooling_tes_illustrative.yaml
+      - configs/wp6_industrial_illustrative.yaml
+    remaining:
+      - statewide cooling stock/load response
+      - industrial shiftable process evidence
+      - water pumping and other controllable loads
+      - participation limits rebound comfort and service constraints
+
+  hydrogen_load:
+    status: roadmap_only
+    evidence:
+      - data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+    acquired:
+      Kochi_valley_200_300MW_RE_aggregation_roadmap: true
+      first_100MW_electrolyser_draft_incentive_target: true
+      CIAL_BPCL_pilot: true
+    remaining:
+      - commissioned electrolyser MW and COD
+      - utilisation profile efficiency compression/storage energy
+      - hydrogen demand by refinery fertiliser transport maritime and export
+    rule: green hydrogen is a future electricity demand/sector-coupling load, not generation
+
+  processed_ecology_gis:
+    status: blocked
+    evidence:
+      - configs/gis_forest_dem_wetlands_hazards_2026.yaml
+      - configs/lulc_native_acquisition_2024_25.yaml
+    remaining:
+      - legally attributable forest/protected-area polygons
+      - wetland/waterbody/paddy/ESZ and other statutory exclusions
+      - valid hazard overlays and current native LULC
+      - technology-specific combined mask and uncertainty treatment
+
+  public_finance:
+    status: blocked
+    remaining:
+      - define S5 public-capital accounting boundary
+      - KSEBL/state equity debt grants VGF and central support treatment
+      - annual versus cumulative cap
+      - real/nominal price basis and discount/cost-of-capital assumptions
+      - private and central project treatment
+
+  technology_costs:
+    status: blocked
+    evidence:
+      - configs/techno_economics.yaml
+    rule: external CEA/CERC benchmarks remain benchmarks until a harmonised price-year and Kerala2040 selection method is approved
+
+release:
+  research_assumption_run_possible_now: false
+  reason: >-
+    The evidence acquisition sprint materially closes demand, current RE capacity and
+    storage-pipeline gaps, but a full expansion run still needs a deliberate input-selection
+    layer for costs, existing fleet, chronology, transfer limits and reliability.
+  validated_run_possible_now: false

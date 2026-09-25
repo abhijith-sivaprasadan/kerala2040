@@ -1,0 +1,335 @@
+{
+  "classification": "OFFICIAL_CEA_TRANSMISSION_RESOURCE_ADEQUACY_EVIDENCE_NOT_KERALA2040_NETWORK_MODEL",
+  "prepared_date": "2026-09-25",
+  "source": {
+    "publisher": "Central Electricity Authority, Ministry of Power",
+    "title": "Resource Adequacy Plan for Transmission System of Kerala up to the year 2034-35",
+    "url": "https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf",
+    "source_page": "https://cea.nic.in/transmission-resource-adequacy-report/?lang=en",
+    "note": "Current CEA publication page accessed 25 September 2026. Preserve this transmission-planning study separately from the generation Resource Adequacy Plan because demand and future-capacity assumptions differ."
+  },
+  "present_power_scenario_2026": {
+    "as_of": "2026-03-31",
+    "source_boundary_note": "CEA table excludes solar plants below 1 MW from its 3,221.30 MW main installed-capacity total and reports them separately.",
+    "main_installed_capacity_mw": {
+      "thermal": 536.54,
+      "hydro": 2284.42,
+      "renewable_wind_and_solar_ge_1MW": 400.34,
+      "total": 3221.3
+    },
+    "solar_less_than_1MW_mw": 1912.33,
+    "combined_arithmetic_if_boundary_added_mw": 5133.63,
+    "sector_breakdown": {
+      "state": {
+        "thermal": 159.96,
+        "hydro": 2196.36,
+        "renewable_ge_1MW": 24.74,
+        "total": 2381.06,
+        "solar_lt_1MW": 3.16
+      },
+      "private": {
+        "thermal": 17,
+        "hydro": 88.06,
+        "renewable_ge_1MW": 283.6,
+        "total": 388.66,
+        "solar_lt_1MW": 1909.17
+      },
+      "central": {
+        "thermal": 359.58,
+        "hydro": 0,
+        "renewable_ge_1MW": 92,
+        "total": 451.58,
+        "solar_lt_1MW": 0
+      }
+    },
+    "peak_demand_mw": 5836,
+    "peak_date": "2026-03-25",
+    "reconciliation_warning": "The often-quoted '3,221 MW + ~1,912 MW rooftop' is a real CEA accounting boundary, not automatically an error. It must not be compared with MNRE's August-2026 location-based renewable snapshot without reconciling technology/date/size thresholds."
+  },
+  "existing_network": {
+    "intrastate": {
+      "total_transformation_mva": 24497,
+      "lines_ckm": {
+        "66": 1472.303,
+        "110": 5709.1,
+        "220": 3202.17,
+        "400": 178.26,
+        "total": 10561.83
+      }
+    },
+    "ists": {
+      "substations": [
+        {
+          "name": "Kozhikode",
+          "kv": "400/220",
+          "mva": 1130
+        },
+        {
+          "name": "HVDC Thrissur",
+          "kv": "400/220",
+          "mva": 630
+        },
+        {
+          "name": "Thrissur North",
+          "kv": "400",
+          "mva": null,
+          "note": "switching station"
+        },
+        {
+          "name": "Kochi",
+          "kv": "400/220",
+          "mva": 1130
+        },
+        {
+          "name": "Elappully (Palakkad)",
+          "kv": "400/220",
+          "mva": 1130
+        },
+        {
+          "name": "Pallipuram (Trivandrum)",
+          "kv": "400/220",
+          "mva": 945
+        }
+      ],
+      "total_transformation_mva": 4965,
+      "lines_ckm": {
+        "220": 412.39,
+        "400": 1271.14,
+        "320_hvdc": 130.34,
+        "total": 1813.87
+      }
+    },
+    "interstate_corridors": [
+      {
+        "name": "Thirunelveli-Trivandrum 400kV D/C",
+        "state": "Tamil Nadu",
+        "capacity_mw": 2217
+      },
+      {
+        "name": "Thirunelveli-Kottayam-Kochi 400kV D/C",
+        "state": "Tamil Nadu",
+        "capacity_mw": 4434
+      },
+      {
+        "name": "Udumalpet-Palakkad 400kV D/C",
+        "state": "Tamil Nadu",
+        "capacity_mw": 2217
+      },
+      {
+        "name": "Mysore-Kozhikode 400kV D/C",
+        "state": "Karnataka",
+        "capacity_mw": 2217
+      },
+      {
+        "name": "HVDC Pugalur-Trichur D/C",
+        "state": "Tamil Nadu",
+        "capacity_mw": 2000
+      },
+      {
+        "name": "Thirunelveli-Edamon 220kV D/C",
+        "state": "Tamil Nadu",
+        "capacity_mw": 1219
+      },
+      {
+        "name": "Kaniyampetta-Kadakola 220kV S/C",
+        "state": "Karnataka",
+        "capacity_mw": 277
+      },
+      {
+        "name": "Sabarigiri-Theni 220kV S/C",
+        "state": "Tamil Nadu",
+        "capacity_mw": 277
+      },
+      {
+        "name": "Udumalpet-Pallivasal 220kV S/C",
+        "state": "Tamil Nadu",
+        "capacity_mw": 277
+      }
+    ],
+    "transfer_snapshot": {
+      "ttc_mw": 4575,
+      "atc_import_mw": 4455
+    },
+    "warning": "Individual line ratings are not additive to statewide ATC/TTC; simultaneous capability is constrained by topology, contingencies and ICT limits."
+  },
+  "present_constraints": [
+    {
+      "element": "Kozhikode 400/220kV ICTs 2x315+1x500 MVA",
+      "remedy": "fourth 500 MVA ICT",
+      "scheduled": "2027-02"
+    },
+    {
+      "element": "Thrissur HVDC 400/220kV ICTs 2x315 MVA",
+      "remedy": "third ICT",
+      "scheduled": "2027-08"
+    },
+    {
+      "element": "Areacode-Kanhirode 220kV S/C",
+      "remedy": "400kV Kasaragod and downstream network",
+      "scheduled": "2026-27"
+    }
+  ],
+  "planning_2029_30": {
+    "peak_demand_mw": {
+      "KSEBL_case_used": 7916,
+      "revised_20th_EPS": 6752
+    },
+    "added_generation_mw": {
+      "hydro": 120,
+      "wind_approx": 300,
+      "solar_including_rooftop": 1200,
+      "bess": 800
+    },
+    "transmission_additions": {
+      "ists": {
+        "transformation_mva": 2500,
+        "lines_ckm": 474
+      },
+      "insts": {
+        "transformation_mva": 8500,
+        "lines_ckm": 492
+      }
+    },
+    "note": "The 800 MW BESS figure in this transmission study is a planning assumption/addition by 2029-30, not current installed storage and not proof that 800 MW storage alone removes a present shortage."
+  },
+  "planning_2034_35": {
+    "peak_demand_mw": 9780,
+    "future_peak_projection_mw": [
+      {
+        "fy": "2030-31",
+        "mw": 8255
+      },
+      {
+        "fy": "2031-32",
+        "mw": 8579
+      },
+      {
+        "fy": "2032-33",
+        "mw": 8971
+      },
+      {
+        "fy": "2033-34",
+        "mw": 9363
+      },
+      {
+        "fy": "2034-35",
+        "mw": 9780
+      }
+    ],
+    "candidate_generation_projects_mw": [
+      {
+        "name": "Letchmi HEP",
+        "technology": "hydro",
+        "mw": 240,
+        "expected": "2034-35"
+      },
+      {
+        "name": "Mankulam Stage-II",
+        "technology": "hydro",
+        "mw": 40,
+        "expected": "2032-33"
+      },
+      {
+        "name": "Idamalayar Extension",
+        "technology": "hydro",
+        "mw": 80,
+        "expected": "2032-33"
+      },
+      {
+        "name": "Idukki Extension",
+        "technology": "hydro_extension",
+        "mw": 520,
+        "expected": "2034-35"
+      },
+      {
+        "name": "Mudirapuzha PSP",
+        "technology": "pumped_storage",
+        "mw": 100,
+        "expected": "2032-33"
+      },
+      {
+        "name": "Kakkayam PSP",
+        "technology": "pumped_storage",
+        "mw": 800,
+        "expected": "2034-35"
+      },
+      {
+        "name": "Poringalkuth PSP",
+        "technology": "pumped_storage",
+        "mw": 400,
+        "expected": "2034-35"
+      },
+      {
+        "name": "Upper Chaliyar PSP",
+        "technology": "pumped_storage",
+        "mw": 360,
+        "expected": "2034-35"
+      }
+    ],
+    "likely_capacity_case_mw": {
+      "thermal": 537,
+      "gas": 0,
+      "hydro": 3284,
+      "pumped_storage": 1660,
+      "nuclear": 0,
+      "wind": 372,
+      "solar_including_rooftop": 5187,
+      "biomass": 0,
+      "total": 11040,
+      "bess": 800
+    },
+    "peak_LGB_mw": {
+      "demand": 9780,
+      "existing_hydro": 1700,
+      "cgs": 1600,
+      "lta": 600,
+      "mtoa": 80,
+      "remc": 20,
+      "proposed_2029_30_hydro": 120,
+      "proposed_2029_30_wind": 300,
+      "bess": 800,
+      "proposed_2034_35_hydro": 880,
+      "psp": 1660,
+      "total_availability": 7760,
+      "additional_import_expected": 2020
+    },
+    "transmission_additions_2030_35": {
+      "ists": {
+        "transformation_mva": 1000,
+        "lines_ckm": 280
+      },
+      "insts": {
+        "transformation_mva": 2560,
+        "lines_ckm": 1169
+      }
+    }
+  },
+  "green_energy_corridor": {
+    "GEC_II": {
+      "re_integration_mw": 452,
+      "lines_ckm": 224,
+      "transformation_mva": 620,
+      "status": "under implementation"
+    },
+    "GEC_III": {
+      "re_integration_mw": 1759,
+      "lines_ckm": 1422,
+      "transformation_mva": 1973,
+      "status": "planned"
+    }
+  },
+  "cross_study_warning": {
+    "generation_RA_peak_2034_35_mw": 8637,
+    "transmission_RA_peak_2034_35_mw": 9780,
+    "difference_mw": 1143,
+    "rule": "Do not silently choose, average or merge these forecasts. They are distinct official planning studies with different assumptions. Kerala2040 should preserve them as named demand sensitivities and document the chosen canonical scenario."
+  },
+  "model_admission": {
+    "current_topology": "partial_structural_evidence",
+    "current_ATC": "dated_snapshot_only",
+    "future_transmission": "official_planning_benchmark_not_committed_all_assets",
+    "line_ratings": "source_values_available_but_network_impedance_and_contingency_model_not_yet_built",
+    "future_PSP": "planning_candidates_not_site_admitted",
+    "full_pypsa_network_ready": false
+  }
+}
