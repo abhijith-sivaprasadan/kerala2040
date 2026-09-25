@@ -1,0 +1,545 @@
+{
+  "classification": "OFFICIAL_EXTERNAL_RESOURCE_ADEQUACY_BENCHMARK_NOT_KERALA2040_OPTIMISATION",
+  "prepared_date": "2026-09-25",
+  "source": {
+    "publisher": "Kerala State Electricity Regulatory Commission",
+    "title": "Order on Resource Adequacy Plan for Kerala for 2025-26 to 2035-36",
+    "order_date": "2025-12-30",
+    "underlying_study": "Central Electricity Authority Resource Adequacy Plan for Kerala, final copy submitted 2025-11-28, ORDENA model",
+    "url": "https://dev.erckerala.org/api/storage/orders/ugND0Sut53zUQ1JY3pAe7Qjyt4oV2mujlFv10G5D.pdf",
+    "use_rule": "Preserve as an official external planning benchmark. Do not relabel contracted capacity, proposed projects or CEA/KSEBL assumptions as Kerala2040 model outputs or current in-state installed capacity."
+  },
+  "demand_projection": [
+    {
+      "fy": "2025-26",
+      "energy_mu": 34008,
+      "peak_mw": 6204
+    },
+    {
+      "fy": "2026-27",
+      "energy_mu": 36055,
+      "peak_mw": 6445
+    },
+    {
+      "fy": "2027-28",
+      "energy_mu": 38179,
+      "peak_mw": 6678
+    },
+    {
+      "fy": "2028-29",
+      "energy_mu": 40384,
+      "peak_mw": 6959
+    },
+    {
+      "fy": "2029-30",
+      "energy_mu": 42673,
+      "peak_mw": 7233
+    },
+    {
+      "fy": "2030-31",
+      "energy_mu": 44726,
+      "peak_mw": 7500
+    },
+    {
+      "fy": "2031-32",
+      "energy_mu": 46804,
+      "peak_mw": 7746
+    },
+    {
+      "fy": "2032-33",
+      "energy_mu": 48966,
+      "peak_mw": 8045
+    },
+    {
+      "fy": "2033-34",
+      "energy_mu": 51215,
+      "peak_mw": 8335
+    },
+    {
+      "fy": "2034-35",
+      "energy_mu": 53557,
+      "peak_mw": 8637
+    },
+    {
+      "fy": "2035-36",
+      "energy_mu": 55996,
+      "peak_mw": 8926
+    }
+  ],
+  "demand_method_notes": [
+    "FY2024-25 electricity demand met is the base for the projection.",
+    "KSEBL/SLDC projection was selected in the CEA study after actual FY2024-25 demand exceeded the older 20th EPS mid-term projection.",
+    "KSEBL stated T&D loss was projected with a 0.20 percentage-point annual increase through 2029-30 due to increasing consumption; later trajectory is source-defined.",
+    "Existing actual solar penetration is embedded in the historical demand; anticipated solar additions are handled separately in the planning study.",
+    "CEA also ran 10% higher and 10% lower demand sensitivities."
+  ],
+  "planned_capacity_additions_mw": [
+    {
+      "fy": "2025-26",
+      "coal": 300,
+      "hydro": 24,
+      "solar": 0,
+      "wind": 14,
+      "bess_2h": 0,
+      "bess_4h": 0,
+      "solar_rooftop_dre": 448,
+      "hydro_dre": 0
+    },
+    {
+      "fy": "2026-27",
+      "coal": 0,
+      "hydro": 24,
+      "solar": 550,
+      "wind": 200,
+      "bess_2h": 0,
+      "bess_4h": 125,
+      "solar_rooftop_dre": 450,
+      "hydro_dre": 0
+    },
+    {
+      "fy": "2027-28",
+      "coal": 0,
+      "hydro": 0,
+      "solar": 100,
+      "wind": 300,
+      "bess_2h": 50,
+      "bess_4h": 125,
+      "solar_rooftop_dre": 450,
+      "hydro_dre": 0
+    },
+    {
+      "fy": "2028-29",
+      "coal": 0,
+      "hydro": 0,
+      "solar": 0,
+      "wind": 0,
+      "bess_2h": 250,
+      "bess_4h": 0,
+      "solar_rooftop_dre": 450,
+      "hydro_dre": 0
+    },
+    {
+      "fy": "2029-30",
+      "coal": 400,
+      "hydro": 0,
+      "solar": 0,
+      "wind": 0,
+      "bess_2h": 0,
+      "bess_4h": 0,
+      "solar_rooftop_dre": 450,
+      "hydro_dre": 8
+    },
+    {
+      "fy": "2030-31",
+      "coal": 0,
+      "hydro": 64,
+      "solar": 0,
+      "wind": 0,
+      "bess_2h": 0,
+      "bess_4h": 0,
+      "solar_rooftop_dre": 250,
+      "hydro_dre": 57
+    },
+    {
+      "fy": "2031-32",
+      "coal": 0,
+      "hydro": 0,
+      "solar": 0,
+      "wind": 0,
+      "bess_2h": 0,
+      "bess_4h": 0,
+      "solar_rooftop_dre": 250,
+      "hydro_dre": 0
+    },
+    {
+      "fy": "2032-33",
+      "coal": 0,
+      "hydro": 0,
+      "solar": 0,
+      "wind": 0,
+      "bess_2h": 0,
+      "bess_4h": 0,
+      "solar_rooftop_dre": 250,
+      "hydro_dre": 0
+    },
+    {
+      "fy": "2033-34",
+      "coal": 0,
+      "hydro": 0,
+      "solar": 0,
+      "wind": 0,
+      "bess_2h": 0,
+      "bess_4h": 0,
+      "solar_rooftop_dre": 250,
+      "hydro_dre": 0
+    },
+    {
+      "fy": "2034-35",
+      "coal": 0,
+      "hydro": 0,
+      "solar": 0,
+      "wind": 0,
+      "bess_2h": 0,
+      "bess_4h": 0,
+      "solar_rooftop_dre": 250,
+      "hydro_dre": 0
+    },
+    {
+      "fy": "2035-36",
+      "coal": 0,
+      "hydro": 0,
+      "solar": 0,
+      "wind": 0,
+      "bess_2h": 0,
+      "bess_4h": 0,
+      "solar_rooftop_dre": 200,
+      "hydro_dre": 0
+    }
+  ],
+  "planned_capacity_totals_mw": {
+    "coal": 700,
+    "hydro": 112,
+    "solar": 650,
+    "wind": 514,
+    "bess_2h": 300,
+    "bess_4h": 250,
+    "solar_rooftop_dre": 3698,
+    "hydro_dre": 64
+  },
+  "named_pipeline": [
+    {
+      "asset": "BIV Shakti coal procurement",
+      "capacity_mw": 300,
+      "status": "anticipated_external_procurement",
+      "expected_from": "2025-26 / source text says by January 2026"
+    },
+    {
+      "asset": "Talabira STPS PSA with NLCIL",
+      "capacity_mw": 400,
+      "status": "contracted_external_procurement",
+      "expected_from": "2029-30",
+      "agreement_date": "2022-10-19"
+    },
+    {
+      "asset": "Outside-Kerala wind procurement",
+      "capacity_mw": 200,
+      "status": "procurement_exploration",
+      "expected_from": "2026-27"
+    },
+    {
+      "asset": "Additional wind tender",
+      "capacity_mw": 300,
+      "status": "tender_action_reported",
+      "expected_from": "2027-28"
+    },
+    {
+      "asset": "West Kallada floating solar / NHPC",
+      "capacity_mw": 50,
+      "status": "PPA_reported_not_current_generation",
+      "expected_from": "2026-27"
+    },
+    {
+      "asset": "Cheemeni solar",
+      "capacity_mw": 100,
+      "status": "proposed_RPCKL_project",
+      "expected_from": "2027-28"
+    },
+    {
+      "asset": "Cheemeni storage",
+      "capacity_mw": 50,
+      "duration_h": 2,
+      "status": "decision_under_process_in_source",
+      "expected_from": "2027-28"
+    },
+    {
+      "asset": "SECI solar with assured peak power",
+      "capacity_mw": 500,
+      "status": "PSA_reported",
+      "expected_from": "2026-27",
+      "note": "Source describes 2 hours assured peak power supply; do not infer storage technology or energy capacity beyond source."
+    },
+    {
+      "asset": "Mylatti BESS",
+      "capacity_mw": 125,
+      "energy_mwh": 500,
+      "duration_h": 4,
+      "status": "approved_and_contracted_not_COD_verified_here",
+      "expected_from": "2026-27"
+    },
+    {
+      "asset": "Pothencode + Mulleria + Areacode + Sreekantapuram BESS cluster",
+      "capacity_mw": 125,
+      "energy_mwh": 500,
+      "duration_h": 4,
+      "status": "approved_pipeline_not_COD_verified_here",
+      "expected_from": "2027-28"
+    },
+    {
+      "asset": "Brahmapuram BESS",
+      "capacity_mw": 250,
+      "duration_h": 2,
+      "status": "proposed",
+      "expected_from": "2028-29",
+      "energy_mwh_derived_from_duration": 500
+    },
+    {
+      "asset": "Small hydro additions",
+      "capacity_mw_approx": 120,
+      "status": "planning_assumption"
+    },
+    {
+      "asset": "Idukki Extension HEP",
+      "capacity_mw": 800,
+      "status": "CEA_RA_assumption_not_commissioning_commitment",
+      "note": "Included by the RA study as part of 1040 MW proposed hydro; project-status evidence must be independently admitted."
+    },
+    {
+      "asset": "Latchmi HEP",
+      "capacity_mw": 240,
+      "status": "CEA_RA_assumption_not_commissioning_commitment",
+      "note": "Included by the RA study as part of 1040 MW proposed hydro; project-status evidence must be independently admitted."
+    }
+  ],
+  "rpo_balance": [
+    {
+      "fy": "2025-26",
+      "required_mu": 11226,
+      "required_pct": 33.01,
+      "available_planned_mu": 12257,
+      "available_planned_pct": 36.04,
+      "surplus_deficit_pct": 3.03
+    },
+    {
+      "fy": "2026-27",
+      "required_mu": 12962,
+      "required_pct": 35.95,
+      "available_planned_mu": 14729,
+      "available_planned_pct": 40.85,
+      "surplus_deficit_pct": 4.9
+    },
+    {
+      "fy": "2027-28",
+      "required_mu": 14817,
+      "required_pct": 38.81,
+      "available_planned_mu": 16171,
+      "available_planned_pct": 42.36,
+      "surplus_deficit_pct": 3.55
+    },
+    {
+      "fy": "2028-29",
+      "required_mu": 16703,
+      "required_pct": 41.36,
+      "available_planned_mu": 16842,
+      "available_planned_pct": 41.71,
+      "surplus_deficit_pct": 0.35
+    },
+    {
+      "fy": "2029-30",
+      "required_mu": 18490,
+      "required_pct": 43.33,
+      "available_planned_mu": 17525,
+      "available_planned_pct": 41.07,
+      "surplus_deficit_pct": -2.26
+    },
+    {
+      "fy": "2030-31",
+      "required_mu": 20350,
+      "required_pct": 45.5,
+      "available_planned_mu": 18077,
+      "available_planned_pct": 40.42,
+      "surplus_deficit_pct": -5.08
+    },
+    {
+      "fy": "2031-32",
+      "required_mu": 21998,
+      "required_pct": 47,
+      "available_planned_mu": 18450,
+      "available_planned_pct": 39.42,
+      "surplus_deficit_pct": -7.58
+    },
+    {
+      "fy": "2032-33",
+      "required_mu": 23650,
+      "required_pct": 48.3,
+      "available_planned_mu": 18822,
+      "available_planned_pct": 38.44,
+      "surplus_deficit_pct": -9.86
+    },
+    {
+      "fy": "2033-34",
+      "required_mu": 25352,
+      "required_pct": 49.5,
+      "available_planned_mu": 19195,
+      "available_planned_pct": 37.48,
+      "surplus_deficit_pct": -12.02
+    },
+    {
+      "fy": "2034-35",
+      "required_mu": 27047,
+      "required_pct": 50.5,
+      "available_planned_mu": 19568,
+      "available_planned_pct": 36.54,
+      "surplus_deficit_pct": -13.96
+    },
+    {
+      "fy": "2035-36",
+      "required_mu": 28838,
+      "required_pct": 51.5,
+      "available_planned_mu": 19866,
+      "available_planned_pct": 35.48,
+      "surplus_deficit_pct": -16.02
+    }
+  ],
+  "contracted_capacity_requirement": [
+    {
+      "fy": "2025-26",
+      "coal_mw": 2471,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 2155,
+      "wind_mw": 159,
+      "solar_mw": 797,
+      "bess_source_label": "0",
+      "dre_mw": 1795,
+      "rtc_mw": 0,
+      "stoa_mw": 1988
+    },
+    {
+      "fy": "2026-27",
+      "coal_mw": 2471,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 2179,
+      "wind_mw": 359,
+      "solar_mw": 1347,
+      "bess_source_label": "125/500",
+      "dre_mw": 2245,
+      "rtc_mw": 0,
+      "stoa_mw": 1973
+    },
+    {
+      "fy": "2027-28",
+      "coal_mw": 2471,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 2179,
+      "wind_mw": 659,
+      "solar_mw": 1447,
+      "bess_source_label": "300/1100",
+      "dre_mw": 2695,
+      "rtc_mw": 0,
+      "stoa_mw": 1909
+    },
+    {
+      "fy": "2028-29",
+      "coal_mw": 2871,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 2179,
+      "wind_mw": 859,
+      "solar_mw": 1647,
+      "bess_source_label": "550/1600",
+      "dre_mw": 3145,
+      "rtc_mw": 300,
+      "stoa_mw": 1278
+    },
+    {
+      "fy": "2029-30",
+      "coal_mw": 3271,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 2179,
+      "wind_mw": 1059,
+      "solar_mw": 1847,
+      "bess_source_label": "550/1600",
+      "dre_mw": 3603,
+      "rtc_mw": 425,
+      "stoa_mw": 1022
+    },
+    {
+      "fy": "2030-31",
+      "coal_mw": 3271,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 2243,
+      "wind_mw": 1159,
+      "solar_mw": 1899,
+      "bess_source_label": "550/1600",
+      "dre_mw": 3909,
+      "rtc_mw": 513,
+      "stoa_mw": 1140
+    },
+    {
+      "fy": "2031-32",
+      "coal_mw": 3271,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 3283,
+      "wind_mw": 1159,
+      "solar_mw": 1947,
+      "bess_source_label": "550/1600",
+      "dre_mw": 4159,
+      "rtc_mw": 513,
+      "stoa_mw": 566
+    },
+    {
+      "fy": "2032-33",
+      "coal_mw": 3271,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 3283,
+      "wind_mw": 1159,
+      "solar_mw": 1947,
+      "bess_source_label": "550/1600",
+      "dre_mw": 4409,
+      "rtc_mw": 673,
+      "stoa_mw": 699
+    },
+    {
+      "fy": "2033-34",
+      "coal_mw": 3305,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 3283,
+      "wind_mw": 1159,
+      "solar_mw": 1947,
+      "bess_source_label": "550/1600",
+      "dre_mw": 4659,
+      "rtc_mw": 800,
+      "stoa_mw": 821
+    },
+    {
+      "fy": "2034-35",
+      "coal_mw": 3641,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 3283,
+      "wind_mw": 1159,
+      "solar_mw": 1947,
+      "bess_source_label": "550/1600",
+      "dre_mw": 4909,
+      "rtc_mw": 800,
+      "stoa_mw": 821
+    },
+    {
+      "fy": "2035-36",
+      "coal_mw": 3871,
+      "gas_mw": 360,
+      "nuclear_mw": 371,
+      "hydro_mw": 3283,
+      "wind_mw": 1159,
+      "solar_mw": 1947,
+      "bess_source_label": "550/1600",
+      "dre_mw": 5109,
+      "rtc_mw": 800,
+      "stoa_mw": 897
+    }
+  ],
+  "interpretation_limits": [
+    "The contracted-capacity table is not Kerala in-state installed capacity.",
+    "Planned additions are planning-study inputs, not evidence that each project has reached COD.",
+    "BESS labels such as 125/500 are preserved exactly from the source table rather than silently reinterpreted.",
+    "The plan is explicitly rolling and is to be revised annually.",
+    "The RA study does not substitute for Kerala2040's independent technology-cost, chronology, grid, hydro, GIS and reliability evidence gates."
+  ]
+}
