@@ -290,7 +290,9 @@ def build_era5_screening_profiles(
     regression = {
         point: {
             "expected_kwh_per_kw": float(expected),
-            "v0_6_kwh_per_kw": float(per_point[point]["solar_specific_yield_proxy_kwh_per_kw_year"]),
+            "v0_6_kwh_per_kw": float(
+                per_point[point]["solar_specific_yield_proxy_kwh_per_kw_year"]
+            ),
             "difference_kwh_per_kw": float(
                 per_point[point]["solar_specific_yield_proxy_kwh_per_kw_year"]
                 - float(expected)
