@@ -81,4 +81,11 @@ CI validates the same matrix and uploads it as a development artifact labelled
 map admitted demand, technology-cost, resource, hydro, trade, storage, flexibility,
 ecology, reliability and fiscal datasets into these requirement keys with explicit
 source/assumption classifications.
+## Implementation checkpoint 2 · data acquisition and evidence registry
+
+The first major input-acquisition sprint is complete. It added a dated [Kerala energy asset/project register](../data/evidence/assets/kerala_energy_asset_register_2026_09_25.json), the official [generation Resource Adequacy benchmark](../data/evidence/demand/kerala_resource_adequacy_2025_2035_36_2026_09_25.json), a source-bounded [CEA transmission Resource Adequacy register](../data/evidence/grid/kerala_transmission_resource_adequacy_2034_35_2026_09_25.json), bounded [September-2026 system-stress evidence](../data/evidence/system/kerala_sep2026_power_stress_2026_09_25.json), and the [full-PyPSA input admission registry](../configs/full_pypsa_input_registry.yaml).
+
+The acquisition resolved several previously ambiguous claims: CEA's 31-March-2026 **3,221.30 MW** installed-capacity number deliberately excludes **1,912.33 MW** of sub-1-MW solar reported separately; MNRE later reports **2,259.50 MW rooftop solar** at 31-August-2026; CEA's transmission plan uses **800 MW BESS by 2029-30** as a planning assumption rather than current installed storage; and conventional Idukki Extension hydro is distinct from THDCIL's Idukki/Pallivasal PSP PFRs and CEA's separate 2034-35 PSP planning portfolio.
+
+The next checkpoint is therefore **base-year and input-selection reconciliation**. No capacity-expansion solve should begin by silently splicing the FY2024-25 Economic Review, March-2026 CEA and August-2026 MNRE boundaries. The model must choose a declared base date, reconcile every current asset into that boundary, preserve alternative official demand forecasts as named sensitivities, and only then map costs, chronology, reliability and physical constraints into PyPSA.
 
