@@ -1,0 +1,81 @@
+version: 1
+classification: full_pypsa_import_economics_v1_0_partial_economic_expansion_not_total_system_cost
+prepared_date: "2026-09-25"
+purpose: >-
+  Add source-bounded import-price economics to the direct-PyPSA 2030 expansion
+  formulation while preserving the adequacy-first rule. Existing hydro/nonhydro
+  remain frozen and unpriced, so this is a partial economic sensitivity rather
+  than total-system least-cost dispatch.
+
+inherits:
+  direct_pypsa: configs/full_pypsa_pypsa_equivalence_v0_9.yaml
+  proxy_expansion: configs/full_pypsa_proxy_expansion_v0_8.yaml
+  cost_finance: configs/full_pypsa_cost_finance_v0_5.yaml
+  transfer_economics_evidence: data/evidence/grid/kerala_import_economics_forward_transfer_v1_0_2026_09_25.json
+
+price_basis:
+  currency: INR
+  basis: real_2021_22_INR
+  deflator: RBI_NSO_CPI_Combined_annual_average
+  source_year_prices: FY2023_24_nominal
+  rule: >-
+    Import-price proxies are deflated onto the same real 2021-22 INR basis as
+    v0.5 investment costs before they enter one objective.
+
+import_price_cases:
+  - id: ksebl_weighted_purchase
+    real_2021_22_inr_per_mwh: 4494.070251674815
+    source_key: ksebl_weighted_average_purchase_fy2023_24
+  - id: iex_dam_wholesale
+    real_2021_22_inr_per_mwh: 4663.154082925947
+    source_key: iex_dam_fy2023_24
+  - id: delivered_bulk_stress
+    real_2021_22_inr_per_mwh: 6345.093246424046
+    source_key: downstream_bulk_supply_stress_fy2023_24
+
+demand_cases:
+  - lower_FY2030
+  - reference_FY2030_31
+
+transfer_cases:
+  - atc_snapshot_reference
+  - atc_80pct_stress
+  - atc_60pct_stress
+
+forward_transfer_benchmarks:
+  current_ATC_mw: 4455
+  cea_2029_30_peak_import_requirement_mw: 2696
+  cea_2034_35_peak_import_requirement_mw: 2020
+  future_ATC_mw: null
+  rule: >-
+    Future CEA import-requirement values are diagnostics, not transfer caps.
+    No future ATC is inferred from planned MVA or circuit-km additions.
+
+capacity_envelope_cases:
+  - low
+  - reference
+  - high
+
+bess_cost_cases:
+  - low
+  - high
+
+objective:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: minimize_annualized_candidate_investment_plus_import_energy_cost_at_stage_1_minimum_shortage
+  unserved_tolerance_mwh: 0.001
+  existing_hydro_nonhydro_cost: omitted_frozen_replay
+  objective_units: million_real_2021_22_INR_per_year
+  rule: >-
+    No VOLL is invented. Adequacy is solved lexicographically first; only then
+    are investment and import costs traded off.
+
+release:
+  import_economic_sensitivity_ready: true
+  partial_economic_capacity_expansion_ready: true
+  total_system_cost_optimization: false
+  future_ATC_validated: false
+  landed_import_cost_validated: false
+  existing_fleet_economic_dispatch: false
+  validated_capacity_plan: false
+  scenario_recommendation: false
