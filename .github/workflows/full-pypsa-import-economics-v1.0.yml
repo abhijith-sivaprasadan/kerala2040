@@ -1,0 +1,114 @@
+name: Full PyPSA import economics v1.0
+
+on:
+  pull_request:
+    paths:
+      - "configs/full_pypsa_import_economics_v1_0.yaml"
+      - "data/evidence/grid/kerala_import_economics_forward_transfer_v1_0_2026_09_25.json"
+      - "src/kerala2040/full_pypsa_import_economics.py"
+      - "scripts/run_full_pypsa_import_economics_v1_0.py"
+      - "tests/test_full_pypsa_import_economics_v1_0.py"
+      - "configs/full_pypsa_proxy_expansion_v0_8.yaml"
+      - "configs/full_pypsa_pypsa_equivalence_v0_9.yaml"
+      - "configs/full_pypsa_cost_finance_v0_5.yaml"
+      - "configs/full_pypsa_era5_renewable_profiles_v0_6.yaml"
+      - "configs/full_pypsa_renewable_capacity_v0_7.yaml"
+      - ".github/workflows/full-pypsa-import-economics-v1.0.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  import-economics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install modelling and ERA5 dependencies
+        run: python -m pip install -e ".[dev,era5]"
+      - name: Lint and unit-test v1.0
+        run: |
+          ruff check \
+            src/kerala2040/full_pypsa_import_economics.py \
+            scripts/run_full_pypsa_import_economics_v1_0.py \
+            tests/test_full_pypsa_import_economics_v1_0.py
+          pytest -q tests/test_full_pypsa_import_economics_v1_0.py
+      - name: Download verified Apr-Dec 2024 ERA5 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35622527064"
+          pattern: era5-*-2024-*_to_2024-*-SOURCE-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2024
+          merge-multiple: false
+      - name: Download verified Jan-Mar 2025 ERA5 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35623051780"
+          pattern: era5-*-2025-01_to_2025-03-REACQUIRED-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2025
+          merge-multiple: false
+      - name: Require exactly 20 independent location-quarter artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(find results/acquisition/era5/full-year-input -type f -name retrieval_attempt.json | wc -l)"
+          echo "retrieval manifests: $count"
+          test "$count" -eq 20
+      - name: Rebuild verified v0.6 renewable profiles
+        run: |
+          python scripts/build_full_pypsa_era5_profiles_v0_6.py \
+            results/acquisition/era5/full-year-input
+      - name: Run full v1.0 partial-economic matrix
+        run: |
+          python scripts/run_full_pypsa_import_economics_v1_0.py \
+            --acknowledge-partial-economics \
+            --hours 8760
+      - name: Show compact v1.0 summary
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(
+              Path("results/models/full_pypsa/import_economics_v1_0/summary.json").read_text()
+          )
+          print("cases_solved:", data["cases_solved"])
+          for row in data["cases"]:
+              if (
+                  row["capacity_envelope_case"] == "reference"
+                  and row["bess_cost_case"] == "low"
+              ):
+                  print(
+                      row["demand_case"],
+                      row["transfer_case"],
+                      row["import_price_case"],
+                      "solar=", round(row["built"]["solar_combined_mw"], 2),
+                      "wind=", round(row["built"]["wind_onshore_mw"], 2),
+                      "bess=", round(row["built"]["bess_4h_power_mw"], 2),
+                      "imports_GWh=", round(row["imports_mwh"] / 1000, 2),
+                      "partial_cost_mINR=", round(
+                          row["partial_economic_objective_million_real_2021_22_inr_per_year"],
+                          2,
+                      ),
+                  )
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: full-pypsa-import-economics-v1.0-NOT-TOTAL-SYSTEM-COST
+          retention-days: 90
+          if-no-files-found: error
+          path: |
+            results/models/full_pypsa/era5_renewables_v0_6/statewide_equal_weight_profile.parquet
+            results/models/full_pypsa/import_economics_v1_0/summary.json
+
+# Partial economics only: current/future import prices, future ATC, existing fleet
+# variable costs, hydro physics, outages and statutory siting remain unresolved.
