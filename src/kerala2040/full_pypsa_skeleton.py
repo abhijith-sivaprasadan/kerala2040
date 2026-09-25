@@ -43,7 +43,7 @@ def build_full_pypsa_skeleton(selection: dict[str, Any]):
     network.add("Bus", "kerala_system")
     network.add("Bus", "external_grid")
 
-    gen = selection["selected"]["existing_generation"]
+    gen = selection["selected"]["existing_generation"]["representation"]
 
     # These components carry reconciled nameplate/accounting capacity only.
     # p_max_pu=0 prevents accidental dispatch before chronology/operations are admitted.
