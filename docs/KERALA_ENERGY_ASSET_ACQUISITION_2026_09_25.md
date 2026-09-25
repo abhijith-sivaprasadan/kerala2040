@@ -18,11 +18,13 @@ This sprint deliberately separates **existing capacity**, **distributed generati
 
 Kerala's **31 March 2025 Economic Review** total remains the correct FY2024–25 historical anchor: 4,412.14 MW, comprising 2,284.42 MW hydro, 536.54 MW thermal, 1,519.66 MW solar and 71.53 MW wind.
 
-The newer **CEA transmission Resource Adequacy Plan** uses a different 31 March 2026 reporting boundary. It reports **3,221.30 MW** in its main table — 536.54 MW thermal + 2,284.42 MW hydro + 400.34 MW wind/solar — and reports **1,912.33 MW of solar below 1 MW separately**. Thus the frequently repeated “3,221 MW plus ~1,912 MW rooftop” formulation is a real CEA accounting convention, not an arithmetic mistake. It must not be mixed blindly with the older Economic Review or the later MNRE snapshot.
+A subsequent same-date source check found the stronger physical boundary for **31 March 2026**: MNRE's state-wise **location-based** renewable-capacity table. It reports Kerala at 2,008.15 MW large hydro, 276.52 MW small hydro, 71.52 MW wind, 2.50 MW bio-power and 2,215.59 MW solar (340.26 MW ground-mounted, 1,850.40 MW rooftop, 24.93 MW off-grid/KUSUM-B and zero hybrid component). With the independently retained 536.54 MW Kerala thermal total, the canonical March-2026 physical population is therefore **5,110.82 MW**.
 
-The **MNRE 31 August 2026 location-based renewable snapshot** is later again and reports **2,259.50 MW rooftop solar**, 342.27 MW ground-mounted solar and 2,626.84 MW total solar in Kerala. The change from 1,912.33 MW below-1-MW solar in March to 2,259.50 MW MNRE rooftop solar in August is not automatically a five-month capacity addition because the source definitions differ as well as the date.
+The CEA transmission Resource Adequacy Plan's **3,221.30 MW + 1,912.33 MW** formulation is retained as a planning/accounting crosscheck, not the canonical physical technology split. Likewise, CEA monthly state allocation tables are not used as a Kerala location-based fleet because they include Kerala shares in outside-state central/joint generation.
 
-**Model rule:** choose a base date and reconcile every technology/size/ownership boundary before constructing a current fleet.
+The **MNRE 31 August 2026 location-based renewable snapshot** remains a later overlay: 2,259.50 MW rooftop solar, 342.27 MW ground-mounted solar and 2,626.84 MW total solar. Like-for-like category changes may be compared, but individual project COD is never inferred from aggregate growth alone.
+
+**Model rule:** the 31 March 2026 same-date location-based boundary is canonical; later snapshots are explicit overlays and older alternative accounting populations remain crosschecks only.
 
 ## Demand benchmarks acquired
 
