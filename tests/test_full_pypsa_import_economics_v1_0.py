@@ -40,28 +40,28 @@ def test_v10_higher_import_price_cannot_raise_imports_in_simple_case():
     pytest.importorskip("pypsa")
     pytest.importorskip("highspy")
     hours = 24
-    common = dict(
-        residual_load_mw=np.full(hours, 100.0),
-        solar_profile=np.r_[np.zeros(6), np.ones(12), np.zeros(6)],
-        wind_profile=np.full(hours, 0.4),
-        import_limit_mw=100.0,
-        caps={
+    common = {
+        "residual_load_mw": np.full(hours, 100.0),
+        "solar_profile": np.r_[np.zeros(6), np.ones(12), np.zeros(6)],
+        "wind_profile": np.full(hours, 0.4),
+        "import_limit_mw": 100.0,
+        "caps": {
             "ground_solar_headroom_mw": 200.0,
             "floating_solar_headroom_mw": 100.0,
             "solar_total_headroom_mw": 300.0,
             "wind_headroom_mw": 200.0,
             "bess_power_headroom_mw": 50.0,
         },
-        annualized_costs={
+        "annualized_costs": {
             "solar_million_inr_per_mw_year": 4.0,
             "wind_million_inr_per_mw_year": 6.0,
             "bess_million_inr_per_mw_year": 8.0,
         },
-        bess_duration_h=4.0,
-        charge_efficiency=0.94,
-        discharge_efficiency=0.94,
-        unserved_tolerance_mwh=1e-6,
-    )
+        "bess_duration_h": 4.0,
+        "charge_efficiency": 0.94,
+        "discharge_efficiency": 0.94,
+        "unserved_tolerance_mwh": 1e-6,
+    }
     low = solve_import_economic_case(
         **common,
         import_price_real_inr_per_mwh=1000.0,
