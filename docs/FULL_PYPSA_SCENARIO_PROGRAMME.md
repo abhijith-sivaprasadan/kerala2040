@@ -59,3 +59,26 @@ replaced by an invented Kerala value.
 
 Until steps 1–7 pass, the website must continue to call these **UNSOLVED
 SPECIFICATIONS**, including the newly exposed S5.
+
+## Implementation checkpoint 1 · scenario compiler
+
+The first executable layer is now implemented in `src/kerala2040/scenario_compiler.py`.
+It compiles all **6 scenarios × 3 model years = 18 base structural cases** and can add
+each declared stress test without inventing its numerical severity. Every case reports
+the exact evidence/input keys it requires and remains `UNSOLVED_SPECIFICATION` while
+any requirement is missing. Supplying every requirement changes the structural state only
+to `READY_TO_BUILD_NETWORK`; it still does not claim an optimisation result.
+
+Run:
+
+```bash
+python scripts/compile_full_pypsa_scenarios.py
+pytest -q tests/test_scenario_compiler.py
+```
+
+CI validates the same matrix and uploads it as a development artifact labelled
+`NOT-optimised`. The next implementation checkpoint is the numerical input registry:
+map admitted demand, technology-cost, resource, hydro, trade, storage, flexibility,
+ecology, reliability and fiscal datasets into these requirement keys with explicit
+source/assumption classifications.
+
