@@ -675,6 +675,31 @@ That is **108 full-year economic-sensitivity cases**. Results remain partial sys
 economics because existing fleet costs, outages, hydro reservoir/cascade operation,
 future ATC, statutory siting and interval landed import prices are unresolved.
 
+The artifact-backed full-year run solved all 108 cases successfully. The economic
+effect depends on whether the case is already **adequacy-cap-bound**.
+
+For lower FY2030 demand with the full 4,455 MW ATC sensitivity and the reference
+renewable envelope, the low-BESS-cost case uses **4,210.74 MW solar + 9.03 MW
+BESS** under the KSEBL and IEX price proxies. Under the higher delivered-bulk stress
+price it substitutes **119.34 MW wind** for the small BESS addition and reduces
+imports from about **19.001 TWh to 18.879 TWh**.
+
+With the high renewable envelope, the price signal is clearer: under the same lower
+FY2030/full-ATC case, solar rises from **5,513.22 MW** at the KSEBL weighted-purchase
+proxy to **6,474.18 MW** at the delivered-bulk stress price, while imports fall from
+**17.416 TWh to 16.576 TWh**. This is the expected import-versus-local-build tradeoff.
+
+By contrast, the CEA/KSERC reference FY2030-31 cases remain adequacy constrained.
+For the reference renewable envelope the model already reaches **4,210.74 MW solar,
+2,549.475 MW wind and 250 MW BESS** at every import-price sensitivity, with residual
+shortage of about **0.375 TWh / 2.302 TWh / 6.600 TWh** under the 100% / 80% / 60%
+ATC cases. In those cap-bound cases, a higher import price changes the reported
+partial economic cost but cannot change the capacity mix because the admitted
+candidate limits are already binding.
+
+Durable result evidence is recorded in
+`data/evidence/models/full_pypsa_import_economics_v1_0_2026_09_26.json`.
+
 Run:
 
 ```bash
