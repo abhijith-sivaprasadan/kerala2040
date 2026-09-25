@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "milestone": "Kerala2040 Step 9 PyPSA implementation verification",
+  "status": "PASS",
+  "executed_date": "2026-09-25",
+  "comparison": "PyPSA/HiGHS reproduction versus Step 8 SciPy/HiGHS daily balancing reference",
+  "observed_days": 354,
+  "demand_shapes": [
+    "flat",
+    "morning_evening",
+    "evening_stress"
+  ],
+  "cases": [
+    "diagnostic_fixed",
+    "hydro_flex_1p5",
+    "hydro_flex_1p5_import_flex_1p25"
+  ],
+  "solves": 3186,
+  "acceptance": {
+    "all_solves_optimal": true,
+    "max_quarter_hour_balance_error_mw_lt": 0.0001,
+    "max_daily_hydro_energy_error_mwh_lt": 0.0001,
+    "max_daily_import_energy_error_mwh_lt": 0.0001,
+    "max_daily_slack_difference_mwh_lt": 0.001
+  },
+  "result": {
+    "all_solves_optimal": true,
+    "max_abs_daily_slack_difference_mwh": 1.2732925824820995e-10,
+    "comparison_tolerance_mwh": 0.001,
+    "tolerance_margin_factor": 7853654.702338332
+  },
+  "scope_note": "Implementation-equivalence verification only. Quarter-hour demand profiles are synthetic daily-energy-anchored sensitivity shapes and flexibility caps are scenario assumptions; this does not constitute empirical grid validation or 2040 capacity-expansion validation.",
+  "next_benchmark": "Independent OSeMOSYS capacity-expansion formulation"
+}
