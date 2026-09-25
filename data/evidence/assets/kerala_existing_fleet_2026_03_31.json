@@ -32,6 +32,13 @@
       "url": "https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf",
       "boundary_date": "2026-03-31",
       "use": "March-2026 sector totals"
+    },
+    {
+      "id": "cea_list_power_stations_2025",
+      "publisher": "Central Electricity Authority",
+      "title": "List of Thermal and Hydro Power Stations as on 31.03.2025",
+      "url": "https://cea.nic.in/wp-content/uploads/pdm/2025/09/List_of_Power_Station_as_on_31.03.2025.pdf",
+      "use": "current unit ratings for utility-scale thermal and >=25 MW hydro cross-check"
     }
   ],
   "state_hydro": {
@@ -276,11 +283,11 @@
         "sector": "central",
         "capacity_mw": 359.58,
         "units_mw": [
-          116.6,
-          116.6,
-          126.38
+          115.2,
+          115.2,
+          129.18
         ],
-        "unit_note": "KSEBL 2022-23 table prints 116.6, 116.6, 126.6 while station total is 359.58. Preserve the authoritative station total; exact current unit ratings require CEA/NTPC unit-register reconciliation.",
+        "unit_note": "CEA List of Power Stations as on 31.03.2025; unit ratings sum exactly to the admitted 359.58 MW station total.",
         "model_status": "existing_capacity_dispatch_parameters_unresolved"
       },
       {
@@ -341,6 +348,23 @@
     "non_state_hydro_target_mw": 88.06,
     "March_2026_CEA_main_total_mw": 3221.3,
     "fleet_complete": false,
-    "dispatch_ready": false
+    "dispatch_ready": false,
+    "state_hydro_station_arithmetic_mw": 2196.361,
+    "state_hydro_rounding_difference_mw": 0.001,
+    "state_hydro_reconciliation_tolerance_mw": 0.01
+  },
+  "historical_location_based_crosschecks": {
+    "cea_2025_bses_kochi": {
+      "physical_location_capacity_mw": 174,
+      "units_mw": [
+        45,
+        45,
+        39,
+        45
+      ],
+      "source_boundary": "CEA utility-scale station list as on 31.03.2025",
+      "admitted_to_march_2026_base": false,
+      "note": "CEA's 31-Mar-2025 station list still records the physical BSES(C) Cochin plant, but the canonical March-2026 Kerala capacity boundary used by the transmission RA study excludes it. Retain as a dated physical-asset cross-check, not dispatchable base capacity."
+    }
   }
 }
