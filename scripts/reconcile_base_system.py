@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Validate and export the canonical Kerala2040 March-2026 base system."""
 from __future__ import annotations
 
