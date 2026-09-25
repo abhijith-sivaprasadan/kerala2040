@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - "configs/full_pypsa_pypsa_equivalence_v0_9.yaml"
+      - "configs/full_pypsa_input_registry.yaml"
+      - "data/evidence/models/full_pypsa_pypsa_equivalence_v0_9_2026_09_25.json"
+      - "docs/FULL_PYPSA_SCENARIO_PROGRAMME.md"
       - "configs/full_pypsa_proxy_expansion_v0_8.yaml"
       - "configs/full_pypsa_future_adequacy_v0_4.yaml"
       - "configs/full_pypsa_cost_finance_v0_5.yaml"
