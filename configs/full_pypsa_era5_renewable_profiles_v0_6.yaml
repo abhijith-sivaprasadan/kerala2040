@@ -30,8 +30,10 @@ weather_conversion:
 
 profile_models:
   solar:
-    method: existing_simple_GHI_temperature_proxy
-    function: kerala2040.renewables.solar_p_max_pu
+    method: documented_five_site_ERA5_proxy
+    performance_ratio: 0.82
+    temperature_coefficient_per_K: -0.004
+    cell_temperature_rise_K_per_W_m2: 0.025
     caveat: no_tilt_azimuth_inverter_or_soiling_model
   wind:
     method: existing_generic_cubic_power_curve_with_power_law_shear
@@ -56,6 +58,15 @@ validation_anchors:
       capacity_mw: 50
       fy2024_25_generation_mu: 90.81
   asset_source: data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+  prior_local_single_cell_regression_kwh_per_kw:
+    kozhikode: 1308.5
+    kochi: 1334.8
+    palakkad: 1332.1
+    thiruvananthapuram: 1424.5
+  regression_note: >-
+    These four values came from the previously documented local proxy run using the
+    same source artifacts and [0,0] extraction. They are regression diagnostics only.
+    Kannur is excluded because v0.6 explicitly resolves its multi-cell box by nearest cell.
   rule: anchors_are_diagnostics_not_calibration_targets
 
 release:
