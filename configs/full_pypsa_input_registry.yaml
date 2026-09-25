@@ -17,6 +17,7 @@ sources:
   research_input_selection_v0_2: configs/research_input_selection_v0_2.yaml
   hydro_flexibility_bracket_v0_3: configs/full_pypsa_hydro_flexibility_v0_3.yaml
   future_adequacy_v0_4: configs/full_pypsa_future_adequacy_v0_4.yaml
+  cost_finance_v0_5: configs/full_pypsa_cost_finance_v0_5.yaml
 
 requirements:
   base_system:
@@ -315,11 +316,27 @@ requirements:
       - private and central project treatment
 
   technology_costs:
-    status: published_benchmarks_selected_as_context_not_optimisation_input
+    status: research_2030_cost_finance_harmonised_not_validated
     evidence:
       - configs/techno_economics.yaml
       - configs/research_input_selection_v0_2.yaml
-    rule: external CEA/CERC benchmarks remain non-optimising context until price years, finance and missing storage/import cost fields are harmonised
+      - configs/full_pypsa_cost_finance_v0_5.yaml
+    acquired:
+      real_2021_22_INR_common_basis: true
+      CERC_current_research_WACC_9_08pct: true
+      solar_2030_capex_and_lifetime: true
+      onshore_wind_2030_capex_and_lifetime: true
+      BESS_4h_cost_bracket_and_RTE: true
+      annualisation_validator_v0_5: true
+    remaining:
+      - post-2030 cost trajectories without unsupported extrapolation
+      - generic BESS degradation/replacement and auxiliary-load formulation
+      - site-specific PSP capex and hydraulic energy capacity
+      - transmission and demand-response expansion costs
+      - Kerala project-specific financing sensitivities where required
+    rule: >-
+      v0.5 admits national CEA/CERC values only as a bounded 2030 research-assumption
+      package. It does not make them validated Kerala project costs.
 
 release:
   research_proxy_adequacy_screen_possible_now: true
@@ -328,8 +345,9 @@ release:
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
-    and v0.4 adds source-anchor future-demand counterfactuals with frozen FY2024-25
-    internal generation and explicit ATC bounds. Economic dispatch,
-    probabilistic reliability and capacity expansion remain blocked by unresolved
-    chronology, costs, outages, hydro physics and import-price inputs.
+    v0.4 adds source-anchor future-demand counterfactuals, and v0.5 harmonises a
+    bounded 2030 research cost/finance package for solar, wind and four-hour BESS.
+    Economic dispatch, probabilistic reliability and capacity expansion remain blocked
+    by renewable candidate profiles/capacity ceilings, outages, hydro/PSP physics,
+    import-price inputs and other unresolved operational constraints.
   validated_run_possible_now: false
