@@ -50,6 +50,7 @@ on:
       - "configs/research_input_selection_v0_1.yaml"
       - "configs/research_input_selection_v0_2.yaml"
       - "configs/full_pypsa_proxy_adequacy_v0_2.yaml"
+      - "configs/full_pypsa_hydro_flexibility_v0_3.yaml"
       - "data/evidence/assets/kerala_existing_fleet_2026_03_31.json"
       - "data/evidence/assets/kerala_re_crosswalk_2026_03_31.json"
       - "data/evidence/assets/kerala_solar_ge1_identity_crosswalk_2026_03_31.json"
@@ -62,10 +63,12 @@ on:
       - "src/kerala2040/full_pypsa_skeleton.py"
       - "src/kerala2040/chronological_screen.py"
       - "src/kerala2040/full_pypsa_proxy_adequacy.py"
+      - "src/kerala2040/full_pypsa_hydro_flexibility.py"
       - "scripts/compile_full_pypsa_scenarios.py"
       - "scripts/reconcile_base_system.py"
       - "scripts/build_full_pypsa_skeleton.py"
       - "scripts/run_full_pypsa_proxy_adequacy_v0_2.py"
+      - "scripts/run_full_pypsa_hydro_flexibility_v0_3.py"
       - "scripts/build_site.py"
       - "tests/test_scenario_compiler.py"
       - "tests/test_base_system.py"
@@ -74,6 +77,7 @@ on:
       - "tests/test_re_crosswalk_2026.py"
       - "tests/test_full_pypsa_skeleton.py"
       - "tests/test_full_pypsa_proxy_adequacy_v0_2.py"
+      - "tests/test_full_pypsa_hydro_flexibility_v0_3.py"
       - "tests/test_scenario_specs_sync.py"
   workflow_dispatch:
 
