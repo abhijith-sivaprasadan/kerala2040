@@ -1,0 +1,94 @@
+{
+  "classification": "RECONCILED_MARCH_2026_RENEWABLE_BOUNDARY_CROSSWALK_WITH_DERIVED_RESIDUALS",
+  "prepared_date": "2026-09-25",
+  "base_date": "2026-03-31",
+  "purpose": "Reconcile the CEA March-2026 >=1 MW renewable ownership population with the independently reconciled Kerala wind fleet, deriving the remaining >=1 MW solar ownership buckets without equating CEA and MNRE reporting populations.",
+  "sources": [
+    {
+      "id": "cea_transmission_ra_2026",
+      "publisher": "Central Electricity Authority",
+      "title": "Resource Adequacy Plan for Transmission System of Kerala up to 2034-35",
+      "role": "Canonical March-2026 CEA main installed-capacity and ownership boundary",
+      "url": "https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf"
+    },
+    {
+      "id": "mnre_statewise_re_2026_03_31",
+      "publisher": "Ministry of New and Renewable Energy",
+      "title": "State-wise (Location based) installed capacity of Renewable Power as on 31.03.2026",
+      "role": "Independent same-date technology-category crosscheck with a different reporting schema",
+      "url": "https://cdnbbsr.s3waas.gov.in/s3716e1b8c6cd17b771da77391355749f3/uploads/2026/04/20260415955675604.pdf"
+    },
+    {
+      "id": "kerala_existing_fleet_2026_03_31",
+      "file": "data/evidence/assets/kerala_existing_fleet_2026_03_31.json",
+      "role": "Wind ownership/asset decomposition reconciled from KSEBL/Economic Review sources"
+    }
+  ],
+  "cea_main_boundary": {
+    "description": "Renewable wind+solar population included in CEA main capacity table; solar below 1 MW is reported separately by CEA.",
+    "ownership_mw": {
+      "state": 24.74,
+      "private": 283.6,
+      "central": 92,
+      "total": 400.34
+    }
+  },
+  "admitted_wind_crosswalk_mw": {
+    "state": 2.025,
+    "private_and_captive": 69.5,
+    "central": 0,
+    "arithmetic_total": 71.525,
+    "official_rounded_total": 71.53,
+    "source_note": "Wind asset decomposition reconciles to Kerala Economic Review 2025; March-2026 same-date ownership change is not independently observed, so the unchanged split is an explicit bridge assumption for this structural crosswalk."
+  },
+  "derived_solar_ge_1mw_mw": {
+    "method": "CEA ownership renewable total minus admitted wind ownership bucket",
+    "state": {
+      "cea_renewable_bucket_mw": 24.74,
+      "wind_mw": 2.025,
+      "derived_solar_mw": 22.715
+    },
+    "private": {
+      "cea_renewable_bucket_mw": 283.6,
+      "wind_mw": 69.5,
+      "derived_solar_mw": 214.1
+    },
+    "central": {
+      "cea_renewable_bucket_mw": 92,
+      "wind_mw": 0,
+      "derived_solar_mw": 92,
+      "identified_asset": "NTPC Kayamkulam Floating Solar"
+    },
+    "arithmetic_total_solar_ge_1mw": 328.815,
+    "reconciliation_check_mw": 400.34
+  },
+  "mnre_same_date_crosscheck": {
+    "small_hydro_mw": 276.52,
+    "wind_mw": 71.52,
+    "bio_power_mw": 2.5,
+    "solar": {
+      "ground_mounted_mw": 340.26,
+      "rooftop_including_pm_surya_ghar_mw": 1850.4,
+      "hybrid_mw": 0,
+      "offgrid_or_kusum_b_mw": 24.93,
+      "total_mw": 2215.59
+    },
+    "large_hydro_mw": 2008.15,
+    "total_re_mw": 4574.28,
+    "source_boundary_warning": "MNRE ground/rooftop/off-grid categories are not the same population as CEA's >=1 MW versus <1 MW accounting. Do not infer CEA >=1 MW solar by subtracting CEA sub-1-MW solar from MNRE solar total."
+  },
+  "model_admission": {
+    "wind_capacity_by_ownership": "structurally_admitted_capacity_only",
+    "solar_ge_1mw_by_ownership": "derived_structural_residual_only",
+    "central_solar_asset_identity": "admitted_capacity_identity",
+    "state_private_solar_asset_level_identity": "not_complete",
+    "temporal_profiles": "not_admitted",
+    "dispatch_ready": false
+  },
+  "remaining": [
+    "Identify the 22.715 MW state solar >=1 MW population at plant/project level.",
+    "Identify the 214.10 MW private solar >=1 MW population at plant/project level without double-counting Kasaragod/CIAL or distributed solar.",
+    "Validate March-2026 wind ownership split against a same-date official unit register if available.",
+    "Admit hourly profiles only after measured-generation validation."
+  ]
+}
