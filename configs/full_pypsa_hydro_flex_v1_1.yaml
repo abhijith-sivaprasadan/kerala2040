@@ -35,14 +35,23 @@ matrix:
     - id: available_85pct
       available_power_fraction: 0.85
       interpretation: synthetic aggregate 15pct power-availability derate
-    - id: available_70pct
-      available_power_fraction: 0.70
-      interpretation: synthetic aggregate 30pct power-availability derate
+    - id: available_71pct_feasibility_floor
+      available_power_fraction: 0.71
+      interpretation: >-
+        near-floor aggregate power stress. FY2024-25 maximum daily hydro energy
+        (38.8073 MU on 2024-08-05) requires 1616.97 MW average over 24 hours,
+        equal to 70.783% of the 2284.42 MW observed installed hydel capacity.
 
 hydro:
   daily_energy_rule: exact_FY2024_25_observed_or_imputed_daily_MWh_conservation
   dispatch_rule: endogenous_within_each_day
   power_rule: 0_to_installed_hydro_MW_times_availability_fraction
+  exact_daily_energy_feasibility_floor:
+    maximum_daily_hydro_mu: 38.8073
+    date: "2024-08-05"
+    required_average_power_mw: 1616.970833333333
+    installed_hydro_mw: 2284.42
+    minimum_available_power_fraction: 0.7078255457986417
   marginal_cost_million_real_2021_22_INR_per_MWh: 0.0
   note: >-
     Zero hydro marginal cost is retained only because station-specific water value,
