@@ -66,7 +66,11 @@ def _build_pypsa_network(
     wind = np.asarray(wind_profile, dtype=float)
     if len(residual) == 0 or len(solar) != len(residual) or len(wind) != len(residual):
         raise ValueError("v0.9 PyPSA inputs have inconsistent chronology")
-    if not np.isfinite(residual).all() or not np.isfinite(solar).all() or not np.isfinite(wind).all():
+    if (
+        not np.isfinite(residual).all()
+        or not np.isfinite(solar).all()
+        or not np.isfinite(wind).all()
+    ):
         raise ValueError("v0.9 PyPSA inputs must be finite")
     if (solar < 0).any() or (solar > 1).any() or (wind < 0).any() or (wind > 1).any():
         raise ValueError("v0.9 renewable profiles must stay in [0,1]")
@@ -115,6 +119,22 @@ def _build_pypsa_network(
         "unserved_load",
         bus="kerala",
         p_nom=unserved_cap,
+        marginal_cost=0.0,
+    )
+    spill_cap = max(
+        float(np.maximum(-residual, 0.0).max())
+        + float(caps["solar_total_headroom_mw"])
+        + float(caps["wind_headroom_mw"])
+        + float(import_limit_mw),
+        1.0,
+    )
+    network.add(
+        "Generator",
+        "spill_sink",
+        bus="kerala",
+        p_nom=spill_cap,
+        p_min_pu=-1.0,
+        p_max_pu=0.0,
         marginal_cost=0.0,
     )
     network.add(
@@ -209,9 +229,20 @@ def solve_pypsa_equivalence_case(
         + stage2_bess * float(annualized_costs["bess_million_inr_per_mw_year"])
     )
 
-    model.add_constraints(solar_nom == stage2_solar, name="v09-fix-solar-capacity")
-    model.add_constraints(wind_nom == stage2_wind, name="v09-fix-wind-capacity")
-    model.add_constraints(bess_nom == stage2_bess, name="v09-fix-bess-capacity")
+    capacity_fix_tolerance_mw = 1e-5
+    for variable, value, name in (
+        (solar_nom, stage2_solar, "solar"),
+        (wind_nom, stage2_wind, "wind"),
+        (bess_nom, stage2_bess, "bess"),
+    ):
+        model.add_constraints(
+            variable >= value - capacity_fix_tolerance_mw,
+            name=f"v09-fix-{name}-capacity-lower",
+        )
+        model.add_constraints(
+            variable <= value + capacity_fix_tolerance_mw,
+            name=f"v09-fix-{name}-capacity-upper",
+        )
     model.add_objective(imports.sum(), overwrite=True)
     status3, condition3 = network.optimize.solve_model(solver_name="highs")
     if status3 != "ok" or condition3 != "optimal":
