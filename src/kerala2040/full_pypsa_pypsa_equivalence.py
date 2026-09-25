@@ -154,13 +154,13 @@ def _build_pypsa_network(
     return network
 
 
-def _solution_scalar(variable, *, name: str) -> float:
-    value = variable.solution.sel(name=name)
+def _solution_scalar(model, variable_name: str, *, name: str) -> float:
+    value = model.variables[variable_name].solution.sel(name=name)
     return float(np.asarray(value).item())
 
 
-def _solution_series(variable, *, name: str) -> np.ndarray:
-    value = variable.solution.sel(name=name)
+def _solution_series(model, variable_name: str, *, name: str) -> np.ndarray:
+    value = model.variables[variable_name].solution.sel(name=name)
     return np.asarray(value, dtype=float)
 
 
@@ -188,7 +188,7 @@ def solve_pypsa_equivalence_case(
         charge_efficiency=charge_efficiency,
         discharge_efficiency=discharge_efficiency,
     )
-    model = network.optimize.create_model()
+    model = network.optimize.create_model(include_objective_constant=False)
 
     gen_p = model.variables["Generator-p"]
     gen_nom = model.variables["Generator-p_nom"]
@@ -200,7 +200,11 @@ def solve_pypsa_equivalence_case(
     status1, condition1 = network.optimize.solve_model(solver_name="highs")
     if status1 != "ok" or condition1 != "optimal":
         raise RuntimeError(f"v0.9 PyPSA stage 1 failed: {status1} / {condition1}")
-    minimum_unserved = float(np.asarray(unserved.solution).sum())
+    minimum_unserved = float(
+        np.asarray(
+            model.variables["Generator-p"].solution.sel(name="unserved_load")
+        ).sum()
+    )
 
     model.add_constraints(
         unserved.sum() <= minimum_unserved + float(unserved_tolerance_mwh),
@@ -219,10 +223,20 @@ def solve_pypsa_equivalence_case(
     if status2 != "ok" or condition2 != "optimal":
         raise RuntimeError(f"v0.9 PyPSA stage 2 failed: {status2} / {condition2}")
 
-    stage2_solar = _solution_scalar(gen_nom, name="candidate_solar")
-    stage2_wind = _solution_scalar(gen_nom, name="candidate_wind")
-    stage2_bess = _solution_scalar(storage_nom, name="candidate_bess")
-    stage2_unserved = float(np.asarray(unserved.solution).sum())
+    stage2_solar = _solution_scalar(
+        model, "Generator-p_nom", name="candidate_solar"
+    )
+    stage2_wind = _solution_scalar(
+        model, "Generator-p_nom", name="candidate_wind"
+    )
+    stage2_bess = _solution_scalar(
+        model, "StorageUnit-p_nom", name="candidate_bess"
+    )
+    stage2_unserved = float(
+        np.asarray(
+            model.variables["Generator-p"].solution.sel(name="unserved_load")
+        ).sum()
+    )
     annualized_investment = (
         stage2_solar * float(annualized_costs["solar_million_inr_per_mw_year"])
         + stage2_wind * float(annualized_costs["wind_million_inr_per_mw_year"])
@@ -248,12 +262,25 @@ def solve_pypsa_equivalence_case(
     if status3 != "ok" or condition3 != "optimal":
         raise RuntimeError(f"v0.9 PyPSA stage 3 failed: {status3} / {condition3}")
 
-    stage3_unserved = float(np.asarray(unserved.solution).sum())
-    stage3_imports = float(np.asarray(imports.solution).sum())
-    solar_dispatch = _solution_series(gen_p, name="candidate_solar")
-    wind_dispatch = _solution_series(gen_p, name="candidate_wind")
-    unserved_dispatch = _solution_series(gen_p, name="unserved_load")
-    import_dispatch = _solution_series(gen_p, name="screened_import")
+    solved_gen_p = model.variables["Generator-p"].solution
+    stage3_unserved = float(
+        np.asarray(solved_gen_p.sel(name="unserved_load")).sum()
+    )
+    stage3_imports = float(
+        np.asarray(solved_gen_p.sel(name="screened_import")).sum()
+    )
+    solar_dispatch = _solution_series(
+        model, "Generator-p", name="candidate_solar"
+    )
+    wind_dispatch = _solution_series(
+        model, "Generator-p", name="candidate_wind"
+    )
+    unserved_dispatch = _solution_series(
+        model, "Generator-p", name="unserved_load"
+    )
+    import_dispatch = _solution_series(
+        model, "Generator-p", name="screened_import"
+    )
 
     return {
         "stage1_minimum_unserved_mwh": minimum_unserved,
