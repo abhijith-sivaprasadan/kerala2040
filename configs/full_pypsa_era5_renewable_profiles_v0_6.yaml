@@ -1,0 +1,68 @@
+version: 1
+classification: full_pypsa_era5_renewable_profile_screen_v0_6_not_expansion_admitted
+prepared_date: "2026-09-25"
+purpose: >-
+  Recover the already verified FY2024-25 ERA5 representative-point source artifacts
+  and convert them into transparent hourly solar/wind screening profiles. This stage
+  validates source-to-profile mechanics and annual resource plausibility; it does not
+  establish legal/buildable MW or validated plant dispatch.
+
+source_artifacts:
+  apr_dec_2024_run_id: 35622527064
+  jan_mar_2025_run_id: 35623051780
+  source_qa: data/evidence/weather/era5_fy2024_25_source_qa_2026_09_21.json
+  expected_points: [thiruvananthapuram, kochi, palakkad, kozhikode, kannur]
+  expected_hours_per_point: 8760
+  expected_point_hours: 43800
+
+spatial_sampling:
+  method: nearest_era5_grid_cell_to_representative_coordinate
+  reason: >-
+    Some request boxes contain more than one ERA5 grid cell (notably Kannur).
+    Nearest-cell selection is deterministic and avoids silently averaging unequal boxes.
+  interpolation: none
+
+weather_conversion:
+  temperature: t2m_K_minus_273_15
+  wind10: sqrt_u10_squared_plus_v10_squared
+  solar: ssrd_J_m2_divide_3600_to_Wh_m2_per_hour
+  precipitation: tp_m_times_1000_to_mm_per_hour
+
+profile_models:
+  solar:
+    method: existing_simple_GHI_temperature_proxy
+    function: kerala2040.renewables.solar_p_max_pu
+    caveat: no_tilt_azimuth_inverter_or_soiling_model
+  wind:
+    method: existing_generic_cubic_power_curve_with_power_law_shear
+    function: kerala2040.renewables.wind_p_max_pu
+    hub_height_sensitivities_m: [100, 150]
+    shear_exponent: 0.14
+    caveat: no_site_specific_turbine_curve_or_roughness_calibration
+
+aggregation:
+  state_screening_profile: equal_weight_across_five_representative_points
+  capacity_weighted_profile: blocked
+  reason: installed_and_candidate_spatial_capacity_weights_not_yet_admitted
+
+validation_anchors:
+  gsa_statewide_median_annual_pvout_kwh_per_kwp: 1493.50696
+  gsa_source: data/evidence/solar/gsa2_nwic_district_paired_seasonality_2026_09_23.json
+  measured_solar_generation:
+    ntpc_kayamkulam:
+      capacity_mw: 92
+      fy2024_25_generation_mu: 203.07
+    thdc_kasaragod:
+      capacity_mw: 50
+      fy2024_25_generation_mu: 90.81
+  asset_source: data/evidence/assets/kerala_energy_asset_register_2026_09_25.json
+  rule: anchors_are_diagnostics_not_calibration_targets
+
+release:
+  source_to_hourly_weather_pipeline_ready: true
+  source_to_screening_profiles_ready: true
+  equal_weight_profile_model_admitted_for_expansion: false
+  renewable_capacity_ceiling_ready: false
+  wind_profile_validated_against_measured_generation: false
+  solar_profile_validated_against_hourly_measured_generation: false
+  capacity_expansion_ready: false
