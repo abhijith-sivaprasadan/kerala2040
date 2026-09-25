@@ -282,3 +282,45 @@ The result reports imports, unserved energy, affected hours, maximum unserved MW
 the exact demand-morph parameters for every demand × transfer case. The next gate is
 cost/finance harmonisation and candidate renewable/storage physics before any
 least-cost capacity-expansion solve is admitted.
+
+
+## Implementation checkpoint 7 · 2030 research cost/finance harmonisation v0.5
+
+The programme now has a bounded economic-assumption layer in
+`configs/full_pypsa_cost_finance_v0_5.yaml`. Its purpose is to remove hidden
+price-basis and annualisation ambiguity before any investment solve is attempted;
+it does **not** assert that national CEA/CERC benchmarks are realised Kerala project
+costs.
+
+v0.5 keeps all admitted investment values on a **real 2021-22 INR** basis. For
+annualisation it uses the current CERC generic-RE post-tax WACC-equivalent discount
+rate of **9.08%** as a transparent research benchmark, together with the regulatory
+70:30 debt/equity structure. The package admits only the source-bounded 2030
+candidate economics:
+
+- solar PV: **₹41,000/kW**, 1% fixed O&M, 25-year life;
+- onshore wind: **₹60,000/kW**, 1% fixed O&M, 25-year life;
+- four-hour BESS: **₹47,200-82,200/kW** published CEA cost bracket, 1% fixed O&M,
+  14-year life and **88% round-trip efficiency**.
+
+No midpoint is invented for the BESS bracket. The PyPSA charge/discharge efficiency
+split is symmetric, `sqrt(0.88)` on each side, so the product remains exactly the
+source round-trip efficiency.
+
+Pumped storage stays deliberately blocked for expansion: the CEA capex range is
+project-specific and cannot substitute for Kerala reservoir-pair, hydraulic-MWh and
+site-cost evidence. The same fail-closed rule applies to 2035 and 2040 costs: v0.5
+does not extrapolate beyond the admitted CEA planning horizon.
+
+Validate the layer with:
+
+```bash
+python scripts/validate_full_pypsa_cost_finance_v0_5.py
+pytest -q tests/test_full_pypsa_cost_finance_v0_5.py
+```
+
+This checkpoint makes **2030 cost annualisation and four-hour BESS research physics
+available**, but capacity expansion remains disabled. The next gate is candidate
+renewable temporal profiles and buildable-capacity bounds, followed by import
+economics and the remaining operational constraints needed for a meaningful
+least-cost solve.

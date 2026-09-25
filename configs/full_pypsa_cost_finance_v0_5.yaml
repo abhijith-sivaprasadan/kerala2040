@@ -1,0 +1,95 @@
+version: 1
+classification: full_pypsa_cost_finance_research_assumption_v0_5_not_validated_kerala_costs
+prepared_date: "2026-09-25"
+purpose: >-
+  Harmonise a bounded 2030 research-assumption cost and finance package for solar,
+  onshore wind and four-hour BESS without presenting national regulatory/planning
+  benchmarks as Kerala project costs. Pumped storage remains site-specific and blocked.
+
+price_basis:
+  currency: INR
+  basis: real_2021_22_INR
+  inflation_applied: false
+  rule: >-
+    Preserve the CEA 2021-22 real cost basis. Do not combine nominal values from other
+    price years without a documented deflator/inflator and do not extrapolate to 2035/2040.
+
+finance:
+  discount_rate_real_fraction: 0.0908
+  source_family: CERC_RE_tariff_FY2026_27
+  interpretation: >-
+    Research annualisation benchmark using the CERC post-tax WACC equivalent discount
+    rate for generic non-small-hydro renewable tariff calculations. It is not a Kerala
+    project-specific WACC.
+  normative_debt_fraction: 0.70
+  normative_equity_fraction: 0.30
+  normative_loan_interest_fraction: 0.1071
+  normative_loan_tenure_years: 15
+  return_on_equity_post_tax_fraction: 0.14
+  source_regulation: CERC_RE_Tariff_Regulations_2024
+  source_order: CERC_Order_12_SM_2026
+
+research_2030:
+  solar_pv:
+    capex_inr_per_kw: 41000
+    fixed_om_fraction_capex_per_year: 0.01
+    variable_om_inr_per_mwh: 0
+    variable_om_role: modelling_convention_zero_fuel_variable_cost_not_empirical_kerala_om
+    lifetime_years: 25
+    source_family: CEA_optimal_generation_capacity_mix_2029_30_v2
+    expansion_cost_admitted_for_research: true
+  wind_onshore:
+    capex_inr_per_kw: 60000
+    fixed_om_fraction_capex_per_year: 0.01
+    variable_om_inr_per_mwh: 0
+    variable_om_role: modelling_convention_zero_fuel_variable_cost_not_empirical_kerala_om
+    lifetime_years: 25
+    source_family: CEA_optimal_generation_capacity_mix_2029_30_v2
+    expansion_cost_admitted_for_research: true
+  bess_4h:
+    duration_hours: 4
+    capex_inr_per_kw_bracket: [47200, 82200]
+    capex_basis: total_four_hour_system_cost_per_kw_power
+    bracket_role: published_CEA_range_sensitivity_no_midpoint_invented
+    fixed_om_fraction_capex_per_year: 0.01
+    round_trip_efficiency: 0.88
+    charge_efficiency_symmetric: 0.938083151964686
+    discharge_efficiency_symmetric: 0.938083151964686
+    lifetime_years: 14
+    degradation_model: not_yet_admitted
+    source_family: CEA_optimal_generation_capacity_mix_2029_30_v2
+    expansion_cost_admitted_for_research_sensitivity: true
+  pumped_storage:
+    capex_inr_per_kw: null
+    fixed_om_fraction_capex_per_year: 0.05
+    pump_efficiency: 0.80
+    lifetime_years: 40
+    expansion_cost_admitted_for_research: false
+    reason: CEA_capex_range_is_project_specific_and_Kerala_site_hydraulic_MWh_costs_remain_unverified
+  transmission:
+    expansion_cost_admitted_for_research: false
+  demand_response:
+    expansion_cost_admitted_for_research: false
+
+model_year_admission:
+  2030:
+    cost_finance_harmonised_for_research: true
+    candidate_technologies: [solar_pv, wind_onshore, bess_4h]
+  2035:
+    cost_finance_harmonised_for_research: false
+    reason: no_post_2030_cost_extrapolation_admitted
+  2040:
+    cost_finance_harmonised_for_research: false
+    reason: no_post_2030_cost_extrapolation_admitted
+
+release:
+  annualisation_ready: true
+  candidate_storage_physics_ready_for_bess_4h_research: true
+  pumped_storage_expansion_ready: false
+  economic_dispatch_ready: false
+  capacity_expansion_research_2030_ready: false
+  validated_costs: false
+  reason: >-
+    Cost and finance arithmetic is now harmonised for a bounded 2030 research package,
+    but renewable temporal profiles/capacity ceilings, import economics, existing fleet
+    dispatch parameters and site-specific PSP physics still block a meaningful least-cost solve.
