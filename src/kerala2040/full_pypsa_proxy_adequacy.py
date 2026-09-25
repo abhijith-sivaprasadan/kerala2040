@@ -67,7 +67,10 @@ def load_v02_selection(path: Path) -> dict[str, Any]:
     return data
 
 
-def _load_inputs(root: Path, suite: dict[str, Any]) -> tuple[pd.DataFrame, dict[str, Any], dict]:
+def _load_inputs(
+    root: Path,
+    suite: dict[str, Any],
+) -> tuple[pd.DataFrame, dict[str, Any], dict]:
     proxy = json.loads((root / suite["chronology"]).read_text(encoding="utf-8"))
     qa = json.loads((root / suite["qa"]).read_text(encoding="utf-8"))
     observed = json.loads(
@@ -96,8 +99,12 @@ def run_proxy_adequacy_suite(
     if not 24 <= hours <= 8760 or hours % 24:
         raise ValueError("hours must be whole days between 24 and 8760")
 
-    suite = load_proxy_adequacy_suite(root / "configs/full_pypsa_proxy_adequacy_v0_2.yaml")
-    selection = load_v02_selection(root / "configs/research_input_selection_v0_2.yaml")
+    suite = load_proxy_adequacy_suite(
+        root / "configs/full_pypsa_proxy_adequacy_v0_2.yaml"
+    )
+    selection = load_v02_selection(
+        root / "configs/research_input_selection_v0_2.yaml"
+    )
     hourly, metadata, observed = _load_inputs(root, suite)
     hourly = hourly.iloc[:hours].copy()
     metadata["modeled_window_hours"] = hours
@@ -198,10 +205,23 @@ def run_proxy_adequacy_suite(
         "cases": case_results,
         "interpretation": [
             "FY2024-25 hourly load is reconstructed, not measured interval telemetry.",
-            "Hydro and other internal generation are fixed daily-average replays of SLDC source energy.",
-            "The 4455 MW case is a dated 31-March-2026 ATC snapshot used as a sensitivity bound, not an FY2024-25 historical transfer observation or annual guarantee.",
+            (
+                "Hydro and other internal generation are fixed daily-average replays "
+                "of SLDC source energy."
+            ),
+            (
+                "The 4455 MW case is a dated 31-March-2026 ATC snapshot used as a "
+                "sensitivity bound, not an FY2024-25 historical transfer observation "
+                "or annual guarantee."
+            ),
             "The 80% and 60% cases are synthetic ATC haircuts.",
-            "The objective uses abstract priorities; results are adequacy sensitivities, not economic dispatch.",
-            "LOLP is not estimated because stochastic forced outages and stochastic demand/renewable draws are not modelled.",
+            (
+                "The objective uses abstract priorities; results are adequacy "
+                "sensitivities, not economic dispatch."
+            ),
+            (
+                "LOLP is not estimated because stochastic forced outages and "
+                "stochastic demand/renewable draws are not modelled."
+            ),
         ],
     }
