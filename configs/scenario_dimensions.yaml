@@ -37,7 +37,7 @@ dimensions:
     allowed: [fixed_existing, expandable]
     site_specific_constraints_required: true
   ev_smart_charging:
-    allowed: [off, limited, high]
+    allowed: ["off", limited, high]
     ev_charging_dataset_required: true
   ecological_constraint:
     allowed: [legal_minimum, spatial_suitability, strict_carrying_capacity]
