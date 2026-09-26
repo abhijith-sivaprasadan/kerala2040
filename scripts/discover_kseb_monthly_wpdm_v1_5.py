@@ -27,15 +27,15 @@ DEFAULT_INVENTORY = (
 )
 OFFICIAL_HOST = "dams.kseb.in"
 
-WPDM_QUERY_RE = re.compile(r"(?:[?&]|\\b)wpdmdl=(\\d+)", re.I)
+WPDM_QUERY_RE = re.compile(r"(?:[?&]|\\b)wpdmdl=(\\d+)", re.IGNORECASE)
 SHORTCODE_RE = re.compile(
-    r"\\[wpdm_package[^\\]]*\\bid=[\"']?(\\d+)", re.I
+    r"\\[wpdm_package[^\\]]*\\bid=[\"']?(\\d+)", re.IGNORECASE
 )
 ATTR_ID_RE = re.compile(
     r"(?:package[_-]?id|download[_-]?id|wpdm[_-]?id)[^0-9]{0,8}(\\d+)",
-    re.I,
+    re.IGNORECASE,
 )
-DOWNLOAD_PATH_RE = re.compile(r"/download/[^\\s\"'<>]+", re.I)
+DOWNLOAD_PATH_RE = re.compile(r"/download/[^\\s\"'<>]+", re.IGNORECASE)
 
 
 def normalize(text: str) -> str:
@@ -265,8 +265,16 @@ def download_bound_files(
             raise ValueError(f"Empty download for {binding['month']}: {url}")
 
         disposition = response.headers.get("content-disposition", "")
-        match = re.search(r'filename\\*?=(?:UTF-8[\\'\"]*)?[\"\\']?([^\"\\';]+)', disposition, re.I)
-        source_name = Path(match.group(1)).name if match else "source.bin"
+        source_name = "source.bin"
+        for part in disposition.split(";"):
+            key, sep, value = part.strip().partition("=")
+            if sep and key.lower() in {"filename", "filename*"}:
+                value = value.strip().strip("\\\"'")
+                if "''" in value:
+                    value = value.split("''", 1)[1]
+                if value:
+                    source_name = Path(value).name
+                break
         path = output_dir / f"{binding['month']}_{source_name}"
         path.write_bytes(data)
         records.append(
