@@ -190,6 +190,7 @@
       const [green, gold, clay, muted, line, ink] = colours(),
         pal = [green, gold, clay];
       const dark = this.el.closest(".industry-section");
+      if (dark) pal.splice(0, 3, "#95c8a5", "#e2bb70", "#e89b7e");
       const fg = dark ? "#e5e8d9" : muted;
       ctx.clearRect(0, 0, w, h);
       ctx.font = '11px "DM Sans", sans-serif';
@@ -836,6 +837,80 @@
       );
     }
   }
+  function renderHydro() {
+    const choice = $("hydroTransfer").value;
+    const key = `reference_demand_${choice === "full" ? "full" : choice}_atc_full_hydro`;
+    const source = data.hydro.key_findings[key];
+    const rows = [1, 3, 15, 30].map((days) => ({
+      label: `${days} day${days === 1 ? "" : "s"}`,
+      value: source[`${days}d_unserved_gwh`],
+    }));
+    plot("hydroChart", {
+      title: "Hydro timing windows and modelled unserved energy",
+      rows,
+      kind: "bar",
+      unit: "Unserved energy · GWh",
+      series: [{ key: "value", name: "Modelled shortage" }],
+      describe: (r) =>
+        `${r.label} timing window · ${fmt(r.value, 3)} GWh unserved energy · synthetic flexibility bound`,
+    });
+    mini("hydroStats", [
+      [fmt(rows[0].value, 3) + " GWh", "1-day timing window"],
+      [fmt(rows[3].value, 3) + " GWh", "30-day timing window"],
+      [
+        fmt(100 * (1 - rows[3].value / rows[0].value)) + "%",
+        "reduction in modelled shortage",
+      ],
+    ]);
+    text(
+      "hydroInsight",
+      choice === "full"
+        ? "At full transfer, 15 days captures essentially all the modelled timing benefit. This result motivates reservoir research; it does not prove that real reservoirs can provide this flexibility."
+        : choice === "80pct"
+          ? "Longer timing windows help, but the 30-day case still leaves 965.093 GWh unserved. Timing alone cannot close this gap."
+          : "Even 30 days leaves 5,454.820 GWh unserved. Under this transfer stress, changing hydro timing barely changes the deeper adequacy constraint.",
+    );
+    table(
+      "hydroTable",
+      ["Synthetic window", "Unserved energy (GWh)"],
+      rows.map((r) => [r.label, fmt(r.value, 6)]),
+    );
+  }
+  function connection(key) {
+    const entries = {
+      water: [
+        "Water sets the rhythm.",
+        "Monsoon inflows and hydro timing shape electricity supply. Irrigation, ecology and downstream needs also matter.",
+        "electricity",
+      ],
+      electric: [
+        "Timing changes the question.",
+        "Generation, interstate connections and flexible demand work together. The same daily energy can create a very different evening peak.",
+        "pathways",
+      ],
+      leaf: [
+        "A resource needs a responsible place.",
+        "Good sun or wind is only a starting point. Terrain, forests, wetlands, communities and grid access shape what can actually be built.",
+        "atlas",
+      ],
+      cycle: [
+        "Value moves through materials too.",
+        "Industrial heat, fuels and recovery opportunities connect energy decisions to local production. Measured process balances come before claims of savings.",
+        "industry",
+      ],
+    };
+    const [title, copy, target] = entries[key];
+    text("connectionTitle", title);
+    text("connectionText", copy);
+    $("connectionLink").href = "#" + target;
+  }
+  document.querySelectorAll("[data-connection]").forEach((b) =>
+    b.addEventListener("click", () => {
+      pressed("[data-connection]", b);
+      connection(b.dataset.connection);
+    }),
+  );
+
   function results(rows) {
     $("modelResults").replaceChildren(
       ...rows.map(([label, value, note]) => {
@@ -947,17 +1022,24 @@
     if (!["kasavu", "monsoon", "laterite"].includes(theme)) return;
     document.documentElement.dataset.theme = theme;
     document.querySelectorAll("[data-theme-choice]").forEach((button) => {
-      button.setAttribute("aria-pressed", String(button.dataset.themeChoice === theme));
+      button.setAttribute(
+        "aria-pressed",
+        String(button.dataset.themeChoice === theme),
+      );
     });
     charts.forEach((p) => p.draw());
     ring();
   }
-  try { applyTheme(localStorage.getItem("kerala2040-theme") || "kasavu"); } catch {}
+  try {
+    applyTheme(localStorage.getItem("kerala2040-theme") || "kasavu");
+  } catch {}
   document.querySelectorAll("[data-theme-choice]").forEach((button) => {
     button.addEventListener("click", () => {
       const theme = button.dataset.themeChoice;
       applyTheme(theme);
-      try { localStorage.setItem("kerala2040-theme", theme); } catch {}
+      try {
+        localStorage.setItem("kerala2040-theme", theme);
+      } catch {}
     });
   });
   function hashRoute() {
@@ -984,6 +1066,7 @@
         industry: "wp6-industry-pilot.json",
         storage: "wp6-bess-psp.json",
         economics: "import-economics.json",
+        hydro: "hydro-interday.json",
         cooling: "wp6-cooling-pilot.json",
         integrated: "wp6-integrated-dispatch.json",
         catalogue: "catalogue.json",
@@ -1007,6 +1090,7 @@
       renderResources();
       renderPilot();
       renderModel();
+      renderHydro();
       material("process");
       renderFuel();
       library();
@@ -1026,6 +1110,7 @@
       ["pilot", "baselineToggle"].forEach((id) =>
         $(id).addEventListener("change", renderPilot),
       );
+      $("hydroTransfer").addEventListener("change", renderHydro);
       $("envelope").addEventListener("change", renderModel);
       $("sourceSearch").addEventListener("input", library);
       $("moreSources").addEventListener("click", () => {

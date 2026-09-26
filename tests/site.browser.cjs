@@ -81,8 +81,29 @@ async function main() {
       document.querySelector("#sourceCount").textContent.includes("datasets"),
     );
     check(!(await page.locator("#loadError").isVisible()), "No data error");
-    check((await page.locator(".chart canvas").count()) > 0, "Live evidence charts");
-    check((await page.locator(".journey-card img").count()) === 4, "Original chapter artwork");
+    await page.locator('[data-connection="leaf"]').click();
+    check(
+      (await page.locator("#connectionLink").getAttribute("href")) === "#atlas",
+      "Concept connection leads to evidence",
+    );
+    await page.locator("#hydroTransfer").selectOption("60pct");
+    check(
+      (await page.locator("#hydroStats").innerText()).includes("5,454.820 GWh"),
+      "Latest hydro evidence and units",
+    );
+    await page.locator("#hydroTransfer").selectOption("full");
+    check(
+      (await page.locator("#hydroStats").innerText()).includes("0.160 GWh"),
+      "Full transfer hydro result",
+    );
+    check(
+      (await page.locator(".chart canvas").count()) > 0,
+      "Live evidence charts",
+    );
+    check(
+      (await page.locator(".journey-card img").count()) === 4,
+      "Original chapter artwork",
+    );
     await page.locator("#heroMonth").fill("11");
     check(
       (await page.locator("#heroMonthLabel").innerText()).includes("March"),
@@ -142,9 +163,15 @@ async function main() {
       "PSP scope",
     );
     await page.locator("#pilot").selectOption("cooling");
-    check((await page.locator("#pilotStats").innerText()).includes("+0.70 kWh"), "Cooling electricity penalty");
+    check(
+      (await page.locator("#pilotStats").innerText()).includes("+0.70 kWh"),
+      "Cooling electricity penalty",
+    );
     await page.locator("#pilot").selectOption("integrated");
-    check((await page.locator("#pilotStats").innerText()).includes("24.53 kW"), "Integrated site peak");
+    check(
+      (await page.locator("#pilotStats").innerText()).includes("24.53 kW"),
+      "Integrated site peak",
+    );
     await page
       .getByRole("button", { name: "Transfer & shortage", exact: true })
       .click();
@@ -214,9 +241,14 @@ async function main() {
     );
     await page.screenshot({ path: path.join(artifactDir, "v2-monsoon.png") });
     await page.locator('[data-theme-choice="laterite"]').click();
-    check((await page.locator("html").getAttribute("data-theme")) === "laterite", "Laterite theme");
+    check(
+      (await page.locator("html").getAttribute("data-theme")) === "laterite",
+      "Laterite theme",
+    );
     await page.reload();
-    await page.waitForFunction(() => document.documentElement.dataset.theme === "laterite");
+    await page.waitForFunction(
+      () => document.documentElement.dataset.theme === "laterite",
+    );
     check(errors.length === 0, JSON.stringify(errors));
     check(failed.length === 0, JSON.stringify(failed));
     const broken = await browser.newPage();

@@ -76,7 +76,10 @@ test("every story anchor is real and original identity accompanies live charts",
   assert.match(html, /data-theme-choice="laterite"/);
   assert.match(html, /prefers|canvas/);
   assert.match(html, /Illustrative experiment/);
-  assert.match(html.replace(/\s+/g, " "), /not Kerala’s recommended capacity plan/);
+  assert.match(
+    html.replace(/\s+/g, " "),
+    /not Kerala’s recommended capacity plan/,
+  );
 });
 test("published economics comparisons retain units, horizon and capacity-plan restriction", () => {
   const d = JSON.parse(

@@ -5,7 +5,7 @@ The visitor journey follows one question: how can Kerala meet future demand reli
 ## Visual and interaction contract
 
 - Kasavu ivory, forest green and brass carry the existing Kerala identity. Monsoon offers a dark backwater theme; Laterite brings red earth and palm. Malayalam is used as supporting typography.
-- Retain the original Kerala landscape, illustrated chapter artwork and icon sprite as decorative identity. These are conceptual depictions, never maps or research results. Charts use first-party Canvas; controls, tables and sensitivity cells use semantic HTML.
+- Retain the original Kerala landscape, illustrated chapter artwork and icon sprite as decorative identity. These are conceptual depictions, never maps or research results. The user clarified that images/SVG are welcome for webpage components; only data charts must remain live. Charts use first-party Canvas; controls, tables and sensitivity cells use semantic HTML.
 - One sticky navigation becomes an expandable in-flow menu on small screens. Existing section hashes remain valid, including workbench and audit disclosures.
 - Charts support pointer and keyboard inspection. Source data is downloadable. Observation and pilot tables give exact values without interpreting pixel positions.
 - Subtle water, palm and boat motion respects reduced-motion preferences. No forced introduction. Reduced motion disables smooth scrolling and transitions.
@@ -16,7 +16,7 @@ The visitor journey follows one question: how can Kerala meet future demand reli
 - Hydro is a component of in-state generation. Reservoir energy storage is not water volume.
 - Source-grid solar and wind describe resources, not eligible land or permitted MW. Thresholds count source centres, not sites.
 - WP6 experiments use fictional inputs. All six published families remain available: EV, industrial scheduling, BESS, pumped-storage analogue, cooling/TES and integrated dispatch.
-- The newer v1.0 PyPSA results are separately labelled partial economic sensitivities. The selected 2030 comparisons are not a 2040 forecast or a recommended capacity plan.
+- The v1.0 economic and v1.1/v1.2 hydro-timing PyPSA results are separately labelled partial economic sensitivities. The selected 2030 comparisons are not a 2040 forecast or a recommended capacity plan. V1.2 timing windows are synthetic bounds, never reservoir storage durations.
 - The observed-bundle timestamp, resource-audit date, model-result date and publication commit remain separate. Build metadata records the source path and SHA-256 of each new model evidence file.
 - Original source products stay in the searchable evidence library. A visual release never promotes scientific gates.
 

@@ -1,33 +1,94 @@
 /* Kerala2040 / a new research publication, rooted in Kerala.
    Kasavu, monsoon and laterite are distinct composed themes, not filter overlays.
    Decorative art is never passed off as geography or source GIS. */
-:root{
-  color-scheme:light;
-  --paper:#f7f2e4;--surface:#fffdf5;--surface-2:#eee8d8;--ink:#143b30;
-  --ink-soft:#456157;--line:#d4d0be;--leaf:#20513d;--leaf-2:#316b50;
-  --gold:#b18843;--gold-light:#d9bc72;--rust:#9e4e35;--soft-rust:#eadbd0;
-  --deep:#133c32;--light:#fff8e7;--footer:#10382d;--shadow:0 16px 50px #1d382716;
-  --hill-far:#78977b;--hill-near:#3c6b51;--paddy:#b9ad69;--paddy-line:#f5dca2;
-  --water:#4a9a9b;--water-line:#beded4;--palm:#183f31;--boat:#714b2a;--sail:#efe0a9;
-  --display:"Playfair Display",Georgia,serif;--body:"DM Sans",sans-serif;
-  --mono:"DM Mono",monospace;--ml:"Manjari","Noto Sans Malayalam",sans-serif;
-  font-synthesis:none
+:root {
+  color-scheme: light;
+  --paper: #f7f2e4;
+  --surface: #fffdf5;
+  --surface-2: #eee8d8;
+  --ink: #143b30;
+  --ink-soft: #456157;
+  --line: #d4d0be;
+  --leaf: #20513d;
+  --leaf-2: #316b50;
+  --gold: #b18843;
+  --gold-light: #d9bc72;
+  --rust: #9e4e35;
+  --soft-rust: #eadbd0;
+  --deep: #133c32;
+  --light: #fff8e7;
+  --footer: #10382d;
+  --shadow: 0 16px 50px #1d382716;
+  --hill-far: #78977b;
+  --hill-near: #3c6b51;
+  --paddy: #b9ad69;
+  --paddy-line: #f5dca2;
+  --water: #4a9a9b;
+  --water-line: #beded4;
+  --palm: #183f31;
+  --boat: #714b2a;
+  --sail: #efe0a9;
+  --display: "Playfair Display", Georgia, serif;
+  --body: "DM Sans", sans-serif;
+  --mono: "DM Mono", monospace;
+  --ml: "Manjari", "Noto Sans Malayalam", sans-serif;
+  font-synthesis: none;
 }
-html[data-theme="monsoon"]{
-  color-scheme:dark;--paper:#0c1e25;--surface:#162b32;--surface-2:#1d3740;--ink:#f3ecd9;
-  --ink-soft:#b7c9c4;--line:#3d5860;--leaf:#99c9ab;--leaf-2:#82c9b9;
-  --gold:#dfbf78;--gold-light:#f0d39b;--rust:#d98868;--soft-rust:#344044;
-  --deep:#0b2732;--light:#fbefd8;--footer:#071a20;--shadow:0 16px 50px #0006;
-  --hill-far:#2d5865;--hill-near:#245151;--paddy:#527763;--paddy-line:#8fb095;
-  --water:#28677a;--water-line:#82bbbd;--palm:#143e42;--boat:#ad8050;--sail:#d6c491
+html[data-theme="monsoon"] {
+  color-scheme: dark;
+  --paper: #0c1e25;
+  --surface: #162b32;
+  --surface-2: #1d3740;
+  --ink: #f3ecd9;
+  --ink-soft: #b7c9c4;
+  --line: #3d5860;
+  --leaf: #99c9ab;
+  --leaf-2: #82c9b9;
+  --gold: #dfbf78;
+  --gold-light: #f0d39b;
+  --rust: #d98868;
+  --soft-rust: #344044;
+  --deep: #0b2732;
+  --light: #fbefd8;
+  --footer: #071a20;
+  --shadow: 0 16px 50px #0006;
+  --hill-far: #2d5865;
+  --hill-near: #245151;
+  --paddy: #527763;
+  --paddy-line: #8fb095;
+  --water: #28677a;
+  --water-line: #82bbbd;
+  --palm: #143e42;
+  --boat: #ad8050;
+  --sail: #d6c491;
 }
-html[data-theme="laterite"]{
-  color-scheme:light;--paper:#f1e3cf;--surface:#fef4e2;--surface-2:#ead5bd;--ink:#3f2c24;
-  --ink-soft:#6d5143;--line:#d7bca1;--leaf:#255e46;--leaf-2:#397655;
-  --gold:#a36d37;--gold-light:#dca956;--rust:#9b4a32;--soft-rust:#efd0b7;
-  --deep:#873f30;--light:#fff1da;--footer:#43291f;--shadow:0 16px 50px #58301726;
-  --hill-far:#b88a62;--hill-near:#865a45;--paddy:#c5a359;--paddy-line:#f1d398;
-  --water:#467d7d;--water-line:#b6d7c7;--palm:#4c3b29;--boat:#654027;--sail:#ead69e
+html[data-theme="laterite"] {
+  color-scheme: light;
+  --paper: #f1e3cf;
+  --surface: #fef4e2;
+  --surface-2: #ead5bd;
+  --ink: #3f2c24;
+  --ink-soft: #6d5143;
+  --line: #d7bca1;
+  --leaf: #255e46;
+  --leaf-2: #397655;
+  --gold: #a36d37;
+  --gold-light: #dca956;
+  --rust: #9b4a32;
+  --soft-rust: #efd0b7;
+  --deep: #873f30;
+  --light: #fff1da;
+  --footer: #43291f;
+  --shadow: 0 16px 50px #58301726;
+  --hill-far: #b88a62;
+  --hill-near: #865a45;
+  --paddy: #c5a359;
+  --paddy-line: #f1d398;
+  --water: #467d7d;
+  --water-line: #b6d7c7;
+  --palm: #4c3b29;
+  --boat: #654027;
+  --sail: #ead69e;
 }
 * {
   box-sizing: border-box;
@@ -1354,68 +1415,590 @@ footer > a:last-child {
 }
 
 /* The original Kerala identity, carried into the edition 2 story. */
-:root { --muted:var(--ink-soft); --green:var(--leaf-2); --clay:var(--rust); --pale:var(--surface-2); --header:var(--paper); }
-.brand-mark {border-radius:4px 18px 4px 18px;background:var(--leaf);color:var(--light);border-color:var(--gold)}
-.brand b {color:var(--rust)}
-.header {gap:24px;padding-inline:3%;}
-.header nav {gap:20px}
-.theme-switch {display:flex;align-items:center;gap:2px;flex:0 0 auto;border:1px solid var(--line);border-radius:99px;padding:4px;background:var(--surface-2)}
-.theme-switch button {display:flex;align-items:center;gap:5px;background:transparent;border-radius:99px;padding:7px;font:500 10px 'DM Mono',monospace;color:var(--ink-soft)}
-.theme-switch button[aria-pressed="true"] {color:var(--ink);background:var(--surface);box-shadow:0 2px 6px #0001}
-.swatch {width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid #0003}
-.swatch.kasavu {background:linear-gradient(135deg,#ffeed1 50%,#b18b43 50%)}
-.swatch.monsoon {background:linear-gradient(135deg,#0c2b36 50%,#5aa5a0 50%)}
-.swatch.laterite {background:linear-gradient(135deg,#a94e35 50%,#e9bc7c 50%)}
-.hero.scene {display:block;position:relative;isolation:isolate;overflow:hidden;background:var(--deep);color:var(--light);padding:80px 0 62px;min-height:690px}
-.hero-inner {position:relative;z-index:1}
-.hero-copy {max-width:660px}
-.hero h1 {font-size:clamp(64px,6.2vw,96px);line-height:1.07;letter-spacing:-3px}
-.hero h1 em {color:var(--gold-light)}
-.hero .intro {max-width:500px;font-size:21px}
-.hero .hero-sub {color:var(--light);opacity:.86;max-width:440px}
-.hero .micro {color:var(--light);opacity:.8}
-.hero .button {background:var(--light);color:var(--deep)}
-.hero .text-link {color:var(--light)}
-.hero-malayalam {font:20px Manjari,sans-serif;color:var(--gold-light);margin:0 0 22px}
-.scene-sun {position:absolute;width:min(32vw,420px);aspect-ratio:1;border:1px solid #e2bd6e80;border-radius:50%;right:13%;top:9%;box-shadow:0 0 0 32px #e2bd6e13,0 0 0 95px #e2bd6e0c;z-index:-2;background:radial-gradient(circle,#e5c77728,transparent 68%)}
-.scene-landscape {position:absolute;right:-8%;bottom:-1px;height:85%;width:70%;z-index:-1;pointer-events:none;mask-image:linear-gradient(to right,transparent,#000 22%)}
-.scene-rain {position:absolute;inset:0 0 0 48%;z-index:-1;opacity:.17;background:repeating-linear-gradient(108deg,transparent 0 47px,#c6dac2 48px,transparent 50px)}
-.kasavu-border {height:13px;background:repeating-linear-gradient(90deg,var(--gold) 0 39px,var(--paper) 39px 46px,var(--rust) 46px 50px,var(--paper) 50px 59px)}
-.journey {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;padding-block:35px 10px}
-.journey-card {text-decoration:none;min-width:0;transition:transform .2s}
-.journey-card:hover {transform:translateY(-5px)}
-.chapter-picture {overflow:hidden;aspect-ratio:360/220;border:1px solid var(--line);border-radius:4px 32px 4px 4px;background:var(--surface-2)}
-.chapter-picture img {display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.journey-card:hover img {transform:scale(1.04)}
-.journey-label {display:flex;gap:12px;align-items:center;padding-top:18px}
-.journey-label svg {width:29px;height:29px;flex-shrink:0;color:var(--rust)}
-.journey-label div {flex:1}
-.journey-label div span {font:10px 'DM Mono',monospace;letter-spacing:.5px;color:var(--muted)}
-.journey-label strong {display:block;font-size:14px;line-height:1.45;margin-top:5px}
-.chapter-opening {display:grid;grid-template-columns:1.2fr 1fr;gap:65px;align-items:center;margin-bottom:40px}
-.chapter-opening .chapter-head {margin-bottom:0}
-.chapter-opening .hero-figure {border-radius:6px;padding:26px 30px;background:var(--surface)}
-.chapter-opening .figure-top {margin-bottom:18px}
-.chapter-opening .hero-figure h2 {font-size:30px}
-.chapter-opening .orbit-wrap {height:200px}
-.chapter-opening .ring-centre strong {font-size:40px;letter-spacing:-1px}
-.chapter-opening .hero-figure .sub {margin-bottom:0}
-@media (min-width:851px) and (max-width:1250px) {
- .header {gap:18px}.header nav {gap:13px}.header nav a {font-size:12px}.theme-switch button>span:last-child{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+:root {
+  --muted: var(--ink-soft);
+  --green: var(--leaf-2);
+  --clay: var(--rust);
+  --pale: var(--surface-2);
+  --header: var(--paper);
 }
-@media (max-width:850px) {
- .header {gap:12px}.theme-switch {order:3}.theme-switch button {padding:7px}
- .theme-switch button>span:last-child {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
- .hero.scene {padding:55px 0 235px;min-height:auto}.hero-copy {max-width:620px}.hero h1 {font-size:76px}.scene-landscape {width:100%;height:390px;right:-15%}.scene-sun {width:280px;right:4%;top:auto;bottom:120px}.scene-rain {inset:40% 0 0 35%}
- .journey {grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 20px}.chapter-opening{grid-template-columns:1fr;gap:28px}.chapter-opening .hero-figure{max-width:600px;width:100%;margin:auto}
+.brand-mark {
+  border-radius: 4px 18px 4px 18px;
+  background: var(--leaf);
+  color: var(--light);
+  border-color: var(--gold);
 }
-@media (max-width:600px) {
- .header {padding:12px 19px}.brand {font-size:21px}.brand small{font-size:9px}.menu{font-size:12px;padding:6px 0}.theme-switch{padding:3px;gap:0}.theme-switch button{padding:6px}.swatch{width:11px;height:11px}
- .hero.scene {padding:38px 0 205px}.hero h1 {font-size:clamp(53px,13vw,76px);letter-spacing:-2px}.hero .intro{font-size:18px}.hero-malayalam{font-size:17px}.hero .eyebrow{font-size:9px;max-width:290px}.hero .actions{gap:20px;margin:24px 0}.hero .micro{font-size:10px}.scene-landscape{width:125%;height:265px;right:-13%}.scene-sun{width:180px;bottom:65px;right:14%}
- .journey{gap:25px 14px;padding-top:27px}.journey-label{gap:8px;padding-top:12px}.journey-label svg{width:21px;height:21px}.journey-label div span{font-size:8px}.journey-label strong{font-size:12px}.journey-label>span:last-child{display:none}.chapter-picture{border-radius:3px 23px 3px 3px}.chapter-opening .hero-figure{padding:22px}.chapter-opening .hero-figure h2{font-size:29px}
+.brand b {
+  color: var(--rust);
 }
-@media (prefers-reduced-motion:no-preference) {
- .scene-wave{stroke-dasharray:18 4;animation:backwater-drift 13s linear infinite}.scene-vallam{animation:vallam-float 4.6s ease-in-out infinite alternate}.scene-palm{transform-box:fill-box;transform-origin:50% 100%;animation:palm-sway 7s ease-in-out infinite alternate}
- @keyframes backwater-drift {to{stroke-dashoffset:-220}} @keyframes vallam-float {to{transform:translateY(-5px)}} @keyframes palm-sway {to{transform:rotate(1.8deg)}}
+.header {
+  gap: 24px;
+  padding-inline: 3%;
 }
-@media print {.theme-switch,.scene-sun,.scene-rain,.scene-landscape,.journey{display:none}.hero.scene{min-height:0;padding:25px;background:white;color:black}.hero .intro,.hero .hero-sub,.hero .micro{color:black}.chapter-opening{display:block}}
+.header nav {
+  gap: 20px;
+}
+.theme-switch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 4px;
+  background: var(--surface-2);
+}
+.theme-switch button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border-radius: 99px;
+  padding: 7px;
+  font:
+    500 10px "DM Mono",
+    monospace;
+  color: var(--ink-soft);
+}
+.theme-switch button[aria-pressed="true"] {
+  color: var(--ink);
+  background: var(--surface);
+  box-shadow: 0 2px 6px #0001;
+}
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #0003;
+}
+.swatch.kasavu {
+  background: linear-gradient(135deg, #ffeed1 50%, #b18b43 50%);
+}
+.swatch.monsoon {
+  background: linear-gradient(135deg, #0c2b36 50%, #5aa5a0 50%);
+}
+.swatch.laterite {
+  background: linear-gradient(135deg, #a94e35 50%, #e9bc7c 50%);
+}
+.hero.scene {
+  display: block;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--deep);
+  color: var(--light);
+  padding: 80px 0 62px;
+  min-height: 690px;
+}
+.hero-inner {
+  position: relative;
+  z-index: 1;
+}
+.hero-copy {
+  max-width: 660px;
+}
+.hero h1 {
+  font-size: clamp(64px, 6.2vw, 96px);
+  line-height: 1.07;
+  letter-spacing: -3px;
+}
+.hero h1 em {
+  color: var(--gold-light);
+}
+.hero .intro {
+  max-width: 500px;
+  font-size: 21px;
+}
+.hero .hero-sub {
+  color: var(--light);
+  opacity: 0.86;
+  max-width: 440px;
+}
+.hero .micro {
+  color: var(--light);
+  opacity: 0.8;
+}
+.hero .button {
+  background: var(--light);
+  color: var(--deep);
+}
+.hero .text-link {
+  color: var(--light);
+}
+.hero-malayalam {
+  font:
+    20px Manjari,
+    sans-serif;
+  color: var(--gold-light);
+  margin: 0 0 22px;
+}
+.scene-sun {
+  position: absolute;
+  width: min(32vw, 420px);
+  aspect-ratio: 1;
+  border: 1px solid #e2bd6e80;
+  border-radius: 50%;
+  right: 13%;
+  top: 9%;
+  box-shadow:
+    0 0 0 32px #e2bd6e13,
+    0 0 0 95px #e2bd6e0c;
+  z-index: -2;
+  background: radial-gradient(circle, #e5c77728, transparent 68%);
+}
+.scene-landscape {
+  position: absolute;
+  right: -8%;
+  bottom: -1px;
+  height: 85%;
+  width: 70%;
+  z-index: -1;
+  pointer-events: none;
+  mask-image: linear-gradient(to right, transparent, #000 22%);
+}
+.scene-rain {
+  position: absolute;
+  inset: 0 0 0 48%;
+  z-index: -1;
+  opacity: 0.17;
+  background: repeating-linear-gradient(
+    108deg,
+    transparent 0 47px,
+    #c6dac2 48px,
+    transparent 50px
+  );
+}
+.kasavu-border {
+  height: 13px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold) 0 39px,
+    var(--paper) 39px 46px,
+    var(--rust) 46px 50px,
+    var(--paper) 50px 59px
+  );
+}
+.journey {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  padding-block: 35px 10px;
+}
+.journey-card {
+  text-decoration: none;
+  min-width: 0;
+  transition: transform 0.2s;
+}
+.journey-card:hover {
+  transform: translateY(-5px);
+}
+.chapter-picture {
+  overflow: hidden;
+  aspect-ratio: 360/220;
+  border: 1px solid var(--line);
+  border-radius: 4px 32px 4px 4px;
+  background: var(--surface-2);
+}
+.chapter-picture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+.journey-card:hover img {
+  transform: scale(1.04);
+}
+.journey-label {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-top: 18px;
+}
+.journey-label svg {
+  width: 29px;
+  height: 29px;
+  flex-shrink: 0;
+  color: var(--rust);
+}
+.journey-label div {
+  flex: 1;
+}
+.journey-label div span {
+  font:
+    10px "DM Mono",
+    monospace;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+.journey-label strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.45;
+  margin-top: 5px;
+}
+.chapter-opening {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 65px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+.chapter-opening .chapter-head {
+  margin-bottom: 0;
+}
+.chapter-opening .hero-figure {
+  border-radius: 6px;
+  padding: 26px 30px;
+  background: var(--surface);
+}
+.chapter-opening .figure-top {
+  margin-bottom: 18px;
+}
+.chapter-opening .hero-figure h2 {
+  font-size: 30px;
+}
+.chapter-opening .orbit-wrap {
+  height: 200px;
+}
+.chapter-opening .ring-centre strong {
+  font-size: 40px;
+  letter-spacing: -1px;
+}
+.chapter-opening .hero-figure .sub {
+  margin-bottom: 0;
+}
+@media (min-width: 851px) and (max-width: 1250px) {
+  .header {
+    gap: 18px;
+  }
+  .header nav {
+    gap: 13px;
+  }
+  .header nav a {
+    font-size: 12px;
+  }
+  .theme-switch button > span:last-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+@media (max-width: 850px) {
+  .header {
+    gap: 12px;
+  }
+  .theme-switch {
+    order: 3;
+  }
+  .theme-switch button {
+    padding: 7px;
+  }
+  .theme-switch button > span:last-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .hero.scene {
+    padding: 55px 0 235px;
+    min-height: auto;
+  }
+  .hero-copy {
+    max-width: 620px;
+  }
+  .hero h1 {
+    font-size: 76px;
+  }
+  .scene-landscape {
+    width: 100%;
+    height: 390px;
+    right: -15%;
+  }
+  .scene-sun {
+    width: 280px;
+    right: 4%;
+    top: auto;
+    bottom: 120px;
+  }
+  .scene-rain {
+    inset: 40% 0 0 35%;
+  }
+  .journey {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 20px;
+  }
+  .chapter-opening {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .chapter-opening .hero-figure {
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+  }
+}
+@media (max-width: 600px) {
+  .header {
+    padding: 12px 19px;
+  }
+  .brand {
+    font-size: 21px;
+  }
+  .brand small {
+    font-size: 9px;
+  }
+  .menu {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+  .theme-switch {
+    padding: 3px;
+    gap: 0;
+  }
+  .theme-switch button {
+    padding: 6px;
+  }
+  .swatch {
+    width: 11px;
+    height: 11px;
+  }
+  .hero.scene {
+    padding: 38px 0 205px;
+  }
+  .hero h1 {
+    font-size: clamp(53px, 13vw, 76px);
+    letter-spacing: -2px;
+  }
+  .hero .intro {
+    font-size: 18px;
+  }
+  .hero-malayalam {
+    font-size: 17px;
+  }
+  .hero .eyebrow {
+    font-size: 9px;
+    max-width: 290px;
+  }
+  .hero .actions {
+    gap: 20px;
+    margin: 24px 0;
+  }
+  .hero .micro {
+    font-size: 10px;
+  }
+  .scene-landscape {
+    width: 125%;
+    height: 265px;
+    right: -13%;
+  }
+  .scene-sun {
+    width: 180px;
+    bottom: 65px;
+    right: 14%;
+  }
+  .journey {
+    gap: 25px 14px;
+    padding-top: 27px;
+  }
+  .journey-label {
+    gap: 8px;
+    padding-top: 12px;
+  }
+  .journey-label svg {
+    width: 21px;
+    height: 21px;
+  }
+  .journey-label div span {
+    font-size: 8px;
+  }
+  .journey-label strong {
+    font-size: 12px;
+  }
+  .journey-label > span:last-child {
+    display: none;
+  }
+  .chapter-picture {
+    border-radius: 3px 23px 3px 3px;
+  }
+  .chapter-opening .hero-figure {
+    padding: 22px;
+  }
+  .chapter-opening .hero-figure h2 {
+    font-size: 29px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .scene-wave {
+    stroke-dasharray: 18 4;
+    animation: backwater-drift 13s linear infinite;
+  }
+  .scene-vallam {
+    animation: vallam-float 4.6s ease-in-out infinite alternate;
+  }
+  .scene-palm {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: palm-sway 7s ease-in-out infinite alternate;
+  }
+  @keyframes backwater-drift {
+    to {
+      stroke-dashoffset: -220;
+    }
+  }
+  @keyframes vallam-float {
+    to {
+      transform: translateY(-5px);
+    }
+  }
+  @keyframes palm-sway {
+    to {
+      transform: rotate(1.8deg);
+    }
+  }
+}
+@media print {
+  .theme-switch,
+  .scene-sun,
+  .scene-rain,
+  .scene-landscape,
+  .journey {
+    display: none;
+  }
+  .hero.scene {
+    min-height: 0;
+    padding: 25px;
+    background: white;
+    color: black;
+  }
+  .hero .intro,
+  .hero .hero-sub,
+  .hero .micro {
+    color: black;
+  }
+  .chapter-opening {
+    display: block;
+  }
+}
+
+.component-icon {
+  width: 38px;
+  height: 38px;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.connections {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  padding-block: 65px 55px;
+  border-bottom: 1px solid var(--line);
+}
+.connections h2 {
+  font-size: 43px;
+}
+.connections > div > p:not(.eyebrow) {
+  color: var(--muted);
+}
+.connection-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.connection-buttons button {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 16px 8px;
+  border-radius: 5px 20px 5px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+.connection-buttons button:hover {
+  transform: translateY(-3px);
+}
+.connection-buttons button[aria-pressed="true"] {
+  background: var(--deep);
+  color: var(--light);
+  border-color: var(--gold);
+}
+.connection-buttons button[aria-pressed="true"] .component-icon {
+  color: var(--gold-light);
+}
+.connection-copy {
+  padding: 22px 0 0;
+  min-height: 180px;
+}
+.connection-copy h3 {
+  font-size: 23px;
+  margin-bottom: 8px;
+}
+.connection-copy p {
+  font-size: 15px;
+  margin: 0 0 13px;
+}
+.chapter-emblem {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border: 1px solid var(--gold);
+  border-radius: 50% 50% 5px 50%;
+  margin-bottom: 25px;
+  background: var(--surface);
+}
+.industry-section .chapter-emblem {
+  background: #143b30;
+}
+.industry-section .chapter-emblem .component-icon {
+  color: #d9bc72;
+}
+.evidence-principles .component-icon {
+  display: block;
+  margin-block: 16px;
+}
+.hydro-section {
+  margin-top: 55px;
+  border-top: 4px solid var(--gold);
+}
+@media (max-width: 850px) {
+  .connections {
+    gap: 30px;
+    grid-template-columns: 1fr;
+  }
+  .connections h2 {
+    font-size: 36px;
+  }
+  .connections > div:first-child h2 br {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .connections {
+    padding-block: 40px;
+    gap: 15px;
+  }
+  .connection-buttons {
+    gap: 7px;
+  }
+  .connection-buttons button {
+    padding: 13px 5px;
+  }
+  .component-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .chapter-emblem {
+    width: 52px;
+    height: 52px;
+  }
+}

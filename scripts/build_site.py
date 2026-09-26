@@ -346,6 +346,9 @@ def build_site(root: Path, output: Path) -> None:
         "chapter-pathways.svg", "chapter-industry.svg",
     ):
         shutil.copy2(root / "docs/assets" / name, assets / name)
+    # Preserve the original published identity thumbnails; no static chart images.
+    for name in ("kerala2040-share.png", "kerala2040-touch.png"):
+        shutil.copy2(root / "docs/assets" / name, assets / name)
     # Immutable filenames prevent a new HTML page from running an old cached app.
     html = (output / "index.html").read_text(encoding="utf-8")
     for name in ("app.js", "kerala.css"):
@@ -614,6 +617,8 @@ def build_site(root: Path, output: Path) -> None:
     # Durable, explicitly classified research results; not a validated capacity plan.
     model_records = []
     for filename, source_path in {
+        "hydro-flex.json": "data/evidence/models/full_pypsa_hydro_flex_v1_1_2026_09_26.json",
+        "hydro-interday.json": "data/evidence/models/full_pypsa_hydro_interday_v1_2_2026_09_26.json",
         "import-economics.json": "data/evidence/models/full_pypsa_import_economics_v1_0_2026_09_26.json",
         "model-equivalence.json": "data/evidence/models/full_pypsa_pypsa_equivalence_v0_9_2026_09_25.json",
         "expansion-screen.json": "data/evidence/models/full_pypsa_proxy_expansion_v0_8_2026_09_25.json",
@@ -622,7 +627,8 @@ def build_site(root: Path, output: Path) -> None:
         record = json.loads(raw)
         if not record.get("classification") or not record.get("prepared_date"):
             raise ValueError("Published model evidence must retain classification and date")
-        if record.get("model_admission", {}).get("validated_capacity_plan"):
+        if (record.get("model_admission", {}).get("validated_capacity_plan")
+                or record.get("guardrails", {}).get("validated_capacity_plan")):
             raise ValueError("V2 research experiments cannot be promoted to a capacity plan")
         shutil.copy2(root / source_path, data_dir / filename)
         model_records.append({"file": filename, "source_path": source_path,

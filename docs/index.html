@@ -9,9 +9,25 @@
       content="Explore Kerala's energy future through observed electricity, land and weather evidence, flexibility experiments and open research."
     />
     <title>Kerala2040 — Our land. Our energy future.</title>
+  <meta property="og:title" content="Kerala2040 — കേരളത്തിന്റെ ഊർജഭാവി">
+  <meta property="og:description" content="Our land. Our energy future. An independent Kerala energy-system research project.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kerala2040.github.io/">
+  <meta property="og:site_name" content="Kerala2040">
+  <meta property="og:image" content="https://kerala2040.github.io/assets/kerala2040-share.png">
+  <meta property="og:image:secure_url" content="https://kerala2040.github.io/assets/kerala2040-share.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Kerala2040: the Western Ghats, backwaters, palm and vallam beside the words Our land. Our energy future.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Kerala2040 — Our land. Our energy future.">
+  <meta name="twitter:description" content="Independent energy-system research into Kerala’s electricity, ecology and resilient futures.">
+  <meta name="twitter:image" content="https://kerala2040.github.io/assets/kerala2040-share.png">
+    <link rel="apple-touch-icon" href="assets/kerala2040-touch.png" />
     <link rel="canonical" href="https://kerala2040.github.io/" />
     <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
-<link rel="manifest" href="manifest.webmanifest" />
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,7 +38,15 @@
     <script defer src="assets/app.js"></script>
   </head>
   <body>
-<noscript><p class="wrap">Interactive charts need JavaScript. <a href="data/site-data.json">Download the evidence</a> or <a href="https://github.com/abhijith-sivaprasadan/kerala2040">read the research repository</a>.</p></noscript>
+    <noscript
+      ><p class="wrap">
+        Interactive charts need JavaScript.
+        <a href="data/site-data.json">Download the evidence</a> or
+        <a href="https://github.com/abhijith-sivaprasadan/kerala2040"
+          >read the research repository</a
+        >.
+      </p></noscript
+    >
     <a class="skip" href="#main">Skip to content</a>
     <header class="header">
       <a class="brand" href="#overview" aria-label="Kerala2040 home"
@@ -45,116 +69,334 @@
         ><a href="#pathways">Future choices</a><a href="#data">The evidence</a>
       </nav>
       <div class="theme-switch" role="group" aria-label="Visual theme">
-        <button type="button" data-theme-choice="kasavu" aria-pressed="true" title="Kasavu · ivory, brass and forest"><span class="swatch kasavu"></span><span>Kasavu</span></button>
-        <button type="button" data-theme-choice="monsoon" aria-pressed="false" title="Monsoon · deep backwater blues"><span class="swatch monsoon"></span><span>Monsoon</span></button>
-        <button type="button" data-theme-choice="laterite" aria-pressed="false" title="Laterite · red earth and palm"><span class="swatch laterite"></span><span>Laterite</span></button>
+        <button
+          type="button"
+          data-theme-choice="kasavu"
+          aria-pressed="true"
+          title="Kasavu · ivory, brass and forest"
+        >
+          <span class="swatch kasavu"></span><span>Kasavu</span>
+        </button>
+        <button
+          type="button"
+          data-theme-choice="monsoon"
+          aria-pressed="false"
+          title="Monsoon · deep backwater blues"
+        >
+          <span class="swatch monsoon"></span><span>Monsoon</span>
+        </button>
+        <button
+          type="button"
+          data-theme-choice="laterite"
+          aria-pressed="false"
+          title="Laterite · red earth and palm"
+        >
+          <span class="swatch laterite"></span><span>Laterite</span>
+        </button>
       </div>
     </header>
     <main id="main">
       <section class="hero scene" id="overview">
-<div class="scene-sun" aria-hidden="true"></div><div class="scene-rain" aria-hidden="true"></div>
-<svg class="scene-landscape" viewBox="0 0 960 580" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
-          <path d="M0 300 95 243 165 272 253 190 339 232 430 112 535 195 625 90 740 198 840 122 960 211V580H0Z" fill="var(--hill-far)"/>
-          <path d="M0 363 118 311 195 345 301 254 385 303 481 212 572 278 701 195 790 284 960 219V580H0Z" fill="var(--hill-near)"/>
-          <path d="M0 415Q160 366 300 429T650 395T960 398V580H0Z" fill="var(--paddy)"/>
-          <path d="M0 472Q200 440 342 476T650 458T960 441V580H0Z" fill="var(--water)"/>
-          <path class="scene-wave" d="M0 492Q180 466 348 502T655 481T960 462M0 526Q196 494 353 535T660 509T960 489" stroke="var(--water-line)" stroke-width="3" opacity=".7"/>
-          <path d="m0 435 270 42M0 460l233 38m492-20 240-30" stroke="var(--paddy-line)" stroke-width="3" opacity=".6"/>
-          <g class="scene-palm" stroke="var(--palm)" stroke-width="6" stroke-linecap="round">
-            <path d="M825 475Q828 366 791 274M874 469Q875 389 896 319"/>
-            <path d="M792 274q-49-44-99-25m99 25q-5-65-48-87m48 87q36-60 87-59m-87 59q65-16 115 16m-115-16q-50 14-77 63m77-63q44 24 54 74"/>
-            <path d="M896 319q-41-36-72-18m72 18q8-49-27-75m27 75q36-43 77-31m-77 31q41 9 63 43"/>
+        <div class="scene-sun" aria-hidden="true"></div>
+        <div class="scene-rain" aria-hidden="true"></div>
+        <svg
+          class="scene-landscape"
+          viewBox="0 0 960 580"
+          fill="none"
+          aria-hidden="true"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <path
+            d="M0 300 95 243 165 272 253 190 339 232 430 112 535 195 625 90 740 198 840 122 960 211V580H0Z"
+            fill="var(--hill-far)"
+          />
+          <path
+            d="M0 363 118 311 195 345 301 254 385 303 481 212 572 278 701 195 790 284 960 219V580H0Z"
+            fill="var(--hill-near)"
+          />
+          <path
+            d="M0 415Q160 366 300 429T650 395T960 398V580H0Z"
+            fill="var(--paddy)"
+          />
+          <path
+            d="M0 472Q200 440 342 476T650 458T960 441V580H0Z"
+            fill="var(--water)"
+          />
+          <path
+            class="scene-wave"
+            d="M0 492Q180 466 348 502T655 481T960 462M0 526Q196 494 353 535T660 509T960 489"
+            stroke="var(--water-line)"
+            stroke-width="3"
+            opacity=".7"
+          />
+          <path
+            d="m0 435 270 42M0 460l233 38m492-20 240-30"
+            stroke="var(--paddy-line)"
+            stroke-width="3"
+            opacity=".6"
+          />
+          <g
+            class="scene-palm"
+            stroke="var(--palm)"
+            stroke-width="6"
+            stroke-linecap="round"
+          >
+            <path d="M825 475Q828 366 791 274M874 469Q875 389 896 319" />
+            <path
+              d="M792 274q-49-44-99-25m99 25q-5-65-48-87m48 87q36-60 87-59m-87 59q65-16 115 16m-115-16q-50 14-77 63m77-63q44 24 54 74"
+            />
+            <path
+              d="M896 319q-41-36-72-18m72 18q8-49-27-75m27 75q36-43 77-31m-77 31q41 9 63 43"
+            />
           </g>
-          <g class="scene-vallam"><path d="M560 485q81-17 174 0l-21 19H589z" fill="var(--boat)"/>
-          <path d="m633 485-1-62m0 4q33 17 47 48h-47z" stroke="var(--boat)" stroke-width="3" fill="var(--sail)"/></g>
+          <g class="scene-vallam">
+            <path d="M560 485q81-17 174 0l-21 19H589z" fill="var(--boat)" />
+            <path
+              d="m633 485-1-62m0 4q33 17 47 48h-47z"
+              stroke="var(--boat)"
+              stroke-width="3"
+              fill="var(--sail)"
+            />
+          </g>
         </svg>
-<div class="wrap hero-inner">
-        <div class="hero-copy">
-          <p class="eyebrow">
-            <span class="seed"></span> KERALA / INDIA · AN OPEN RESEARCH PROJECT
-          </p>
-          <p class="hero-malayalam" lang="ml">നമ്മുടെ നാട്. നമ്മുടെ ഊർജഭാവി.</p>
-<h1>Our land.<br />Our <em>energy future.</em></h1>
-          <p class="intro">
-            What would it take to power Kerala more reliably—while respecting
-            its land, water and people?
-          </p>
-          <p class="hero-sub">
-            Follow the evidence from today’s electricity system to the choices
-            that could shape 2040.
-          </p>
-          <div class="actions">
-            <a class="button" href="#electricity"
-              >Explore the story <span>↓</span></a
-            ><a class="text-link" href="#pathways">Try the experiments ↗</a>
+        <div class="wrap hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">
+              <span class="seed"></span> KERALA / INDIA · AN OPEN RESEARCH
+              PROJECT
+            </p>
+            <p class="hero-malayalam" lang="ml">
+              നമ്മുടെ നാട്. നമ്മുടെ ഊർജഭാവി.
+            </p>
+            <h1>Our land.<br />Our <em>energy future.</em></h1>
+            <p class="intro">
+              What would it take to power Kerala more reliably—while respecting
+              its land, water and people?
+            </p>
+            <p class="hero-sub">
+              Follow the evidence from today’s electricity system to the choices
+              that could shape 2040.
+            </p>
+            <div class="actions">
+              <a class="button" href="#electricity"
+                >Explore the story <span>↓</span></a
+              ><a class="text-link" href="#pathways">Try the experiments ↗</a>
+            </div>
+            <p class="micro">
+              CET 2026 · Research in progress · Website edition 2
+            </p>
           </div>
-          <p class="micro">
-            CET 2026 · Research in progress · Website edition 2
-          </p>
         </div>
-      </div></section>
-<div class="kasavu-border" aria-hidden="true"></div>
+      </section>
+      <div class="kasavu-border" aria-hidden="true"></div>
       <div class="ribbon">
         <div class="wrap">
           <span>THE QUESTION IS BIGGER THAN ELECTRICITY.</span
           ><span>Energy ↔ Water ↔ Land ↔ Industry ↔ Cost</span>
         </div>
       </div>
-      <nav class="journey wrap" aria-label="Choose a chapter"><a class="journey-card" href="#electricity"><div class="chapter-picture"><img src="assets/chapter-electric.svg" alt="" width="360" height="220" loading="lazy" /></div><div class="journey-label"><svg aria-hidden="true" viewBox="0 0 40 40"><use href="assets/icons.svg#electric" /></svg><div><span>01 / KERALA TODAY</span><strong>Where our power comes from</strong></div><span aria-hidden="true">↗</span></div></a><a class="journey-card" href="#atlas"><div class="chapter-picture"><img src="assets/chapter-land.svg" alt="" width="360" height="220" loading="lazy" /></div><div class="journey-label"><svg aria-hidden="true" viewBox="0 0 40 40"><use href="assets/icons.svg#leaf" /></svg><div><span>02 / LAND & SEASONS</span><strong>What nature makes possible</strong></div><span aria-hidden="true">↗</span></div></a><a class="journey-card" href="#pathways"><div class="chapter-picture"><img src="assets/chapter-pathways.svg" alt="" width="360" height="220" loading="lazy" /></div><div class="journey-label"><svg aria-hidden="true" viewBox="0 0 40 40"><use href="assets/icons.svg#sun" /></svg><div><span>03 / FUTURE CHOICES</span><strong>Try a different energy day</strong></div><span aria-hidden="true">↗</span></div></a><a class="journey-card" href="#industry"><div class="chapter-picture"><img src="assets/chapter-industry.svg" alt="" width="360" height="220" loading="lazy" /></div><div class="journey-label"><svg aria-hidden="true" viewBox="0 0 40 40"><use href="assets/icons.svg#cycle" /></svg><div><span>04 / BEYOND THE GRID</span><strong>Connect the wider system</strong></div><span aria-hidden="true">↗</span></div></a></nav>
-<div id="loadError" class="wrap error" role="alert" hidden></div>
-      <section class="chapter wrap" id="electricity">
-<div class="chapter-opening">
-        <div class="chapter-head">
-          <p class="eyebrow">01 / THE STARTING POINT · വൈദ്യുതി</p>
-          <h2>
-            Connected to our neighbours.<br /><em>Shaped by the monsoon.</em>
-          </h2>
-          <p>
-            Electricity crosses Kerala’s borders every day. Hydropower supplies
-            most of the electricity generated within the state. Both belong in a
-            resilient future.
-          </p>
-        </div>
-        <div class="hero-figure">
-          <div class="figure-top">
-            <span class="eyebrow">A YEAR IN KERALA’S GRID</span
-            ><span class="tag">Observed</span>
-          </div>
-          <h2>One system.<br /><em>Changing seasons.</em></h2>
-          <p class="sub">Move through the months to see the balance change.</p>
-          <div class="orbit-wrap">
-            <canvas
-              id="balanceRing"
-              role="img"
-              aria-label="Selected month's electricity balance"
-            ></canvas>
-            <div class="ring-centre">
-              <strong id="ringValue">—</strong><span>net imports</span>
-            </div>
-          </div>
-          <div class="month-control">
-            <label for="heroMonth" id="heroMonthLabel">April 2024</label
-            ><input
-              id="heroMonth"
-              type="range"
-              min="0"
-              max="11"
-              value="0"
-              aria-label="Month of observed electricity"
+      <nav class="journey wrap" aria-label="Choose a chapter">
+        <a class="journey-card" href="#electricity"
+          ><div class="chapter-picture">
+            <img
+              src="assets/chapter-electric.svg"
+              alt=""
+              width="360"
+              height="220"
+              loading="lazy"
             />
-            <div class="range-ends">
-              <span>APR 2024</span><span>MAR 2025</span>
+          </div>
+          <div class="journey-label">
+            <svg aria-hidden="true" viewBox="0 0 40 40">
+              <use href="assets/icons.svg#electric" />
+            </svg>
+            <div>
+              <span>01 / KERALA TODAY</span
+              ><strong>Where our power comes from</strong>
             </div>
+            <span aria-hidden="true">↗</span>
+          </div></a
+        ><a class="journey-card" href="#atlas"
+          ><div class="chapter-picture">
+            <img
+              src="assets/chapter-land.svg"
+              alt=""
+              width="360"
+              height="220"
+              loading="lazy"
+            />
           </div>
-          <div class="legend">
-            <span><i class="gold"></i>Net imports</span
-            ><span><i class="green"></i>In-state generation</span>
+          <div class="journey-label">
+            <svg aria-hidden="true" viewBox="0 0 40 40">
+              <use href="assets/icons.svg#leaf" />
+            </svg>
+            <div>
+              <span>02 / LAND & SEASONS</span
+              ><strong>What nature makes possible</strong>
+            </div>
+            <span aria-hidden="true">↗</span>
+          </div></a
+        ><a class="journey-card" href="#pathways"
+          ><div class="chapter-picture">
+            <img
+              src="assets/chapter-pathways.svg"
+              alt=""
+              width="360"
+              height="220"
+              loading="lazy"
+            />
           </div>
-          <p id="heroScope" class="micro">
-            Loading published daily observations…
+          <div class="journey-label">
+            <svg aria-hidden="true" viewBox="0 0 40 40">
+              <use href="assets/icons.svg#sun" />
+            </svg>
+            <div>
+              <span>03 / FUTURE CHOICES</span
+              ><strong>Try a different energy day</strong>
+            </div>
+            <span aria-hidden="true">↗</span>
+          </div></a
+        ><a class="journey-card" href="#industry"
+          ><div class="chapter-picture">
+            <img
+              src="assets/chapter-industry.svg"
+              alt=""
+              width="360"
+              height="220"
+              loading="lazy"
+            />
+          </div>
+          <div class="journey-label">
+            <svg aria-hidden="true" viewBox="0 0 40 40">
+              <use href="assets/icons.svg#cycle" />
+            </svg>
+            <div>
+              <span>04 / BEYOND THE GRID</span
+              ><strong>Connect the wider system</strong>
+            </div>
+            <span aria-hidden="true">↗</span>
+          </div></a
+        >
+      </nav>
+      <section class="connections wrap" aria-labelledby="connectionsTitle">
+        <div>
+          <p class="eyebrow">ONE CONNECTED SYSTEM</p>
+          <h2 id="connectionsTitle">
+            Every choice<br /><em>touches another.</em>
+          </h2>
+          <p>Explore what connects the chapters.</p>
+        </div>
+        <div>
+          <div
+            class="connection-buttons"
+            role="group"
+            aria-label="Energy system connections"
+          >
+            <button data-connection="water" aria-pressed="true">
+              <svg
+                class="component-icon"
+                viewBox="0 0 40 40"
+                aria-hidden="true"
+              >
+                <use href="assets/icons.svg#water" /></svg
+              ><span>Water</span></button
+            ><button data-connection="electric" aria-pressed="false">
+              <svg
+                class="component-icon"
+                viewBox="0 0 40 40"
+                aria-hidden="true"
+              >
+                <use href="assets/icons.svg#electric" /></svg
+              ><span>Energy</span></button
+            ><button data-connection="leaf" aria-pressed="false">
+              <svg
+                class="component-icon"
+                viewBox="0 0 40 40"
+                aria-hidden="true"
+              >
+                <use href="assets/icons.svg#leaf" /></svg
+              ><span>Land</span></button
+            ><button data-connection="cycle" aria-pressed="false">
+              <svg
+                class="component-icon"
+                viewBox="0 0 40 40"
+                aria-hidden="true"
+              >
+                <use href="assets/icons.svg#cycle" /></svg
+              ><span>Industry</span>
+            </button>
+          </div>
+          <div class="connection-copy" aria-live="polite">
+            <h3 id="connectionTitle">Water sets the rhythm.</h3>
+            <p id="connectionText">
+              Monsoon inflows and hydro timing shape electricity supply.
+              Irrigation, ecology and downstream needs also matter.
+            </p>
+            <a id="connectionLink" class="text-link" href="#electricity"
+              >Explore this connection ↗</a
+            >
+          </div>
+          <p class="micro">
+            A conceptual guide to the research—not a quantified flow diagram.
           </p>
         </div>
-</div>
+      </section>
+      <div id="loadError" class="wrap error" role="alert" hidden></div>
+      <section class="chapter wrap" id="electricity">
+        <div class="chapter-opening">
+          <div class="chapter-head">
+            <p class="eyebrow">01 / THE STARTING POINT · വൈദ്യുതി</p>
+            <h2>
+              Connected to our neighbours.<br /><em>Shaped by the monsoon.</em>
+            </h2>
+            <p>
+              Electricity crosses Kerala’s borders every day. Hydropower
+              supplies most of the electricity generated within the state. Both
+              belong in a resilient future.
+            </p>
+          </div>
+          <div class="hero-figure">
+            <div class="figure-top">
+              <span class="eyebrow">A YEAR IN KERALA’S GRID</span
+              ><span class="tag">Observed</span>
+            </div>
+            <h2>One system.<br /><em>Changing seasons.</em></h2>
+            <p class="sub">
+              Move through the months to see the balance change.
+            </p>
+            <div class="orbit-wrap">
+              <canvas
+                id="balanceRing"
+                role="img"
+                aria-label="Selected month's electricity balance"
+              ></canvas>
+              <div class="ring-centre">
+                <strong id="ringValue">—</strong><span>net imports</span>
+              </div>
+            </div>
+            <div class="month-control">
+              <label for="heroMonth" id="heroMonthLabel">April 2024</label
+              ><input
+                id="heroMonth"
+                type="range"
+                min="0"
+                max="11"
+                value="0"
+                aria-label="Month of observed electricity"
+              />
+              <div class="range-ends">
+                <span>APR 2024</span><span>MAR 2025</span>
+              </div>
+            </div>
+            <div class="legend">
+              <span><i class="gold"></i>Net imports</span
+              ><span><i class="green"></i>In-state generation</span>
+            </div>
+            <p id="heroScope" class="micro">
+              Loading published daily observations…
+            </p>
+          </div>
+        </div>
         <div class="stat-row">
           <div>
             <strong id="importStat">—</strong
@@ -249,6 +491,14 @@
       <section class="earth-section" id="atlas">
         <div class="wrap chapter">
           <div class="chapter-head">
+            <span class="chapter-emblem"
+              ><svg
+                class="component-icon"
+                viewBox="0 0 40 40"
+                aria-hidden="true"
+              >
+                <use href="assets/icons.svg#leaf" /></svg
+            ></span>
             <p class="eyebrow">02 / LAND & SEASONS · ഭൂമി</p>
             <h2>
               A resource is a beginning.<br /><em
@@ -368,6 +618,10 @@
       </section>
       <section class="chapter wrap" id="pathways">
         <div class="chapter-head">
+          <span class="chapter-emblem"
+            ><svg class="component-icon" viewBox="0 0 40 40" aria-hidden="true">
+              <use href="assets/icons.svg#sun" /></svg
+          ></span>
           <p class="eyebrow">03 / FUTURE CHOICES · ഭാവി</p>
           <h2>Build more. Use better.<br /><em>Stay connected.</em></h2>
           <p>
@@ -417,7 +671,7 @@
         </div>
         <div class="model-section">
           <div class="section-label">
-            <p class="eyebrow">FROM ONE SITE TO A SYSTEM</p>
+            <p class="eyebrow">FROM ONE SITE TO A SYSTEM / V1.0</p>
             <span class="tag amber">2030 model sensitivity</span>
           </div>
           <h3>
@@ -425,9 +679,9 @@
             is constrained?
           </h3>
           <p>
-            108 full-year PyPSA cases now test demand, renewable limits, battery
-            costs, transfer limits and import-price assumptions. Explore
-            selected published results below.
+            The v1.0 series of 108 full-year PyPSA cases tests demand, renewable
+            limits, battery costs, transfer limits and import-price assumptions.
+            Explore selected published results below.
           </p>
           <div class="segmented" role="group" aria-label="Model question">
             <button data-model="price" aria-pressed="true">
@@ -456,9 +710,9 @@
           </div>
           <p class="callout">
             These are bounded research experiments, not Kerala’s recommended
-            capacity plan. Existing generation is replayed; reservoir dispatch,
-            outages, landed hourly prices and legal siting are not yet fully
-            represented.
+            capacity plan. In v1.0, existing generation is replayed. Hydro
+            timing is explored below; reservoir dispatch, outages, landed hourly
+            prices and legal siting are not yet fully represented.
           </p>
           <details>
             <summary>How to read the model and cost assumptions</summary>
@@ -486,10 +740,76 @@
             >
           </details>
         </div>
+        <div class="hydro-section chart-card">
+          <div class="card-head">
+            <div>
+              <p class="eyebrow">NEW FINDINGS / HYDRO TIMING · V1.1 → V1.2</p>
+              <h3>
+                The same water-energy budget.<br /><em
+                  >More room to choose when.</em
+                >
+              </h3>
+            </div>
+            <span class="tag amber">48 full-year experiments</span>
+          </div>
+          <p>
+            What changes if hydro generation can move within a longer time
+            window? These experiments preserve the annual hydro energy budget
+            and test 1, 3, 15 and 30-day windows. Select the transfer limit to
+            see where timing helps—and where it is not enough.
+          </p>
+          <div class="controls">
+            <label
+              >Interstate transfer limit<select id="hydroTransfer">
+                <option value="full">100% · 4,455 MW</option>
+                <option value="80pct">80% · 3,564 MW</option>
+                <option value="60pct">60% · 2,673 MW</option>
+              </select></label
+            >
+          </div>
+          <p class="micro">
+            Reference FY2030–31 demand · full available hydro power · reference
+            renewable envelope · low battery cost · KSEBL import-price proxy
+          </p>
+          <div id="hydroChart" class="chart"></div>
+          <div id="hydroStats" class="mini-stats"></div>
+          <p id="hydroInsight" class="insight"></p>
+          <details>
+            <summary>Compare exact values and understand the boundary</summary>
+            <div id="hydroTable" class="table-scroll"></div>
+            <p>
+              V1.1 solved 54 cases with hydro energy fixed within each day. V1.2
+              solved 48 cases allowing energy to move within nested time
+              windows. These are synthetic flexibility bounds. Window length is
+              not reservoir storage duration; there is no water balance, rule
+              curve, cascade routing or validated reservoir operation.
+            </p>
+            <p>
+              The v1.2 experiment also includes a 130 MW Idukki unit-loss
+              sensitivity. It is a power-availability test, not a chronological
+              outage model. Selected full-availability cases are shown here.
+            </p>
+            <a class="text-link" href="data/hydro-interday.json" download
+              >Download v1.2 evidence ↓</a
+            >
+            ·
+            <a class="text-link" href="data/hydro-flex.json" download
+              >Download v1.1 evidence ↓</a
+            >
+          </details>
+        </div>
       </section>
       <section class="industry-section" id="industry">
         <div class="wrap chapter">
           <div class="chapter-head">
+            <span class="chapter-emblem"
+              ><svg
+                class="component-icon"
+                viewBox="0 0 40 40"
+                aria-hidden="true"
+              >
+                <use href="assets/icons.svg#cycle" /></svg
+            ></span>
             <p class="eyebrow">04 / BEYOND THE GRID · തൊഴിൽ</p>
             <h2>Energy also moves<br /><em>through industry.</em></h2>
             <p>
@@ -534,6 +854,10 @@
       </section>
       <section class="chapter wrap" id="data">
         <div class="chapter-head">
+          <span class="chapter-emblem"
+            ><svg class="component-icon" viewBox="0 0 40 40" aria-hidden="true">
+              <use href="assets/icons.svg#sources" /></svg
+          ></span>
           <p class="eyebrow">05 / OPEN TO QUESTIONS · തെളിവുകൾ</p>
           <h2>
             A future worth discussing.<br /><em>Evidence you can inspect.</em>
@@ -546,6 +870,9 @@
         <div class="evidence-principles">
           <div>
             <span class="tag">Observed</span>
+            <svg class="component-icon" viewBox="0 0 40 40" aria-hidden="true">
+              <use href="assets/icons.svg#electric" />
+            </svg>
             <h3>What was recorded</h3>
             <p>
               Historical SLDC reports and separately scoped official statistics.
@@ -553,6 +880,9 @@
           </div>
           <div>
             <span class="tag">Resource evidence</span>
+            <svg class="component-icon" viewBox="0 0 40 40" aria-hidden="true">
+              <use href="assets/icons.svg#leaf" />
+            </svg>
             <h3>What was characterised</h3>
             <p>
               Source-grid solar, wind and terrain descriptions. No automatic
@@ -561,6 +891,9 @@
           </div>
           <div>
             <span class="tag amber">Model experiment</span>
+            <svg class="component-icon" viewBox="0 0 40 40" aria-hidden="true">
+              <use href="assets/icons.svg#layers" />
+            </svg>
             <h3>What was tested</h3>
             <p>
               Explicit assumptions and constrained calculations. No completed
