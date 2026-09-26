@@ -1,0 +1,87 @@
+version: 1
+classification: full_pypsa_hydro_dispatch_v1_1_daily_energy_constrained_flexible_hydro_not_reservoir_model
+prepared_date: "2026-09-26"
+purpose: >-
+  Replace the frozen daily-average hydro replay in the focused 2030 expansion
+  sensitivity with daily-energy-constrained intraday hydro redispatch, then test
+  explicit source-anchored and synthetic hydro availability limits.
+
+inherits:
+  import_economics: configs/full_pypsa_import_economics_v1_0.yaml
+  future_demand: configs/full_pypsa_future_adequacy_v0_4.yaml
+  proxy_expansion: configs/full_pypsa_proxy_expansion_v0_8.yaml
+  hydro_evidence: data/evidence/hydro/kerala_hydro_dispatch_boundaries_v1_1_2026_09_26.json
+
+focus_case:
+  capacity_envelope_case: reference
+  bess_cost_case: low
+  import_price_case: ksebl_weighted_purchase
+  rationale: isolate_hydro_flexibility_and_availability_effects
+
+demand_cases:
+  - lower_FY2030
+  - reference_FY2030_31
+
+transfer_cases:
+  - atc_snapshot_reference
+  - atc_80pct_stress
+  - atc_60pct_stress
+
+hydro_availability_cases:
+  - id: full_available
+    available_hydro_mw: 2284.42
+    classification: March2026_capacity_boundary
+  - id: n_minus_1_idukki_130mw
+    available_hydro_mw: 2154.42
+    classification: source_anchored_single_largest_verified_unit_outage
+  - id: derate_90pct
+    available_hydro_mw: 2055.978
+    classification: synthetic_10pct_aggregate_derating
+  - id: derate_80pct
+    available_hydro_mw: 1827.536
+    classification: synthetic_20pct_aggregate_derating
+
+hydro_dispatch:
+  daily_energy_target: exact_FY2024_25_observed_or_imputed_SLDC_MWh
+  intraday_power_min_mw: 0
+  intraday_power_max: availability_case
+  optimization: endogenous_within_each_day
+  energy_spill_allowed: false
+  carryover_between_days: false
+  interpretation: >-
+    This is a daily energy budget, not a reservoir state-of-charge formulation.
+    Hydro may move freely among the 24 hours of each day subject to the active
+    availability MW ceiling.
+
+objective:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: >-
+    minimize annualized solar/wind/BESS investment plus import energy cost while
+    preserving the stage-1 minimum shortage
+  unserved_tolerance_mwh: 0.001
+  existing_hydro_variable_cost: 0
+  existing_nonhydro: frozen_daily_average_replay
+  units: million_real_2021_22_INR_per_year
+
+comparison:
+  baseline: v1_0_flat_daily_average_hydro_same_focus_case
+  metrics:
+    - stage1_minimum_unserved_mwh
+    - stage2_unserved_mwh
+    - built.solar_combined_mw
+    - built.wind_onshore_mw
+    - built.bess_4h_power_mw
+    - imports_mwh
+    - hydro_peak_mw
+    - annualized_candidate_investment_million_inr_per_year
+    - partial_economic_objective_million_real_2021_22_inr_per_year
+
+release:
+  daily_energy_constrained_hydro_dispatch_ready: true
+  availability_sensitivity_ready: true
+  station_level_dispatch_validated: false
+  reservoir_model_ready: false
+  outage_chronology_validated: false
+  total_system_cost_optimization: false
+  validated_capacity_plan: false
+  scenario_recommendation: false
