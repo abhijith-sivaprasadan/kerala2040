@@ -813,3 +813,54 @@ energy.
 
 Durable evidence is recorded in
 `data/evidence/models/full_pypsa_hydro_flex_v1_1_2026_09_26.json`.
+
+
+## Implementation checkpoint 14 · interday hydro flexibility bracket v1.2
+
+v1.2 asks the next hydro question without crossing the evidence boundary into a
+fabricated reservoir model: **how much would adequacy change if the same admitted
+FY2024-25 hydro energy could move between days?**
+
+The v1.1 one-day energy constraint remains the baseline. v1.2 adds non-overlapping
+**3-day, 7-day and 30-day** energy-conservation windows. Within each window PyPSA
+may choose hourly hydro dispatch endogenously, but it must reproduce exactly the
+sum of the observed/imputed FY2024-25 daily hydro MWh targets in that window.
+Annual hydro energy is therefore unchanged in every case.
+
+This is deliberately a flexibility bracket, not a storage-duration assumption.
+A 7-day case does **not** assert seven days of usable Kerala reservoir storage, and
+a 30-day case does not represent monthly reservoir operation. The retained official
+hydro-topology evidence explicitly blocks conversion to connected reservoir stores
+until inflows, releases/spill, shared-water accounting, head/efficiency curves,
+environmental releases and operating rule curves are reconciled.
+
+The v1.2 focused matrix fixes the v0.7 reference renewable envelope, v0.5 low BESS
+cost and v1.0 KSEBL weighted-purchase import-price proxy, then combines:
+
+- lower FY2030 and CEA/KSERC reference FY2030-31 demand;
+- 4,455 / 3,564 / 2,673 MW transfer sensitivities;
+- full 2,284.42 MW hydro availability and a source-anchored Idukki 130 MW N-1
+  stress;
+- 1 / 3 / 7 / 30 day hydro-energy conservation windows.
+
+That produces **48 full-year 8,760-hour cases**.
+
+The 130 MW outage anchor comes from the verified Idukki unit rating retained from
+the superseded parallel v1.1 branch. The broader station-group evidence is also
+preserved for future reservoir/cascade work, but v1.2 does not invent station-level
+daily water allocation or outage chronology.
+
+Release remains fail-closed:
+
+- interday hydro flexibility bracket: **ready**;
+- source-anchored Idukki N-1 sensitivity: **ready**;
+- reservoir water-balance model: **not ready**;
+- cascade routing/head-dependent efficiency: **not ready**;
+- pumped storage: **not ready**;
+- validated hydro economic dispatch or capacity plan: **not ready**.
+
+The next physical upgrade after this bracket is not a longer arbitrary window. It
+is a source-reconciled reservoir state model, starting with the best-observed
+system (Idukki) and admitting water balance only when catchment inflow, storage,
+release/spill and head/efficiency evidence can be reconciled without double
+counting cascade water.
