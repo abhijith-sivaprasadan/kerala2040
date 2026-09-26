@@ -1,0 +1,62 @@
+{
+  "classification": "SOURCE_HASH_VERIFIED_IDUKKI_V1_4B_CUMULATIVE_INFLOW_SENSITIVITY_QA_NOT_OBSERVED_SERIES",
+  "prepared_date": "2026-09-26",
+  "source": {
+    "reservoir_rows_sha256": "b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9",
+    "strict_v1_4_source_reported_days": 325,
+    "pilot_days": 364
+  },
+  "live_recovery_attempt": {
+    "workflow_run_id": 36249885861,
+    "artifact_id": 10909055146,
+    "requested_missing_storage_dates": 11,
+    "recovered_storage_candidates": 0,
+    "known_observed_2024_11_29_control_recovered": false,
+    "interpretation": "The public historical form was not replayable from the runner; zero recovered dates does not establish that the agency records do not exist."
+  },
+  "archive_blank_convention": {
+    "direct_blank_cumulative_pairs": 153,
+    "maximum_blank_cumulative_increment_mcm": 0.0010000000000012221,
+    "minimum_blank_cumulative_increment_mcm": -1.6100000000000003,
+    "zeroish_pairs_within_0_0011_mcm": 101,
+    "negative_correction_pairs_below_minus_0_0011_mcm": 52,
+    "materially_positive_pairs_above_0_0011_mcm": 0,
+    "sensitivity_interpretation": "Accepted blank Idukki daily-inflow cells are normalized to zero only in v1.4b; this is a source-convention interpretation, not a raw observation."
+  },
+  "pilot_reconstruction": {
+    "source_reported_daily_inflow_days": 325,
+    "accepted_blank_zero_convention_days": 28,
+    "rejected_source_rows": 11,
+    "rejected_dates_recovered_by_adjacent_cumulative": 10,
+    "aggregate_cumulative_derived_inflow_mcm_for_10_rejected_dates": 64.65600000000002,
+    "remaining_source_unconstrained_dates": 1,
+    "remaining_source_unconstrained_date": "2024-11-30",
+    "base_inflow_total_mcm_excluding_unresolved_date": 2525.925
+  },
+  "november_30_sensitivity": {
+    "same_month_observed_median_mcm_day": 3.566,
+    "same_month_observed_p95_mcm_day": 9.557399999999998,
+    "same_month_observed_max_mcm_day": 11.623,
+    "pilot_observed_max_mcm_day": 74.038,
+    "scenario_pilot_inflow_totals_mcm": {
+      "zero_lower": 2525.925,
+      "same_month_median": 2529.491,
+      "same_month_p95": 2535.4824000000003,
+      "same_month_max": 2537.5480000000002,
+      "pilot_max_stress": 2599.963
+    },
+    "unresolved_day_water_energy_equivalent_gwh_at_1470_mwh_per_mcm": {
+      "zero_lower": 0.0,
+      "same_month_median": 5.242019999999999,
+      "same_month_p95": 14.049377999999997,
+      "same_month_max": 17.08581,
+      "pilot_max_stress": 108.83586
+    }
+  },
+  "release": {
+    "strict_v1_4_source_reported_model_ready": false,
+    "source_informed_v1_4b_sensitivity_input_ready": true,
+    "full_pypsa_v1_4b_matrix_executed": false,
+    "daily_reconstructed_rows_publicly_released": false
+  }
+}
