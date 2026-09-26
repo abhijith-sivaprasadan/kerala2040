@@ -30,6 +30,7 @@ sources:
   import_economics_evidence_v1_0: data/evidence/grid/kerala_import_economics_forward_transfer_v1_0_2026_09_25.json
   hydro_dispatch_v1_1: configs/full_pypsa_hydro_dispatch_v1_1.yaml
   hydro_dispatch_evidence_v1_1: data/evidence/hydro/kerala_hydro_dispatch_boundaries_v1_1_2026_09_26.json
+  hydro_dispatch_result_evidence_v1_1: data/evidence/models/full_pypsa_hydro_dispatch_v1_1_2026_09_26.json
 
 requirements:
   base_system:
