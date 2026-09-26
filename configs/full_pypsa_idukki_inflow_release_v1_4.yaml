@@ -1,0 +1,77 @@
+version: 1
+classification: full_pypsa_idukki_inflow_release_v1_4_source_reported_inflow_gate
+prepared_date: "2026-09-26"
+purpose: >-
+  Replace the v1.3 reconstructed net water-balance input with source-reported
+  Idukki daily inflow from the provenance-audited private Kerala SLDC archive.
+  Represent non-turbine water outflow explicitly as a model release/spill
+  variable, without claiming it is observed spill or an environmental release.
+
+inherits:
+  idukki_stateful_reservoir: configs/full_pypsa_idukki_reservoir_v1_3.yaml
+  v1_3_artifact_evidence: data/evidence/models/full_pypsa_idukki_reservoir_v1_3_2026_09_26.json
+  phase4_public_qa: data/evidence/sldc/idukki_hydro_energy_phase4_2026_09_23.json
+
+private_source:
+  required_filename: reservoir_rows.csv
+  expected_sha256: b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9
+  archive_scope_start: "2019-08-06"
+  archive_scope_end: "2026-09-23"
+  source_reported_idukki_inflow_days_archive_wide: 2414
+  required_columns:
+    - date
+    - reservoir
+    - effective_storage_mcm
+    - inflow_mcm_day
+    - source_sha256
+  redistribution: private_until_original_source_reuse_terms_verified
+
+pilot_period:
+  start: "2024-04-01"
+  dispatch_end: "2025-03-30"
+  terminal_storage_date: "2025-03-31"
+  required_inflow_days: 364
+  missing_inflow_policy: fail_closed_no_interpolation
+
+water_balance:
+  equation: >-
+    storage[t+1] = storage[t] + reported_inflow[t] -
+    turbine_water_equivalent[t] - non_turbine_release[t]
+  turbine_water_equivalent: generation_mwh_divided_by_1470_mwh_per_mcm
+  non_turbine_release_variable:
+    lower_bound: 0
+    interpretation: >-
+      Endogenous aggregate water outflow not sent through Moolamattom turbines.
+      It may include spill and other releases in the optimization, but it is not
+      an observed spill chronology and must not be labelled as one.
+  historical_balance_diagnostic: >-
+    For dates with observed storage, generation and reported inflow, calculate
+    inflow - storage_change - turbine_water_equivalent. Negative residuals are
+    retained and reported as source/conversion inconsistency; they are never
+    clipped into fake zero spill.
+
+optimization:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: preserve_minimum_shortage_then_minimize_candidate_investment_plus_import_cost
+  stage_3: preserve_stage_2_system_cost_then_minimize_non_turbine_water_release
+  release_tie_break_only: true
+
+source_gate:
+  public_repository_contains_private_daily_inflow_rows: false
+  full_v1_4_run_requires_private_source_file: true
+  sha256_must_match_phase4_archive: true
+  all_364_pilot_inflow_days_must_be_source_reported: true
+
+release:
+  v1_3_stateful_reservoir_verified: true
+  source_reported_inflow_ingestion_code_ready: true
+  explicit_non_turbine_release_variable_ready: true
+  source_reported_inflow_model_run_ready: false
+  reason_source_reported_inflow_model_not_run: private_daily_source_file_not_present_in_public_repo_or_project_files
+  observed_spill_chronology_ready: false
+  environmental_release_constraint_ready: false
+  head_dependent_efficiency_ready: false
+  cascade_model_ready: false
+  full_reservoir_model_validated: false
+  validated_capacity_plan: false
+  scenario_recommendation: false

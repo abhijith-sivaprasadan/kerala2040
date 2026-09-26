@@ -1,0 +1,69 @@
+{
+  "classification": "ARTIFACT_BACKED_FULL_PYPSA_IDUKKI_STATEFUL_RESERVOIR_V1_3_NET_WATER_BALANCE_PILOT",
+  "prepared_date": "2026-09-26",
+  "pull_request": 91,
+  "merged_commit_sha": "e11412f2dc312bceae7d93c098d2274f5c6b2b7c",
+  "numerical_head_sha": "fafe23483eb5f1be9abd2ef6155952e3f6b6928e",
+  "workflow_run_id": 36240094505,
+  "artifact": {
+    "id": 10905474652,
+    "name": "full-pypsa-idukki-reservoir-v1.3-NET-WATER-BALANCE-PILOT",
+    "sha256": "65a4c7338756b2a308d7230253b17719af708822ab5564651d2e26362d0d9bec"
+  },
+  "pilot": {
+    "days": 364,
+    "hours": 8736,
+    "stateful_cases_solved": 12,
+    "same_horizon_comparison_solves": 24
+  },
+  "source_qa": {
+    "derived_energy_equivalent_mwh_per_mcm": 1470.0000198701684,
+    "historical_replay_terminal_residual_mcm": 0.0,
+    "initial_storage_mcm": 649.727,
+    "terminal_storage_mcm": 689.054,
+    "observed_generation_days": 353,
+    "interpolated_generation_days": 11,
+    "observed_storage_days": 354,
+    "interpolated_storage_days": 11,
+    "net_water_balance_min_mcm_day": -3.4853945578231302,
+    "net_water_balance_max_mcm_day": 50.78764625850347,
+    "net_water_balance_sum_mcm": 1674.1059115646258
+  },
+  "reference_demand_full_idukki_availability": {
+    "atc_snapshot_reference": {
+      "stateful_unserved_gwh": 0.160,
+      "same_horizon_1d_unserved_gwh": 11.751,
+      "same_horizon_30d_unserved_gwh": 0.160,
+      "idukki_min_storage_mcm": 0.0,
+      "additional_release_mcm": 0.0
+    },
+    "atc_80pct_stress": {
+      "stateful_unserved_gwh": 367.143,
+      "same_horizon_1d_unserved_gwh": 1178.137,
+      "same_horizon_30d_unserved_gwh": 955.376,
+      "idukki_min_storage_mcm": 55.46,
+      "additional_release_mcm": 0.0
+    },
+    "atc_60pct_stress": {
+      "stateful_unserved_gwh": 5131.227,
+      "same_horizon_1d_unserved_gwh": 5542.266,
+      "same_horizon_30d_unserved_gwh": 5425.698,
+      "idukki_min_storage_mcm": 0.0,
+      "additional_release_mcm": 0.0
+    }
+  },
+  "interpretation": [
+    "The v1.3 state equation and source replay close exactly on the configured initial and terminal storage states.",
+    "A stateful seasonal reservoir is not bounded by the v1.2 30-day timing experiment. It can shift water across periods longer than 30 days, so lower shortage than the 30-day bracket is possible.",
+    "At full ATC the stateful result reaches the same 0.160 GWh residual shortage as the 30-day bracket.",
+    "At 80 percent ATC the stateful Idukki pilot materially outperforms the 30-day aggregate timing case, while deep 60 percent transfer stress still leaves multi-TWh shortage.",
+    "The reconstructed v1.3 water term is not observed catchment inflow and must not be reported as such."
+  ],
+  "release": {
+    "stateful_idukki_pilot_numerically_verified": true,
+    "reported_daily_inflow_used": false,
+    "observed_spill_release_used": false,
+    "head_dependent_efficiency_used": false,
+    "validated_capacity_plan": false
+  }
+}
