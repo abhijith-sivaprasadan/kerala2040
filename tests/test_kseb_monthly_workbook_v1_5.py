@@ -118,3 +118,81 @@ def test_extract_month_reports_missing_dates(tmp_path: Path):
     assert result["record_count"] == 1
     assert result["status"] == "blocked_incomplete_or_ambiguous"
     assert len(result["missing_dates"]) == 29
+
+
+def test_parse_legacy_cumecs_schema():
+    headers = [
+        "Sl. No.",
+        "Name of Dam / Reservoir",
+        "District",
+        "MWL (metre)",
+        "FRL (metre)",
+        "Spillway Crest Level (metre)",
+        "Gross Storage (Million cubic metre)",
+        "Dead Storage (MCM)",
+        "Live Storage at FRL (MCM)",
+        "Rule level (metre)",
+        "Blue level (metre)",
+        "Orange level (metre)",
+        "Red Level (metre)",
+        "Today's Water level (metre)",
+        "Today's Gross Storage (MCM)",
+        "Percentage Storage respect to Gross Storage",
+        "Today's Live Storage (MCM)",
+        "% Storage wrt Live Storage at FRL",
+        "Same day previous year Water level (metre)",
+        "Same day previous year Gross Storage (MCM)",
+        "Same day previous year Live Storage (MCM)",
+        "% Storage wrt Live Storage at FRL",
+        "Inflow (cumecs)",
+        "Power House Discharge(cumecs)",
+        "Spillway release (cumecs)",
+        "Total Outflow (cumecs)",
+        "Rain fall (mm)",
+        "Remarks",
+    ]
+    row = [
+        1,
+        "IDUKKI",
+        "IDK",
+        "2408.5 ft",
+        "2403 ft",
+        "2373.6 ft",
+        1996.3,
+        536.81,
+        1459.49,
+        2399.79,
+        2391.79,
+        2397.79,
+        2398.79,
+        "2393.84ft",
+        1842.053,
+        0.9227,
+        1305.243,
+        0.8943,
+        "2381.62ft",
+        1639.797,
+        1102.987,
+        0.7557,
+        41.5162,
+        53.0093,
+        0.0,
+        53.0093,
+        0.4,
+        None,
+    ]
+    rows = [
+        ["KERALA STATE ELECTRICITY BOARD LIMITED"],
+        ["WATER LEVELS OF MAIN RESERVOIRS (as on 01.11.2020) 7.00 AM."],
+        headers,
+        list(range(1, len(headers) + 1)),
+        row,
+    ]
+    result = parse_daily_sheet(rows, sheet_name="01.11.2020")
+    assert result["metrics"]["live_storage_mcm"] == pytest.approx(1305.243)
+    assert result["metrics"]["inflow_cumecs"] == pytest.approx(41.5162)
+    assert result["metrics"]["power_house_discharge_cumecs"] == pytest.approx(53.0093)
+    assert result["metrics"]["spill_cumecs"] == pytest.approx(0.0)
+    assert result["metrics"]["total_outflow_cumecs"] == pytest.approx(53.0093)
+    assert result["metrics"]["outflow_component_residual_cumecs"] == pytest.approx(0)
+    assert result["units"]["water_level"] == "ft"
