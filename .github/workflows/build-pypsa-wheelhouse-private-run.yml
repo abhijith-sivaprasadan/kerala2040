@@ -23,9 +23,7 @@ jobs:
           mkdir -p wheelhouse
           python -m pip download \
             --dest wheelhouse \
-            "pypsa==1.2.4" \
-            "linopy==0.9.1" \
-            "highspy==1.15.1"
+            ".[dev]"
           python - <<'PY'
           from pathlib import Path
           files = sorted(Path("wheelhouse").glob("*"))
@@ -37,7 +35,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: pypsa-private-run-wheelhouse-py313
+          name: kerala2040-private-run-wheelhouse-py313
           retention-days: 7
           compression-level: 0
           path: wheelhouse/
