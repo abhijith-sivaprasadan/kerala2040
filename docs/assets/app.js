@@ -976,6 +976,16 @@
   function progress() {
     const rows = [
       {
+        title: "Hydro timing bounds v1.2 · 26 September",
+        summary:
+          "48 full-year cases solved across 1, 3, 15 and 30-day timing windows. Annual hydro energy is preserved; these are synthetic flexibility bounds, not reservoir storage durations or a validated water-balance model.",
+      },
+      {
+        title: "Intraday hydro flexibility v1.1 · 26 September",
+        summary:
+          "54 full-year cases preserve each day's hydro energy while changing its timing and available power. Hydro timing reduces modelled shortage but does not establish an adequate system under every transfer constraint.",
+      },
+      {
         title: "PyPSA import economics · 26 September",
         summary:
           "108 full-year sensitivity cases solved. Partial investment + import cost; no total-system-cost or validated capacity-plan claim.",
