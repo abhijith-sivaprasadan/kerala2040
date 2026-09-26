@@ -707,3 +707,79 @@ python scripts/run_full_pypsa_import_economics_v1_0.py \
   --acknowledge-partial-economics \
   --hours 8760
 ```
+
+
+## Implementation checkpoint 13 · daily-energy hydro flexibility v1.1
+
+v1.1 replaces the frozen FY2024-25 daily-average hydro replay in a focused 2030
+economic screen with **intraday-flexible hydro constrained to the same observed daily
+hydro MWh**. It still is not a reservoir/cascade model.
+
+The capacity boundary is reconciled to the canonical March-2026 **2,284.42 MW**
+Kerala hydro total. To preserve real station boundaries without exploding the model,
+five dispatch groups are used:
+
+| Hydro group | Capacity |
+|---|---:|
+| Idukki | 780 MW |
+| Sabarigiri | 340 MW |
+| Lower Periyar | 180 MW |
+| Kuttiyadi complex | 225 MW |
+| Remaining reconciled hydro | 759.42 MW |
+| **Total** | **2,284.42 MW** |
+
+The Kuttiyadi group combines the 75 MW base station, 50 MW extension and 100 MW
+additional extension already present in the March-2026 reconciled fleet ledger. The
+residual block preserves all other state and non-state hydro without inventing
+station-specific energy shares.
+
+For each modeled day, total hydro generation across all groups must equal the same
+FY2024-25 observed/imputed SLDC daily hydro MWh used by the earlier proxy chronology.
+The optimizer may move that energy among the day's 24 hours, but cannot borrow from
+another day or discard hydro energy.
+
+Four availability cases are tested:
+
+- **full available:** 2,284.42 MW;
+- **N-1 Idukki unit:** 2,154.42 MW, subtracting one source-anchored 130 MW Idukki unit;
+- **90% aggregate availability:** 2,055.978 MW synthetic derating;
+- **80% aggregate availability:** 1,827.536 MW synthetic derating.
+
+The 90% and 80% cases are declared stress assumptions, not observed outage rates.
+
+To isolate hydro, the v1.1 matrix fixes the other research dimensions at:
+
+- reference v0.7 renewable-capacity envelope;
+- low v0.5 BESS-cost case;
+- KSEBL weighted-purchase v1.0 import-price proxy.
+
+It then evaluates both FY2030 demand anchors and all three ATC sensitivities, giving
+**24 full-year hydro-flexibility cases**. Every case is compared against the same
+v1.0 flat-hydro economic baseline.
+
+v1.1 reports the change in unserved energy, imports, solar/wind/BESS build and partial
+economic objective due solely to intraday hydro flexibility and the selected hydro
+availability ceiling.
+
+This remains deliberately incomplete. v1.1 does **not** model:
+
+- reservoir storage volume or inter-day water balance;
+- cascade routing/travel time;
+- head-dependent turbine efficiency;
+- environmental/irrigation releases;
+- station-specific observed daily inflows/generation allocation;
+- actual forced-outage chronology;
+- pumped storage.
+
+Run:
+
+```bash
+python scripts/run_full_pypsa_hydro_dispatch_v1_1.py \
+  --acknowledge-not-reservoir-model \
+  --hours 8760
+```
+
+Passing v1.1 will tell us how much of the v1.0 shortage/build signal was an artefact
+of flattening hydro within each day. The next hydro step after that should be
+inter-day reservoir/cascade physics only where source-backed storage, inflow and
+operating constraints can be assembled.
