@@ -84,6 +84,8 @@ def _field_from_header(raw: Any) -> str | None:
         return None
     if "name of reservoir" in text or "name of dam" in text:
         return "reservoir"
+    if "storage wrt live storage at frl" in text:
+        return "storage_percent_wrt_frl"
     if "live storage at frl" in text or "total live storage at frl" in text:
         return "live_storage_at_frl_mcm"
     if "live storage" in text and "same day previous year" not in text:
