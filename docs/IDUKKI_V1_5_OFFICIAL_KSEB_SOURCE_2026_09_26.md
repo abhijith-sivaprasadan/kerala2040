@@ -94,3 +94,24 @@ python scripts/extract_kseb_idukki_official_v1_5.py \
 
 The CLI can also discover dated links from an archive/index page, but it does
 not invent URLs for dates that are not exposed by the source.
+
+## GitHub-hosted runner reachability
+
+The first live CI probe on 26 September 2026 could not establish an HTTPS
+connection from GitHub-hosted runners to `dams.kseb.in`. All three known
+official pages hit 30-second connection timeouts.
+
+This is recorded as a **source-reachability gate**, not as a parser failure and
+not as evidence that the KSEB pages are unavailable generally. The parser's
+lint and synthetic/header-driven tests passed, while independent web retrieval
+of the same official pages succeeded.
+
+The workflow therefore stays green only when the outcome is unambiguous:
+
+- `live_official_pages_verified` if the runner reaches and validates all three
+  pages; or
+- `blocked_github_hosted_runner_network_timeout` when the parser tests pass
+  but the KSEB host is unreachable from the runner.
+
+Any other extraction error remains a CI failure.
+
