@@ -89,8 +89,15 @@ def detect_format(path: Path) -> str:
 
 
 def month_from_filename(path: Path) -> str | None:
-    name = re.sub(r"[^a-z0-9]+", " ", path.name.lower())
-    year_match = re.search(r"\b(2024|2025)\b", name)
+    raw_name = path.name.lower()
+    numeric = re.search(r"(?<!\\d)(2024|2025)[-_ .](0?[1-9]|1[0-2])(?!\\d)", raw_name)
+    if numeric:
+        value = f"{int(numeric.group(1)):04d}-{int(numeric.group(2)):02d}"
+        if value in EXPECTED_MONTHS:
+            return value
+
+    name = re.sub(r"[^a-z0-9]+", " ", raw_name)
+    year_match = re.search(r"\\b(2024|2025)\\b", name)
     if not year_match:
         return None
     year = int(year_match.group(1))
@@ -98,7 +105,7 @@ def month_from_filename(path: Path) -> str | None:
     month_hits = [
         number
         for month_name, number in MONTH_LOOKUP.items()
-        if re.search(rf"\b{month_name}\b", name)
+        if re.search(rf"\\b{month_name}\\b", name)
     ]
     if len(month_hits) != 1:
         return None

@@ -19,6 +19,8 @@ def test_month_from_filename():
         == "2024-04"
     )
     assert month_from_filename(Path("reservoir_March_2025.xlsx")) == "2025-03"
+    assert month_from_filename(Path("2024-04.xlsx")) == "2024-04"
+    assert month_from_filename(Path("2025-03.xls")) == "2025-03"
     assert month_from_filename(Path("March_2026.xlsx")) is None
 
 

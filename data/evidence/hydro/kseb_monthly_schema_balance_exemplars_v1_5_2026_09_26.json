@@ -1,0 +1,89 @@
+{
+  "classification": "KSEB_MONTHLY_WORKBOOK_SCHEMA_AND_BALANCE_EXEMPLAR_VALIDATION_V1_5",
+  "prepared_date": "2026-09-26",
+  "purpose": "Validate parser design and water-balance QA against real KSEB monthly workbook bytes without admitting these off-period exemplars as FY2024-25 model input.",
+  "modern_exemplar": {
+    "source_origin": "KSEB Dam Safety monthly workbook",
+    "month": "2026-07",
+    "preserved_copy": {
+      "repository": "Am4l-babu/aqua-sync",
+      "commit": "6c6ba263ef832f0d696a51e9d3ebc0355a6d5b68",
+      "path": "research/raw/kseb_monthly/2026-07.xlsx"
+    },
+    "sha256": "4ee2f869595b33ebc8b1ef288cbdfbbae151a64a95100047fdadf8b7c7a0a102",
+    "size_bytes": 252222,
+    "daily_sheets": 31,
+    "additional_sheets": [
+      "MU",
+      "FB"
+    ],
+    "relevant_fields": [
+      "Live Storage (MCM)",
+      "Inflow (MCM)",
+      "Average Inflow (Cumecs)",
+      "Power House Discharge (MCM)",
+      "Spill (MCM)",
+      "Current Spillway release (Cumecs)",
+      "Total Outflow (MCM)",
+      "Rainfall (mm)",
+      "Generation (MU)"
+    ],
+    "inflow_mcm_vs_average_cumecs": {
+      "conversion": "cumecs * 0.0864 MCM/day",
+      "median_absolute_difference_mcm": 0.00019200000000019202,
+      "maximum_absolute_difference_mcm": 0.0003919999999997259
+    },
+    "ending_date_water_balance": {
+      "transitions": 30,
+      "robust_median_residual_mcm": -0.15504999999997227,
+      "robust_mad_mcm": 0.00044999999998318607,
+      "normal_transition_count": 29,
+      "normal_mean_residual_mcm": -0.15498965517241498,
+      "anomaly": {
+        "date": "2026-07-05",
+        "published_power_house_discharge_mcm": 1994,
+        "residual_mcm": 1991.851,
+        "treatment": "flag_source_anomaly_no_automatic_decimal_correction"
+      }
+    }
+  },
+  "legacy_exemplar": {
+    "source_origin": "KSEB Dam Safety monthly workbook",
+    "month": "2020-11",
+    "preserved_copy": {
+      "repository": "Am4l-babu/aqua-sync",
+      "commit": "6c6ba263ef832f0d696a51e9d3ebc0355a6d5b68",
+      "path": "research/raw/kseb_monthly/corrupt_window"
+    },
+    "sha256": "2e76078709cef63d75f6093d9982508c2c54b3649f9d7ba817e7cef0fae11e18",
+    "size_bytes": 1175552,
+    "detected_format": "legacy_xls_ole_compound_document",
+    "daily_sheets": 30,
+    "relevant_fields": [
+      "Today's Live Storage (MCM)",
+      "Inflow (cumecs)",
+      "Power House Discharge (cumecs)",
+      "Spillway release (cumecs)",
+      "Total Outflow (cumecs)",
+      "Rainfall (mm)"
+    ],
+    "ending_date_water_balance": {
+      "conversion": "cumecs * 0.0864 MCM/day",
+      "transitions": 29,
+      "robust_median_residual_mcm": -0.14480000000010196,
+      "robust_mad_mcm": 0.0006999999998718032,
+      "anomaly": {
+        "date": "2020-11-19",
+        "residual_mcm": 4.985377600000046,
+        "treatment": "flag_source_anomaly_no_automatic_reconstruction"
+      }
+    }
+  },
+  "inference_boundary": {
+    "report_date_convention_supported": true,
+    "evidence": "Both independent real workbook exemplars show tight storage closure when the report-date flow terms are assigned to the preceding 24-hour storage interval.",
+    "residual_physical_label": "unassigned",
+    "exemplar_values_are_fy2024_25_model_input": false,
+    "automatic_source_corrections_allowed": false
+  }
+}

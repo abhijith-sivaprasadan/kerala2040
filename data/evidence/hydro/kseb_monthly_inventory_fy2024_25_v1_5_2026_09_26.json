@@ -14,7 +14,10 @@
       "format": "xlsx",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-april-2024",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-april-2024&wpdmdl=4421",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4421"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4421",
+      "package_id": 4421,
+      "expected_format": "xlsx",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=4421"
     },
     {
       "month": "2024-05",
@@ -25,7 +28,10 @@
       "format": "xlsx",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-may-2024",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-may-2024&wpdmdl=4488",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4488"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4488",
+      "package_id": 4488,
+      "expected_format": "xlsx",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=4488"
     },
     {
       "month": "2024-06",
@@ -36,7 +42,10 @@
       "format": "xls",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-june-2024",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-june-2024&wpdmdl=4570",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4570"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4570",
+      "package_id": 4570,
+      "expected_format": "xls",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=4570"
     },
     {
       "month": "2024-07",
@@ -47,7 +56,10 @@
       "format": "xls",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-july-2024",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-july-2024&wpdmdl=4668",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4668"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4668",
+      "package_id": 4668,
+      "expected_format": "xls",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=4668"
     },
     {
       "month": "2024-08",
@@ -58,7 +70,10 @@
       "format": "xlsx",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-august-2024",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-august-2024&wpdmdl=4742",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4742"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4742",
+      "package_id": 4742,
+      "expected_format": "xlsx",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=4742"
     },
     {
       "month": "2024-09",
@@ -69,7 +84,10 @@
       "format": "xls",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-september-2024",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-september-2024&wpdmdl=4806",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4806"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4806",
+      "package_id": 4806,
+      "expected_format": "xls",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=4806"
     },
     {
       "month": "2024-10",
@@ -80,7 +98,10 @@
       "format": "xls",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-october-2024",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-october-2024&wpdmdl=4874",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4874"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4874",
+      "package_id": 4874,
+      "expected_format": "xls",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=4874"
     },
     {
       "month": "2024-11",
@@ -91,7 +112,10 @@
       "format": "xlsx",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-november-2024",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-november-2024&wpdmdl=4940",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4940"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=4940",
+      "package_id": 4940,
+      "expected_format": "xlsx",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=4940"
     },
     {
       "month": "2024-12",
@@ -102,7 +126,10 @@
       "format": "xlsx",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-december-2024",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-december-2024&wpdmdl=5012",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=5012"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=5012",
+      "package_id": 5012,
+      "expected_format": "xlsx",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=5012"
     },
     {
       "month": "2025-01",
@@ -113,7 +140,10 @@
       "format": "xls",
       "slug": "water-level-of-main-reservoirs-of-kseb-ltd-during-january-2025",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-ltd-during-january-2025&wpdmdl=5081",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=5081"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=5081",
+      "package_id": 5081,
+      "expected_format": "xls",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=5081"
     },
     {
       "month": "2025-02",
@@ -124,7 +154,10 @@
       "format": "xls",
       "slug": "water-level-of-main-reservoir-of-kseb-limited-during-february-2025",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoir-of-kseb-limited-during-february-2025&wpdmdl=5143",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=5143"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=5143",
+      "package_id": 5143,
+      "expected_format": "xls",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=5143"
     },
     {
       "month": "2025-03",
@@ -135,7 +168,10 @@
       "format": "xlsx",
       "slug": "water-level-of-main-reservoirs-of-kseb-limited-during-march-2025",
       "official_package_url": "https://dams.kseb.in/?wpdmpro=water-level-of-main-reservoirs-of-kseb-limited-during-march-2025&wpdmdl=5212",
-      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=5212"
+      "derived_short_download_url": "https://dams.kseb.in/?wpdmdl=5212",
+      "package_id": 5212,
+      "expected_format": "xlsx",
+      "direct_download_url": "https://dams.kseb.in/?wpdmdl=5212"
     }
   ],
   "inventory_status": "12_of_12_months_listed_on_official_kseb_index",
@@ -151,5 +187,23 @@
     "classification": "preserved_raw_html_snapshot_of_official_kseb_monthly_listing",
     "note": "The raw listing preserves KSEB WordPress Download Manager onclick URLs and file-type icon paths that are stripped from the current text-rendered retrieval surface."
   },
-  "file_format_status": "12_of_12_formats_identified_from_official_listing_file_type_icons"
+  "file_format_status": "12_of_12_formats_identified_from_official_listing_file_type_icons",
+  "package_metadata_source": {
+    "source": "Preserved raw HTML of the official KSEB monthly-statistics listing",
+    "preserved_at": "https://github.com/Am4l-babu/aqua-sync/blob/6c6ba263ef832f0d696a51e9d3ebc0355a6d5b68/research/raw/kseb_monthly/listing.html",
+    "official_origin": "https://dams.kseb.in/?p=329",
+    "interpretation": "Package IDs and XLS/XLSX icon types are extracted from KSEB's own WordPress Download Manager listing markup."
+  },
+  "direct_download_pattern": "https://dams.kseb.in/?wpdmdl=<package_id>",
+  "github_hosted_runner_transport_probe": {
+    "tested_on": "2026-09-26",
+    "resolved_ipv4": "117.239.153.11",
+    "http_port_80": "connect_timeout",
+    "https_port_443": "connect_timeout",
+    "package_ids_tested": [
+      4421,
+      5212
+    ],
+    "conclusion": "GitHub-hosted runners cannot currently establish TCP connections to dams.kseb.in. Use local/network-reachable acquisition; do not treat this as source absence."
+  }
 }
