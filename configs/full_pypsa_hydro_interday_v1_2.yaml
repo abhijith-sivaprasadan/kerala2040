@@ -47,7 +47,9 @@ interday_windows:
   - id: interday_3d
     window_days: 3
     classification: synthetic_interday_flexibility_upper_bound
-  - id: interday_15d\n    window_days: 15\n    classification: synthetic_interday_flexibility_upper_bound
+  - id: interday_15d
+    window_days: 15
+    classification: synthetic_interday_flexibility_upper_bound
   - id: interday_30d
     window_days: 30
     classification: synthetic_interday_flexibility_upper_bound
@@ -63,8 +65,8 @@ hydro:
   power_rule: 0_to_active_hydro_availability_MW
   annual_energy_preserved: true
   interpretation: >-
-    Windowed energy conservation is a temporal-flexibility bracket only. A 7-day
-    case does not mean Kerala has seven days of reservoir storage and a 30-day
+    Windowed energy conservation is a temporal-flexibility bracket only. A 15-day
+    case does not mean Kerala has fifteen days of reservoir storage and a 30-day
     case does not represent monthly reservoir operation.
   explicitly_not_modelled:
     - reservoir_state_of_charge
