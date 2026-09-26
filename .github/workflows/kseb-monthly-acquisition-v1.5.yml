@@ -1,0 +1,104 @@
+name: KSEB monthly acquisition probe v1.5
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/kseb-monthly-acquisition-v1.5.yml"
+      - "scripts/acquire_kseb_monthly_fy2024_25_v1_5.py"
+      - "src/kerala2040/kseb_monthly_bundle_v1_5.py"
+      - "data/evidence/hydro/kseb_monthly_inventory_fy2024_25_v1_5_2026_09_26.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    name: acquire-${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimal acquisition dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Probe and acquire official KSEB monthly workbooks
+        id: acquire
+        continue-on-error: true
+        shell: bash
+        run: |
+          mkdir -p results/hydro/kseb_monthly_acquisition_v1_5
+          python scripts/acquire_kseb_monthly_fy2024_25_v1_5.py \
+            --out-dir results/hydro/kseb_monthly_acquisition_v1_5/bundle \
+            --report results/hydro/kseb_monthly_acquisition_v1_5/report.json \
+            --attempts 2 \
+            --connect-timeout 20 \
+            --read-timeout 120
+
+      - name: Record runner acquisition status
+        if: always()
+        shell: bash
+        env:
+          RUNNER_OS_VALUE: ${{ runner.os }}
+          ACQUIRE_OUTCOME: ${{ steps.acquire.outcome }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          base = Path("results/hydro/kseb_monthly_acquisition_v1_5")
+          base.mkdir(parents=True, exist_ok=True)
+          report_path = base / "report.json"
+          report = {}
+          if report_path.is_file():
+              report = json.loads(report_path.read_text(encoding="utf-8"))
+
+          status = {
+              "classification": "KSEB_MONTHLY_GITHUB_RUNNER_ACQUISITION_PROBE_V1_5",
+              "runner_os": os.environ["RUNNER_OS_VALUE"],
+              "acquisition_step_outcome": os.environ["ACQUIRE_OUTCOME"],
+              "report_present": report_path.is_file(),
+              "downloaded_or_present": report.get("downloaded_or_present", 0),
+              "failed": report.get("failed", 12),
+              "ready_for_content_schema_audit": report.get(
+                  "ready_for_content_schema_audit", False
+              ),
+              "results": report.get("results", []),
+          }
+          (base / "runner_status.json").write_text(
+              json.dumps(status, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(status, indent=2))
+          PY
+
+      - name: Upload probe result and any acquired workbooks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kseb-monthly-v1.5-${{ runner.os }}
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            results/hydro/kseb_monthly_acquisition_v1_5/report.json
+            results/hydro/kseb_monthly_acquisition_v1_5/runner_status.json
+            results/hydro/kseb_monthly_acquisition_v1_5/bundle/*
+
+# This workflow is an acquisition probe, not model validation.
+# A green job means the probe/report was recorded successfully.
+# Only report.ready_for_content_schema_audit=true means all 12 official
+# workbooks were actually acquired and passed the byte/format gate.
