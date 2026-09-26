@@ -822,13 +822,13 @@ fabricated reservoir model: **how much would adequacy change if the same admitte
 FY2024-25 hydro energy could move between days?**
 
 The v1.1 one-day energy constraint remains the baseline. v1.2 adds non-overlapping
-**3-day, 7-day and 30-day** energy-conservation windows. Within each window PyPSA
+**3-day, 15-day and 30-day** energy-conservation windows. Within each window PyPSA
 may choose hourly hydro dispatch endogenously, but it must reproduce exactly the
 sum of the observed/imputed FY2024-25 daily hydro MWh targets in that window.
 Annual hydro energy is therefore unchanged in every case.
 
-This is deliberately a flexibility bracket, not a storage-duration assumption.
-A 7-day case does **not** assert seven days of usable Kerala reservoir storage, and
+The windows are deliberately nested (1 -> 3 -> 15 -> 30 days) so each longer case is a true relaxation of the shorter constraints. This is deliberately a flexibility bracket, not a storage-duration assumption.
+A 15-day case does **not** assert fifteen days of usable Kerala reservoir storage, and
 a 30-day case does not represent monthly reservoir operation. The retained official
 hydro-topology evidence explicitly blocks conversion to connected reservoir stores
 until inflows, releases/spill, shared-water accounting, head/efficiency curves,
@@ -841,7 +841,7 @@ cost and v1.0 KSEBL weighted-purchase import-price proxy, then combines:
 - 4,455 / 3,564 / 2,673 MW transfer sensitivities;
 - full 2,284.42 MW hydro availability and a source-anchored Idukki 130 MW N-1
   stress;
-- 1 / 3 / 7 / 30 day hydro-energy conservation windows.
+- 1 / 3 / 15 / 30 day hydro-energy conservation windows.
 
 That produces **48 full-year 8,760-hour cases**.
 
