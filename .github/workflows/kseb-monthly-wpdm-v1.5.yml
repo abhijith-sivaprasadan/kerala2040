@@ -1,0 +1,42 @@
+name: KSEB monthly WPDM discovery v1.5
+
+on:
+  pull_request:
+    paths:
+      - "scripts/discover_kseb_monthly_wpdm_v1_5.py"
+      - "tests/test_discover_kseb_monthly_wpdm_v1_5.py"
+      - "data/evidence/hydro/idukki_v1_4b_real_input_execution_2026_09_26.json"
+      - "docs/IDUKKI_V1_4B_REAL_INPUT_EXECUTION_2026_09_26.md"
+      - ".github/workflows/kseb-monthly-wpdm-v1.5.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  discovery-tool:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project
+        run: python -m pip install -e ".[dev]"
+      - name: Lint and tests
+        run: |
+          ruff check scripts/discover_kseb_monthly_wpdm_v1_5.py tests/test_discover_kseb_monthly_wpdm_v1_5.py
+          pytest -q tests/test_discover_kseb_monthly_wpdm_v1_5.py
+      - name: Probe live KSEB index without weakening gate
+        continue-on-error: true
+        run: |
+          python scripts/discover_kseb_monthly_wpdm_v1_5.py \
+            --timeout 5 \
+            --out results/hydro/kseb_wpdm_discovery_v1_5.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kseb-monthly-wpdm-v1.5-discovery
+          retention-days: 90
+          path: results/hydro/kseb_wpdm_discovery_v1_5.json
+          if-no-files-found: ignore
