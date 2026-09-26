@@ -156,6 +156,7 @@ async function main() {
       "Industry actual model summary",
     );
     await page.locator("#pilot").selectOption("psp");
+    await page.locator("summary").filter({hasText: "Assumptions, exact hourly results and limitations"}).click();
     check(
       (await page.locator("#pilotScope").innerText()).includes(
         "not a Kerala project",
