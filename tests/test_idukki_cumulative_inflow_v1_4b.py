@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
-import yaml
 
 from kerala2040.idukki_cumulative_inflow_v1_4b import (
     SUITE_CLASS,
@@ -27,28 +26,46 @@ def test_blank_zero_convention_rejects_material_positive_increment():
         )
 
 
-def test_build_source_informed_scenario_with_one_month_end_gap(tmp_path: Path):
-    dates = pd.date_range("2024-01-01", periods=8, freq="D")
-    rows = pd.DataFrame({
-        "date": dates,
-        "reservoir": ["IDUKKI"] * len(dates),
-        "inflow_mcm_day": [1.0, None, 2.0, None, 1.0, 1.0, 1.0, 1.0],
-        "month_inflow_mu": [1.0, 1.0, 3.0, 3.0, 4.0, 5.0, 6.0, 7.0],
-        "source_sha256": ["x"] * len(dates),
-    })
-    # Add enough historical blank pairs to satisfy the convention floor.
+def test_build_source_informed_scenario(tmp_path: Path):
     extra = []
     for month in range(2, 12):
         for day in range(1, 12):
-            date = pd.Timestamp(2023, month, day)
             extra.append({
-                "date": date,
+                "date": pd.Timestamp(2023, month, day),
                 "reservoir": "IDUKKI",
                 "inflow_mcm_day": None,
                 "month_inflow_mu": 0.0,
                 "source_sha256": "x",
             })
-    rows = pd.concat([pd.DataFrame(extra), rows], ignore_index=True)
+
+    # Pilot Jan 1-5:
+    # Jan 2 blank -> zero by convention.
+    # Jan 3 source row absent -> cumulative-derived as 3 MCM from Jan 2/4.
+    # Jan 5 source row absent -> unresolved because no following pilot day.
+    pilot = [
+        {
+            "date": pd.Timestamp("2024-01-01"),
+            "reservoir": "IDUKKI",
+            "inflow_mcm_day": 1.0,
+            "month_inflow_mu": 1.0,
+            "source_sha256": "a",
+        },
+        {
+            "date": pd.Timestamp("2024-01-02"),
+            "reservoir": "IDUKKI",
+            "inflow_mcm_day": None,
+            "month_inflow_mu": 1.0,
+            "source_sha256": "b",
+        },
+        {
+            "date": pd.Timestamp("2024-01-04"),
+            "reservoir": "IDUKKI",
+            "inflow_mcm_day": 2.0,
+            "month_inflow_mu": 6.0,
+            "source_sha256": "c",
+        },
+    ]
+    rows = pd.DataFrame([*extra, *pilot])
     source = tmp_path / "reservoir_rows.csv"
     rows.to_csv(source, index=False)
 
@@ -68,20 +85,33 @@ def test_build_source_informed_scenario_with_one_month_end_gap(tmp_path: Path):
         },
         "pilot_period": {
             "start": "2024-01-01",
-            "dispatch_end": "2024-01-08",
+            "dispatch_end": "2024-01-05",
         },
     }
-    # No rejected row in this small fixture, so the production one-unresolved
-    # invariant would fail. Verify convention independently and source hash.
-    frame = pd.read_csv(source, parse_dates=["date"])
-    idukki = frame.set_index("date").sort_index()
-    result = audit_blank_zero_convention(
-        idukki,
-        tolerance_mcm=0.0011,
-        minimum_pairs=100,
+    private = tmp_path / "private"
+    result = build_source_informed_inflow_scenarios(
+        source,
+        suite,
+        private_output_dir=private,
     )
-    assert result["materially_positive_pairs"] == 0
-    assert sha256(source) == suite["source"]["expected_sha256"]
+
+    assert result["pilot"]["source_reported_daily_inflow_days"] == 2
+    assert result["pilot"]["accepted_blank_zero_convention_days"] == 1
+    assert result["pilot"]["rejected_source_rows"] == 2
+    assert result["pilot"]["rejected_dates_recovered_by_adjacent_cumulative"] == 1
+    assert result["pilot"]["rejected_cumulative_derived_sum_mcm"] == pytest.approx(3.0)
+    assert result["pilot"]["source_unconstrained_dates_after_recovery"] == [
+        "2024-01-05"
+    ]
+    assert set(result["scenarios"]) == {
+        "nov30_zero_lower",
+        "nov30_same_month_median",
+        "nov30_same_month_p95",
+        "nov30_same_month_max",
+        "nov30_pilot_max_stress",
+    }
+    for scenario_id in result["scenarios"]:
+        assert (private / f"{scenario_id}.csv").is_file()
 
 
 def test_suite_class_constant():
