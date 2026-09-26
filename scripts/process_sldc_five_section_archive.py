@@ -40,7 +40,7 @@ COLUMNS={
   'statistics_sha256','imports_sha256','storage_sha256','availability_sha256','other_extrema_sha256'],
  'generation_rows.csv':['date','source_label','source_row','row_class','day_mu','month_cumulative_mu','reported_daily_average_mu','maximum_demand_mw','maximum_demand_time','machines_planned','machines_forced','machines_available','source_sha256'],
  'import_rows.csv':['date','source_label','source_row','row_class','day_mu','month_cumulative_mu','reported_daily_average_mu','source_sha256'],
- 'reservoir_rows.csv':['date','reservoir','source_row','minimum_drawdown_m','full_reservoir_level_m','full_storage_mcm','full_storage_mu','level_m','effective_storage_mcm','storage_pct','generation_capability_mu','other_generation_capability_mu','rainfall_mm','inflow_mcm_day','month_inflow_mu','previous_day_storage_pct','source_sha256'],
+ 'reservoir_rows.csv':['date','reservoir','source_row','minimum_drawdown_m','full_reservoir_level_m','full_storage_mcm','full_storage_mu','level_m','effective_storage_mcm','storage_pct','generation_capability_mu','other_generation_capability_mu','rainfall_mm','spill_mcm_day','inflow_mu','cum_inflow_month_mu','previous_day_storage_pct','source_sha256'],
  'extrema_rows.csv':['date','event','period','quantity','mw','time_from_ist','time_to_ist','frequency_hz','source_sha256'],
  'availability_rows.csv':['date','source_row','source_label','source_columns_json','source_sha256']}
 
@@ -129,7 +129,7 @@ def main():
         'minimum_drawdown_m':val(row,0),'full_reservoir_level_m':val(row,1),'full_storage_mcm':val(row,2),'full_storage_mu':val(row,3),
         'level_m':val(row,5),'effective_storage_mcm':val(row,6),'storage_pct':val(row,7),
         'generation_capability_mu':val(row,8),'other_generation_capability_mu':val(row,9),
-        'rainfall_mm':val(row,10),'inflow_mcm_day':val(row,12),'month_inflow_mu':val(row,13),'previous_day_storage_pct':val(row,14),
+        'rainfall_mm':val(row,10),'spill_mcm_day':val(row,11),'inflow_mu':val(row,12),'cum_inflow_month_mu':val(row,13),'previous_day_storage_pct':val(row,14),
         'source_sha256':reported})
      for row in rows:
       if len(row)>5 and row[2].strip()=='TOTAL':
@@ -213,6 +213,7 @@ def main():
  'key_caveats':['Historical 2019–2021 44-row Statistics pages label aggregate Generation, not Internal Generation; do not treat schema gaps as zero.',
  'Imports 2022+ repeats station generation under Imports; never add imported station totals to Statistics station totals.',
  'Reservoir short reports contain first reservoirs only; missing reservoirs and TOTAL are null, not zero.',
+ 'Storage-table source units are column-specific: RF is mm, Spill is mcm/day, Inflow is MU, and Cum. IF for month is MU; never relabel the Inflow MU column as mcm/day.',
  'Availability/Schedule are source-reported ENERGY in MU, not installed or operational MW; rows vary in width and context.',
  'Evening Peak is minute-timed separate statistic from half-hour Evening Maximum Demand.',
  '2019-08-06 is archive chosen start, not verified earliest SLDC date; 2026-09-23 rejected incomplete day.',
