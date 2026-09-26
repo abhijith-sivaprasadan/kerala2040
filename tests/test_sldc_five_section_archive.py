@@ -45,6 +45,14 @@ def _mini_zip(path: Path, corrupt: bool = False):
                         ['Day'], ['Header'], ['Other'], ['Third'], ['Fourth']]
             if sec == 'imports':
                 rows = [['Day'], ['Header'], ['Net Import', '25'], ['Other'], ['Fourth']]
+            if sec == 'storage':
+                rows = [
+                    ['Day'], ['Header'], ['Subheader'],
+                    ['694.944', '732.43', '1460', '2190', 'IDUKKI', '715.5',
+                     '638.682', '44', '958.023', '938.863', '5.8', '1.25',
+                     '0.965', '0.616', '44', 'fixture'],
+                    ['TOTAL', '', 'TOTAL', '', '45', '1847.203'],
+                ]
             if sec == 'other_extrema':
                 rows = [['Day'], ['Maximum Demand - 01.04.2024'], ['Morning Peak'],
                         ['MW', '3000'], ['Time', '06:10'], ['Evening Peak'],
@@ -73,6 +81,14 @@ def test_offline_archive_source_hash_and_balance(tmp_path: Path, monkeypatch):
     assert day['balance_error_mu'] == '0.0'
     assert day['energy_balance_qualified'] == 'True'
     assert day['consumption_qualified_mu'] == '35.0'
+    with (dest / 'reservoir_rows.csv').open() as file:
+        reservoir = next(csv.DictReader(file))
+    assert reservoir['reservoir'] == 'IDUKKI'
+    assert reservoir['rainfall_mm'] == '5.8'
+    assert reservoir['spill_mcm_day'] == '1.25'
+    assert reservoir['inflow_mu'] == '0.965'
+    assert reservoir['cum_inflow_month_mu'] == '0.616'
+    assert 'inflow_mcm_day' not in reservoir
     _mini_zip(inp, corrupt=True)
     monkeypatch.setattr(sys, 'argv', ['offline', str(inp), '--out', str(dest)])
     assert sldc.main() == 2
