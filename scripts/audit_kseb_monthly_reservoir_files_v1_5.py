@@ -133,7 +133,7 @@ def audit_file(month: str, path: Path, inventory_row: dict[str, Any]) -> dict[st
         "source_inventory": inventory_row,
         "local_file": {
             "filename": path.name,
-            "suffix": path.suffix.lower() or null_suffix(),
+            "suffix": path.suffix.lower() or None,
             "bytes": observed_bytes,
             "sha256": sha256(path),
             "detected_type": detect_file_type(path),
@@ -144,7 +144,7 @@ def audit_file(month: str, path: Path, inventory_row: dict[str, Any]) -> dict[st
             "observed_to_listed_ratio": (
                 observed_bytes / listed_bytes if listed_bytes else None
             ),
-            "binding_check": false_value(),
+            "binding_check": False,
             "interpretation": (
                 "KSEB's displayed size is rounded metadata only; it is not used "
                 "as an identity or authenticity check."
@@ -152,13 +152,6 @@ def audit_file(month: str, path: Path, inventory_row: dict[str, Any]) -> dict[st
         },
     }
 
-
-def null_suffix() -> None:
-    return None
-
-
-def false_value() -> bool:
-    return False
 
 
 def parse_month_file(value: str) -> tuple[str, Path]:
