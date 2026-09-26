@@ -1,0 +1,45 @@
+name: Build PyPSA wheelhouse for private local run
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/build-pypsa-wheelhouse-private-run.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wheelhouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download public Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          mkdir -p wheelhouse
+          python -m pip download \
+            --dest wheelhouse \
+            "pypsa==1.2.4" \
+            "linopy==0.9.1" \
+            "highspy==1.15.1"
+          python - <<'PY'
+          from pathlib import Path
+          files = sorted(Path("wheelhouse").glob("*"))
+          assert files
+          print("wheel_count", len(files))
+          print("bytes", sum(p.stat().st_size for p in files))
+          for p in files:
+              print(p.name, p.stat().st_size)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pypsa-private-run-wheelhouse-py313
+          retention-days: 7
+          compression-level: 0
+          path: wheelhouse/
+
+# This artifact contains only public package wheels/sdists.
+# It contains no Kerala2040 source data and no private reservoir rows.
