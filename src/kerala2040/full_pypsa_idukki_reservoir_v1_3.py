@@ -73,6 +73,7 @@ def load_idukki_reservoir_v13_suite(path: Path) -> dict[str, Any]:
         "idukki_stateful_reservoir_pilot_ready",
         "reconstructed_net_water_balance_ready",
         "same_horizon_v1_2_comparison_ready",
+        "endogenous_additional_release_slack_ready",
     ):
         if release[key] is not True:
             raise ValueError(f"v1.3 expected release flag is false: {key}")
