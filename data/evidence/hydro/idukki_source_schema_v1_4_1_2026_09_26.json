@@ -1,0 +1,106 @@
+{
+  "classification": "SOURCE_AUDITED_IDUKKI_STORAGE_TABLE_SCHEMA_CORRECTION_V1_4_1_NO_PRIVATE_DAILY_ROWS",
+  "prepared_date": "2026-09-26",
+  "raw_archive": {
+    "filename_role": "Kerala SLDC five-section raw collector archive",
+    "sha256": "2d55fefdcbfcacf7f753cebb0c429479abb6ea5eedb2533297a455735b6bfc3f",
+    "scope_start": "2019-08-06",
+    "scope_end": "2026-09-23"
+  },
+  "legacy_normalized_reservoir_rows": {
+    "sha256": "b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9",
+    "status": "schema_labels_superseded",
+    "error": "raw storage-table column 12 was labelled inflow_mcm_day although the source header says Inflow in MU; raw column 11 Spill mcm/day was omitted"
+  },
+  "corrected_source_columns": {
+    "raw_row_10": {"field": "rainfall_mm", "source_header": "RF / mm"},
+    "raw_row_11": {"field": "spill_mcm_day", "source_header": "Spill / mcm/day"},
+    "raw_row_12": {"field": "inflow_mu", "source_header": "Inflow / in MU"},
+    "raw_row_13": {"field": "cum_inflow_month_mu", "source_header": "Cum. IF for month mu"},
+    "raw_row_14": {"field": "previous_day_storage_pct", "source_header": "Previous day storage / %"}
+  },
+  "archive_population": {
+    "idukki_reservoir_rows": 2577,
+    "direct_idukki_inflow_mu_days": 2414,
+    "idukki_spill_mcm_day_nonmissing_days": 25,
+    "idukki_spill_mcm_day_positive_days": 25
+  },
+  "pilot_period": {
+    "start": "2024-04-01",
+    "dispatch_end": "2025-03-30",
+    "days": 364,
+    "idukki_source_rows": 353,
+    "direct_inflow_mu_days": 325,
+    "direct_blank_or_missing_inflow_days": 39,
+    "direct_inflow_max_mu": 74.038,
+    "spill_mcm_day_nonmissing_days": 0,
+    "spill_mcm_day_positive_days": 0
+  },
+  "source_cumulative_reconciliation": {
+    "method": "use exact differences of source-reported monthly cumulative inflow MU only where the accounting system uniquely determines a missing daily value; no interpolation",
+    "uniquely_recovered_days": 34,
+    "recovered_negative_accounting_correction_days": 5,
+    "recovered_zero_days": 23,
+    "recovered_positive_days": 6,
+    "positive_recoveries_mu": {
+      "2024-08-12": 13.286,
+      "2024-09-06": 12.447,
+      "2024-09-20": 4.636,
+      "2024-10-26": 23.514,
+      "2024-11-17": 2.479,
+      "2024-12-16": 5.836
+    },
+    "negative_source_accounting_corrections_mu": {
+      "2024-04-01": -0.034,
+      "2024-04-02": -0.315,
+      "2024-04-09": -0.043,
+      "2024-04-11": -0.170,
+      "2024-05-04": -0.008
+    },
+    "warning": "negative cumulative differences are source accounting corrections, not physical negative reservoir inflow"
+  },
+  "remaining_daily_timing_uncertainty": {
+    "unresolved_dates": [
+      "2024-11-30",
+      "2025-02-19",
+      "2025-02-20",
+      "2025-03-17",
+      "2025-03-18"
+    ],
+    "source_constrained_intervals": [
+      {
+        "dates": ["2025-02-19", "2025-02-20"],
+        "exact_total_mu": 0.698,
+        "daily_split": "unresolved"
+      },
+      {
+        "dates": ["2025-03-17", "2025-03-18"],
+        "exact_total_mu": 1.760,
+        "daily_split": "unresolved"
+      }
+    ],
+    "fully_unanchored_dates": ["2024-11-30"]
+  },
+  "pilot_source_accounting_totals": {
+    "known_daily_accounting_mu_sum": 2522.897,
+    "known_plus_exact_interval_totals_mu_sum_excluding_2024_11_30": 2525.355,
+    "fixed_v1_3_energy_equivalent_mwh_per_mcm": 1470.0,
+    "known_plus_interval_totals_equivalent_mcm_at_fixed_v1_3_conversion": 1717.928571429,
+    "conversion_role": "model energy-equivalent conversion only; source inflow is reported in MU, not measured catchment volume"
+  },
+  "model_admission": {
+    "source_reported_inflow_energy_equivalent_mu": true,
+    "source_reported_inflow_mcm_day": false,
+    "source_reported_spill_mcm_day_field_exists": true,
+    "pilot_idukki_observed_spill_chronology_complete": false,
+    "all_364_pilot_daily_inflows_source_resolved": false,
+    "cumulative_accounting_recovery_without_interpolation": true,
+    "two_day_source_total_constraints_available": true,
+    "2024_11_30_inflow_source_anchor_available": false,
+    "validated_catchment_inflow_volume_model": false
+  },
+  "supersedes": [
+    "the inflow_mcm_day field label emitted by the pre-2026-09-26 process_sldc_five_section_archive.py normalizer",
+    "Phase-4/v1.4 interpretations that treated raw storage-table Inflow as MCM/day"
+  ]
+}
