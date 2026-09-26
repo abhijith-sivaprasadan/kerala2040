@@ -277,7 +277,7 @@ def build_source_informed_inflow_scenarios(
         "archive_blank_convention": convention,
         "unresolved_date_bracket": {
             "date": unresolved_date.strftime("%Y-%m-%d"),
-            "same_month_observed_days": int(len(november)),
+            "same_month_observed_days": len(november),
             "same_month_observed_median_mcm_day": float(november.median()),
             "same_month_observed_p95_mcm_day": float(november.quantile(0.95)),
             "same_month_observed_max_mcm_day": float(november.max()),
