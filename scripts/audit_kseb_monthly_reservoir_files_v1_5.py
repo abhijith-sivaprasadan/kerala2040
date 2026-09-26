@@ -68,7 +68,7 @@ def detect_file_type(path: Path) -> dict[str, Any]:
         return {"family": "zip", "confidence": "magic"}
 
     lowered = head.lstrip().lower()
-    if lowered.startswith(b"<!doctype html") or lowered.startswith(b"<html"):
+    if lowered.startswith((b"<!doctype html", b"<html")):
         return {"family": "html", "confidence": "content"}
 
     if b"\x00" not in head:
