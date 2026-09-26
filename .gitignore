@@ -60,3 +60,6 @@ _site/
 
 /data/processed/
 .firecrawl/
+
+# Local poster render and QA intermediates
+output/

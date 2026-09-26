@@ -1,22 +1,15 @@
 {
   "name": "Kerala2040 — Our land. Our energy future.",
   "short_name": "Kerala2040",
-  "description": "Independent research into Kerala’s electricity, ecology, resilience and 2040 energy choices.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#f7f2e4",
-  "theme_color": "#174537",
+  "background_color": "#f7f4e9",
+  "theme_color": "#164c3b",
   "icons": [
     {
       "src": "assets/mark.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "assets/kerala2040-touch.png",
-      "sizes": "180x180",
-      "type": "image/png",
       "purpose": "any"
     }
   ]

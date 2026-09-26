@@ -1,1182 +1,1442 @@
-/* Kerala2040 — one evidence snapshot, one intelligible research story.
- * The actual numbers, workstreams and gate states come only from packaged QA.
- * The landscape art and Malayalam labels are cultural design, never GIS evidence. */
-"use strict";
-const RAW = "data/";
-const REPO = "https://github.com/abhijith-sivaprasadan/kerala2040";
-const $ = (selector,root=document) => root.querySelector(selector);
-const $$ = (selector,root=document) => Array.from(root.querySelectorAll(selector));
-const esc = value => String(value == null ? "" : value).replace(/[&<>'"]/g,
-  char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
-const num = value => value == null || value === "" || typeof value === "boolean" ? null :
-  Number.isFinite(Number(value)) ? Number(value) : null;
-const fmt = (value,digits=1) => num(value) == null ? "—" :
-  Number(value).toLocaleString("en-IN",{minimumFractionDigits:digits,maximumFractionDigits:digits});
-const plain = value => String(value == null ? "" : value).replaceAll("_"," ");
-const safeURL = value => {
-  const s=String(value||"");
-  return /^https:\/\/[a-z0-9.-]+(?::443)?\/[^\s<>"']*$/i.test(s) &&
-    !/^https:\/\/[^/]*@/.test(s) ? s : "";
-};
-const repoEvidence = value => {
-  const url=safeURL(value);
-  if(url.startsWith(REPO+"/blob/main/") ||
-    new RegExp("^"+REPO.replaceAll(".","\\.")+"/actions/runs/[0-9]+$").test(url))return url;
-  return "";
-};
-const repoFile = value => {
-  const path=String(value||"");
-  return path && !path.includes("..") && /^[a-zA-Z0-9_./-]+$/.test(path) ?
-    REPO+"/blob/main/"+path : "";
-};
-const state={site:null,daily:null,audit:null,ledger:null,route:"overview",month:"all",
-  metric:"consumption_mu",scenario:null,theme:"kasavu",district:null,solarDistrict:null};
-const gatesRequired=["ecological_capacity_ceiling","techno_economic_2040"];
-const routeIds=["overview","electricity","pathways","atlas","industry","workbench","audit","data"];
-
-async function getJSON(filename) {
-  if(!/^[a-z0-9_-]+\.json$/i.test(filename))throw new Error("Unsafe bundle filename");
-  const response=await fetch(RAW+filename,{cache:"no-store"});
-  if(!response.ok)throw new Error("Evidence unavailable: "+filename+" HTTP "+response.status);
-  return response.json();
-}
-
-function verifySnapshot(site,daily,audit,ledger) {
-  if(!site || !site.metadata || !site.metadata.files || !site.baseline)throw new Error("Missing published evidence contract");
-  if(!daily || !Array.isArray(daily.records) || site.baseline.rows!==daily.records.length)throw new Error("Mixed SLDC snapshots");
-  if(!audit || audit.classification!=="repository_evidence_audit_not_external_source_validation" ||
-     audit.finding_count!==audit.findings.length)throw new Error("Audited findings unavailable");
-  if(!ledger || ledger.classification!=="dated_repository_research_progress_NOT_geospatial_or_model_readiness" ||
-     ledger.audit_open_findings!==audit.open_findings)throw new Error("Mixed research audit");
-  if(ledger.eligible_area_sq_km!==null || ledger.potential_mw!==null ||
-     ledger.ecological_capacity_ceiling_ready!==false ||
-     gatesRequired.some(key=>ledger.release_gates[key]?.passed))throw new Error("Unadmitted scientific result");
-  if(site.baseline.hourly_model_calibrated!==false)throw new Error("Unproven hourly calibration");
-  return true;
-}
-
-async function loadPlatformData(){
-  const site=await getJSON("site-data.json");
-  const f=site.metadata?.files||{};
-  if(!f.daily_balance || !f.audit_readiness || !f.research_ledger)throw new Error("Incomplete published data manifest");
-  const [daily,audit,ledger]=await Promise.all([
-    getJSON(f.daily_balance),getJSON(f.audit_readiness),getJSON(f.research_ledger)
-  ]);
-  verifySnapshot(site,daily,audit,ledger);
-  state.site=site;state.daily=daily;state.audit=audit;state.ledger=ledger;
-  return state;
-}
-function labelStage(phase){
-  return {validated_source:"Source QA verified · model admission separate",
-    partial:"Partial evidence",blocked:"Missing critical evidence"}[phase]||"Not verified";
-}
-function stageClass(phase){return phase==="validated_source"?"verified":phase==="partial"?"partial":"blocked"}
-function sourceTrail(item){
-  return '<div class="source-links">'+(item.evidence||[]).map(link=>{
-    const url=repoEvidence(link.href);
-    return url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(link.label)+' ↗</a>':"";
-  }).join("")+"</div>";
-}
-// The welcome is a small dismissible card, never a modal or an evidence loader.
-// It runs at most once per browser session, only on the home route.
-let welcomeTimer=null;
-let welcomeSeenInMemory=false;
-function prefersReducedMotion(){
-  return Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches);
-}
-function dismissWelcome(){
-  const card=$("#welcomeCard");
-  if(welcomeTimer!==null){clearTimeout(welcomeTimer);welcomeTimer=null}
-  if(!card || card.hidden)return;
-  card.classList.remove("is-open");
-  if(prefersReducedMotion()){
-    card.hidden=true;
-    return;
-  }
-  card.classList.add("is-leaving");
-  welcomeTimer=setTimeout(()=>{
-    card.hidden=true;
-    card.classList.remove("is-leaving");
-    welcomeTimer=null;
-  },220);
-}
-function showWelcome(){
-  const card=$("#welcomeCard");
-  if(!card || welcomeSeenInMemory || location.hash && location.hash!=="#overview" ||
-     prefersReducedMotion())return false;
-  try{
-    if(sessionStorage.getItem("kerala2040-welcomed")==="1")return false;
-    sessionStorage.setItem("kerala2040-welcomed","1");
-  }catch{
-    // Storage can be disabled: still never replay on later route changes.
-  }
-  welcomeSeenInMemory=true;
-  card.hidden=false;
-  card.classList.remove("is-leaving");
-  card.classList.add("is-open");
-  welcomeTimer=setTimeout(dismissWelcome,2400);
-  return true;
-}
-// All line segments are measured separately: dash animation never crosses missing days.
-function animateObservedPaths(root){
-  if(!root || prefersReducedMotion() ||
-     !document.documentElement?.classList.contains("motion-ready"))return;
-  const paths=root.querySelectorAll?.(".chart-line, .viz-hydro-line, .viz-storage-line");
-  if(!paths)return;
-  paths.forEach((path,index)=>{
-    if(typeof path.getTotalLength!=="function")return;
-    const length=path.getTotalLength();
-    if(!Number.isFinite(length)||length<=0)return;
-    path.style.setProperty("--draw-length",(length+2).toFixed(2));
-    path.style.setProperty("--draw-delay",Math.min(index,16)*28+"ms");
-  });
-  root.classList.add("chart-animated");
-}
-function animateVisibleArtwork(){
-  $$(".viz-card.is-visible svg, .viz-electricity-story.is-visible svg, .viz-water-story.is-visible svg").forEach(animateObservedPaths);
-  if(state.route==="electricity")animateObservedPaths($("#energyChart svg"));
-}
-function setupMotion(){
-  if(prefersReducedMotion() || !window.IntersectionObserver)return;
-  document.documentElement.classList.add("motion-ready");
-  const observer=new window.IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add("is-visible");
-        if(entry.target.matches(".viz-card, .viz-electricity-story, .viz-water-story")){
-          entry.target.querySelectorAll("svg").forEach(animateObservedPaths);
-        }
-        observer.unobserve(entry.target);
-      }
-    });
-  },{threshold:0.14});
-  $$(".system-story, .chapter, .viz-card, .viz-electricity-story, .viz-water-story").forEach(element=>observer.observe(element));
-}
-function go(route){
-  const target=routeIds.includes(route)?route:"overview";
-  if(location.hash!=="#"+target)history.pushState(null,"","#"+target);
-  showView(target);
-  const heading=document.querySelector(".view.active h1");
-  if(heading){heading.setAttribute("tabindex","-1");heading.focus?.({preventScroll:true});}
-}
-function showView(route){
-  state.route=routeIds.includes(route)?route:"overview";
-  if(state.route!=="overview")dismissWelcome();
-  $$(".view").forEach(view=>{view.classList.toggle("active",view.dataset.view===state.route);});
-  $$("[data-route]").forEach(el=>{
-    const active=el.dataset.route===state.route;
-    el.classList.toggle("active",active);
-    if(el.closest("nav"))el.setAttribute("aria-current",active?"page":"false");
-  });
-  const menu=$("#mobileNav"),toggle=$("#menuToggle");
-  if(menu&&toggle){menu.hidden=true;toggle.setAttribute("aria-expanded","false")}
-  window.scrollTo?.({top:0,behavior:"auto"});
-  if(state.route==="electricity")window.requestAnimationFrame?.(animateVisibleArtwork);
-}
-function bindRoutes(root=document){
-  $$("[data-route]",root).forEach(button=>{
-    if(button.dataset.routeBound)return;
-    button.dataset.routeBound="1";
-    button.addEventListener("click",event=>{event.preventDefault();go(button.dataset.route)});
-  });
-}
-function chooseTheme(name){
-  if(!["kasavu","monsoon","laterite"].includes(name))name="kasavu";
-  state.theme=name;
-  document.documentElement.dataset.theme=name;
-  $$("[data-theme-choice]").forEach(button=>
-    button.setAttribute("aria-pressed",String(button.dataset.themeChoice===name)));
-  try{localStorage.setItem("kerala2040-theme",name)}catch{}
-}
-function bindInteractions(){
-  bindRoutes();
-  $("#welcomeDismiss")?.addEventListener("click",dismissWelcome);
-  $$("[data-theme-choice]").forEach(button=>
-    button.addEventListener("click",()=>chooseTheme(button.dataset.themeChoice)));
-  $("#menuToggle")?.addEventListener("click",()=>{
-    const nav=$("#mobileNav"),button=$("#menuToggle");
-    nav.hidden=!nav.hidden;
-    button.setAttribute("aria-expanded",String(!nav.hidden));
-  });
-  $("#energyMetric")?.addEventListener("change",e=>{state.metric=e.target.value;renderChart()});
-  $("#energyMonth")?.addEventListener("change",e=>{state.month=e.target.value;renderChart()});
-  $("#downloadObserved")?.addEventListener("click",downloadObserved);
-  $("#scenarioList")?.addEventListener("click",e=>{
-    const button=e.target.closest("[data-scenario]");
-    if(button){state.scenario=button.dataset.scenario;renderScenario()}
-  });
-  $("#workbenchSearch")?.addEventListener("input",renderWorkbench);
-  $("#workbenchPhase")?.addEventListener("change",renderWorkbench);
-  $("#auditSearch")?.addEventListener("input",renderFindings);
-  $("#auditPriority")?.addEventListener("change",renderFindings);
-  $("#sourceSearch")?.addEventListener("input",renderSources);
-  $("#solarDistrictChoice")?.addEventListener("change",event=>{
-    state.solarDistrict=event.target.value;renderSolarDistrictDetail();
-  });
-  $("#districtChoice")?.addEventListener("change",event=>{
-    state.district=event.target.value;renderDistrictDetail();
-  });
-  $("#districtOverview")?.addEventListener("click",event=>{
-    const button=event.target.closest?.("[data-district]");
-    if(button){state.district=button.dataset.district;renderDistrictDetail();}
-  });
-  $("#spatialPipeline")?.addEventListener("click",e=>{
-    const button=e.target.closest("[data-layer]");
-    if(!button)return;
-    const id=button.dataset.layer;
-    const detail=document.getElementById("layer-"+id);
-    if(!detail)return;
-    const expanded=button.getAttribute("aria-expanded")==="true";
-    button.setAttribute("aria-expanded",String(!expanded));
-    detail.hidden=expanded;
-  });
-  window.addEventListener("popstate",()=>showView(location.hash.slice(1)));
-  window.addEventListener("hashchange",()=>showView(location.hash.slice(1)));
-}
-function statsHTML(items){
-  return items.map(([value,label,note])=>'<div class="summary-stat"><strong>'+
-    esc(value)+'</strong><span>'+esc(label)+'</span><small>'+esc(note)+'</small></div>').join("");
-}
-
-// Kerala2040 editorial charts. All coordinates come from published SLDC daily
-// observations. Decorative chapters are separate; no missing day is imputed.
-const monthNames=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const sumField=(rows,key)=>rows.reduce((total,row)=>total+Number(row[key]),0);
-const drawMU=(mu,places=2)=>fmt(mu/1000,places)+" TWh";
-function observedMonths(rows,baseline){
-  const start=baseline.expected_start||"2024-04-01";
-  const year=Number(start.slice(0,4)),month=Number(start.slice(5,7));
-  const missing=baseline.missing_days||[];
-  const groups=[];
-  for(let i=0;i<12;i++){
-    const date=new Date(Date.UTC(year,month-1+i,1));
-    const key=date.toISOString().slice(0,7);
-    const days=rows.filter(row=>row.date.slice(0,7)===key);
-    const gaps=missing.filter(day=>day.slice(0,7)===key);
-    const expected=new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth()+1,0)).getUTCDate();
-    const total=sumField(days,"consumption_mu"),imports=sumField(days,"net_import_interface_mu");
-    const local=sumField(days,"internal_generation_mu");
-    groups.push({key,label:monthNames[date.getUTCMonth()],days,gaps,expected,
-      total,imports,local,mean:days.length?total/days.length:null,
-      meanImports:days.length?imports/days.length:null,
-      meanLocal:days.length?local/days.length:null});
-  }
-  return groups;
-}
-function drawBalanceArt(rows){
-  const total=sumField(rows,"consumption_mu"),imports=sumField(rows,"net_import_interface_mu");
-  const local=sumField(rows,"internal_generation_mu"),hydro=sumField(rows,"hydel_total_mu");
-  if(total<=0 || ![total,imports,local,hydro].every(Number.isFinite))
-    return '<p class="viz-unavailable">The observed balance is unavailable. No figure is drawn.</p>';
-  const impWidth=Math.min(100,Math.max(0,imports/total*100));
-  const localWidth=Math.max(0,100-impWidth);
-  const hydroWidth=Math.min(100,Math.max(0,hydro/local*100));
-  return '<div class="balance-lead"><span>RECORDED ELECTRICITY CONSUMPTION</span>'+
-    '<strong>'+drawMU(total)+'</strong><small>'+rows.length+
-    ' observed days · not a complete financial-year total</small></div>'+
-    '<div class="balance-track" role="img" aria-label="Of '+drawMU(total)+
-    ' recorded consumption, '+drawMU(imports)+' were net imports and '+drawMU(local)+
-    ' were generated inside Kerala">'+
-      '<span class="balance-import" style="width:'+impWidth.toFixed(3)+'%"></span>'+
-      '<span class="balance-local" style="width:'+localWidth.toFixed(3)+'%"></span>'+
-    '</div>'+
-    '<div class="balance-figures">'+
-      '<div><span class="viz-key import"></span><small>NET IMPORTS / INTERSTATE INTERFACES</small>'+
-      '<strong>'+fmt(imports/total*100,1)+'%</strong><span>'+drawMU(imports)+'</span></div>'+
-      '<div><span class="viz-key local"></span><small>GENERATED INSIDE KERALA</small>'+
-      '<strong>'+fmt(local/total*100,1)+'%</strong><span>'+drawMU(local)+'</span></div></div>'+
-    '<div class="balance-hydro"><div class="balance-hydro-text"><div><span class="viz-key hydro"></span>'+
-      '<strong>Inside the green part: hydropower</strong></div>'+
-      '<small>'+drawMU(hydro)+' · '+fmt(hydro/local*100,1)+
-      '% of recorded in-state generation, not an additional source of consumption</small></div>'+
-      '<div class="hydro-subtrack" role="img" aria-label="Hydro accounts for '+
-      fmt(hydro/local*100,1)+' percent of observed in-state generation">'+
-      '<span style="width:'+hydroWidth.toFixed(3)+'%"></span></div></div>';
-}
-function drawMonthlyArt(months){
-  const maximum=Math.max(1,...months.map(m=>m.mean||0));
-  const yBase=303,scale=204/maximum;
-  const grid=[0,.25,.5,.75,1].map(frac=>{
-    const y=(yBase-204*frac).toFixed(1);
-    return '<line x1="76" y1="'+y+'" x2="1103" y2="'+y+'" class="viz-grid"/>'+
-      '<text x="67" y="'+(Number(y)+4)+'" text-anchor="end" class="viz-axis">'+
-      esc(fmt(maximum*frac,0))+'</text>';
-  }).join("");
-  const bars=months.map((m,i)=>{
-    const x=93+i*85;
-    if(m.mean===null)return '<g><title>'+esc(m.key)+': no observations</title>'+
-      '<rect x="'+x+'" y="99" width="44" height="204" class="viz-empty-month"/>'+
-      '<text x="'+(x+22)+'" y="321" text-anchor="middle" class="viz-month">'+
-        esc(m.label)+'</text></g>';
-    const a=Math.max(0,m.meanImports*scale),b=Math.max(0,m.meanLocal*scale);
-    const yImp=yBase-a,yLocal=yImp-b;
-    return '<g class="viz-month-column" data-month="'+esc(m.key)+'" style="--viz-delay:'+(i*65)+'ms"><title>'+esc(m.key)+': '+m.days.length+
-      '/'+m.expected+' reports. Mean observed day '+fmt(m.mean,2)+
-      ' MU: net imports '+fmt(m.meanImports,2)+
-      ', in-state generation '+fmt(m.meanLocal,2)+
-      '. Missing dates: '+(m.gaps.length?m.gaps.join(", "):"none")+'</title>'+
-      '<rect x="'+x+'" y="'+yImp.toFixed(2)+'" width="44" height="'+a.toFixed(2)+
-      '" class="viz-net-bar"/>'+
-      '<rect x="'+x+'" y="'+yLocal.toFixed(2)+'" width="44" height="'+b.toFixed(2)+
-      '" class="viz-local-bar"/>'+
-      (m.gaps.length?'<path d="M'+x+' 81h44" class="viz-gap-stroke"/>'+
-        '<text x="'+(x+22)+'" y="73" text-anchor="middle" class="viz-gap-label">'+
-        m.gaps.length+' gap'+(m.gaps.length===1?'':'s')+'</text>':'')+
-      '<text x="'+(x+22)+'" y="325" text-anchor="middle" class="viz-month">'+
-        esc(m.label)+'</text>'+
-      '<text x="'+(x+22)+'" y="346" text-anchor="middle" class="viz-month-count">'+
-        m.days.length+'/'+m.expected+'</text></g>';
-  }).join("");
-  return '<div class="viz-legend"><span><i class="viz-key import"></i>Net imports</span>'+
-    '<span><i class="viz-key local"></i>In-state generation</span>'+
-    '<span><i class="viz-key gap"></i>Missing original report</span></div>'+
-    '<div class="viz-scroll"><svg class="viz-month-svg" viewBox="0 0 1140 376" role="img" tabindex="0" '+
-    'aria-label="Monthly mean observed-day electricity consumption, subdivided into net imports and in-state generation. Amber markers show missing reports." '+
-    'xmlns="http://www.w3.org/2000/svg"><title>Kerala electricity mix across twelve months</title>'+
-    '<desc>Height is mean observed daily consumption in MU/day. These are not complete monthly totals. Gaps are marked, not interpolated.</desc>'+
-    '<text x="76" y="23" class="viz-axis">MU/day · observed daily average</text>'+
-    grid+bars+'</svg></div><p class="viz-figure-note">SOURCE · SLDC FY2024–25 daily balance'+
-    ' · '+months.reduce((n,m)=>n+m.days.length,0)+'/'+
-    months.reduce((n,m)=>n+m.expected,0)+' dates observed'+
-    ' · gold dash = unresolved daily source report</p><p class="viz-live-readout" aria-live="polite">Focus the chart and use the arrow keys or inspect any month. Missing days stay missing.</p>';
-}
-function drawMonthlyTable(months){
-  const header='<table><thead><tr><th>Month</th><th>Days with reports</th>'+
-    '<th>Consumption, mean MU/day</th><th>Net imports, mean MU/day</th>'+
-    '<th>In-state, mean MU/day</th><th>Missing original dates</th></tr></thead><tbody>';
-  return header+months.map(m=>'<tr><th scope="row">'+esc(m.key)+'</th>'+
-    '<td>'+m.days.length+'/'+m.expected+'</td>'+
-    '<td>'+fmt(m.mean,2)+'</td><td>'+fmt(m.meanImports,2)+'</td>'+
-    '<td>'+fmt(m.meanLocal,2)+'</td>'+
-    '<td>'+(m.gaps.length?esc(m.gaps.join(", ")):"None")+'</td></tr>').join("")+
-    '</tbody></table>';
-}
-function drawHydroArt(rows,baseline){
-  if(!rows.length)return '<p class="viz-unavailable">No recorded hydro and storage days.</p>';
-  const start=Date.parse((baseline.expected_start||rows[0].date)+"T00:00:00Z");
-  const end=Date.parse((baseline.expected_end||rows[rows.length-1].date)+"T00:00:00Z");
-  const x=date=>74+1002*(Date.parse(date+"T00:00:00Z")-start)/Math.max(86400000,end-start);
-  const highest=Math.ceil(Math.max(...rows.map(r=>Number(r.hydel_total_mu)))/5)*5||5;
-  const yHydro=v=>274-165*Math.max(0,v)/highest;
-  const yWater=v=>520-150*Math.max(0,Math.min(100,v))/100;
-  const missing=baseline.missing_days||[];
-  const segments=key=>{
-    const paths=[];let part=[];
-    for(let i=0;i<rows.length;i++){
-      if(i && Date.parse(rows[i].date)-Date.parse(rows[i-1].date)>86400000){
-        if(part.length)paths.push(part);part=[];
-      }
-      const y=key==="hydel_total_mu"?yHydro(Number(rows[i][key])):yWater(Number(rows[i][key]));
-      part.push((part.length?'L':'M')+x(rows[i].date).toFixed(2)+','+y.toFixed(2));
+/* Kerala2040 v2. First-party Canvas plots; source records remain inspectable. */
+(function () {
+  "use strict";
+  const finite = (v) => typeof v === "number" && Number.isFinite(v);
+  const fmt = (v, n = 1) =>
+    finite(v)
+      ? (Object.is(v, -0) ? 0 : v).toLocaleString("en-IN", {
+          minimumFractionDigits: n,
+          maximumFractionDigits: n,
+        })
+      : "Unavailable";
+  function monthly(records) {
+    const groups = new Map();
+    for (const r of records) {
+      const key = r.date.slice(0, 7);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(r);
     }
-    if(part.length)paths.push(part);
-    return paths.map(d=>'<path d="'+d.join(' ')+'" class="'+
-      (key==="hydel_total_mu"?"viz-hydro-line":"viz-storage-line")+'"/>').join("");
+    return [...groups]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, rows]) => {
+        const sum = (k) =>
+          rows.every((r) => finite(r[k]))
+            ? rows.reduce((a, r) => a + r[k], 0)
+            : null;
+        const consumption = sum("consumption_mu"),
+          imports = sum("net_import_interface_mu"),
+          internal = sum("internal_generation_mu");
+        const days = new Date(
+          Number(month.slice(0, 4)),
+          Number(month.slice(5)),
+          0,
+        ).getDate();
+        return {
+          month,
+          observed: rows.length,
+          missing: days - rows.length,
+          consumption: consumption / rows.length,
+          imports: imports / rows.length,
+          internal: internal / rows.length,
+          share: (100 * imports) / consumption,
+        };
+      });
+  }
+  function chronological(records, key) {
+    const byDate = new Map(records.map((r) => [r.date, r]));
+    if (!records.length) return [];
+    const start = new Date(records[0].date + "T00:00:00Z"),
+      end = new Date(records.at(-1).date + "T00:00:00Z"),
+      out = [];
+    for (let d = start; d <= end; d.setUTCDate(d.getUTCDate() + 1)) {
+      const date = d.toISOString().slice(0, 10);
+      out.push({
+        label: date,
+        value: finite(byDate.get(date)?.[key]) ? byDate.get(date)[key] : null,
+      });
+    }
+    return out;
+  }
+  function validateObserved(d, b) {
+    if (d.length !== b.rows || new Set(d.map((x) => x.date)).size !== d.length)
+      throw Error(
+        "Observation coverage does not match the published baseline.",
+      );
+    if (
+      d.some(
+        (r) =>
+          !finite(r.consumption_mu) ||
+          !finite(r.net_import_interface_mu) ||
+          !finite(r.internal_generation_mu) ||
+          Math.abs(
+            r.consumption_mu -
+              r.net_import_interface_mu -
+              r.internal_generation_mu,
+          ) > 0.05,
+      )
+    )
+      throw Error("Electricity accounting check failed.");
+    const total = d.reduce((a, r) => a + r.consumption_mu, 0) / 1000;
+    if (Math.abs(total - b.consumption_twh) > 0.001)
+      throw Error("Observation totals do not match the published baseline.");
+  }
+  if (typeof module !== "undefined")
+    module.exports = { monthly, chronological, validateObserved, finite };
+  if (typeof document === "undefined") return;
+  const $ = (id) => document.getElementById(id),
+    text = (id, value) => {
+      $(id).textContent = value;
+    };
+  const colours = () => {
+    const c = getComputedStyle(document.documentElement);
+    return [
+      "--green",
+      "--gold",
+      "--clay",
+      "--muted",
+      "--line",
+      "--ink",
+      "--paper",
+    ].map((k) => c.getPropertyValue(k).trim());
   };
-  const ticks=[0,.25,.5,.75,1].map(f=>{
-    const y1=yHydro(highest*f),y2=yWater(100*f);
-    return '<path d="M74 '+y1+'H1076M74 '+y2+'H1076" class="viz-grid"/>'+
-      '<text x="65" y="'+(y1+4)+'" text-anchor="end" class="viz-axis">'+fmt(highest*f,0)+'</text>'+
-      '<text x="65" y="'+(y2+4)+'" text-anchor="end" class="viz-axis">'+fmt(f*100,0)+'</text>';
-  }).join("");
-  const months=observedMonths(rows,baseline);
-  const labels=months.map(m=>{
-    const xx=x(m.key+"-01");
-    return '<path d="M'+xx+' 98V525" class="viz-month-guide"/>'+
-      '<text x="'+xx+'" y="550" class="viz-axis">'+esc(m.label)+'</text>';
-  }).join("");
-  const gapLines=missing.map(day=>{
-    const xx=x(day).toFixed(2);
-    return '<path d="M'+xx+' 96V525" class="viz-gap-guide">'+
-      '<title>Missing original daily report: '+esc(day)+'</title></path>';
-  }).join("");
-  const tooltipDots=rows.map((day,i)=>{
-    const xpoint=x(day.date).toFixed(2);
-    const yr=yHydro(Number(day.hydel_total_mu)).toFixed(2);
-    const ys=yWater(Number(day.storage_pct_energy_weighted)).toFixed(2);
-    return '<g class="viz-data-dots"><circle cx="'+xpoint+'" cy="'+yr+
-      '" r="2.2" class="viz-hydro-dot"><title>'+esc(day.date)+
-      ': '+fmt(day.hydel_total_mu,2)+' MU hydro generation</title></circle>'+
-      '<circle cx="'+xpoint+'" cy="'+ys+'" r="2.2" class="viz-storage-dot">'+
-      '<title>'+esc(day.date)+': '+fmt(day.storage_pct_energy_weighted,2)+
-      '% energy-weighted reservoir storage</title></circle></g>';
-  }).join("");
-  return '<div class="viz-legend"><span><i class="viz-key hydro"></i>Hydropower output · MU/day</span>'+
-    '<span><i class="viz-key storage"></i>Reservoir storage · %</span>'+
-    '<span><i class="viz-key gap"></i>Unobserved report date</span></div>'+
-    '<div class="viz-scroll"><svg class="viz-hydro-svg" viewBox="0 0 1130 579" role="img" tabindex="0" '+
-    'aria-label="Hydropower generation and energy-weighted reservoir storage through FY2024–25. Two independent units, with broken lines at eleven missing original report dates." '+
-    'xmlns="http://www.w3.org/2000/svg"><title>Hydro and reservoir storage: the same observed chronology</title>'+
-    '<desc>Top line shows daily hydro electricity in MU per day. Lower line shows storage percent. Missing source dates break both lines; storage is not converted to generation.</desc>'+
-    '<text x="74" y="46" class="viz-panel-title">01 / ELECTRICITY FROM WATER</text>'+
-    '<text x="74" y="70" class="viz-panel-subtitle">Daily hydropower generation · MU/day</text>'+
-    '<text x="74" y="337" class="viz-panel-title">02 / WATER HELD IN RESERVOIRS</text>'+
-    '<text x="74" y="359" class="viz-panel-subtitle">Energy-weighted reservoir storage · %</text>'+
-    ticks+labels+gapLines+segments("hydel_total_mu")+
-    segments("storage_pct_energy_weighted")+tooltipDots+
-    '<text x="1076" y="576" text-anchor="end" class="viz-axis">FY2024–25 · observed days only</text>'+
-    '</svg></div><p class="viz-figure-note">SOURCE · Kerala SLDC daily hydro output and reservoir storage'+
-    ' · '+rows.length+'/'+baseline.expected_days+' reported dates'+
-    ' · missing reports remain blank</p><p class="viz-live-readout" aria-live="polite">Hover, tap or use the arrow keys to inspect a dated reading. Gaps remain missing.</p>';
-}
-function drawHydroTable(rows){
-  return '<table><thead><tr><th>Date</th><th>Hydro generation (MU/day)</th>'+
-    '<th>Reservoir storage (energy-weighted %)</th></tr></thead><tbody>'+
-    rows.map(row=>'<tr><th scope="row">'+esc(row.date)+'</th>'+
-      '<td>'+fmt(row.hydel_total_mu,4)+'</td>'+
-      '<td>'+fmt(row.storage_pct_energy_weighted,3)+'</td></tr>').join("")+
-    '</tbody></table>';
-}
-function drawMonthlyInsight(months){
-  const complete=months.filter(m=>m.days.length&&m.total>0);
-  if(!complete.length)return "";
-  const ranked=complete.map(m=>({key:m.key,share:m.imports/m.total*100}))
-    .sort((a,b)=>a.share-b.share);
-  const low=ranked[0],high=ranked[ranked.length-1];
-  return '<span class="viz-insight-glyph" aria-hidden="true">↝</span>'+
-    '<p><strong>The mix moves.</strong> On reported days, the share recorded as net imports '+
-    'ranged from <b>'+fmt(low.share,1)+'% in '+esc(low.key)+'</b> to '+
-    '<b>'+fmt(high.share,1)+'% in '+esc(high.key)+'</b>. '+
-    'These are ratios of reported monthly energy, not twelve independently verified full-month totals.</p>';
-}
-function drawHydroInsight(rows){
-  const readings=rows.filter(row=>Number.isFinite(Number(row.storage_pct_energy_weighted))&&
-    Number.isFinite(Number(row.hydel_total_mu)));
-  if(!readings.length)return "";
-  const low=readings.reduce((a,b)=>Number(b.storage_pct_energy_weighted)<
-    Number(a.storage_pct_energy_weighted)?b:a);
-  return '<span class="viz-insight-glyph" aria-hidden="true">≈</span>'+
-    '<p><strong>Read the two panels together, not as one unit.</strong> The lowest '+
-    'recorded energy-weighted storage was <b>'+fmt(low.storage_pct_energy_weighted,1)+
-    '% on '+esc(low.date)+'</b>; on that same reported date, hydro output was '+
-    '<b>'+fmt(low.hydel_total_mu,2)+' MU</b>. This does not by itself establish '+
-    'why generation changed.</p>';
-}
-function bindMonthlyReadout(box,months){
-  const svg=box?.querySelector?.("svg"),readout=box?.querySelector?.(".viz-live-readout");
-  if(!svg||!readout||!months.length)return;
-  let current=-1;
-  function display(i){
-    if(i<0||i>=months.length)return;
-    current=i;const m=months[i];
-    readout.textContent=m.key+" · "+m.days.length+"/"+m.expected+" qualified daily reports"+
-      (m.gaps.length?" · absent "+m.gaps.join(", "):" · no missing days")+
-      (m.mean==null?" · no reported consumption":
-        " · observed-day mean "+fmt(m.mean,2)+" MU/day · imports "+fmt(m.meanImports,2)+
-        " MU/day · in-state "+fmt(m.meanLocal,2)+" MU/day");
-  }
-  svg.addEventListener("pointerover",e=>{
-    const group=e.target.closest?.("[data-month]");
-    if(group)display(months.findIndex(m=>m.key===group.dataset.month));
-  });
-  svg.addEventListener("click",e=>{
-    const group=e.target.closest?.("[data-month]");
-    if(group){display(months.findIndex(m=>m.key===group.dataset.month));svg.focus?.();}
-  });
-  svg.addEventListener("keydown",e=>{
-    if(!["ArrowLeft","ArrowRight","Home","End"].includes(e.key))return;
-    e.preventDefault();
-    const i=e.key==="Home"?0:e.key==="End"?months.length-1:
-      e.key==="ArrowRight"?Math.min(months.length-1,current+1):
-        current<0?months.length-1:Math.max(0,current-1);
-    display(i);
-  });
-}
-function bindHydroReadout(box,rows,baseline){
-  const svg=box?.querySelector?.("svg"),readout=box?.querySelector?.(".viz-live-readout");
-  if(!svg||!readout||!rows.length)return;
-  let current=-1;
-  const start=Date.parse((baseline.expected_start||rows[0].date)+"T00:00:00Z");
-  const end=Date.parse((baseline.expected_end||rows[rows.length-1].date)+"T00:00:00Z");
-  const byDate=new Map(rows.map((r,i)=>[r.date,i]));
-  function displayIndex(i){
-    if(i<0||i>=rows.length)return;current=i;
-    const r=rows[i];
-    readout.textContent=r.date+" · hydel "+fmt(r.hydel_total_mu,2)+
-      " MU/day · energy-weighted reservoir storage "+
-      fmt(r.storage_pct_energy_weighted,2)+"% · qualified reported day";
-  }
-  function displayDate(date){
-    if(byDate.has(date))displayIndex(byDate.get(date));
-    else readout.textContent=date+" · original daily report missing; no hydro or storage value inferred.";
-  }
-  svg.addEventListener("pointermove",e=>{
-    const bounds=svg.getBoundingClientRect?.();
-    if(!bounds?.width)return;
-    const xp=(e.clientX-bounds.left)*1130/bounds.width;
-    if(xp<74||xp>1076)return;
-    const pos=Math.max(0,Math.min(1,(xp-74)/1002));
-    displayDate(new Date(start+Math.round(pos*(end-start)/86400000)*86400000).toISOString().slice(0,10));
-  });
-  svg.addEventListener("keydown",e=>{
-    if(!["ArrowLeft","ArrowRight","Home","End"].includes(e.key))return;
-    e.preventDefault();
-    const i=e.key==="Home"?0:e.key==="End"?rows.length-1:
-      e.key==="ArrowRight"?Math.min(rows.length-1,current+1):
-        current<0?rows.length-1:Math.max(0,current-1);
-    displayIndex(i);
-  });
-}
-function renderEditorialHome(){
-  if(!state.site||!state.daily)return;
-  const months=observedMonths(state.daily.records,state.site.baseline);
-  const balance=$("#homeBalanceArt"),year=$("#homeMonthlyArt");
-  if(balance)balance.innerHTML=drawBalanceArt(state.daily.records);
-  if(year){year.innerHTML=drawMonthlyArt(months);bindMonthlyReadout(year,months);}
-  const homeInsight=$("#homeMonthlyInsight");
-  if(homeInsight)homeInsight.innerHTML=drawMonthlyInsight(months);
-  animateVisibleArtwork();
-}
-function renderEditorialElectricity(){
-  if(!state.site||!state.daily)return;
-  const rows=state.daily.records,baseline=state.site.baseline;
-  const months=observedMonths(rows,baseline);
-  const monthArt=$("#electricMonthlyArt"),monthTable=$("#electricMonthlyTable");
-  const hydroArt=$("#hydroSeasonArt"),hydroTable=$("#hydroSeasonTable");
-  if(monthArt){monthArt.innerHTML=drawMonthlyArt(months);bindMonthlyReadout(monthArt,months);}
-  if(monthTable)monthTable.innerHTML=drawMonthlyTable(months);
-  const monthInsight=$("#electricMonthInsight");
-  if(monthInsight)monthInsight.innerHTML=drawMonthlyInsight(months);
-  if(hydroArt){hydroArt.innerHTML=drawHydroArt(rows,baseline);bindHydroReadout(hydroArt,rows,baseline);}
-  if(hydroTable)hydroTable.innerHTML=drawHydroTable(rows);
-  const waterInsight=$("#hydroInsight");
-  if(waterInsight)waterInsight.innerHTML=drawHydroInsight(rows);
-  animateVisibleArtwork();
-}
-
-function renderHomepage(){
-  const baseline=state.site.baseline;
-  const rows=state.ledger.workstreams||[];
-  const elements=[
-    [fmt(baseline.aggregate_import_share*100,1)+"%","Net imports / consumption",
-      "354 observed SLDC days, not a full-year annual share"],
-    [fmt(baseline.rows,0)+"/"+fmt(baseline.expected_days,0),"Daily reports preserved",
-      "FY2024–25 · "+fmt(baseline.missing_days_count,0)+" dates missing"],
-    [fmt(baseline.hydro_generation_twh,2)+" TWh","Observed hydro generation",
-      "Available days only; not a firm generation guarantee"],
-    [fmt(baseline.missing_days_count,0),"Days still unverified",
-      "Original as-issued reports needed; no interpolation"]
-  ];
-  const metrics=$("#headlineMetrics");
-  if(metrics)metrics.innerHTML=elements.map(([value,label,note])=>
-    '<div class="number-card"><strong>'+esc(value)+'</strong><span>'+esc(label)+
-    '</span><small>'+esc(note)+'</small></div>').join("");
-  const coverage=$("#heroCoverage");
-  if(coverage)coverage.textContent=baseline.rows+" / "+baseline.expected_days+
-    " daily reports · FY2024–25 · no measured full-year hourly series";
-  const t=state.site.metadata.generated_at_utc||"";
-  const origin=$("#dataOrigin");
-  if(origin)origin.textContent="Observed bundle "+(t?t.slice(0,10):"undated")+
-    " · Research audit "+(state.ledger.reviewed_date||"undated");
-  const latest=$("#latestWindNote");
-  const wind=state.ledger.wind_terrain;
-  if(latest && wind){
-    latest.innerHTML='<span><b>'+fmt(wind.point_centres,0)+'</b><small>NIWE Kerala resource centres</small></span>'+
-      '<span><b>'+fmt(wind.speed_m_s.median,2)+' m/s</b><small>Median modelled wind, 150 m</small></span>'+
-      '<span><b>'+fmt(wind.slope.finite_point_centres,0)+'</b><small>Valid slope samples · NOT sites</small></span>';
-  }
-  const target=$("#homeResearchLedger");
-  if(target){
-    const ids=["electricity","wind","boundary","lris","landslide","forest","wetlands","modelling"];
-    target.innerHTML=ids.map(id=>rows.find(item=>item.id===id)).filter(Boolean)
-      .map(item=>'<article class="note-row"><span>'+esc(labelStage(item.phase))+
-        '</span><h3>'+esc(item.title)+'</h3><p>'+esc(item.summary)+'</p>'+
-        '<div class="note-metric">'+esc(item.metric)+'<small>'+esc(item.unit)+
-        '</small></div><button type="button" data-route="'+esc(item.route)+
-        '">Investigate this question ↗</button></article>').join("");
-    bindRoutes(target);
-  }
-}
-function renderProvenance(){
-  const s=state.site.metadata,l=state.ledger;
-  const source=/^[a-f0-9]{40}$/.test(s.research_source_commit||"") ?
-    s.research_source_commit : null;
-  const dated=(s.generated_at_utc||"").slice(0,10)||"undated";
-  const rev=source?source.slice(0,12):"unrecorded";
-  const trail=$("#footerResearchIdentity");
-  if(trail)trail.textContent="Research "+rev+" · Observed bundle "+dated+
-    " · Audit "+(l.reviewed_date||"undated");
-  const box=$("#evidenceSnapshot");
-  if(box)box.innerHTML=
-    '<span>Research audit reviewed <strong>'+esc(l.reviewed_date||"undated")+'</strong></span>'+
-    '<span>Observed bundle published <strong>'+esc(dated)+'</strong></span>'+
-    '<span>Research revision <strong>'+esc(rev)+'</strong></span>'+
-    '<span>Original evidence build <strong>'+esc((s.git_sha||"unknown").slice(0,12))+'</strong></span>'+
-    (source?'<a href="'+REPO+'/tree/'+source+'" target="_blank" rel="noopener noreferrer">Inspect pinned research ↗</a>':"");
-}
-const metrics={
-  consumption_mu:["Consumption","MU/day"],
-  net_import_interface_mu:["Net imports","MU/day"],
-  internal_generation_mu:["In-state generation","MU/day"],
-  hydel_total_mu:["Hydro generation","MU/day"]
-};
-function selectedDays(){
-  return (state.daily?.records||[]).filter(row=>
-    state.month==="all"||row.date.slice(0,7)===state.month);
-}
-function plotValues(rows,key){
-  if(!rows.length)return '<div class="chart-empty">No observed rows for this period. No values have been interpolated.</div>';
-  const values=rows.map(row=>Number(row[key]));
-  if(values.some(v=>!Number.isFinite(v)))return '<div class="chart-empty">Source values unavailable; no chart interpolated.</div>';
-  const t0=Date.parse(rows[0].date+"T00:00:00Z");
-  const t1=Date.parse(rows[rows.length-1].date+"T00:00:00Z");
-  const low=Math.min(...values),high=Math.max(...values);
-  const range=Math.max(high-low,1);
-  const x=(t)=>60+840*(t-t0)/Math.max(86400000,t1-t0);
-  const y=(v)=>245-190*(v-low)/range;
-  const segments=[];let segment=[];
-  rows.forEach((row,i)=>{
-    const t=Date.parse(row.date+"T00:00:00Z");
-    if(i&&t-Date.parse(rows[i-1].date+"T00:00:00Z")>86400000){
-      if(segment.length)segments.push(segment);segment=[];
+  const charts = new Map();
+  class Plot {
+    constructor(id, config) {
+      this.el = $(id);
+      this.config = config;
+      this.index = 0;
+      this.el.replaceChildren();
+      this.canvas = document.createElement("canvas");
+      this.canvas.tabIndex = 0;
+      this.canvas.setAttribute("role", "img");
+      this.canvas.setAttribute(
+        "aria-label",
+        config.title + ". Use left and right arrow keys to inspect values.",
+      );
+      this.readout = document.createElement("div");
+      this.readout.className = "chart-readout";
+      this.readout.setAttribute("aria-live", "polite");
+      this.el.append(this.canvas, this.readout);
+      this.canvas.addEventListener("keydown", (e) => {
+        if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) {
+          e.preventDefault();
+          this.index =
+            e.key === "Home"
+              ? 0
+              : e.key === "End"
+                ? this.config.rows.length - 1
+                : Math.max(
+                    0,
+                    Math.min(
+                      this.config.rows.length - 1,
+                      this.index + (e.key === "ArrowRight" ? 1 : -1),
+                    ),
+                  );
+          this.describe();
+          this.draw();
+        }
+      });
+      this.canvas.addEventListener("pointermove", (e) => {
+        const r = this.canvas.getBoundingClientRect();
+        if (this.config.kind === "scatter") {
+          const p = this.points || [];
+          let best = Infinity;
+          p.forEach((p, i) => {
+            let z =
+              (p.x - e.clientX + r.left) ** 2 + (p.y - e.clientY + r.top) ** 2;
+            if (z < best) {
+              best = z;
+              this.index = i;
+            }
+          });
+        } else
+          this.index = Math.max(
+            0,
+            Math.min(
+              this.config.rows.length - 1,
+              Math.floor(
+                ((e.clientX - r.left - 52) / (r.width - 72)) *
+                  this.config.rows.length,
+              ),
+            ),
+          );
+        this.describe();
+        this.draw();
+      });
+      new ResizeObserver(() => this.draw()).observe(this.el);
+      this.describe();
+      this.draw();
     }
-    segment.push(x(t).toFixed(2)+","+y(values[i]).toFixed(2));
-  });
-  if(segment.length)segments.push(segment);
-  const grid=[0,.25,.5,.75,1].map(frac=>{
-    const yy=245-190*frac;
-    return '<line class="chart-grid" x1="60" y1="'+yy+'" x2="900" y2="'+yy+'"/>'+
-      '<text class="chart-axis" x="5" y="'+(yy+4)+'">'+esc(fmt(low+range*frac,1))+'</text>';
-  }).join("");
-  const lines=segments.map(points=>{
-    const xy=points.join(" ");
-    return points.length===1?'<circle class="chart-dot" cx="'+points[0].split(",")[0]+
-      '" cy="'+points[0].split(",")[1]+'" r="4"/>' :
-      '<polyline class="chart-line" points="'+xy+'"/>';
-  }).join("");
-  const title=metrics[key]?.[0]||plain(key);
-  const labels='<text class="chart-label" x="60" y="282">'+esc(rows[0].date)+'</text>'+
-    '<text class="chart-label" x="900" y="282" text-anchor="end">'+esc(rows[rows.length-1].date)+'</text>';
-  return '<svg viewBox="0 0 960 302" role="img" tabindex="0" aria-label="'+esc(title)+
-    ', '+rows.length+' observed days. Arrow keys inspect observed dates. Breaks represent missing days." xmlns="http://www.w3.org/2000/svg">'+
-    '<title>'+esc(title)+" · "+rows.length+" observed days · gaps not connected</title>"+
-    grid+lines+labels+'<line class="chart-crosshair" x1="0" y1="55" x2="0" y2="245"/>'+
-    '<circle class="chart-cursor" cx="0" cy="0" r="5"/></svg>'+
-    '<div class="chart-readout" aria-live="off">Hover for a dated reading or focus the chart and use arrow keys. Missing days have no invented values.</div>';
-}
-function bindChartReadout(box,rows,key){
-  const svg=box.querySelector?.("svg");
-  const text=box.querySelector?.(".chart-readout");
-  if(!svg||!text||!rows.length)return;
-  const guides=svg.querySelectorAll(".chart-crosshair, .chart-cursor");
-  const first=Date.parse(rows[0].date+"T00:00:00Z");
-  const last=Date.parse(rows[rows.length-1].date+"T00:00:00Z");
-  const span=Math.max(1,Math.round((last-first)/86400000));
-  const dayMap=new Map(rows.map((row,index)=>[row.date,index]));
-  const values=rows.map(row=>Number(row[key]));
-  const low=Math.min(...values),range=Math.max(Math.max(...values)-low,1);
-  let current=-1;
-  function reset(){
-    svg.classList.remove("has-selection");
-    text.textContent="Hover for a dated reading or focus the chart and use arrow keys. Missing days have no invented values.";
+    describe() {
+      const c = this.config,
+        r = c.rows[this.index];
+      if (!r) return;
+      this.readout.textContent = c.describe
+        ? c.describe(r)
+        : `${r.label} · ${c.series.map((s) => `${s.name}: ${fmt(r[s.key], s.decimals ?? 1)} ${c.unit || ""}`).join(" · ")}`;
+    }
+    draw() {
+      const c = this.config,
+        canvas = this.canvas,
+        w = this.el.clientWidth,
+        h = this.el.clientHeight;
+      if (w < 30 || h < 30) return;
+      const scale = Math.min(devicePixelRatio || 1, 2);
+      canvas.width = w * scale;
+      canvas.height = h * scale;
+      canvas.style.height = h + "px";
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+      const [green, gold, clay, muted, line, ink] = colours(),
+        pal = [green, gold, clay];
+      const dark = this.el.closest(".industry-section");
+      if (dark) pal.splice(0, 3, "#95c8a5", "#e2bb70", "#e89b7e");
+      const fg = dark ? "#e5e8d9" : muted;
+      ctx.clearRect(0, 0, w, h);
+      ctx.font = '11px "DM Sans", sans-serif';
+      const left = 52,
+        right = w - 20,
+        top = w < 450 && c.series.length > 1 ? 57 : 39,
+        bottom = h - 45,
+        pw = right - left,
+        ph = bottom - top,
+        n = c.rows.length;
+      const max =
+        c.max ||
+        Math.max(
+          1,
+          ...c.rows.map((r) =>
+            c.stacked
+              ? c.series.reduce(
+                  (v, s) => v + (finite(r[s.key]) ? r[s.key] : 0),
+                  0,
+                )
+              : Math.max(
+                  ...c.series.map((s) => (finite(r[s.key]) ? r[s.key] : 0)),
+                ),
+          ),
+        ) * 1.12;
+      ctx.fillStyle = fg;
+      ctx.fillText(c.unit || "", left, 14);
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 4; i++) {
+        let v = (max * i) / 4,
+          y = bottom - (ph * i) / 4;
+        ctx.strokeStyle = dark ? "#627569" : line;
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(left, y);
+        ctx.lineTo(right, y);
+        ctx.stroke();
+        ctx.fillText(fmt(v, max <= 10 ? 1 : 0), left - 9, y + 4);
+      }
+      ctx.textAlign = "left";
+      if (c.kind === "scatter") {
+        const xmax = c.xmax || 20;
+        this.points = [];
+        c.rows.forEach((r, i) => {
+          let x = left + (pw * r.x) / xmax,
+            y = bottom - (ph * r.y) / max;
+          this.points.push({ x, y });
+          ctx.fillStyle = i === this.index ? gold : green;
+          ctx.beginPath();
+          ctx.arc(x, y, i === this.index ? 8 : 5, 0, Math.PI * 2);
+          ctx.fill();
+          if (i === this.index) {
+            ctx.fillStyle = fg;
+            ctx.textAlign = x > w * 0.6 ? "right" : "left";
+            ctx.fillText(r.label, x + (x > w * 0.6 ? -12 : 12), y - 8);
+          }
+        });
+        ctx.textAlign = "center";
+        for (let i = 0; i <= 4; i++)
+          ctx.fillText(
+            fmt((xmax * i) / 4, 0),
+            left + (pw * i) / 4,
+            bottom + 20,
+          );
+        ctx.fillText(c.xunit || "", left + pw / 2, h - 5);
+        return;
+      }
+      const step = pw / n,
+        x = (i) => left + step * (i + 0.5);
+      if (c.kind === "line") {
+        c.series.forEach((s, j) => {
+          ctx.strokeStyle = pal[j % 3];
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          let pen = false;
+          c.rows.forEach((r, i) => {
+            if (!finite(r[s.key])) {
+              pen = false;
+              return;
+            }
+            let y = bottom - (ph * r[s.key]) / max;
+            if (pen) ctx.lineTo(x(i), y);
+            else ctx.moveTo(x(i), y);
+            pen = true;
+          });
+          ctx.stroke();
+        });
+      } else
+        c.rows.forEach((r, i) => {
+          let offset = 0;
+          c.series.forEach((s, j) => {
+            if (!finite(r[s.key])) return;
+            let bh = (ph * r[s.key]) / max,
+              bw = c.stacked ? step * 0.62 : (step * 0.7) / c.series.length,
+              bx = c.stacked ? x(i) - bw / 2 : x(i) - step * 0.35 + j * bw;
+            ctx.globalAlpha = i === this.index ? 1 : 0.78;
+            ctx.fillStyle = pal[j % 3];
+            ctx.fillRect(bx, bottom - offset - bh, Math.max(1, bw - 1), bh);
+            if (c.stacked) offset += bh;
+          });
+          ctx.globalAlpha = 1;
+          if (r.missing) {
+            ctx.fillStyle = gold;
+            ctx.fillRect(x(i) - 4, bottom + 3, 8, 3);
+          }
+        });
+      ctx.strokeStyle = gold;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(x(this.index), top);
+      ctx.lineTo(x(this.index), bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = fg;
+      ctx.textAlign = "center";
+      const every = Math.max(1, Math.ceil(n / (w < 450 ? 6 : 12)));
+      c.rows.forEach((r, i) => {
+        if (i % every === 0)
+          ctx.fillText(r.short || r.label, x(i), bottom + 22);
+      });
+      ctx.textAlign = "left";
+      let lx = left;
+      for (let j = 0; j < c.series.length; j++) {
+        const name = c.series[j].name;
+        ctx.fillStyle = pal[j % 3];
+        let ly = w < 450 ? 23 + j * 16 : 23;
+        if (w < 450) lx = left;
+        ctx.fillRect(lx, ly, 12, 3);
+        ctx.fillStyle = fg;
+        ctx.fillText(name, lx + 17, ly + 5);
+        lx += ctx.measureText(name).width + 40;
+      }
+    }
   }
-  function display(date,keyboard=false){
-    const index=dayMap.get(date);
-    text.setAttribute("aria-live",keyboard?"polite":"off");
-    if(index===undefined){
-      svg.classList.remove("has-selection");
-      text.textContent=date+" · no verified daily report. No value interpolated.";
+  function plot(id, c) {
+    if (charts.has(id)) {
+      charts.get(id).config = c;
+      charts.get(id).index = 0;
+      charts
+        .get(id)
+        .canvas.setAttribute(
+          "aria-label",
+          c.title + ". Use left and right arrow keys to inspect values.",
+        );
+      charts.get(id).describe();
+      charts.get(id).draw();
+    } else charts.set(id, new Plot(id, c));
+  }
+  function table(id, headers, rows) {
+    const t = document.createElement("table"),
+      head = document.createElement("thead"),
+      tr = document.createElement("tr");
+    headers.forEach((h) => {
+      const th = document.createElement("th");
+      th.textContent = h;
+      th.scope = "col";
+      tr.append(th);
+    });
+    head.append(tr);
+    t.append(head);
+    const body = document.createElement("tbody");
+    rows.forEach((row) => {
+      const tr = document.createElement("tr");
+      row.forEach((v) => {
+        const td = document.createElement("td");
+        td.textContent = v;
+        tr.append(td);
+      });
+      body.append(tr);
+    });
+    t.append(body);
+    $(id).replaceChildren(t);
+  }
+  const safeText = (s) => String(s || "").replaceAll("\ufffd", "–");
+  let data,
+    months,
+    balanceMode = "energy",
+    modelMode = "price",
+    showAll = false;
+  async function get(name) {
+    const controller = new AbortController(),
+      timer = setTimeout(() => controller.abort(), 20000);
+    try {
+      const r = await fetch("data/" + name, { signal: controller.signal });
+      if (!r.ok) throw Error(name + " is unavailable (" + r.status + ").");
+      return await r.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  function ring() {
+    if (!months) return;
+    let i = Number($("heroMonth").value),
+      r = months[i],
+      canvas = $("balanceRing"),
+      w = canvas.clientWidth,
+      h = canvas.clientHeight,
+      s = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = w * s;
+    canvas.height = h * s;
+    let c = canvas.getContext("2d");
+    c.scale(s, s);
+    const [green, gold, , muted, line] = colours();
+    let radius = Math.min(w, h) / 2 - 24;
+    c.lineWidth = 27;
+    c.lineCap = "butt";
+    let a = -Math.PI / 2,
+      gap = 0.025;
+    [
+      [r.share / 100, gold],
+      [(100 - r.share) / 100, green],
+    ].forEach(([fraction, color]) => {
+      c.beginPath();
+      c.strokeStyle = color;
+      c.arc(w / 2, h / 2, radius, a + gap, a + Math.PI * 2 * fraction - gap);
+      c.stroke();
+      a += Math.PI * 2 * fraction;
+    });
+    c.strokeStyle = line;
+    c.lineWidth = 1;
+    for (let k = 0; k < 60; k++) {
+      let a = (k * Math.PI) / 30;
+      c.beginPath();
+      c.moveTo(
+        w / 2 + Math.cos(a) * (radius + 21),
+        h / 2 + Math.sin(a) * (radius + 21),
+      );
+      c.lineTo(
+        w / 2 + Math.cos(a) * (radius + 25),
+        h / 2 + Math.sin(a) * (radius + 25),
+      );
+      c.stroke();
+    }
+    text("ringValue", fmt(r.share) + "%");
+    const label = new Date(r.month + "-01T12:00:00Z").toLocaleDateString(
+      "en-GB",
+      { month: "long", year: "numeric", timeZone: "UTC" },
+    );
+    text("heroMonthLabel", label);
+    text(
+      "heroScope",
+      `${r.observed} observed days · ${r.missing} missing reports · ${fmt(r.consumption)} MU per observed day`,
+    );
+    canvas.setAttribute(
+      "aria-label",
+      `${label}: ${fmt(r.share)}% net imports, ${fmt(100 - r.share)}% in-state generation, ${r.observed} observed days.`,
+    );
+  }
+  function renderMonthly() {
+    let rows = months.map((r) => ({
+      ...r,
+      label: r.month,
+      short: new Date(r.month + "-01").toLocaleString("en", { month: "short" }),
+    }));
+    plot("monthlyChart", {
+      title: "Monthly observed electricity balance",
+      rows,
+      kind: "bar",
+      stacked: balanceMode === "energy",
+      unit:
+        balanceMode === "energy"
+          ? "MU / observed day"
+          : "% of observed consumption",
+      max: balanceMode === "share" ? 100 : undefined,
+      series:
+        balanceMode === "energy"
+          ? [
+              { key: "internal", name: "In-state generation" },
+              { key: "imports", name: "Net imports" },
+            ]
+          : [{ key: "share", name: "Net imports" }],
+      describe: (r) =>
+        `${r.label} · ${fmt(r.share)}% net imports · ${fmt(r.internal)} MU in-state + ${fmt(r.imports)} MU imports per observed day · ${r.observed} days observed, ${r.missing} missing`,
+    });
+    text(
+      "balanceDesc",
+      balanceMode === "energy"
+        ? "Average energy per observed day, in million units (MU). One MU = one million kWh."
+        : "Net imported energy divided by recorded consumption in each month. Amber marks indicate missing reports.",
+    );
+    const lo = months.reduce((a, b) => (a.share < b.share ? a : b)),
+      hi = months.reduce((a, b) => (a.share > b.share ? a : b));
+    text(
+      "monthInsight",
+      `The observed import share ranges from ${fmt(lo.share)}% in ${lo.month} to ${fmt(hi.share)}% in ${hi.month}. Timing matters as much as the annual balance.`,
+    );
+    table(
+      "monthlyTable",
+      [
+        "Month",
+        "Observed days",
+        "Missing",
+        "In-state MU/day",
+        "Imports MU/day",
+        "Import %",
+      ],
+      months.map((r) => [
+        r.month,
+        r.observed,
+        r.missing,
+        fmt(r.internal, 2),
+        fmt(r.imports, 2),
+        fmt(r.share, 2),
+      ]),
+    );
+  }
+  function renderDaily() {
+    let key = $("dailyMetric").value,
+      season = $("dailySeason").value;
+    let records = data.daily.records.filter((r) => {
+      let m = Number(r.date.slice(5, 7));
+      return (
+        season === "all" ||
+        (season === "summer" && [3, 4, 5].includes(m)) ||
+        (season === "monsoon" && [6, 7, 8, 9].includes(m)) ||
+        (season === "other" && [10, 11, 12, 1, 2].includes(m))
+      );
+    });
+    const rows = chronological(records, key).map((r) => ({
+      ...r,
+      value:
+        key === "import_share" && finite(r.value) ? 100 * r.value : r.value,
+      short: r.label.slice(5),
+    }));
+    plot("dailyChart", {
+      title: "Daily observations with missing-date gaps",
+      rows,
+      kind: "line",
+      unit: key.includes("share") || key.includes("pct") ? "%" : "MU / day",
+      series: [
+        {
+          key: "value",
+          name: $("dailyMetric").selectedOptions[0].textContent.split(" · ")[0],
+        },
+      ],
+    });
+  }
+  function renderResources() {
+    const solar = data.ledger.solar_phase1.aggregate.statewide;
+    plot("solarChart", {
+      title: "Monthly median source-grid solar yield",
+      rows: Object.entries(
+        solar.monthly_marginal_pixel_median_PVOUT_kWh_kWp_day,
+      ).map(([label, value]) => ({ label, value })),
+      kind: "line",
+      unit: "kWh / kWp / day",
+      series: [{ key: "value", name: "Solar yield" }],
+    });
+    const districts = data.ledger.nwic_district.districts;
+    $("district").replaceChildren(
+      ...districts.map((d) => {
+        const o = document.createElement("option");
+        o.value = d.district;
+        o.textContent = d.district;
+        return o;
+      }),
+    );
+    $("district").value = "Idukki";
+    renderDistrict();
+  }
+  function renderDistrict() {
+    const rows = data.ledger.nwic_district.districts,
+      district = rows.find((d) => d.district === $("district").value),
+      wi = +$("windThreshold").value,
+      si = +$("slopeThreshold").value;
+    plot("districtChart", {
+      title: "District median wind and surface slope",
+      kind: "scatter",
+      rows: rows.map((d) => ({
+        label: d.district,
+        x: d.slope_median_degrees,
+        y: d.wind_speed_median_m_s,
+      })),
+      unit: "Wind at 150 m · m/s",
+      xunit: "Median surface slope · degrees",
+      xmax: 20,
+      max: 8,
+      series: [{ key: "y", name: "Wind" }],
+      describe: (r) =>
+        `${r.label} · median wind ${fmt(r.y, 2)} m/s · median surface slope ${fmt(r.x, 2)}°`,
+    });
+    const p = charts.get("districtChart");
+    p.index = rows.indexOf(district);
+    p.describe();
+    p.draw();
+    text("districtTitle", district.district);
+    text(
+      "districtResult",
+      `${fmt(district.threshold_matrix[wi][si], 0)} point centres`,
+    );
+    text(
+      "districtScope",
+      `Of ${fmt(district.slope_finite, 0)} centres with slope data, ${fmt((100 * district.threshold_matrix[wi][si]) / district.slope_finite)}% meet these hypothetical thresholds. ${district.slope_missing} centres have no slope sample.`,
+    );
+    $("thresholdGrid").replaceChildren();
+    district.threshold_matrix.forEach((row, i) =>
+      row.forEach((v, j) => {
+        const b = document.createElement("button");
+        b.textContent = fmt(v, 0);
+        b.setAttribute(
+          "aria-label",
+          `Wind at least ${5 + i} m/s, slope at most ${[5, 10, 15, 20][j]} degrees: ${v} point centres`,
+        );
+        b.setAttribute("aria-pressed", String(i === wi && j === si));
+        b.addEventListener("click", () => {
+          $("windThreshold").value = i;
+          $("slopeThreshold").value = j;
+          renderDistrict();
+        });
+        $("thresholdGrid").append(b);
+      }),
+    );
+  }
+  function mini(id, entries) {
+    $(id).replaceChildren(
+      ...entries.map(([value, label]) => {
+        const d = document.createElement("div"),
+          s = document.createElement("strong"),
+          p = document.createElement("span");
+        s.textContent = value;
+        p.textContent = label;
+        d.append(s, p);
+        return d;
+      }),
+    );
+  }
+  function renderPilot() {
+    const kind = $("pilot").value;
+    if (["cooling", "integrated"].includes(kind)) {
+      renderCombinedPilot(kind);
       return;
     }
-    current=index;
-    const x=60+840*(Date.parse(date+"T00:00:00Z")-first)/Math.max(86400000,last-first);
-    const y=245-190*(values[index]-low)/range;
-    guides[0]?.setAttribute("x1",x.toFixed(2));
-    guides[0]?.setAttribute("x2",x.toFixed(2));
-    guides[1]?.setAttribute("cx",x.toFixed(2));
-    guides[1]?.setAttribute("cy",y.toFixed(2));
-    svg.classList.add("has-selection");
-    text.textContent=date+" · "+metrics[key][0]+": "+fmt(values[index],2)+" MU/day · observed SLDC report.";
+    const isStore = ["bess", "psp"].includes(kind),
+      p = isStore ? data.storage : data[kind],
+      base = isStore
+        ? p.input.hourly_background_site_kw
+        : p.baseline.hourly.map((r) => r.site_total_kw),
+      changed = isStore
+        ? p.cases[kind].hourly.map((r) => r.grid_site_kw)
+        : p.managed.hourly.map((r) => r.site_total_kw),
+      summary = isStore ? p.cases[kind].summary : p.managed.summary;
+    const rows = base.map((v, i) => ({
+      label: String(i).padStart(2, "0") + ":00",
+      before: v,
+      after: changed[i],
+    }));
+    const series = $("baselineToggle").checked
+      ? [
+          { key: "after", name: "Managed / stored" },
+          { key: "before", name: "Original demand" },
+        ]
+      : [{ key: "after", name: "Managed / stored" }];
+    plot("pilotChart", {
+      title: "Illustrative one-day site demand",
+      rows,
+      kind: "line",
+      unit: "Site electricity · kW",
+      series,
+    });
+    mini("pilotStats", [
+      [
+        fmt(summary.whole_day_site_peak_kw, 2) + " kW",
+        "whole-day peak after shifting",
+      ],
+      [
+        fmt(summary.evening_site_peak_kw, 2) + " kW",
+        "17–21 evening peak after shifting",
+      ],
+      [
+        isStore
+          ? "+" + fmt(summary.daily_grid_energy_change_kwh, 2) + " kWh"
+          : "0 kWh",
+        "change in daily electricity use",
+      ],
+    ]);
+    text(
+      "pilotMeaning",
+      isStore
+        ? "Storage reduces the evening load, but charging and losses increase daily electricity use. The store begins and ends empty."
+        : "The same required service is completed before its deadlines. Electricity use is unchanged; only its timing changes.",
+    );
+    text(
+      "pilotScope",
+      isStore
+        ? "A hypothetical 16 kWh store delivers 2 kW during five evening hours. The pumped-storage case is a tiny hydraulic analogue with an authored 300 m head, not a Kerala project. All efficiencies and schedules are illustrative; no tariff savings or statewide benefits are claimed."
+        : kind === "ev"
+          ? "Three fictional EVs share an 8 kW charging connection. Arrival times, departures and battery requirements are authored. Both policies deliver 59.6 kWh to batteries before departure. This is not a measured Kerala fleet."
+          : "Optional jobs at a fictional industrial site share an 8 kW flexible-load limit. Safety-critical background demand is fixed. All jobs meet the same deadlines. This is not measured KMML flexibility.",
+    );
+    table(
+      "pilotTable",
+      ["Hour", "Original kW", "Managed / stored kW"],
+      rows.map((r) => [r.label, fmt(r.before, 3), fmt(r.after, 3)]),
+    );
+    $("pilotDownload").href =
+      "data/" + (isStore ? "wp6-bess-psp.json" : `wp6-${kind}-pilot.json`);
   }
-  svg.addEventListener("pointermove",event=>{
-    const bounds=svg.getBoundingClientRect();
-    if(!bounds.width)return;
-    const x=(event.clientX-bounds.left)*960/bounds.width;
-    if(x<60||x>900){reset();return}
-    const ordinal=Math.max(0,Math.min(span,Math.round((x-60)/840*span)));
-    display(new Date(first+ordinal*86400000).toISOString().slice(0,10));
-  });
-  svg.addEventListener("pointerleave",reset);
-  svg.addEventListener("keydown",event=>{
-    if(!["ArrowLeft","ArrowRight","Home","End","Escape"].includes(event.key))return;
-    event.preventDefault();
-    if(event.key==="Escape"){reset();return}
-    const index=event.key==="Home"?0:event.key==="End"?rows.length-1:
-      event.key==="ArrowRight"?Math.min(rows.length-1,current+1):
-      current<0?rows.length-1:Math.max(0,current-1);
-    display(rows[index].date,true);
-  });
-}
-function renderChart(){
-  const key=metrics[state.metric]?state.metric:"consumption_mu";
-  const rows=selectedDays();
-  const box=$("#energyChart");
-  if(box){
-    box.innerHTML=plotValues(rows,key);
-    bindChartReadout(box,rows,key);
-    if(state.route==="electricity")animateObservedPaths(box.querySelector?.("svg"));
+  function renderCombinedPilot(kind) {
+    const cooling = kind === "cooling",
+      d = data[kind],
+      base = d.cases[cooling ? "conventional" : "unmanaged"],
+      managed = d.cases[cooling ? "chilled_water_storage" : "combined"],
+      key = cooling ? "grid_kWh_e" : "net_site_kw",
+      rows = base.hourly.map((r, i) => ({
+        label: String(i).padStart(2, "0") + ":00",
+        before: r[key],
+        after: managed.hourly[i][key],
+      }));
+    const series = $("baselineToggle").checked
+      ? [
+          { key: "after", name: "Managed / stored" },
+          { key: "before", name: "Original demand" },
+        ]
+      : [{ key: "after", name: "Managed / stored" }];
+    plot("pilotChart", {
+      title: cooling
+        ? "Illustrative cooling-zone electricity"
+        : "Illustrative combined-site electricity",
+      rows,
+      kind: "line",
+      unit: "Electricity · kW (1-hour slots)",
+      series,
+    });
+    const b = base.summary,
+      m = managed.summary,
+      delta = cooling
+        ? m.total_grid_kWh_e - b.total_grid_kWh_e
+        : m.daily_grid_kwh - b.daily_grid_kwh;
+    mini("pilotStats", [
+      [
+        fmt(cooling ? m.whole_day_peak_kW_e : m.whole_day_peak_kw, 2) + " kW",
+        "whole-day peak after shifting",
+      ],
+      [
+        fmt(cooling ? m.evening_peak_kW_e : m.evening_peak_kw, 2) + " kW",
+        "17–21 evening peak after shifting",
+      ],
+      [
+        (delta >= 0 ? "+" : "") + fmt(delta, 2) + " kWh",
+        "change in daily electricity use",
+      ],
+    ]);
+    text(
+      "pilotMeaning",
+      cooling
+        ? "Cooling remains within the authored comfort limits. Thermal storage shifts demand into charging hours and increases total electricity in this example."
+        : "Combining flexible jobs, EV charging, cooling and a battery reduces the evening peak. The whole-day peak and daily energy tell a different part of the story.",
+    );
+    text(
+      "pilotScope",
+      cooling
+        ? "One synthetic cooling zone with an authored 24-hour temperature profile. The chilled-water case delivers 39.68 kWh of cooling, has zero comfort-violation hours and ends with an empty store. This is not an observed Kerala building."
+        : "A synchronised hypothetical site, not Kerala grid dispatch. EV service is 59.6 kWh, industrial service is 46 kWh, cooling has no comfort violations, and the battery ends empty. Results cannot be scaled directly to statewide savings.",
+    );
+    table(
+      "pilotTable",
+      ["Hour", "Original kW", "Managed / stored kW"],
+      rows.map((r) => [r.label, fmt(r.before, 3), fmt(r.after, 3)]),
+    );
+    $("pilotDownload").href =
+      "data/" +
+      (cooling ? "wp6-cooling-pilot.json" : "wp6-integrated-dispatch.json");
   }
-  const caption=$("#energyChartCaption");
-  const gaps=(state.site.baseline.missing_days||[]).filter(date=>
-    state.month==="all"||date.slice(0,7)===state.month);
-  if(caption)caption.textContent=metrics[key][0]+" · "+metrics[key][1]+" · "+
-    rows.length+" observed days · "+gaps.length+
-    " unverified days within period. Breaks mark missing dates. Values are reported daily energy, not hourly MW.";
-  const table=$("#energyTable");
-  if(table)table.innerHTML='<table><thead><tr><th>Date</th><th>Consumption (MU)</th>'+
-    '<th>Net imports (MU)</th><th>Internal generation (MU)</th><th>Hydro (MU)</th></tr></thead><tbody>'+
-    rows.map(row=>'<tr><td>'+esc(row.date)+'</td>'+
-      ["consumption_mu","net_import_interface_mu","internal_generation_mu","hydel_total_mu"]
-        .map(k=>'<td>'+esc(fmt(row[k],4))+'</td>').join("")+'</tr>').join("")+
-    '</tbody></table>';
-}
-function renderElectricity(){
-  const b=state.site.baseline;
-  $("#electricitySummary").innerHTML=statsHTML([
-    [fmt(b.consumption_twh,2)+" TWh","Consumption","Observed days only"],
-    [fmt(b.net_import_twh,2)+" TWh","Net imports","Same SLDC accounting scope"],
-    [fmt(b.internal_generation_twh,2)+" TWh","In-state generation","Observed days only"],
-    [fmt(b.rows,0)+"/"+fmt(b.expected_days,0),"Days with reports","Not a complete FY or hourly chronology"]
-  ]);
-  const month=$("#energyMonth"),months=[...new Set(state.daily.records.map(row=>row.date.slice(0,7)))];
-  if(month)month.innerHTML='<option value="all">All observed dates</option>'+
-    months.map(m=>'<option value="'+esc(m)+'">'+esc(m)+'</option>').join("");
-  renderChart();
-  const item=state.ledger.workstreams.find(x=>x.id==="electricity");
-  if(item)$("#electricityResearch").innerHTML='<div class="decision-banner blocked"><strong>'+
-    esc(item.title)+" · "+esc(labelStage(item.phase))+'</strong><p><b>Next:</b> '+
-    esc(item.action)+'</p>'+sourceTrail(item)+'</div>';
-}
-function csvValue(v){
-  let s=String(v==null?"":v);
-  if(/^[=+@\t\r]/.test(s))s="'"+s;
-  return '"'+s.replaceAll('"','""')+'"';
-}
-function downloadObserved(){
-  const rows=selectedDays();
-  const keys=["date","consumption_mu","net_import_interface_mu","internal_generation_mu","hydel_total_mu"];
-  const text=["# Kerala2040 observed FY2024-25 SLDC daily series, selected period: "+state.month,
-    "# Missing dates not filled. MU/day, not hourly MW.",
-    keys.map(csvValue).join(","),
-    ...rows.map(row=>keys.map(k=>csvValue(row[k])).join(","))].join("\r\n");
-  const url=URL.createObjectURL(new Blob(["\uFEFF"+text],{type:"text/csv;charset=utf-8"}));
-  const a=document.createElement("a");a.href=url;a.download="kerala2040-observed-"+state.month+".csv";
-  a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-function renderScenario(){
-  const all=state.site.scenarios||[];
-  if(!all.length){$("#scenarioDetail").textContent="Scenario specifications unavailable.";return}
-  const selected=all.find(item=>item.code===state.scenario)||all[0];
-  state.scenario=selected.code;
-  $("#scenarioList").innerHTML=all.map(item=>
-    '<button type="button" data-scenario="'+esc(item.code)+'" class="'+
-    (item.code===selected.code?"selected":"")+'" aria-pressed="'+
-    (item.code===selected.code)+'"><span>'+esc(item.code)+
-    ' / UNSOLVED SPECIFICATION</span>'+esc(item.name)+'</button>').join("");
-  $("#scenarioDetail").innerHTML='<span class="section-eyebrow">'+esc(selected.code)+
-    ' / RESEARCH DESIGN</span><h3>'+esc(selected.name)+'</h3><p>'+
-    esc(selected.description)+'</p><div class="spec-grid">'+
-    [['Demand flexibility',selected.demand_flexibility],
-      ['Ecological rule',selected.ecology_constraint],
-      ['Interstate trade',selected.import_option],
-      ['Modelling status',"Not solved / not calibrated"]]
-      .map(([k,v])=>'<div><small>'+esc(k)+'</small><strong>'+esc(plain(v))+'</strong></div>').join("")+
-    '</div><p><b>Not a prediction or a recommendation.</b> No Kerala2040 2040 capacity, cost or reliability result has been released.</p>'+
-    '<button type="button" id="downloadSpecification" class="button button-dark">Download this research question ↓</button>';
-  $("#downloadSpecification")?.addEventListener("click",()=>downloadSpecification(selected));
-}
-function downloadSpecification(s){
-  const payload={classification:"unsolved_scenario_specification",hourly_model_calibrated:false,
-    ecological_capacity_ceiling_ready:false,eligible_area_sq_km:null,potential_mw:null,
-    source_research_commit:state.site.metadata.research_source_commit,
-    evidence_build_commit:state.site.metadata.git_sha,
-    scenario:s};
-  const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}));
-  const a=document.createElement("a");a.href=url;a.download="kerala2040-"+s.code+"-research-question.json";
-  a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-function renderPathways(){
-  const g=state.ledger.release_gates.techno_economic_2040;
-  $("#pathwayGate").innerHTML='<strong>2040 optimisation: '+(g.passed?"Scoped gate passed":"Not released")+
-    '</strong><p>Historical chronology, economics, hydro physics, grid deliverability and ecological limits must be independently validated. None of the scenarios below is a computed Kerala2040 forecast.</p>';
-  renderScenario();
-  const ref=state.site.references||{};
-  $("#referenceStudies").innerHTML=[
-    ["cstep_2024","CSTEP 2024 / external benchmark"],
-    ["kerala_cn50_2026","CN50 2026 / external benchmark"]
-  ].map(([id,label])=>{
-    const x=ref[id];if(!x)return "";
-    const link=safeURL(x.primary_url);
-    return '<article class="reference-card"><span class="section-eyebrow">'+esc(label)+
-      '</span><h3>'+esc(x.title)+'</h3><small>'+esc(x.publisher)+'</small>'+
-      '<p>'+esc(x.caveat||x.note||"Published external assumptions, not project results.")+'</p>'+
-      (link?'<a target="_blank" rel="noopener noreferrer" href="'+esc(link)+'">Read published study ↗</a>':"")+
-      '</article>';
-  }).join("");
-}
-function renderSolarDistrictDetail(){
-  const solar=state.ledger?.solar_phase1?.aggregate,box=$("#solarDistrictDetail");
-  if(!solar || !box)return;
-  const row=solar.districts.find(r=>r.district===state.solarDistrict)||solar.districts[0];
-  if(!row){box.textContent="Original NWIC district PVOUT not available.";return;}
-  state.solarDistrict=row.district;
-  const picker=$("#solarDistrictChoice");
-  if(picker)picker.value=row.district;
-  box.innerHTML='<div class="section-eyebrow">ORIGINAL NWIC DISTRICT / PAIRED PIXELS</div>'+
-    '<h3>'+esc(row.district)+'</h3>'+
-    '<p>Source-grid 1999–2018 publisher reference-PV-system climatology. '+fmt(row.finite_native_source_pixel_centres,0)+
-    ' native 30-arcsecond centres, with all 12 months matched; no land-area or installed-MW inference.</p>'+
-    '<div class="wind-normalized-metrics">'+
-    '<span><small>Source PVOUT pixels</small><strong>'+fmt(row.finite_native_source_pixel_centres,0)+
-    '</strong><em>Original source centres</em></span>'+
-    '<span><small>Median annual PVOUT</small><strong>'+fmt(row.median_annual_PVOUT_kWh_kWp,2)+
-    '</strong><em>kWh/kWp/year</em></span>'+
-    '<span><small>Median paired Feb−Jul</small><strong>'+fmt(row.median_pixelwise_Feb_minus_Jul_kWh_kWp_day,3)+
-    '</strong><em>kWh/kWp/day</em></span>'+
-    '<span><small>Median paired Feb→Jul decline</small><strong>'+fmt(row.median_pixelwise_Feb_to_Jul_decline_pct,2)+
-    '%</strong><em>Pair each pixel before computing the median</em></span></div>'+
-    '<p class="caption">This is **not** a model of new rooftop or land installations, modern-module degradation, actual FY2024–25 electricity, legal sites or grid deliverability.</p>';
-}
-function renderSolarPhase1(){
-  const solar=state.ledger?.solar_phase1?.aggregate;
-  const summary=$("#solarPhaseSummary"),picker=$("#solarDistrictChoice");
-  if(!summary || !picker)return;
-  if(!solar){summary.textContent="Source-audited solar phase 1 not available in this evidence snapshot.";return;}
-  const a=solar.qa,v=solar.statewide;
-  summary.innerHTML='<span><strong>'+fmt(v.source_pixel_centres,0)+'</strong><small>NWIC Kerala PVOUT source centres</small></span>'+
-    '<span><strong>'+fmt(v.median_annual_PVOUT_kWh_kWp,2)+'</strong><small>Median annual kWh/kWp, not realized generation</small></span>'+
-    '<span><strong>'+fmt(v.median_paired_Feb_to_Jul_drop_pct,2)+'%</strong><small>Paired February→July median decline</small></span>'+
-    '<span><strong>'+fmt(a.inside_district_missing_any_of_14_PVOUT_layers,0)+'</strong><small>Missing among 14 within-district source layers</small></span>';
-  picker.innerHTML=solar.districts.map(r=>'<option value="'+esc(r.district)+'">'+esc(r.district)+'</option>').join('');
-  if(!solar.districts.some(r=>r.district===state.solarDistrict))state.solarDistrict=solar.districts[0]?.district||null;
-  renderSolarDistrictDetail();
-}
-function renderWindTerrain(){
-  const root=$("#windTerrainEvidence"),w=state.ledger.wind_terrain;
-  if(!root)return;
-  if(!w){root.textContent="The executed wind audit is not in this evidence snapshot.";return;}
-  const h=w.speed_m_s, t=w.slope, a=w.sensitivity;
-  const speedLabels=["<3","3–4","4–5","5–6","6–7","7–8","8–10","≥10"];
-  const max=Math.max(...h.bin_counts);
-  const histogram=h.bin_counts.map((count,i)=>
-    '<div class="wind-bar-row"><span>'+esc(speedLabels[i])+'</span>'+
-    '<div class="wind-bar-track"><span style="width:'+
-    (100*count/max).toFixed(2)+'%"></span></div><b>'+fmt(count,0)+'</b></div>'
-  ).join("");
-  const table=a.matching_point_centre_counts_in_row_column_order.map((counts,i)=>
-    '<tr><th scope="row">≥'+esc(a.minimum_150m_speed_m_s_inclusive[i])+' m/s</th>'+
-    counts.map(count=>'<td>'+fmt(count,0)+'</td>').join("")+'</tr>'
-  ).join("");
-  root.innerHTML=
-    '<div class="wind-stat-grid">'+
-    '<div><small>INSIDE THE NWIC KERALA POLYGON</small><strong>'+fmt(w.point_centres,0)+'</strong><span>NIWE 150 m point centres</span></div>'+
-    '<div><small>MEDIAN MODELLED WIND SPEED</small><strong>'+fmt(h.median,2)+' <em>m/s</em></strong><span>150 m AGL, long-term resource atlas</span></div>'+
-    '<div><small>MEDIAN WIND POWER DENSITY</small><strong>'+fmt(w.wind_power_density_w_m2.median,2)+' <em>W/m²</em></strong><span>Modelled resource, not produced power</span></div>'+
-    '<div><small>DSM SLOPE SAMPLES</small><strong>'+fmt(t.finite_point_centres,0)+'</strong><span>'+fmt(t.missing_point_centres,0)+' absent · median '+fmt(t.median_degrees,2)+'°</span></div>'+
-    '</div>'+
-    '<div class="wind-figures"><figure class="wind-histogram"><figcaption>'+
-    '<span class="section-eyebrow">DISTRIBUTION 01 / SOURCE POINTS</span>'+
-    '<h3>Modelled wind speed at 150 m</h3><p>Each bar counts NIWE source centres inside the original Kerala polygon, not area or turbine pads.</p></figcaption>'+
-    '<div class="wind-bar-list">'+histogram+'</div><small class="wind-axis-caption">Wind-speed class (m/s) · number of point centres</small></figure>'+
-    '<figure class="wind-matrix"><figcaption><span class="section-eyebrow">SENSITIVITY 02 / TERRAIN</span>'+
-    '<h3>Wind speed × surface slope</h3><p>Hypothetical thresholds only. Rows are minimum wind speed; columns are maximum DSM slope. Cells are point counts with valid sampled slope.</p></figcaption>'+
-    '<div class="wind-table-wrap"><table><caption>Point-centre counts by hypothetical wind-speed and GLO-90 DSM slope thresholds; not eligible sites</caption>'+
-    '<thead><tr><th scope="col">Wind ≥ / slope ≤</th>'+
-    a.maximum_DSM_slope_degrees_inclusive.map(deg=>'<th scope="col">'+esc(deg)+'°</th>').join("")+
-    '</tr></thead><tbody>'+table+'</tbody></table></div>'+
-    '<p class="wind-table-foot">Slope-available denominator: '+fmt(a.denominator_for_percentages,0)+
-    ' centres. No km² or MW inferred.</p></figure></div>'+
-    '<p class="caption">Source: NIWE original 150 m national CSV clipped with original NWIC Kerala polygon and joined to verified GLO-90 DSM slope; reviewed '+esc(w.reviewed_date)+'. Raw NIWE geometry and maps are not redistributed here.</p>';
-}
-function renderDistrictNormalized(){
-  const box=$("#districtNormalized");
-  const d=state.ledger?.wind_phase1?.normalized;
-  if(!box)return;
-  if(!d){box.textContent="Normalized descriptive sensitivity is not in this research snapshot.";return;}
-  const row=d.districts.find(r=>r.district===state.district);
-  if(!row){box.textContent="District not found in normalized NWIC evidence.";return;}
-  const source=row.counts[2],share=row.percent_of_district_valid_slope_centres[2],
-        reference=row.retention_relative_to_max20_slope_same_min_speed[2];
-  box.innerHTML='<div class="section-eyebrow">NORMALIZED RESEARCH RESULT / NO MW</div>'+
-    '<h3>'+esc(row.district)+': wind ≥7 m/s across illustrative DSM slope limits</h3>'+
-    '<p>Percentage denominator: '+fmt(row.valid_slope_point_centres,0)+
-    ' source centres with <em>finite sampled surface slope</em> in this NWIC district. '+
-    fmt(row.missing_slope_point_centres,0)+
-    ' missing-slope centres are reported but never treated as below the threshold.</p>'+
-    '<div class="wind-normalized-metrics">'+source.map((count,i)=>
-      '<span><small>DSM slope ≤'+esc(d.thresholds.maximum_DSM_surface_slope_degrees_inclusive[i])+
-      '°</small><strong>'+fmt(share[i],2)+'%</strong><em>'+fmt(count,0)+
-      ' point centres</em></span>').join('')+'</div>'+
-    '<p class="caption">Relative to this district’s ≥7 m/s and ≤20° reference ('+
-    fmt(source[3],0)+' centres), its ≤5° subset is '+
-    (reference[0]===null?'undefined (empty reference)':fmt(reference[0],2)+'%')+
-    '. This reference is <strong>not all windy sites</strong>, nor a land-area denominator. '+
-    'Physical, statutory, land-rights, generation and grid filters remain open.</p>';
-}
-function renderDistrictDetail(){
-  const dataset=state.ledger?.nwic_district;
-  const metrics=$("#districtMetrics"),thresholds=$("#districtThresholds");
-  if(!dataset || !metrics || !thresholds)return;
-  const row=dataset.districts.find(x=>x.district===state.district)||dataset.districts[0];
-  if(!row)return;
-  state.district=row.district;
-  const selection=$("#districtChoice");if(selection)selection.value=row.district;
-  metrics.innerHTML='<div class="district-selected-label"><span class="section-eyebrow">DISTRICT SELECTED / ജില്ല</span>'+
-    '<h3>'+esc(row.district)+'</h3><small>NWIC source-defined district, descriptive point-centre subset</small></div>'+
-    '<div class="district-kpi"><strong>'+fmt(row.point_centres,0)+'</strong><span>NIWE point centres</span></div>'+
-    '<div class="district-kpi"><strong>'+fmt(row.wind_speed_median_m_s,2)+' <em>m/s</em></strong><span>Median modelled wind at 150 m</span></div>'+
-    '<div class="district-kpi"><strong>'+fmt(row.slope_median_degrees,2)+'°</strong><span>Median GLO-90 DSM surface slope</span></div>'+
-    '<div class="district-kpi"><strong>'+fmt(row.slope_finite,0)+'</strong><span>Finite slope samples · '+fmt(row.slope_missing,0)+' missing</span></div>';
-  const a=dataset.hypothetical_thresholds;
-  thresholds.innerHTML='<div class="district-matrix-heading"><h3>Wind × surface slope · '+esc(row.district)+'</h3>'+
-    '<p>Numbers are modelled source-point centres. Wind threshold is inclusive; slope is measured on the DSM surface, not turbine-foundation ground. This matrix cannot establish available land or wind-farm MW.</p></div>'+
-    '<div class="wind-table-wrap"><table><caption>Hypothetical point-centre counts in '+esc(row.district)+
-    ' · speed ≥ and slope ≤; not eligible sites</caption><thead><tr><th scope="col">Wind ≥ / slope ≤</th>'+
-    a.max_DSM_surface_slope_degrees_inclusive.map(x=>'<th scope="col">'+esc(x)+'°</th>').join('')+
-    '</tr></thead><tbody>'+row.threshold_matrix.map((counts,i)=>
-       '<tr><th scope="row">≥'+esc(a.min_modelled_150m_wind_speed_m_s_inclusive[i])+
-       ' m/s</th>'+counts.map(n=>'<td>'+fmt(n,0)+'</td>').join('')+'</tr>'
-    ).join('')+'</tbody></table></div><p class="caption">Finite slope denominator: '+
-    fmt(row.slope_finite,0)+' of '+fmt(row.point_centres,0)+
-    ' NIWE centres. Hypothetical thresholds are not adopted engineering criteria.</p>';
-  renderDistrictNormalized();
-}
-function renderDistrictExplorer(){
-  const dataset=state.ledger?.nwic_district;
-  const summary=$("#districtSourceSummary"),selector=$("#districtChoice"),overview=$("#districtOverview");
-  if(!summary || !selector || !overview)return;
-  if(!dataset){summary.textContent="NWIC district aggregate is not in this research snapshot.";return;}
-  const a=dataset.point_assignment;
-  summary.innerHTML='<span><strong>'+fmt(a.uniquely_assigned,0)+'</strong><small>Assigned NWIC source centres</small></span>'+
-    '<span><strong>'+fmt(a.unassigned,0)+'</strong><small>Unassigned centres</small></span>'+
-    '<span><strong>'+fmt(a.ambiguous,0)+'</strong><small>Multi-district centres</small></span>'+
-    '<span><strong>'+fmt(a.slope_missing,0)+'</strong><small>Missing DSM slope samples</small></span>';
-  selector.innerHTML=dataset.districts.map(x=>'<option value="'+esc(x.district)+'">'+esc(x.district)+'</option>').join('');
-  if(!dataset.districts.some(x=>x.district===state.district)){
-    state.district=dataset.districts[0]?.district||null;
-  }
-  const maxSpeed=12;
-  overview.innerHTML='<table><caption>Alphabetical NWIC district comparison · NIWE resource centre counts, not available area or MW</caption>'+
-    '<thead><tr><th scope="col">District</th><th scope="col">NIWE centres</th>'+
-    '<th scope="col">Median wind at 150 m</th><th scope="col">Median surface slope</th></tr></thead><tbody>'+
-    dataset.districts.map(x=>'<tr><th scope="row"><button type="button" data-district="'+esc(x.district)+'">'+
-      esc(x.district)+' ↗</button></th><td>'+fmt(x.point_centres,0)+'</td>'+
-      '<td><div class="district-speed-track" aria-hidden="true"><span style="width:'+
-      Math.min(100,100*x.wind_speed_median_m_s/maxSpeed).toFixed(1)+'%"></span></div>'+
-      '<strong>'+fmt(x.wind_speed_median_m_s,2)+' m/s</strong></td><td>'+
-      fmt(x.slope_median_degrees,2)+'°</td></tr>'
-    ).join('')+'</tbody></table>';
-  renderDistrictDetail();
-}
-function renderLrisEvidence(){
-  const box=$("#lrisEvidence"),l=state.ledger.lris;
-  if(!box)return;
-  if(!l){box.textContent="LRIS investigation not present in this evidence snapshot.";return;}
-  const d=state.ledger.district_qa;
-  const nwic=state.ledger.nwic_district;
-  const districtNote=d?'<div class="decision-banner"><strong>Historic LRIS district-boundary discrepancy: '+
-    fmt(d.unassigned_point_centres,0)+' NIWE centres</strong>'+
-    '<p>The LRIS polygons covered '+fmt(d.unique_district_point_centres,0)+' of '+
-    fmt(d.original_point_centres,0)+' original NWIC-state-clipped resource centres. '+
-    (nwic?'The independently supplied original NWIC district dataset now uniquely assigns all '+
-      fmt(nwic.point_assignment.uniquely_assigned,0)+
-      ' points across 14 districts; zero remain unassigned. This closes the descriptive '+
-      'administrative partition, <strong>not land eligibility.</strong>':
-      'The LRIS residual remains unresolved until a second district source is checked.')+
-    '</p><p class="caption"><a target="_blank" rel="noopener noreferrer" href="'+REPO+
-    '/blob/main/docs/NIWE_LRIS_DISTRICT_PARTITION_QA_2026_09_22.md">Read historic LRIS QA ↗</a></p></div>':"";
-  box.innerHTML=districtNote+'<p>LRIS advertises land use, roads, slope and waterbodies across <b>'+fmt(l.district_count,0)+
-    ' districts</b>. Browser-observed district/block/local-body GeoJSON, level-based category summaries and WMS map images are useful for contextual checks. <strong>They are not the underlying native land-use vector layer.</strong></p>'+
-    '<div class="lris-status"><span><b>WFS check</b><small>'+esc(l.wfs_result)+'</small></span>'+
-    '<span><b>Original land-use polygons</b><small>Not acquired or independently QA-verified</small></span>'+
-    '<span><b>Legal forest / ESZ / paddy</b><small>Notification-linked boundaries still missing</small></span></div>'+
-    '<p class="caption">A disabled public WFS does not prove that the data cannot be supplied through another authorised route. See the <a href="'+REPO+
-    '/blob/main/data/evidence/gis/lris_public_services_discovery_2026_09_22.json" target="_blank" rel="noopener noreferrer">source-scoped service inventory ↗</a>.</p>';
-}
-const spatialIds=["wind","boundary","lris","lulc","landslide","forest","wetlands"];
-function renderAtlas(){
-  const records=spatialIds.map(id=>state.ledger.workstreams.find(x=>x.id===id)).filter(Boolean);
-  const box=$("#spatialPipeline");if(!box)return;
-  box.innerHTML=records.map((item,i)=>
-    '<section><button type="button" class="land-record" data-layer="'+esc(item.id)+
-    '" aria-expanded="false" aria-controls="layer-'+esc(item.id)+'">'+
-    '<span class="record-index">'+String(i+1).padStart(2,"0")+
-    '<span class="record-status">'+esc(labelStage(item.phase))+'</span></span>'+
-    '<h3>'+esc(item.title)+'</h3><p><b>'+esc(item.metric)+" "+esc(item.unit)+
-    '</b><br>'+esc(item.summary)+'</p><span class="record-arrow" aria-hidden="true">↗</span></button>'+
-    '<div class="land-detail" id="layer-'+esc(item.id)+'" hidden>'+
-    '<p><b>What has been established:</b> '+esc(item.completed)+'</p>'+
-    '<p><b>What has not been established:</b> '+esc(item.blocked)+'</p>'+
-    '<p><b>Next verifiable step:</b> '+esc(item.action)+'</p>'+
-    sourceTrail(item)+'</div></section>').join("");
-}
-function renderIndustry(){
-  const source=state.site.circular_industry||{},cases=source.cases||{};
-  const ids=["kmml","ttpl","fact","kspcb"];
-  $("#industryCases").innerHTML=ids.map(id=>{
-    const item=cases[id];if(!item)return "";
-    const sources=Object.values(item.sources||{}).map(row=>{
-      const url=safeURL(row.url);
-      return url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+
-        esc(row.note||"Official source")+' ↗</a>':"";
-    }).join("");
-    return '<article class="industry-card"><span class="section-eyebrow">'+
-      esc(id===source.primary_case?"SELECTED CASE / NEEDS MEASURED FLOWS":"DOCUMENTED CONTEXT / RESEARCH CANDIDATE")+
-      '</span><h2>'+esc(item.organisation)+'</h2><p>'+
-      esc(item.limitation||"Source-recorded operations and proposed projects are distinguished; no new recoverable quantity is inferred.")+
-      '</p><h3>Potential research use</h3><p>'+
-      esc((item.modelling_use||[]).map(plain).join(" · "))+
-      '</p><details><summary>Official evidence trail</summary><div class="source-links">'+
-      sources+'</div></details></article>';
-  }).join("");
-}
-function renderWorkbench(){
-  const l=state.ledger;
-  const all=l.workstreams||[],q=($("#workbenchSearch")?.value||"").toLowerCase().trim();
-  const phase=$("#workbenchPhase")?.value||"all";
-  const rows=all.filter(item=>(phase==="all"||phase===item.phase) &&
-    (!q||[item.id,item.title,item.summary,item.completed,item.blocked,item.action]
-      .join(" ").toLowerCase().includes(q)));
-  $("#workbenchSummary").innerHTML=statsHTML([
-    [String(all.length),"Source-linked workstreams","Not a progress percentage"],
-    [String(l.audit_open_findings),"Open acquisition findings","Some have partial or validated source QA"],
-    [String(Object.values(l.release_gates).filter(g=>g.passed).length)+
-      "/"+Object.keys(l.release_gates).length,"Scoped gates passed","No approved Kerala 2040 optimisation"],
-    ["—","Eligible land / MW","No admitted numerical ceiling"]
-  ]);
-  $("#workbenchCount").textContent=rows.length+" / "+all.length+" research records shown";
-  $("#workbenchCards").innerHTML=rows.length?rows.map(item=>
-    '<article class="research-item"><div class="research-top"><span class="section-eyebrow">'+
-    esc(item.id.toUpperCase())+'</span><span class="status '+stageClass(item.phase)+'">'+
-    esc(labelStage(item.phase))+'</span></div><h2>'+esc(item.title)+'</h2><p>'+
-    esc(item.summary)+'</p><div class="research-metric">'+esc(item.metric)+' <small>'+
-    esc(item.unit)+'</small></div><details><summary>Read the evidence, limitation and next step</summary>'+
-    '<p><b>Established:</b> '+esc(item.completed)+'</p><p><b>Unresolved:</b> '+
-    esc(item.blocked)+'</p><p><b>Next:</b> '+esc(item.action)+'</p>'+
-    sourceTrail(item)+'</details></article>').join("") :
-    '<p>No research records match. Clear the filter to view all workstreams.</p>';
-}
-function renderFindings(){
-  const a=state.audit;
-  const q=($("#auditSearch")?.value||"").trim().toLowerCase();
-  const priority=$("#auditPriority")?.value||"all";
-  const found=(a.findings||[]).filter(item=>(priority==="all"||item.priority===priority)&&
-    (!q||[item.id,item.acquisition,item.verification?.detail].join(" ").toLowerCase().includes(q)));
-  $("#auditCount").textContent=found.length+" / "+a.finding_count+
-    " tracked acquisitions · open does not mean no research has been done";
-  $("#auditFindings").innerHTML=found.map(item=>{
-    const v=item.verification||{},url=repoFile(v.evidence||item.evidence);
-    return '<article class="finding"><small>'+esc(item.priority||"SOURCE")+' / '+
-      esc(plain(item.id))+'</small><h3>'+esc(plain(item.id))+'</h3><p>'+
-      esc(item.acquisition)+'</p><p>'+esc(v.detail||"Evidence remains unverified.")+'</p>'+
-      '<span class="status '+(v.status==="verified_in_committed_evidence"?"verified":
-      v.status==="partial_or_provisional"?"partial":"blocked")+'">'+esc(plain(v.status||"unverified"))+
-      '</span> '+(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">Inspect committed source ↗</a>':"")+
-      '</article>';
-  }).join("")||'<p>No findings match these filters.</p>';
-}
-function renderAudit(){
-  const a=state.audit;
-  $("#auditSummary").innerHTML=statsHTML([
-    [String(a.finding_count),"Tracked acquisition questions","As defined in committed audit"],
-    [String(a.open_findings),"Open findings","Unresolved, including partial evidence"],
-    [String(Object.values(a.release_gates).filter(g=>g.passed).length)+
-      "/"+Object.keys(a.release_gates).length,"Scoped gates passed","Not a model completion score"],
-    ["0","Published 2040 optimisations","Techno-economic gate not passed"]
-  ]);
-  $("#auditGates").innerHTML=Object.entries(a.release_gates||{}).map(([key,g])=>
-    '<article class="gate"><span class="status '+(g.passed?"verified":"blocked")+'">'+
-    (g.passed?"SCOPED PASS":"NOT PASSED")+'</span><div><h3>'+
-    esc(plain(key))+'</h3><p>'+esc(g.description||"")+'</p><p>'+
-    (g.blocking_checks?.length?"Outstanding: "+esc(g.blocking_checks.join(" · ")):
-      "Only this explicitly scoped gate is satisfied.")+'</p></div></article>').join("");
-  const p=$("#auditProvenance");
-  if(p)p.textContent="Committed repository-evidence audit · archived SLDC source SHA-256 "+
-    (a.source_qa_sha256||"unknown")+" · "+(a.evidence_limit||"No external source inference");
-  renderFindings();
-}
-function sourceHome(source){
-  for(const field of ["system_statistics_url","tracker","hazard_maps","open_data",
-    "economic_review_2025","catalog","endpoint","home","file_api","url","storage_url"]){
-    const v=safeURL(source[field]);if(v)return v;
-  }
-  return "";
-}
-function renderSources(){
-  const s=state.site,files=s.metadata.files||{};
-  const q=($("#sourceSearch")?.value||"").trim().toLowerCase();
-  const registry=Object.entries(s.sources||{});
-  const registered=registry.filter(([id,item])=>
-    !q||[id,item.organisation,item.note,item.acquisition].join(" ").toLowerCase().includes(q));
-  $("#sourceRegistry").innerHTML=registered.map(([id,item])=>{
-    const url=sourceHome(item);
-    const status=s.metadata.status[id]||{},label=status.available?
-      (status.partial?"Partially acquired":"Available in bundle"):
-      status.evidence==="gap"?"Missing verified evidence":"Registered reference, not confirmed acquisition";
-    return '<article class="source-entry"><span class="section-eyebrow">'+esc(item.priority||"SOURCE")+
-      ' / '+esc(plain(id))+'</span><h3>'+esc(item.organisation||plain(id))+'</h3><p>'+
-      esc(item.note||"Source registered, acquisition and usage require verification.")+'</p>'+
-      '<small>'+esc(label)+' · '+esc(plain(item.acquisition||"source link"))+'</small>'+
-      (url?'<a target="_blank" rel="noopener noreferrer" href="'+esc(url)+'">Open original source ↗</a>':"")+
-      '</article>';
-  }).join("")||'<p>No sources match that query.</p>';
-  const downloads=[["Published evidence manifest","site-data.json"],
-    ["Publication metadata","metadata.json"],
-    ...Object.entries(files).map(([key,name])=>[plain(key),name])];
-  if(s.metadata.files.sldc_station_evidence)downloads.push(["Processed observed-day CSV archive","sldc-processed-evidence.zip"]);
-  $("#downloadGrid").innerHTML=downloads.filter(([key,name])=>
-    !q||(key+" "+name).toLowerCase().includes(q)).map(([key,name])=>
-    '<article class="download-entry"><strong>'+esc(key)+'</strong><small>'+
-    esc(name)+'</small><a href="'+RAW+encodeURIComponent(name)+'" download>Download published file ↓</a></article>').join("")||
-    '<p>No published downloads match.</p>';
-  $("#dataSummary").innerHTML=statsHTML([
-    [String(registry.length),"Registered sources","Not all sources acquired or model-ready"],
-    [String(downloads.length),"Public downloadable products","Only those allowed by publication policy"],
-    [String(s.baseline.rows),"Observed SLDC daily reports","FY2024–25 subset"],
-    [String(state.ledger.audit_open_findings),"Open evidence findings","Dated repository audit"]
-  ]);
-}
-function renderAll(){
-  renderHomepage();renderEditorialHome();renderProvenance();renderElectricity();renderEditorialElectricity();renderPathways();
-  renderWindTerrain();renderDistrictExplorer();renderSolarPhase1();renderLrisEvidence();renderAtlas();renderIndustry();renderWorkbench();renderAudit();renderSources();
-  bindRoutes();
-}
-async function init(){
-  bindInteractions();
-  showView(location.hash.slice(1)||"overview");
-  showWelcome();
-  setupMotion();
-  try{
-    await loadPlatformData();
-    renderAll();
-    if(typeof loadHistoricalStudy==="function")await loadHistoricalStudy(
-      state.site.metadata.files.historical_electricity,state.ledger);
-    if(typeof loadKMMLCase==="function")await loadKMMLCase(
-      state.site.metadata.files.kmml_case);
-    if(typeof loadTotalEnergyAtlas==="function")await loadTotalEnergyAtlas(
-      state.site.metadata.files.total_energy_atlas);
-    if(typeof loadPPACAnnualSales==="function")await loadPPACAnnualSales(
-      state.site.metadata.files.ppac_full_year_sales);
-    if(typeof loadEnergyGHGBridge==="function")await loadEnergyGHGBridge(
-      state.site.metadata.files.energy_ghg_bridge);
-    if(typeof loadWP6Pilot==="function")await loadWP6Pilot(
-      state.site.metadata.files.wp6_cooling_pilot);
-    if(typeof loadWP6ServiceDispatch==="function"){
-      await loadWP6ServiceDispatch(state.site.metadata.files.wp6_ev_pilot,"ev");
-      await loadWP6ServiceDispatch(state.site.metadata.files.wp6_industry_pilot,"industry");
+  function renderModel() {
+    const k = data.economics.key_results;
+    if (modelMode === "price") {
+      let envelope = $("envelope").value;
+      const cases = k[`lower_FY2030_full_ATC_${envelope}_envelope_low_BESS`],
+        names = ["KSEBL purchase", "IEX wholesale", "Bulk stress"],
+        rows = Object.entries(cases)
+          .filter(([, r]) => typeof r === "object")
+          .map(([key, r], i) => ({
+            label: names[i],
+            short: ["KSEBL", "IEX", "Stress"][i],
+            solar: r.solar_mw / 1000,
+            imports: r.imports_gwh / 1000,
+            price:
+              data.economics.matrix.import_price_cases_real_2021_22_inr_per_mwh[
+                key
+              ] / 1000,
+          }));
+      $("modelControlLabel").hidden = false;
+      text(
+        "modelContext",
+        `Lower FY2030 demand · 4,455 MW transfer · ${envelope} renewable envelope · low battery cost`,
+      );
+      plot("modelChart", {
+        title: "Solar build changes with import-price assumptions",
+        rows,
+        kind: "bar",
+        unit: "Candidate solar · GW",
+        series: [{ key: "solar", name: "Solar" }],
+        describe: (r) =>
+          `${r.label} · ₹${fmt(r.price, 2)}/kWh (real FY2021–22) · ${fmt(r.solar, 3)} GW solar · ${fmt(r.imports, 3)} TWh imports`,
+      });
+      results(
+        rows.map((r) => [
+          r.label,
+          fmt(r.solar, 2) + " GW solar",
+          fmt(r.imports, 2) +
+            " TWh imports · ₹" +
+            fmt(r.price, 2) +
+            "/kWh proxy",
+        ]),
+      );
+      text(
+        "modelInsight",
+        envelope === "high"
+          ? "With room to build, a higher import-price assumption selects more local solar and less imported energy."
+          : "At this solar limit, the stress-price case adds 119.34 MW of wind and removes the small battery addition. Price cannot expand the solar envelope.",
+      );
+    } else {
+      const cases = k.reference_FY2030_31_reference_envelope_low_BESS,
+        rows = ["full_ATC", "ATC_80pct", "ATC_60pct"].map((key, i) => ({
+          label: ["100% ATC", "80% ATC", "60% ATC"][i],
+          value: cases[key].unserved_mwh / 1e6,
+          atc: [4455, 3564, 2673][i],
+        }));
+      $("modelControlLabel").hidden = true;
+      text(
+        "modelContext",
+        "Reference FY2030–31 demand · reference renewable envelope · low battery cost",
+      );
+      plot("modelChart", {
+        title: "Modelled shortage under transfer stress",
+        rows,
+        kind: "bar",
+        unit: "Unserved energy · TWh",
+        series: [{ key: "value", name: "Shortage" }],
+        describe: (r) =>
+          `${r.label} · ${r.atc} MW transfer limit · ${fmt(r.value, 3)} TWh modelled shortage`,
+      });
+      results(
+        rows.map((r) => [
+          r.label,
+          fmt(r.value, 3) + " TWh",
+          fmt(r.atc, 0) + " MW transfer sensitivity",
+        ]),
+      );
+      text(
+        "modelInsight",
+        "All candidate limits bind: 4,210.74 MW solar, 2,549.475 MW wind and 250 MW battery. Higher import prices cannot fix the remaining shortage.",
+      );
     }
-    if(typeof loadWP6Storage==="function")await loadWP6Storage(
-      state.site.metadata.files.wp6_storage_screen);
-    animateVisibleArtwork();
-  }catch(err){
-    console.error("Kerala2040 evidence load failed:",err);
-    const box=$("#headlineMetrics");
-    if(box)box.textContent="The verified evidence snapshot could not load. No figures are being shown.";
-    const origin=$("#dataOrigin");
-    if(origin)origin.textContent="Published data unavailable; inspect the repository instead.";
   }
-}
-if(typeof window!=="undefined")window.addEventListener("DOMContentLoaded",()=>{
-  let theme="kasavu";try{theme=localStorage.getItem("kerala2040-theme")||theme}catch{}
-  chooseTheme(theme);init();
-});
+  function renderHydro() {
+    const choice = $("hydroTransfer").value;
+    if ($("hydroStudy").value === "idukki") {
+      const record =
+        data.idukki.reference_demand_full_idukki_availability[
+          choice === "full" ? "atc_snapshot_reference" : `atc_${choice}_stress`
+        ];
+      const rows = [
+        { label: "1-day timing", value: record.same_horizon_1d_unserved_gwh },
+        { label: "30-day timing", value: record.same_horizon_30d_unserved_gwh },
+        { label: "Idukki state", value: record.stateful_unserved_gwh },
+      ];
+      text("hydroBadge", "12 stateful cases + 24 comparisons");
+      text(
+        "hydroBoundary",
+        "V1.3 pilot: 364 days / 8,736 hours, with 11 generation gaps and 11 storage gaps interpolated for this model only. Its reconstructed net water-balance term is not observed catchment inflow. All three bars use the same 364-day comparison horizon; they are not the full-year v1.2 values.",
+      );
+      plot("hydroChart", {
+        title: "Idukki stateful pilot and same-horizon timing comparisons",
+        rows,
+        kind: "bar",
+        unit: "Unserved energy · GWh",
+        series: [{ key: "value", name: "364-day comparison" }],
+        describe: (r) =>
+          `${r.label} · ${fmt(r.value, 3)} GWh · same 8,736-hour model horizon`,
+      });
+      mini(
+        "hydroStats",
+        rows.map((r) => [fmt(r.value, 3) + " GWh", r.label + " experiment"]),
+      );
+      text(
+        "hydroInsight",
+        choice === "full"
+          ? "At full transfer, the Idukki pilot reaches the same 0.160 GWh residual shortage as the same-horizon 30-day timing case. Numerical water-state closure is not validation of real reservoir operations."
+          : choice === "80pct"
+            ? "At 80% transfer, seasonal Idukki storage reduces the pilot's shortage to 367.143 GWh, below the same-horizon 30-day timing case. A seasonal state can move water beyond a 30-day window; these are different constraints."
+            : "At 60% transfer, the stateful pilot still leaves 5,131.227 GWh unserved. Reservoir flexibility alone cannot resolve this deep transfer stress.",
+      );
+      table(
+        "hydroTable",
+        ["Same-horizon experiment", "Unserved energy (GWh)"],
+        rows.map((r) => [r.label, fmt(r.value, 3)]),
+      );
+      return;
+    }
+    text("hydroBadge", "48 full-year experiments");
+    text(
+      "hydroBoundary",
+      "V1.2: 365 days / 8,760 hours. Hydro energy may move within nested synthetic time windows. Window length is not reservoir storage duration, and this experiment has no reservoir water-balance state.",
+    );
+
+    const key = `reference_demand_${choice === "full" ? "full" : choice}_atc_full_hydro`;
+    const source = data.hydro.key_findings[key];
+    const rows = [1, 3, 15, 30].map((days) => ({
+      label: `${days} day${days === 1 ? "" : "s"}`,
+      value: source[`${days}d_unserved_gwh`],
+    }));
+    plot("hydroChart", {
+      title: "Hydro timing windows and modelled unserved energy",
+      rows,
+      kind: "bar",
+      unit: "Unserved energy · GWh",
+      series: [{ key: "value", name: "Modelled shortage" }],
+      describe: (r) =>
+        `${r.label} timing window · ${fmt(r.value, 3)} GWh unserved energy · synthetic flexibility bound`,
+    });
+    mini("hydroStats", [
+      [fmt(rows[0].value, 3) + " GWh", "1-day timing window"],
+      [fmt(rows[3].value, 3) + " GWh", "30-day timing window"],
+      [
+        fmt(100 * (1 - rows[3].value / rows[0].value)) + "%",
+        "reduction in modelled shortage",
+      ],
+    ]);
+    text(
+      "hydroInsight",
+      choice === "full"
+        ? "At full transfer, 15 days captures essentially all the modelled timing benefit. This result motivates reservoir research; it does not prove that real reservoirs can provide this flexibility."
+        : choice === "80pct"
+          ? "Longer timing windows help, but the 30-day case still leaves 965.093 GWh unserved. Timing alone cannot close this gap."
+          : "Even 30 days leaves 5,454.820 GWh unserved. Under this transfer stress, changing hydro timing barely changes the deeper adequacy constraint.",
+    );
+    table(
+      "hydroTable",
+      ["Synthetic window", "Unserved energy (GWh)"],
+      rows.map((r) => [r.label, fmt(r.value, 6)]),
+    );
+  }
+  function connection(key) {
+    const entries = {
+      water: [
+        "Water sets the rhythm.",
+        "Monsoon inflows and hydro timing shape electricity supply. Irrigation, ecology and downstream needs also matter.",
+        "electricity",
+      ],
+      electric: [
+        "Timing changes the question.",
+        "Generation, interstate connections and flexible demand work together. The same daily energy can create a very different evening peak.",
+        "pathways",
+      ],
+      leaf: [
+        "A resource needs a responsible place.",
+        "Good sun or wind is only a starting point. Terrain, forests, wetlands, communities and grid access shape what can actually be built.",
+        "atlas",
+      ],
+      cycle: [
+        "Value moves through materials too.",
+        "Industrial heat, fuels and recovery opportunities connect energy decisions to local production. Measured process balances come before claims of savings.",
+        "industry",
+      ],
+    };
+    const [title, copy, target] = entries[key];
+    text("connectionTitle", title);
+    text("connectionText", copy);
+    $("connectionLink").href = "#" + target;
+  }
+  document.querySelectorAll("[data-connection]").forEach((b) =>
+    b.addEventListener("click", () => {
+      pressed("[data-connection]", b);
+      connection(b.dataset.connection);
+    }),
+  );
+
+  function results(rows) {
+    $("modelResults").replaceChildren(
+      ...rows.map(([label, value, note]) => {
+        const row = document.createElement("div");
+        row.className = "result-row";
+        const a = document.createElement("span"),
+          b = document.createElement("strong"),
+          c = document.createElement("small");
+        a.textContent = label;
+        b.textContent = value;
+        c.textContent = note;
+        a.append(c);
+        row.append(a, b);
+        return row;
+      }),
+    );
+  }
+  function material(kind) {
+    const content = {
+      process:
+        "KMML’s titanium route links mineral separation, beneficiation, chlorination and pigment production. Each stage has different energy and material needs. Understanding the process comes before assigning a recovery benefit.",
+      recovery:
+        "Recovery research examines streams such as iron-rich residues and process heat. A dated trial or a possible outlet is a research lead; it does not establish continuous recovery, market demand or net savings.",
+      proof:
+        "A defensible industrial case needs measured mass and energy balances, stream quality, production schedules, safe operating limits, buyer specifications and project costs.",
+    };
+    text("materialContent", content[kind]);
+  }
+  function library() {
+    const query = $("sourceSearch").value.toLowerCase().trim(),
+      rows = data.catalogue.filter((x) =>
+        (x.file + " " + x.classification).toLowerCase().includes(query),
+      );
+    text(
+      "sourceCount",
+      `${rows.length} datasets${query ? " matching your search" : ""} · original classifications retained`,
+    );
+    $("sourceList").replaceChildren(
+      ...rows.slice(0, showAll || query ? rows.length : 8).map((r) => {
+        const row = document.createElement("div");
+        row.className = "source-row";
+        const div = document.createElement("div"),
+          strong = document.createElement("strong"),
+          small = document.createElement("small"),
+          a = document.createElement("a");
+        strong.textContent = r.file.replace(".json", "").replaceAll("-", " ");
+        small.textContent = String(r.classification).replaceAll("_", " ");
+        a.href = "data/" + r.file;
+        a.download = r.file;
+        a.textContent = "JSON ↓";
+        a.setAttribute("aria-label", "Download " + r.file);
+        div.append(strong, small);
+        row.append(div, a);
+        return row;
+      }),
+    );
+    $("moreSources").hidden = !!query || rows.length <= 8;
+    text(
+      "moreSources",
+      showAll ? "Show fewer datasets" : "Show all " + rows.length + " datasets",
+    );
+  }
+
+  function renderArchive() {
+    const historical = data.atlas.emc_final_energy.observed_years;
+    plot("totalEnergyHistoryChart", {
+      title: "Historical Kerala final energy",
+      kind: "line",
+      unit: "Final energy · Mtoe",
+      rows: historical.map((r) => ({
+        label: "FY" + r.fy,
+        short: r.fy.slice(2),
+        value: r.value_mtoe,
+      })),
+      series: [{ key: "value", name: "Final energy" }],
+    });
+    const annual = data.ppac.annual_kerala_rows.map((r) => ({
+      ...r,
+      label: "FY" + r.fy,
+      short: r.fy,
+    }));
+    plot("totalEnergyAnnualPPACChart", {
+      title: "Annual Kerala all-POL petroleum sales",
+      kind: "bar",
+      unit: "Sales · thousand tonnes",
+      rows: annual,
+      series: [{ key: "all_pol_tmt", name: "All-POL" }],
+      describe: (r) =>
+        `${r.label} · ${fmt(r.all_pol_tmt)} thousand tonnes · ${r.all_pol_tier.replaceAll("_", " ")} · original image QA pending`,
+    });
+    plot("totalEnergyPPACProductsChart", {
+      title: "Petrol and diesel sales, already included in all-POL",
+      kind: "line",
+      unit: "Sales · thousand tonnes",
+      rows: annual,
+      series: [
+        { key: "ms_tmt", name: "Petrol" },
+        { key: "hsd_tmt", name: "Diesel" },
+      ],
+      describe: (r) =>
+        `${r.label} · Petrol ${fmt(r.ms_tmt)} (${r.ms_tier.replaceAll("_", " ")}) · Diesel ${fmt(r.hsd_tmt)} (${r.hsd_tier.replaceAll("_", " ")}) · thousand tonnes`,
+    });
+    plot("totalEnergyPPACChart", {
+      title: "Selected petroleum sales, April to September 2024 only",
+      kind: "bar",
+      unit: "Half-year sales · thousand tonnes",
+      rows: data.atlas.ppac_provisional_half_year_2024_25.items.map((r) => ({
+        label: r.product,
+        value: r.tmt,
+      })),
+      series: [{ key: "value", name: "Provisional sales" }],
+    });
+    plot("totalEnergyGHGChart", {
+      title: "Selected categories of the calendar-2023 energy-sector inventory",
+      kind: "bar",
+      unit: "2023 emissions · MtCO₂e",
+      rows: data.ghg.categories.map((r) => ({
+        label: r.name,
+        short: {
+          transport: "Transport",
+          residential: "Homes",
+          industrial: "Industry",
+        }[r.id],
+        value: r.mtco2e,
+      })),
+      series: [{ key: "value", name: "Inventory" }],
+    });
+    $("energyView").addEventListener("change", () => {
+      document.querySelectorAll("[data-energy-panel]").forEach((el) => {
+        el.hidden = el.dataset.energyPanel !== $("energyView").value;
+      });
+    });
+    $("kmmlFlow").replaceChildren(
+      ...data.kmml.units.map((unit) => {
+        const button = document.createElement("button");
+        button.textContent = unit.id + " · " + unit.name;
+        button.dataset.unit = unit.id;
+        button.setAttribute("aria-pressed", String(unit.id === "MS"));
+        button.addEventListener("click", () => {
+          pressed("[data-unit]", button);
+          renderUnit(unit);
+        });
+        return button;
+      }),
+    );
+    renderUnit(data.kmml.units[0]);
+  }
+  function renderUnit(unit) {
+    $("kmmlUnit").replaceChildren();
+    for (const [label, value] of [
+      [unit.name, unit.function],
+      ["Inputs", unit.inputs],
+      ["Outputs", unit.outputs],
+    ]) {
+      const p = document.createElement("p"),
+        b = document.createElement("strong");
+      b.textContent = label + ": ";
+      p.append(b, document.createTextNode(value));
+      $("kmmlUnit").append(p);
+    }
+    const links = data.kmml.links.filter(
+      (r) => r[0] === unit.id || r[1] === unit.id,
+    );
+    const p = document.createElement("p");
+    p.className = "micro";
+    p.textContent = links
+      .map(([a, b, name]) => `${a} → ${b}: ${name}`)
+      .join(" · ");
+    $("kmmlUnit").append(p);
+    const streams = data.kmml.streams.filter((r) => r.unit === unit.id);
+    $("kmmlStreams").replaceChildren(
+      ...streams.map((r) => {
+        const d = document.createElement("details"),
+          s = document.createElement("summary"),
+          a = document.createElement("p"),
+          b = document.createElement("p");
+        s.textContent = r.title;
+        a.textContent = r.route;
+        b.textContent = "Evidence needed: " + r.necessary;
+        d.append(s, a, b);
+        return d;
+      }),
+    );
+    if (!streams.length) {
+      const p = document.createElement("p");
+      p.textContent =
+        "No separately quantified residual stream is published for this unit. Current mass, energy and water measurements are still needed.";
+      $("kmmlStreams").append(p);
+    }
+  }
+  function renderStorageDetail() {
+    const key = $("storageKind").value,
+      c = data.storage.cases[key],
+      s = c.summary;
+    mini("wp6StorageCards", [
+      [fmt(s.charge_grid_kwh, 2) + " kWh", "charging electricity"],
+      [fmt(s.discharge_to_site_kwh, 2) + " kWh", "delivered to the site"],
+      [fmt(s.terminal_stored_kwh, 2) + " kWh", "stored energy at day end"],
+    ]);
+    const rows = c.hourly.map((r) => ({
+      ...r,
+      label: String(r.hour).padStart(2, "0") + ":00",
+    }));
+    plot("wp6StorageChart", {
+      title: "Storage charging and discharging across 24 hours",
+      kind: "line",
+      unit: "Electricity per 1-hour slot · kWh",
+      rows,
+      series: [
+        { key: "grid_charge_kwh", name: "Charging" },
+        { key: "grid_discharge_kwh", name: "Discharging" },
+      ],
+    });
+    plot("wp6StorageStock", {
+      title: "Stored energy through the illustrative day",
+      kind: "line",
+      unit: "Stored energy · kWh",
+      rows,
+      series: [{ key: "stock_kwh_stored", name: "Stock" }],
+    });
+    const cases = data.storage.sensitivities[key];
+    function choose(r) {
+      text(
+        "storageSensitivityResult",
+        r.feasible
+          ? `${r.capacity_kwh_stored} kWh capacity · ${100 * r.charge_efficiency}% charging efficiency · ${fmt(r.daily_site_grid_kwh, 3)} kWh daily grid electricity · ${fmt(r.whole_day_site_peak_kw, 2)} kW whole-day peak. Full service delivered.`
+          : `${r.capacity_kwh_stored} kWh capacity · ${100 * r.charge_efficiency}% charging efficiency · Infeasible: ${r.reason}. No full-service result is published.`,
+      );
+    }
+    $("wp6StorageSensitivity").replaceChildren(
+      ...cases.map((r, i) => {
+        const b = document.createElement("button");
+        b.dataset.storageCase = i;
+        b.className = r.feasible ? "feasible" : "infeasible";
+        b.textContent = `${r.capacity_kwh_stored} kWh · ${100 * r.charge_efficiency}% — ${r.feasible ? "Feasible" : "Infeasible"}`;
+        b.setAttribute("aria-pressed", String(i === cases.length - 1));
+        b.addEventListener("click", () => {
+          pressed("[data-storage-case]", b);
+          choose(r);
+        });
+        return b;
+      }),
+    );
+    choose(cases.at(-1));
+  }
+
+  function progress() {
+    const rows = [
+      {
+        title: "Official inflow evidence v1.4–v1.5 · 26 September",
+        summary:
+          "Strict daily inflow coverage remains incomplete. A separate cumulative sensitivity input is ready; its matrix is not yet reported complete. The official KSEB extractor and 12-month inventory are prepared, with monthly bytes and full-year schema validation still outstanding.",
+      },
+      {
+        title: "Stateful Idukki reservoir pilot v1.3 · 26 September",
+        summary:
+          "12 stateful cases and 24 same-horizon comparisons solved across 364 days. Storage-state replay closes numerically. Interpolated gaps and reconstructed net water balance remain model assumptions, not observed catchment inflow or validated operations.",
+      },
+
+      {
+        title: "Hydro timing bounds v1.2 · 26 September",
+        summary:
+          "48 full-year cases solved across 1, 3, 15 and 30-day timing windows. Annual hydro energy is preserved; these are synthetic flexibility bounds, not reservoir storage durations or a validated water-balance model.",
+      },
+      {
+        title: "Intraday hydro flexibility v1.1 · 26 September",
+        summary:
+          "54 full-year cases preserve each day's hydro energy while changing its timing and available power. Hydro timing reduces modelled shortage but does not establish an adequate system under every transfer constraint.",
+      },
+      {
+        title: "PyPSA import economics · 26 September",
+        summary:
+          "108 full-year sensitivity cases solved. Partial investment + import cost; no total-system-cost or validated capacity-plan claim.",
+      },
+      {
+        title: "Numerical equivalence · 25 September",
+        summary:
+          "36 full-year cases reproduced in direct PyPSA against the earlier SciPy formulation. Solver agreement verifies the implementation, not the assumptions.",
+      },
+      ...data.ledger.workstreams,
+    ];
+    $("researchProgress").replaceChildren(
+      ...rows.map((r) => {
+        const d = document.createElement("div");
+        d.className = "progress-row";
+        const h = document.createElement("strong"),
+          p = document.createElement("p");
+        h.textContent = safeText(r.title);
+        p.textContent = safeText(r.summary);
+        d.append(h, p);
+        return d;
+      }),
+    );
+  }
+  function pressed(selector, button) {
+    document
+      .querySelectorAll(selector)
+      .forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+  }
+  $("menu").addEventListener("click", () => {
+    const open = $("menu").getAttribute("aria-expanded") !== "true";
+    $("menu").setAttribute("aria-expanded", String(open));
+    $("navigation").classList.toggle("open", open);
+    text("menu", open ? "Close −" : "Explore +");
+  });
+  $("navigation").addEventListener("click", (e) => {
+    if (e.target.closest("a")) {
+      $("navigation").classList.remove("open");
+      $("menu").setAttribute("aria-expanded", "false");
+      text("menu", "Explore +");
+    }
+  });
+  function applyTheme(theme) {
+    if (!["kasavu", "monsoon", "laterite"].includes(theme)) return;
+    document.documentElement.dataset.theme = theme;
+    document.querySelectorAll("[data-theme-choice]").forEach((button) => {
+      button.setAttribute(
+        "aria-pressed",
+        String(button.dataset.themeChoice === theme),
+      );
+    });
+    charts.forEach((p) => p.draw());
+    ring();
+  }
+  try {
+    applyTheme(localStorage.getItem("kerala2040-theme") || "kasavu");
+  } catch {}
+  document.querySelectorAll("[data-theme-choice]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const theme = button.dataset.themeChoice;
+      applyTheme(theme);
+      try {
+        localStorage.setItem("kerala2040-theme", theme);
+      } catch {}
+    });
+  });
+  function hashRoute() {
+    const aliases = { sources: "data", research: "workbench" };
+    let id = location.hash.slice(1);
+    if (aliases[id]) {
+      location.hash = aliases[id];
+      return;
+    }
+    const target = $(id);
+    if (target?.tagName === "DETAILS") {
+      target.open = true;
+      requestAnimationFrame(() => target.scrollIntoView());
+    }
+  }
+  window.addEventListener("hashchange", hashRoute);
+  async function boot() {
+    try {
+      const names = {
+        daily: "daily-balance.json",
+        baseline: "baseline-summary.json",
+        ledger: "research-ledger.json",
+        ev: "wp6-ev-pilot.json",
+        industry: "wp6-industry-pilot.json",
+        storage: "wp6-bess-psp.json",
+        economics: "import-economics.json",
+        hydro: "hydro-interday.json",
+        idukki: "idukki-reservoir.json",
+        cooling: "wp6-cooling-pilot.json",
+        integrated: "wp6-integrated-dispatch.json",
+        catalogue: "catalogue.json",
+        metadata: "metadata.json",
+        atlas: "total-energy-atlas.json",
+        ppac: "ppac-annual-sales.json",
+        ghg: "energy-ghg-bridge.json",
+        kmml: "kmml-case.json",
+      };
+      const values = await Promise.all(Object.values(names).map(get));
+      data = Object.fromEntries(
+        Object.keys(names).map((k, i) => [k, values[i]]),
+      );
+      validateObserved(data.daily.records, data.baseline);
+      months = monthly(data.daily.records);
+      text("importStat", fmt(data.baseline.aggregate_import_share * 100) + "%");
+      text(
+        "hydroStat",
+        fmt(data.baseline.hydro_share_internal_generation * 100) + "%",
+      );
+      renderMonthly();
+      renderDaily();
+      ring();
+      renderResources();
+      renderPilot();
+      renderModel();
+      renderHydro();
+      material("process");
+      renderFuel();
+      renderArchive();
+      renderStorageDetail();
+      $("storageKind").addEventListener("change", renderStorageDetail);
+      library();
+      progress();
+      text(
+        "publication",
+        `Observed bundle: ${data.metadata.generated_at_utc?.slice(0, 10) || "unavailable"} · Resource audit: ${data.ledger.reviewed_date} · Model results: ${data.economics.prepared_date} · Source: ${(data.metadata.research_source_commit || "unavailable").slice(0, 12)}`,
+      );
+      $("heroMonth").addEventListener("input", ring);
+      new ResizeObserver(ring).observe($("balanceRing").parentElement);
+      ["dailyMetric", "dailySeason"].forEach((id) =>
+        $(id).addEventListener("change", renderDaily),
+      );
+      ["district", "windThreshold", "slopeThreshold"].forEach((id) =>
+        $(id).addEventListener("change", renderDistrict),
+      );
+      ["pilot", "baselineToggle"].forEach((id) =>
+        $(id).addEventListener("change", renderPilot),
+      );
+      $("hydroTransfer").addEventListener("change", renderHydro);
+      $("hydroStudy").addEventListener("change", renderHydro);
+      $("envelope").addEventListener("change", renderModel);
+      $("sourceSearch").addEventListener("input", library);
+      $("moreSources").addEventListener("click", () => {
+        showAll = !showAll;
+        library();
+      });
+      document.querySelectorAll("[data-balance]").forEach((b) =>
+        b.addEventListener("click", () => {
+          balanceMode = b.dataset.balance;
+          pressed("[data-balance]", b);
+          renderMonthly();
+        }),
+      );
+      document.querySelectorAll("[data-model]").forEach((b) =>
+        b.addEventListener("click", () => {
+          modelMode = b.dataset.model;
+          pressed("[data-model]", b);
+          renderModel();
+        }),
+      );
+      document.querySelectorAll("[data-material]").forEach((b) =>
+        b.addEventListener("click", () => {
+          pressed("[data-material]", b);
+          material(b.dataset.material);
+        }),
+      );
+      hashRoute();
+    } catch (error) {
+      $("loadError").hidden = false;
+      const p = document.createElement("p");
+      p.textContent = "The evidence could not be loaded. " + error.message;
+      const button = document.createElement("button");
+      button.className = "secondary";
+      button.textContent = "Reload evidence";
+      button.addEventListener("click", () => location.reload());
+      const a = document.createElement("a");
+      a.href = "https://github.com/abhijith-sivaprasadan/kerala2040";
+      a.textContent = " Browse the research repository";
+      $("loadError").replaceChildren(p, button, a);
+      text(
+        "heroScope",
+        "Evidence unavailable. Use the source repository or retry loading.",
+      );
+    }
+  }
+  function renderFuel() {
+    const mix = data.atlas.emc_final_energy.rounded_mix_pct;
+    if (!Array.isArray(mix) || mix.length !== 5)
+      throw Error("Historical fuel-share records are unavailable.");
+    const short = ["Oil", "Electricity", "Coal (imp.)", "Gas", "Coal (other)"];
+    plot("totalEnergyMixChart", {
+      title: "Historical final energy shares FY2019–20",
+      rows: mix.map((r, i) => ({
+        label: r.fuel,
+        short: short[i],
+        value: r.pct,
+      })),
+      kind: "bar",
+      unit: "% of final energy",
+      max: 100,
+      series: [{ key: "value", name: "Publisher-rounded share" }],
+      describe: (r) =>
+        `${r.label}: ${r.value}% (publisher-rounded, FY2019–20). A rounded zero is not proof of no consumption.`,
+    });
+  }
+  boot();
+})();

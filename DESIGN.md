@@ -1,92 +1,37 @@
-# Kerala2040 — an independent research story rooted in Kerala
+# Kerala2040: website edition 2
 
-## What the website says
+The visitor journey follows one question: how can Kerala meet future demand reliably while respecting its land and water? The five chapters are observed electricity, land and seasons, future choices, industrial energy, and evidence. Research detail belongs behind deliberate disclosure, not ahead of the story.
 
-Kerala2040 investigates how Kerala could become more energy-resilient by 2040,
-while staying connected to India, respecting land and ecological limits,
-and accounting for the real cost of each option. It is neither an official
-government plan, a zero-imports campaign nor a completed 2040 model.
+## Visual and interaction contract
 
-The public reading order: why the question matters; Kerala's measured
-electricity system; what land and water permit; which future scenarios need
-testing; industrial value; and finally the research ledger, scientific release
-gates, original sources and public downloads. The homepage must tell this
-story, not duplicate the research log as a wall of cards.
+- Kasavu ivory, forest green and brass carry the existing Kerala identity. Monsoon offers a dark backwater theme; Laterite brings red earth and palm. Malayalam is used as supporting typography.
+- Retain the original Kerala landscape, illustrated chapter artwork and icon sprite as decorative identity. These are conceptual depictions, never maps or research results. The user clarified that images/SVG are welcome for webpage components; only data charts must remain live. Charts use first-party Canvas; controls, tables and sensitivity cells use semantic HTML.
+- One sticky navigation becomes an expandable in-flow menu on small screens. Existing section hashes remain valid, including workbench and audit disclosures.
+- Charts support pointer and keyboard inspection. Source data is downloadable. Observation and pilot tables give exact values without interpreting pixel positions.
+- Subtle water, palm and boat motion respects reduced-motion preferences. No forced introduction. Reduced motion disables smooth scrolling and transitions.
 
-## Kerala-coded design
+## Evidence contract
 
-Use Malayalam titles with legible English science, culturally grounded
-backwater/Ghats/paddy/palm/vallam illustration, kasavu edging, antique gold
-and laterite accents. This is *art*, not GIS data. Themes are independently
-composed: Kasavu (ivory, brass, forest), Monsoon (deep blue-green, sand) and
-Laterite (clay earth, cream, leaf green). The Malayalam ക wordmark is
-typographic and not an official seal. No arbitrary stock tourism imagery,
-party symbols or fabricated geographic outlines.
+- FY2024-25 remains 354 observed days, with 11 unfilled missing reports. Monthly energy is an observed-day mean; import share is the ratio of recorded energy totals.
+- Hydro is a component of in-state generation. Reservoir energy storage is not water volume.
+- Source-grid solar and wind describe resources, not eligible land or permitted MW. Thresholds count source centres, not sites.
+- WP6 experiments use fictional inputs. All six published families remain available: EV, industrial scheduling, BESS, pumped-storage analogue, cooling/TES and integrated dispatch.
+- The v1.0 economic and v1.1/v1.2 hydro-timing and v1.3 Idukki PyPSA results are separately labelled partial economic sensitivities. The selected 2030 comparisons are not a 2040 forecast or a recommended capacity plan. V1.2 timing windows are synthetic bounds, never reservoir storage durations. V1.3 uses a separate 364-day horizon with model-only gap interpolation and reconstructed net water balance; comparisons use its own same-horizon results. V1.4–v1.5 source audits are published separately from solved model results.
+- The observed-bundle timestamp, resource-audit date, model-result date and publication commit remain separate. Build metadata records the source path and SHA-256 of each new model evidence file.
+- Original source products stay in the searchable evidence library. A visual release never promotes scientific gates.
 
-Site sources: docs/index.html, docs/assets/app.js and docs/assets/kerala.css.
-Static packaging serves only cache-busted versions of this app and stylesheet
-and the mark icon, not old Plotly/Leaflet or orphaned previous theme assets.
-Font services may fall back gracefully to local system fonts.
+## Build and verification
 
-## Scientific and UX contracts
+Source files: `docs/index.html`, `docs/assets/app.js`, `docs/assets/kerala.css`.
 
-- All headline figures, GIS milestones, 2040 release gates and workstream
-  statuses derive from the single publication-time audited research ledger
-  plus the pinned observed-data manifest, not client-side claims.
-- The observed FY2024–25 sample has 354/365 days; 11 missing original reports
-  are not interpolated and breaks remain visible in the hand-built SVG chart.
-  Observed-day energy is not hourly MW, transfer capacity, tariff or a full-year
-  calibrated dispatch model.
-- The research-audit date, original observed-data bundle timestamp and pinned
-  checkout SHA remain distinct. Website deployment alone is not new evidence.
-- Raw GIS downloads, candidate geometry repairs, point records, draft notices,
-  or a successful CI build never establish legal exclusions, eligible km² or
-  buildable MW; these remain false/null unless source admission gates pass.
-- Keep development-only synthetic hourly loads, illustrative map points and
-  unreleased model outputs outside the public website.
-- Escape all source-fed HTML; allow only safe HTTPS external links and
-  repository-scoped evidence links. Use readable labels, keyboard-operable
-  controls, responsive layout, and reduced-motion handling.
-- A source repo merge does not automatically publish. The independent
-  website repo pins an immutable research commit in SOURCE_COMMIT. A visual
-  release is not a new scientific model version.
+Build with `PYTHONPATH=src python scripts/build_site.py --output _site`. Assets receive content hashes. The builder retains the scientific bundle validation and checks static references.
 
-## Updating the site
+Run `node --test tests/web.test.cjs`, `pytest tests/test_site.py`, and the CI browser suite `node tests/site.browser.cjs _site`. Browser checks cover chart controls, keyboard reading, all source downloads, responsive widths, deep links, themes and a failed data request.
 
-New research evidence updates committed QA and the research-ledger builder.
-The field-note, land, research and audit views then update together through
-a pinned build. Do not manually change a card to green after obtaining a ZIP
-or running a model. The reader should always be able to distinguish what was
-measured, what was audited, what is provisional and what remains unknown.
+The separate Pages repository continues to pin an immutable research commit in `SOURCE_COMMIT`.
 
-## Illustrated visual layer (September 2026)
+## CET 2026 poster
 
-- Original chapter SVGs: Ghats hydropower, wetlands/paddy/egret, tiled rooftop solar and grid, and material circularity. A same-origin SVG sprite supplies semantic icons. They illustrate concepts, never source GIS or measured physical energy flows.
-- The favicon combines monsoon sun, coconut frond and backwater waves; its authored SVG also generates a 180x180 PNG touch icon.
-- The separately authored 1200x630 social composition is rasterised as a genuine PNG in CI/Pages. Absolute Open Graph/Twitter metadata references the PNG. Build tests inspect its actual binary dimensions; SVG-only previews are inadequate.
-- The small bottom-corner welcome card is dismissible, session-scoped and auto-dismisses. It never blocks the interface, focuses itself, changes body overflow, or delays evidence loading. Deep links and reduced-motion visitors skip it.
-- Editorial movement is gentle sun/rain, chapter-art appearance and an explicitly conceptual current between research themes. It is disabled for prefers-reduced-motion; without IntersectionObserver the content remains fully visible.
-- CairoSVG is a build-time-only dependency of research CI and pinned Pages. Public visitors do not run an image converter or retrieve remote art. No artwork or social thumbnail changes the scientific release classification.
+`docs/posters/Kerala2040_CET2026_Poster_Draft.pdf` is an early A1 portrait draft. Its charts use the same source evidence. The source builder is `scripts/build_cet_poster.py` (ReportLab and Arial/Georgia fonts). Final author/institution credits, conference specifications and QR integration remain editorial steps for the final poster.
 
-## Data-led visual storytelling (September 2026)
-
-The narrative is one continuous reading path for everybody: the observed state-wide
-balance, its monthly variation, then hydro output versus stored reservoir energy.
-An interpretive sentence and source scope accompany each visual; exact recorded
-values are expandable below rather than segregated into a separate "expert" mode.
-All SVG bars, lines, labels and annotations are generated from the admitted SLDC
-**354 observed FY2024–25 daily records** and published missing-date list. Monthly
-columns display **mean energy per observed day**, not fabricated complete-month
-totals. Hydro's 7.21 TWh is **within** the 8.03 TWh of in-state generation and is
-never added as a third energy source. Reservoir storage percentages are charted
-on a different vertical scale from hydropower MU/day. Break lines and amber gap
-marks preserve the 11 missing reports; the charts never interpolate them or imply
-an authenticated 8760-hour chronology, buildable land area or 2040 capacity mix.
-The source snapshot and research audit keep distinct dates and identities.
-
-The visualization layer uses first-party SVG and existing CSS theme variables,
-not a remote charting service. Every figure has a descriptive SVG title,
-accessible label, legend, units, data provenance, observational caveat and—on
-the detailed page—an exact observed-data HTML table. Motion is optional and
-disabled for reduced-motion preferences. Browser smoke verifies the graphics
-and both line breaks as rendered, while Node checks numerical reconciliation.
+The composition borrows the supplied Polygeneration poster's results hierarchy and the plain-language finding emphasis described in the [BetterPoster design discussion](https://blog.nrca.uconn.edu/2019/12/12/better-poster/). It does not reproduce that poster's project claims, branding or artwork.
