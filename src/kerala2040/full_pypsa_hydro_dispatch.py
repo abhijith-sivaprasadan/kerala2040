@@ -338,8 +338,26 @@ def run_hydro_dispatch_suite(
         )
         demand_values = morphed.to_numpy(dtype=float)[:hours]
         nonhydro = hourly["nonhydro_fixed_mw"].to_numpy(dtype=float)[:hours]
+        flat_hydro = hourly["hydro_fixed_mw"].to_numpy(dtype=float)[:hours]
         for transfer_id in suite["transfer_cases"]:
             transfer = transfer_lookup[transfer_id]
+            baseline = solve_import_economic_case(
+                residual_load_mw=demand_values - nonhydro - flat_hydro,
+                solar_profile=solar_full[:hours],
+                wind_profile=wind_full[:hours],
+                import_limit_mw=float(transfer["import_limit_mw"]),
+                import_price_real_inr_per_mwh=float(
+                    price["real_2021_22_inr_per_mwh"]
+                ),
+                caps=caps,
+                annualized_costs=costs,
+                bess_duration_h=duration,
+                charge_efficiency=eta_c,
+                discharge_efficiency=eta_d,
+                unserved_tolerance_mwh=float(
+                    imports_suite["objective"]["unserved_tolerance_mwh"]
+                ),
+            )
             for hydro_case in suite["hydro_availability_cases"]:
                 solved = solve_flexible_hydro_economic_case(
                     timestamps=timestamps,
@@ -370,6 +388,45 @@ def run_hydro_dispatch_suite(
                         "hydro_availability_case": hydro_case["id"],
                         "hydro_case_classification": hydro_case["classification"],
                         **solved,
+                        "flat_hydro_baseline": {
+                            "stage2_unserved_mwh": baseline["stage2_unserved_mwh"],
+                            "imports_mwh": baseline["imports_mwh"],
+                            "solar_combined_mw": baseline["built"]["solar_combined_mw"],
+                            "wind_onshore_mw": baseline["built"]["wind_onshore_mw"],
+                            "bess_4h_power_mw": baseline["built"]["bess_4h_power_mw"],
+                            "partial_economic_objective_million_real_2021_22_inr_per_year": (
+                                baseline[
+                                    "partial_economic_objective_million_real_2021_22_inr_per_year"
+                                ]
+                            ),
+                        },
+                        "change_vs_flat_hydro": {
+                            "unserved_mwh": (
+                                solved["stage2_unserved_mwh"]
+                                - baseline["stage2_unserved_mwh"]
+                            ),
+                            "imports_mwh": solved["imports_mwh"] - baseline["imports_mwh"],
+                            "solar_mw": (
+                                solved["built"]["solar_combined_mw"]
+                                - baseline["built"]["solar_combined_mw"]
+                            ),
+                            "wind_mw": (
+                                solved["built"]["wind_onshore_mw"]
+                                - baseline["built"]["wind_onshore_mw"]
+                            ),
+                            "bess_power_mw": (
+                                solved["built"]["bess_4h_power_mw"]
+                                - baseline["built"]["bess_4h_power_mw"]
+                            ),
+                            "partial_cost_million_inr_per_year": (
+                                solved[
+                                    "partial_economic_objective_million_real_2021_22_inr_per_year"
+                                ]
+                                - baseline[
+                                    "partial_economic_objective_million_real_2021_22_inr_per_year"
+                                ]
+                            ),
+                        },
                     }
                 )
 
@@ -400,6 +457,10 @@ def run_hydro_dispatch_suite(
             (
                 "The 130 MW N-1 case is anchored to the verified Idukki unit size. "
                 "The 10% and 20% aggregate deratings are declared stress assumptions."
+            ),
+            (
+                "Every flexible-hydro result is compared against the same focused v1.0 "
+                "flat-daily-average hydro economic case."
             ),
             (
                 "v1.1 is not a reservoir/cascade model and does not allocate observed "
