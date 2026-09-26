@@ -33,7 +33,7 @@ SUITE_CLASS = (
     "full_pypsa_hydro_dispatch_v1_1_"
     "daily_energy_constrained_flexible_hydro_not_reservoir_model"
 )
-HYDRO_NAME = "flexible_daily_energy_hydro"
+HYDRO_PREFIX = "hydro_group_"
 
 
 def load_hydro_dispatch_suite(path: Path) -> dict[str, Any]:
@@ -89,8 +89,10 @@ def _add_daily_hydro_constraints(
     model,
     snapshots: pd.Index,
     daily_targets_mwh: pd.Series,
+    hydro_generator_names: list[str],
 ) -> None:
-    hydro = model.variables["Generator-p"].sel(name=HYDRO_NAME)
+    generator_p = model.variables["Generator-p"]
+    hydro = generator_p.sel(name=hydro_generator_names).sum("name")
     days = pd.DatetimeIndex(snapshots).normalize()
     codes, unique_days = pd.factorize(days, sort=False)
     grouper = xr.DataArray(
@@ -122,7 +124,7 @@ def solve_flexible_hydro_economic_case(
     demand_mw: np.ndarray,
     nonhydro_fixed_mw: np.ndarray,
     daily_hydro_targets_mwh: pd.Series,
-    hydro_available_mw: float,
+    hydro_group_caps_mw: dict[str, float],
     solar_profile: np.ndarray,
     wind_profile: np.ndarray,
     import_limit_mw: float,
@@ -138,6 +140,11 @@ def solve_flexible_hydro_economic_case(
     nonhydro = np.asarray(nonhydro_fixed_mw, dtype=float)
     if len(demand) != len(nonhydro) or len(demand) != len(timestamps):
         raise ValueError("v1.1 chronology lengths are inconsistent")
+    if not hydro_group_caps_mw:
+        raise ValueError("v1.1 hydro group capacities are required")
+    if any(float(value) < 0 for value in hydro_group_caps_mw.values()):
+        raise ValueError("v1.1 hydro group capacities cannot be negative")
+    hydro_available_mw = float(sum(hydro_group_caps_mw.values()))
     if hydro_available_mw <= 0:
         raise ValueError("v1.1 hydro availability must be positive")
     if float(daily_hydro_targets_mwh.max()) > hydro_available_mw * 24 + 1e-6:
@@ -159,20 +166,29 @@ def solve_flexible_hydro_economic_case(
     network.loads_t.p_set.loc[:, "residual_demand"] = residual
     network.generators_t.p_max_pu.loc[:, "candidate_solar"] = solar_profile
     network.generators_t.p_max_pu.loc[:, "candidate_wind"] = wind_profile
-    network.add(
-        "Generator",
-        HYDRO_NAME,
-        bus="kerala",
-        p_nom=float(hydro_available_mw),
-        p_min_pu=0.0,
-        p_max_pu=1.0,
-        marginal_cost=0.0,
-    )
+    hydro_generator_names: list[str] = []
+    for group, capacity_mw in hydro_group_caps_mw.items():
+        name = f"{HYDRO_PREFIX}{group}"
+        hydro_generator_names.append(name)
+        network.add(
+            "Generator",
+            name,
+            bus="kerala",
+            p_nom=float(capacity_mw),
+            p_min_pu=0.0,
+            p_max_pu=1.0,
+            marginal_cost=0.0,
+        )
     import_cost_million = float(import_price_real_inr_per_mwh) / 1_000_000.0
     network.generators.at["screened_import", "marginal_cost"] = import_cost_million
 
     model = network.optimize.create_model(include_objective_constant=False)
-    _add_daily_hydro_constraints(model, network.snapshots, daily_hydro_targets_mwh)
+    _add_daily_hydro_constraints(
+        model,
+        network.snapshots,
+        daily_hydro_targets_mwh,
+        hydro_generator_names,
+    )
 
     gen_p = model.variables["Generator-p"]
     gen_nom = model.variables["Generator-p_nom"]
@@ -226,10 +242,10 @@ def solve_flexible_hydro_economic_case(
     imports_mwh = float(
         np.asarray(solution["Generator-p"].solution.sel(name="screened_import")).sum()
     )
-    hydro = np.asarray(
-        solution["Generator-p"].solution.sel(name=HYDRO_NAME),
-        dtype=float,
+    hydro_by_group = solution["Generator-p"].solution.sel(
+        name=hydro_generator_names
     )
+    hydro = np.asarray(hydro_by_group.sum("name"), dtype=float)
     solved_daily = (
         pd.Series(hydro, index=timestamps)
         .groupby(pd.DatetimeIndex(timestamps).strftime("%Y-%m-%d"))
@@ -260,6 +276,18 @@ def solve_flexible_hydro_economic_case(
         "hydro_generation_mwh": float(hydro.sum()),
         "hydro_peak_mw": float(hydro.max()),
         "hydro_available_mw": float(hydro_available_mw),
+        "hydro_group_available_mw": {
+            key: float(value) for key, value in hydro_group_caps_mw.items()
+        },
+        "hydro_group_peak_mw": {
+            group: float(
+                np.asarray(
+                    hydro_by_group.sel(name=f"{HYDRO_PREFIX}{group}"),
+                    dtype=float,
+                ).max()
+            )
+            for group in hydro_group_caps_mw
+        },
         "max_daily_hydro_energy_residual_mwh": max_daily_residual,
         "annualized_candidate_investment_million_inr_per_year": investment_cost,
         "import_energy_cost_million_real_2021_22_inr_per_year": import_cost,
@@ -328,6 +356,13 @@ def run_hydro_dispatch_suite(
     demand_lookup = {item["id"]: item for item in future["demand_cases"]}
     transfer_lookup = {item["id"]: item for item in future["transfer_cases"]}
 
+    base_hydro_groups = {
+        key: float(value)
+        for key, value in suite["hydro_dispatch"]["station_groups"].items()
+    }
+    if abs(sum(base_hydro_groups.values()) - 2284.42) > 1e-9:
+        raise ValueError("v1.1 hydro station groups do not reconcile to 2284.42 MW")
+
     results: list[dict[str, Any]] = []
     for demand_id in suite["demand_cases"]:
         demand_case = demand_lookup[demand_id]
@@ -359,12 +394,25 @@ def run_hydro_dispatch_suite(
                 ),
             )
             for hydro_case in suite["hydro_availability_cases"]:
+                group_caps = dict(base_hydro_groups)
+                if hydro_case["id"] == "n_minus_1_idukki_130mw":
+                    group_caps["Idukki"] -= 130.0
+                elif hydro_case["id"] == "derate_90pct":
+                    group_caps = {key: value * 0.9 for key, value in group_caps.items()}
+                elif hydro_case["id"] == "derate_80pct":
+                    group_caps = {key: value * 0.8 for key, value in group_caps.items()}
+                elif hydro_case["id"] != "full_available":
+                    raise ValueError("unknown v1.1 hydro availability case")
+                if abs(
+                    sum(group_caps.values()) - float(hydro_case["available_hydro_mw"])
+                ) > 1e-6:
+                    raise ValueError("v1.1 hydro group availability arithmetic mismatch")
                 solved = solve_flexible_hydro_economic_case(
                     timestamps=timestamps,
                     demand_mw=demand_values,
                     nonhydro_fixed_mw=nonhydro,
                     daily_hydro_targets_mwh=daily_targets,
-                    hydro_available_mw=float(hydro_case["available_hydro_mw"]),
+                    hydro_group_caps_mw=group_caps,
                     solar_profile=solar_full[:hours],
                     wind_profile=wind_full[:hours],
                     import_limit_mw=float(transfer["import_limit_mw"]),
