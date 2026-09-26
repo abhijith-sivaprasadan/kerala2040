@@ -100,7 +100,7 @@ jobs:
                       "1d_GWh=", round(one["stage2_unserved_mwh"]/1000, 3),
                       "30d_GWh=", round(thirty["stage2_unserved_mwh"]/1000, 3),
                       "Idukki_min_MCM=", round(physical["idukki_storage_min_mcm"], 2),
-                      "spill_MCM=", round(physical["idukki_spill_equivalent_mcm"], 2),
+                      "additional_release_MCM=", round(physical["idukki_additional_release_equivalent_mcm"], 2),
                   )
           PY
       - uses: actions/upload-artifact@v4
