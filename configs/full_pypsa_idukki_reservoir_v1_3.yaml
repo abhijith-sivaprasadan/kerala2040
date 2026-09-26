@@ -59,10 +59,10 @@ idukki:
   initial_storage_source: observed_2024_04_01
   terminal_storage_source: observed_2025_03_31
   storage_min_mcm: 0.0
-  allow_spill: true
+  allow_additional_excess_water_release: true
   allow_pumping: false
   standing_loss: 0.0
-  water_balance_input: reconstructed_net_residual_not_catchment_inflow
+  water_balance_input: reconstructed_net_non_generation_residual_not_catchment_inflow
 
 other_hydro:
   installed_power_mw: 1504.42
@@ -90,6 +90,7 @@ release:
   same_horizon_v1_2_comparison_ready: true
   catchment_inflow_model_ready: false
   observed_spill_release_model_ready: false
+  endogenous_additional_release_slack_ready: true
   head_dependent_efficiency_ready: false
   cascade_model_ready: false
   environmental_release_model_ready: false
