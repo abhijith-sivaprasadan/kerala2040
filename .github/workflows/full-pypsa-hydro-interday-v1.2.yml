@@ -8,6 +8,8 @@ on:
       - "scripts/run_full_pypsa_hydro_interday_v1_2.py"
       - "tests/test_full_pypsa_hydro_interday_v1_2.py"
       - "data/evidence/hydro/kerala_hydro_dispatch_boundaries_v1_1_2026_09_26.json"
+      - "data/evidence/models/full_pypsa_hydro_interday_v1_2_2026_09_26.json"
+      - "docs/FULL_PYPSA_SCENARIO_PROGRAMME.md"
       - "configs/hydro_topology_evidence_2024_25.yaml"
       - "configs/full_pypsa_hydro_flex_v1_1.yaml"
       - "configs/full_pypsa_import_economics_v1_0.yaml"
