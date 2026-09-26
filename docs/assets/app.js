@@ -4,7 +4,7 @@
   const finite = (v) => typeof v === "number" && Number.isFinite(v);
   const fmt = (v, n = 1) =>
     finite(v)
-      ? v.toLocaleString("en-IN", {
+      ? (Object.is(v, -0) ? 0 : v).toLocaleString("en-IN", {
           minimumFractionDigits: n,
           maximumFractionDigits: n,
         })
@@ -973,6 +973,190 @@
       showAll ? "Show fewer datasets" : "Show all " + rows.length + " datasets",
     );
   }
+
+  function renderArchive() {
+    const historical = data.atlas.emc_final_energy.observed_years;
+    plot("totalEnergyHistoryChart", {
+      title: "Historical Kerala final energy",
+      kind: "line",
+      unit: "Final energy · Mtoe",
+      rows: historical.map((r) => ({
+        label: "FY" + r.fy,
+        short: r.fy.slice(2),
+        value: r.value_mtoe,
+      })),
+      series: [{ key: "value", name: "Final energy" }],
+    });
+    const annual = data.ppac.annual_kerala_rows.map((r) => ({
+      ...r,
+      label: "FY" + r.fy,
+      short: r.fy,
+    }));
+    plot("totalEnergyAnnualPPACChart", {
+      title: "Annual Kerala all-POL petroleum sales",
+      kind: "bar",
+      unit: "Sales · thousand tonnes",
+      rows: annual,
+      series: [{ key: "all_pol_tmt", name: "All-POL" }],
+      describe: (r) =>
+        `${r.label} · ${fmt(r.all_pol_tmt)} thousand tonnes · ${r.all_pol_tier.replaceAll("_", " ")} · original image QA pending`,
+    });
+    plot("totalEnergyPPACProductsChart", {
+      title: "Petrol and diesel sales, already included in all-POL",
+      kind: "line",
+      unit: "Sales · thousand tonnes",
+      rows: annual,
+      series: [
+        { key: "ms_tmt", name: "Petrol" },
+        { key: "hsd_tmt", name: "Diesel" },
+      ],
+      describe: (r) =>
+        `${r.label} · Petrol ${fmt(r.ms_tmt)} (${r.ms_tier.replaceAll("_", " ")}) · Diesel ${fmt(r.hsd_tmt)} (${r.hsd_tier.replaceAll("_", " ")}) · thousand tonnes`,
+    });
+    plot("totalEnergyPPACChart", {
+      title: "Selected petroleum sales, April to September 2024 only",
+      kind: "bar",
+      unit: "Half-year sales · thousand tonnes",
+      rows: data.atlas.ppac_provisional_half_year_2024_25.items.map((r) => ({
+        label: r.product,
+        value: r.tmt,
+      })),
+      series: [{ key: "value", name: "Provisional sales" }],
+    });
+    plot("totalEnergyGHGChart", {
+      title: "Selected categories of the calendar-2023 energy-sector inventory",
+      kind: "bar",
+      unit: "2023 emissions · MtCO₂e",
+      rows: data.ghg.categories.map((r) => ({
+        label: r.name,
+        short: {
+          transport: "Transport",
+          residential: "Homes",
+          industrial: "Industry",
+        }[r.id],
+        value: r.mtco2e,
+      })),
+      series: [{ key: "value", name: "Inventory" }],
+    });
+    $("energyView").addEventListener("change", () => {
+      document.querySelectorAll("[data-energy-panel]").forEach((el) => {
+        el.hidden = el.dataset.energyPanel !== $("energyView").value;
+      });
+    });
+    $("kmmlFlow").replaceChildren(
+      ...data.kmml.units.map((unit) => {
+        const button = document.createElement("button");
+        button.textContent = unit.id + " · " + unit.name;
+        button.dataset.unit = unit.id;
+        button.setAttribute("aria-pressed", String(unit.id === "MS"));
+        button.addEventListener("click", () => {
+          pressed("[data-unit]", button);
+          renderUnit(unit);
+        });
+        return button;
+      }),
+    );
+    renderUnit(data.kmml.units[0]);
+  }
+  function renderUnit(unit) {
+    $("kmmlUnit").replaceChildren();
+    for (const [label, value] of [
+      [unit.name, unit.function],
+      ["Inputs", unit.inputs],
+      ["Outputs", unit.outputs],
+    ]) {
+      const p = document.createElement("p"),
+        b = document.createElement("strong");
+      b.textContent = label + ": ";
+      p.append(b, document.createTextNode(value));
+      $("kmmlUnit").append(p);
+    }
+    const links = data.kmml.links.filter(
+      (r) => r[0] === unit.id || r[1] === unit.id,
+    );
+    const p = document.createElement("p");
+    p.className = "micro";
+    p.textContent = links
+      .map(([a, b, name]) => `${a} → ${b}: ${name}`)
+      .join(" · ");
+    $("kmmlUnit").append(p);
+    const streams = data.kmml.streams.filter((r) => r.unit === unit.id);
+    $("kmmlStreams").replaceChildren(
+      ...streams.map((r) => {
+        const d = document.createElement("details"),
+          s = document.createElement("summary"),
+          a = document.createElement("p"),
+          b = document.createElement("p");
+        s.textContent = r.title;
+        a.textContent = r.route;
+        b.textContent = "Evidence needed: " + r.necessary;
+        d.append(s, a, b);
+        return d;
+      }),
+    );
+    if (!streams.length) {
+      const p = document.createElement("p");
+      p.textContent =
+        "No separately quantified residual stream is published for this unit. Current mass, energy and water measurements are still needed.";
+      $("kmmlStreams").append(p);
+    }
+  }
+  function renderStorageDetail() {
+    const key = $("storageKind").value,
+      c = data.storage.cases[key],
+      s = c.summary;
+    mini("wp6StorageCards", [
+      [fmt(s.charge_grid_kwh, 2) + " kWh", "charging electricity"],
+      [fmt(s.discharge_to_site_kwh, 2) + " kWh", "delivered to the site"],
+      [fmt(s.terminal_stored_kwh, 2) + " kWh", "stored energy at day end"],
+    ]);
+    const rows = c.hourly.map((r) => ({
+      ...r,
+      label: String(r.hour).padStart(2, "0") + ":00",
+    }));
+    plot("wp6StorageChart", {
+      title: "Storage charging and discharging across 24 hours",
+      kind: "line",
+      unit: "Electricity per 1-hour slot · kWh",
+      rows,
+      series: [
+        { key: "grid_charge_kwh", name: "Charging" },
+        { key: "grid_discharge_kwh", name: "Discharging" },
+      ],
+    });
+    plot("wp6StorageStock", {
+      title: "Stored energy through the illustrative day",
+      kind: "line",
+      unit: "Stored energy · kWh",
+      rows,
+      series: [{ key: "stock_kwh_stored", name: "Stock" }],
+    });
+    const cases = data.storage.sensitivities[key];
+    function choose(r) {
+      text(
+        "storageSensitivityResult",
+        r.feasible
+          ? `${r.capacity_kwh_stored} kWh capacity · ${100 * r.charge_efficiency}% charging efficiency · ${fmt(r.daily_site_grid_kwh, 3)} kWh daily grid electricity · ${fmt(r.whole_day_site_peak_kw, 2)} kW whole-day peak. Full service delivered.`
+          : `${r.capacity_kwh_stored} kWh capacity · ${100 * r.charge_efficiency}% charging efficiency · Infeasible: ${r.reason}. No full-service result is published.`,
+      );
+    }
+    $("wp6StorageSensitivity").replaceChildren(
+      ...cases.map((r, i) => {
+        const b = document.createElement("button");
+        b.dataset.storageCase = i;
+        b.className = r.feasible ? "feasible" : "infeasible";
+        b.textContent = `${r.capacity_kwh_stored} kWh · ${100 * r.charge_efficiency}% — ${r.feasible ? "Feasible" : "Infeasible"}`;
+        b.setAttribute("aria-pressed", String(i === cases.length - 1));
+        b.addEventListener("click", () => {
+          pressed("[data-storage-case]", b);
+          choose(r);
+        });
+        return b;
+      }),
+    );
+    choose(cases.at(-1));
+  }
+
   function progress() {
     const rows = [
       {
@@ -1082,6 +1266,9 @@
         catalogue: "catalogue.json",
         metadata: "metadata.json",
         atlas: "total-energy-atlas.json",
+        ppac: "ppac-annual-sales.json",
+        ghg: "energy-ghg-bridge.json",
+        kmml: "kmml-case.json",
       };
       const values = await Promise.all(Object.values(names).map(get));
       data = Object.fromEntries(
@@ -1103,6 +1290,9 @@
       renderHydro();
       material("process");
       renderFuel();
+      renderArchive();
+      renderStorageDetail();
+      $("storageKind").addEventListener("change", renderStorageDetail);
       library();
       progress();
       text(
@@ -1171,7 +1361,7 @@
     if (!Array.isArray(mix) || mix.length !== 5)
       throw Error("Historical fuel-share records are unavailable.");
     const short = ["Oil", "Electricity", "Coal (imp.)", "Gas", "Coal (other)"];
-    plot("fuelChart", {
+    plot("totalEnergyMixChart", {
       title: "Historical final energy shares FY2019–20",
       rows: mix.map((r, i) => ({
         label: r.fuel,

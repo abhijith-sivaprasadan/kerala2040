@@ -9,21 +9,42 @@
       content="Explore Kerala's energy future through observed electricity, land and weather evidence, flexibility experiments and open research."
     />
     <title>Kerala2040 — Our land. Our energy future.</title>
-  <meta property="og:title" content="Kerala2040 — കേരളത്തിന്റെ ഊർജഭാവി">
-  <meta property="og:description" content="Our land. Our energy future. An independent Kerala energy-system research project.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://kerala2040.github.io/">
-  <meta property="og:site_name" content="Kerala2040">
-  <meta property="og:image" content="https://kerala2040.github.io/assets/kerala2040-share.png">
-  <meta property="og:image:secure_url" content="https://kerala2040.github.io/assets/kerala2040-share.png">
-  <meta property="og:image:type" content="image/png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Kerala2040: the Western Ghats, backwaters, palm and vallam beside the words Our land. Our energy future.">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Kerala2040 — Our land. Our energy future.">
-  <meta name="twitter:description" content="Independent energy-system research into Kerala’s electricity, ecology and resilient futures.">
-  <meta name="twitter:image" content="https://kerala2040.github.io/assets/kerala2040-share.png">
+    <meta property="og:title" content="Kerala2040 — കേരളത്തിന്റെ ഊർജഭാവി" />
+    <meta
+      property="og:description"
+      content="Our land. Our energy future. An independent Kerala energy-system research project."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kerala2040.github.io/" />
+    <meta property="og:site_name" content="Kerala2040" />
+    <meta
+      property="og:image"
+      content="https://kerala2040.github.io/assets/kerala2040-share.png"
+    />
+    <meta
+      property="og:image:secure_url"
+      content="https://kerala2040.github.io/assets/kerala2040-share.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Kerala2040: the Western Ghats, backwaters, palm and vallam beside the words Our land. Our energy future."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Kerala2040 — Our land. Our energy future."
+    />
+    <meta
+      name="twitter:description"
+      content="Independent energy-system research into Kerala’s electricity, ecology and resilient futures."
+    />
+    <meta
+      name="twitter:image"
+      content="https://kerala2040.github.io/assets/kerala2040-share.png"
+    />
     <link rel="apple-touch-icon" href="assets/kerala2040-touch.png" />
     <link rel="canonical" href="https://kerala2040.github.io/" />
     <link rel="icon" href="assets/mark.svg" type="image/svg+xml" />
@@ -669,6 +690,57 @@
             >
           </details>
         </div>
+        <details class="deep storage-detail">
+          <summary>
+            <span class="eyebrow">INSIDE THE STORE</span> Charging, stored
+            energy and feasibility <span>+</span>
+          </summary>
+          <p id="wp6StorageStatus">
+            A hypothetical one-site, 24-hour experiment. Both stores must
+            deliver the full evening service and finish empty. The
+            pumped-storage option is a tiny hydraulic analogue, not a Kerala
+            project or feasibility finding.
+          </p>
+          <div class="controls">
+            <label
+              >Storage technology<select id="storageKind">
+                <option value="bess">Battery</option>
+                <option value="psp">Pumped-storage analogue</option>
+              </select></label
+            >
+          </div>
+          <div id="wp6StorageCards" class="mini-stats"></div>
+          <div class="split">
+            <div>
+              <h3>Charge now. Discharge later.</h3>
+              <div id="wp6StorageChart" class="chart compact"></div>
+            </div>
+            <div>
+              <h3>What remains in the store?</h3>
+              <div id="wp6StorageStock" class="chart compact"></div>
+            </div>
+          </div>
+          <h3>Can a smaller store do the whole job?</h3>
+          <p>
+            Compare the authored stored-energy capacities and charging
+            efficiencies. Select a cell for its exact result. An infeasible case
+            is not partial delivery.
+          </p>
+          <div
+            id="wp6StorageSensitivity"
+            class="storage-sensitivity"
+            role="group"
+            aria-label="Storage capacity and charging efficiency"
+          ></div>
+          <p
+            id="storageSensitivityResult"
+            class="insight"
+            aria-live="polite"
+          ></p>
+          <a class="text-link" href="data/wp6-bess-psp.json" download
+            >Download all storage cases ↓</a
+          >
+        </details>
         <div class="model-section">
           <div class="section-label">
             <p class="eyebrow">FROM ONE SITE TO A SYSTEM / V1.0</p>
@@ -745,7 +817,7 @@
             <div>
               <p class="eyebrow">NEW FINDINGS / HYDRO TIMING · V1.1 → V1.2</p>
               <h3>
-                The same water-energy budget.<br /><em
+                The same hydro-energy budget.<br /><em
                   >More room to choose when.</em
                 >
               </h3>
@@ -821,7 +893,7 @@
           <div class="split">
             <div>
               <p class="eyebrow">THE WIDER ENERGY PICTURE</p>
-              <div id="fuelChart" class="chart compact"></div>
+              <div id="totalEnergyMixChart" class="chart compact"></div>
               <p class="micro">
                 EMC/CII FY2019–20 final-energy shares, rounded by the publisher.
                 A historical baseline, not today’s electricity mix. Petroleum
@@ -850,6 +922,107 @@
               >
             </div>
           </div>
+          <details class="deep research-archive">
+            <summary>
+              <span class="eyebrow">EXPLORE THE WIDER EVIDENCE</span> Energy
+              history, petroleum sales and emissions <span>+</span>
+            </summary>
+            <p id="totalEnergyStatus">
+              Different sources answer different questions. Energy in Mtoe,
+              sales mass in thousand tonnes and emissions in MtCO₂e are kept
+              separate.
+            </p>
+            <div class="controls">
+              <label
+                >Evidence view<select id="energyView">
+                  <option value="history">Historical final energy</option>
+                  <option value="annual">Annual petroleum sales</option>
+                  <option value="products">
+                    Petrol and diesel within sales
+                  </option>
+                  <option value="halfyear">Selected half-year sales</option>
+                  <option value="ghg">2023 emissions inventory</option>
+                </select></label
+              >
+            </div>
+            <div data-energy-panel="history">
+              <h3>Six years of final energy.</h3>
+              <p>
+                EMC/CII, FY2014–15 to FY2019–20. Figure 3’s FY2014–15 value is
+                9.18 Mtoe; conflicting prose says 9.81. The chart follows the
+                figure and preserves that source discrepancy.
+              </p>
+              <div id="totalEnergyHistoryChart" class="chart"></div>
+            </div>
+            <div data-energy-panel="annual" hidden>
+              <h3>Oil-company sales across six fiscal years.</h3>
+              <p>
+                PPAC all-POL sales, thousand metric tonnes. FY2024–25 is a
+                secondary transcription; original publisher page-image
+                validation is still pending. Sales mass is not final energy or
+                petroleum import dependence.
+              </p>
+              <div id="totalEnergyAnnualPPACChart" class="chart"></div>
+            </div>
+            <div data-energy-panel="products" hidden>
+              <h3>Two products within the total.</h3>
+              <p>
+                Petrol (MS) and diesel (HSD) are already included in all-POL.
+                Never add them to that total. FY2019–20 diesel stays missing.
+                Later product rows are secondary transcriptions awaiting
+                original-page checks; these are not a complete transport-energy
+                balance.
+              </p>
+              <div id="totalEnergyPPACProductsChart" class="chart"></div>
+            </div>
+            <div data-energy-panel="halfyear" hidden>
+              <h3>A separate half-year record.</h3>
+              <p>
+                April–September 2024 provisional sales of selected products in
+                thousand tonnes. Publisher-indexed text only, with page-image
+                validation pending. Not annual demand; do not double these
+                figures.
+              </p>
+              <div id="totalEnergyPPACChart" class="chart"></div>
+            </div>
+            <div data-energy-panel="ghg" hidden>
+              <h3>What emits is a different question.</h3>
+              <p id="totalEnergyGHGStatus">
+                Kerala DoECC’s calendar-2023 energy-sector inventory is 20.64
+                MtCO₂e. These three categories are part of that total, not an
+                exhaustive split or a measure of fuel consumption. Conflicting
+                2020 vintages are not joined into a trend.
+              </p>
+              <div id="totalEnergyGHGChart" class="chart"></div>
+            </div>
+            <p class="micro">
+              Use the evidence library for exact source records:
+              total-energy-atlas, ppac-annual-sales and energy-ghg-bridge.
+            </p>
+          </details>
+          <details class="deep">
+            <summary>
+              <span class="eyebrow">FOLLOW THE PROCESS</span> KMML units and
+              material streams <span>+</span>
+            </summary>
+            <p>
+              Choose a unit to inspect its inputs, outputs and connected
+              streams. This is official qualitative process topology, not
+              measured flow widths, a current operating balance or proven
+              recovery savings.
+            </p>
+            <div
+              id="kmmlFlow"
+              class="process-buttons"
+              role="group"
+              aria-label="KMML process units"
+            ></div>
+            <div id="kmmlUnit" class="unit-copy" aria-live="polite"></div>
+            <div id="kmmlStreams" class="stream-list"></div>
+            <a class="text-link" href="data/kmml-case.json" download
+              >Download the source-qualified KMML case ↓</a
+            >
+          </details>
         </div>
       </section>
       <section class="chapter wrap" id="data">

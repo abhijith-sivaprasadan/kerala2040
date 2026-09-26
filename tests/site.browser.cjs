@@ -156,7 +156,10 @@ async function main() {
       "Industry actual model summary",
     );
     await page.locator("#pilot").selectOption("psp");
-    await page.locator("summary").filter({hasText: "Assumptions, exact hourly results and limitations"}).click();
+    await page
+      .locator("summary")
+      .filter({ hasText: "Assumptions, exact hourly results and limitations" })
+      .click();
     check(
       (await page.locator("#pilotScope").innerText()).includes(
         "not a Kerala project",
@@ -188,6 +191,16 @@ async function main() {
       (await page.locator("#modelInsight").innerText()).includes("119.34"),
       "Reference envelope result",
     );
+    await page.locator("summary").filter({hasText:"Energy history, petroleum sales and emissions"}).click();
+    await page.locator("#energyView").selectOption("ghg");
+    check(await page.locator("#totalEnergyGHGChart canvas").isVisible(), "Separately dated emissions view");
+    await page.locator("summary").filter({hasText:"KMML units and material streams"}).click();
+    await page.locator('[data-unit="ARP"]').click();
+    check((await page.locator("#kmmlStreams").innerText()).includes("Reclaimed hydrochloric acid"), "Source-qualified material streams");
+    await page.locator("summary").filter({hasText:"Charging, stored energy and feasibility"}).click();
+    await page.locator('[data-storage-case="0"]').click();
+    check((await page.locator("#storageSensitivityResult").innerText()).includes("Infeasible"), "Infeasible storage is explicit");
+    check((await page.locator(".chart img,.chart svg").count()) === 0, "No static images or SVG data charts");
     await page.locator("#sourceSearch").fill("import-economics");
     check(
       (await page.locator("#sourceList .source-row").count()) === 1,
@@ -274,4 +287,3 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
-

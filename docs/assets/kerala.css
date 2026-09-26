@@ -2002,3 +2002,131 @@ footer > a:last-child {
     height: 52px;
   }
 }
+
+.industry-section .deep {
+  border-color: #718477;
+}
+.industry-section .deep > summary .eyebrow {
+  color: #d9bc72;
+}
+.industry-section .controls select {
+  color: var(--ink);
+}
+.process-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 25px;
+}
+.process-buttons button {
+  border: 1px solid #718477;
+  background: transparent;
+  color: inherit;
+  padding: 15px;
+  text-align: left;
+  border-radius: 4px 16px 4px 4px;
+  font-size: 13px;
+}
+.process-buttons button[aria-pressed="true"] {
+  background: #e8dfbd;
+  color: #173f33;
+}
+.unit-copy {
+  padding: 20px 0;
+  font-size: 15px;
+}
+.stream-list {
+  margin-bottom: 20px;
+}
+.stream-list summary {
+  font-size: 15px;
+}
+.storage-sensitivity {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.storage-sensitivity button {
+  background: var(--surface);
+  padding: 17px;
+  border: 1px solid var(--line);
+  text-align: left;
+  font-size: 13px;
+  border-radius: 4px;
+}
+.storage-sensitivity .infeasible {
+  border-left: 4px solid var(--clay);
+}
+.storage-sensitivity .feasible {
+  border-left: 4px solid var(--green);
+}
+.storage-sensitivity button[aria-pressed="true"] {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 600px) {
+  .process-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .storage-sensitivity {
+    grid-template-columns: 1fr;
+  }
+  .research-archive .controls select {
+    max-width: 100%;
+  }
+}
+
+.deep {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-top: 28px;
+  padding-bottom: 10px;
+}
+.deep > summary {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 0;
+  font-size: 17px;
+  list-style: none;
+}
+.deep > summary::-webkit-details-marker {
+  display: none;
+}
+.deep > summary > .eyebrow {
+  margin: 0;
+  min-width: 170px;
+  font-size: 11px;
+}
+.deep > summary > span:last-child {
+  margin-left: auto;
+  font-size: 24px;
+}
+.deep[open] > summary > span:last-child {
+  transform: rotate(45deg);
+}
+.industry-section details p,
+.industry-section .controls label {
+  color: #f3ecd9;
+}
+.industry-section details .micro {
+  opacity: 0.8;
+}
+@media (max-width: 600px) {
+  .deep > summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    font-size: 16px;
+  }
+  .deep > summary > .eyebrow {
+    grid-column: 1/-1;
+  }
+  .deep > summary > span:last-child {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
