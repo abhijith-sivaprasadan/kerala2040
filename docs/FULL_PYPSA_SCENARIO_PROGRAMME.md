@@ -777,3 +777,39 @@ The severe availability case is pinned just above the observed full-year feasibi
 
 The checkpoint passes only if every modelled day's hydro MWh is conserved to
 numerical tolerance and all 54 configured cases solve successfully.
+
+The artifact-backed full-year run passed all 54 cases and conserved daily hydro
+energy to a maximum absolute residual of **2.91e-11 MWh**. Total preserved
+FY2024-25 hydro energy is **7.43072 TWh**.
+
+The central finding is that intraday hydro timing is a first-order adequacy
+assumption. For the CEA/KSERC reference FY2030-31 demand, reference renewable
+envelope, low BESS cost and KSEBL purchase-price proxy:
+
+| Transfer case | v1.0 frozen hydro | v1.1 100% hydro power | v1.1 85% | v1.1 71% |
+|---|---:|---:|---:|---:|
+| 4,455 MW ATC | 375.03 GWh | **11.75 GWh** | 15.79 GWh | 35.38 GWh |
+| 3,564 MW ATC | 2,301.61 GWh | **1,187.85 GWh** | 1,190.25 GWh | 1,209.55 GWh |
+| 2,673 MW ATC | 6,600.27 GWh | **5,571.39 GWh** | 5,603.61 GWh | 5,703.31 GWh |
+
+At full ATC, simply redispatching the **same daily hydro energy** cuts the
+reference-demand shortage by **363.28 GWh, or 96.87%**, relative to v1.0's frozen
+daily-average hydro replay. At the 80% and 60% ATC stresses the corresponding
+reductions are **48.39%** and **15.59%**. The declining percentage benefit shows
+that deeper transfer stress leaves a broader firm-capacity deficit that intraday
+hydro timing alone cannot remove.
+
+The reference-demand cases still use essentially the full reference candidate
+limits: **4,210.74 MW solar, 2,549.475 MW wind and 250 MW / 1 GWh BESS**. Better
+hydro timing therefore materially improves adequacy but does not establish a
+sufficient 2030 portfolio.
+
+For lower FY2030 demand at full ATC, 100% and 85% hydro availability achieve zero
+material shortage without new BESS in the selected reference-envelope case. At
+80% ATC, pushing hydro power down to the near-feasibility-floor 71% case creates
+a **96.59 MW four-hour BESS** requirement even though the daily hydro energy is
+unchanged. This isolates the value of hydro **power/flexibility**, not extra hydro
+energy.
+
+Durable evidence is recorded in
+`data/evidence/models/full_pypsa_hydro_flex_v1_1_2026_09_26.json`.
