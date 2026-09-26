@@ -88,12 +88,15 @@ def validate_hydro_evidence(root: Path, suite: dict[str, Any]) -> dict[str, Any]
 def _add_daily_hydro_constraints(
     model,
     snapshots: pd.Index,
+    chronology_timestamps: pd.DatetimeIndex,
     daily_targets_mwh: pd.Series,
     hydro_generator_names: list[str],
 ) -> None:
     generator_p = model.variables["Generator-p"]
     hydro = generator_p.sel(name=hydro_generator_names).sum("name")
-    days = pd.DatetimeIndex(snapshots).normalize()
+    if len(snapshots) != len(chronology_timestamps):
+        raise ValueError("v1.1 snapshot and chronology lengths differ")
+    days = pd.DatetimeIndex(chronology_timestamps).normalize()
     codes, unique_days = pd.factorize(days, sort=False)
     grouper = xr.DataArray(
         codes,
@@ -162,10 +165,6 @@ def solve_flexible_hydro_economic_case(
         charge_efficiency=charge_efficiency,
         discharge_efficiency=discharge_efficiency,
     )
-    network.set_snapshots(timestamps)
-    network.loads_t.p_set.loc[:, "residual_demand"] = residual
-    network.generators_t.p_max_pu.loc[:, "candidate_solar"] = solar_profile
-    network.generators_t.p_max_pu.loc[:, "candidate_wind"] = wind_profile
     hydro_generator_names: list[str] = []
     for group, capacity_mw in hydro_group_caps_mw.items():
         name = f"{HYDRO_PREFIX}{group}"
@@ -186,6 +185,7 @@ def solve_flexible_hydro_economic_case(
     _add_daily_hydro_constraints(
         model,
         network.snapshots,
+        timestamps,
         daily_hydro_targets_mwh,
         hydro_generator_names,
     )
