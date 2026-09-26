@@ -90,6 +90,8 @@ def _field_from_header(raw: Any) -> str | None:
         return "live_storage_mcm"
     if "water level" in text and "previous year" not in text:
         return "water_level"
+    if "spillway crest level" in text:
+        return "spillway_crest_level"
     if "average inflow" in text:
         return "average_inflow"
     if re.search(r"(^| )inflow( |$)", text):
@@ -179,7 +181,7 @@ def _number(value: Any, *, field: str, unit: str | None) -> float | None:
     if unit == "percent":
         cleaned = cleaned.replace("%", "")
     if unit == "ft":
-        cleaned = re.sub(r"\s*(?:ft\.?|feet)\s*$", "", cleaned, flags=re.I)
+        cleaned = re.sub(r"\s*(?:ft\.?|feet)\s*$", "", cleaned, flags=re.IGNORECASE)
     if not re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)", cleaned.strip()):
         raise KSEBWorkbookParseError(
             f"{field}: non-numeric source value {text!r}"
@@ -253,7 +255,7 @@ def parse_daily_sheet(rows: list[list[Any]], *, sheet_name: str) -> dict[str, An
 
     # KSEB's generic water-level header may say metre while Idukki uses feet.
     row_text = " ".join(_clean(value) for value in source_row)
-    idukki_feet = bool(re.search(r"\b(?:ft|feet)\b", row_text, flags=re.I))
+    idukki_feet = bool(re.search(r"\b(?:ft|feet)\b", row_text, flags=re.IGNORECASE))
 
     metrics: dict[str, float | None] = {}
     units: dict[str, str | None] = {}
@@ -261,7 +263,7 @@ def parse_daily_sheet(rows: list[list[Any]], *, sheet_name: str) -> dict[str, An
     headers: dict[str, str] = {}
 
     for col, (field, unit, raw_header) in mapping.items():
-        if field in {"reservoir", "mwl", "frl"}:
+        if field in {"reservoir", "mwl", "frl", "spillway_crest_level"}:
             continue
         if col >= len(source_row):
             continue
