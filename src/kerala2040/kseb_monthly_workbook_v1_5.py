@@ -91,17 +91,17 @@ def _field_from_header(raw: Any) -> str | None:
     if "water level" in text and "previous year" not in text:
         return "water_level"
     if "average inflow" in text:
-        return "average_inflow_cumecs"
+        return "average_inflow"
     if re.search(r"(^| )inflow( |$)", text):
-        return "inflow_mcm"
+        return "inflow"
     if "power house discharge" in text or "powerhouse discharge" in text:
-        return "power_house_discharge_mcm"
+        return "power_house_discharge"
     if text.startswith("spill") and "current" not in text:
-        return "spill_mcm"
+        return "spill"
     if "current spillway release" in text:
-        return "current_spillway_release_cumecs"
+        return "current_spillway_release"
     if "total outflow" in text:
-        return "total_outflow_mcm"
+        return "total_outflow"
     if "rain" in text and "fall" in text:
         return "rainfall_mm"
     if text.startswith("generation"):
@@ -134,6 +134,29 @@ def _unit_from_header(raw: Any, field: str) -> str | None:
     if "%" in text or "percent" in text:
         return "percent"
     return None
+
+
+
+def _metric_key(field: str, unit: str | None) -> str | None:
+    flow_fields = {
+        "inflow",
+        "average_inflow",
+        "power_house_discharge",
+        "spill",
+        "current_spillway_release",
+        "total_outflow",
+    }
+    if field in flow_fields:
+        if unit == "MCM":
+            return f"{field}_mcm"
+        if unit == "cumecs":
+            return f"{field}_cumecs"
+        raise KSEBWorkbookParseError(
+            f"{field}: critical flow field has unsupported unit {unit!r}"
+        )
+    if field in {"storage_percent", "storage_percent_wrt_frl"}:
+        return None
+    return field
 
 
 def _number(value: Any, *, field: str, unit: str | None) -> float | None:
@@ -178,11 +201,11 @@ def _find_header(rows: list[list[Any]]) -> tuple[int, dict[int, tuple[str, str |
             & {
                 "reservoir",
                 "live_storage_mcm",
-                "inflow_mcm",
-                "average_inflow_cumecs",
-                "power_house_discharge_mcm",
-                "spill_mcm",
-                "total_outflow_mcm",
+                "inflow",
+                "average_inflow",
+                "power_house_discharge",
+                "spill",
+                "total_outflow",
             }
         )
         if "reservoir" in fields and score >= 3:
@@ -245,52 +268,54 @@ def parse_daily_sheet(rows: list[list[Any]], *, sheet_name: str) -> dict[str, An
         effective_unit = unit
         if field == "water_level" and idukki_feet and unit == "metre":
             effective_unit = "ft"
+        metric = _metric_key(field, effective_unit)
+        if metric is None:
+            continue
         raw = source_row[col]
-        if field in metrics:
-            # Duplicate percentage fields are retained only when semantically
-            # distinct. Any other duplicate semantic field is unsafe.
+        if metric in metrics:
             raise KSEBWorkbookParseError(
-                f"{sheet_name}: duplicate semantic field {field}"
+                f"{sheet_name}: duplicate semantic field {metric}"
             )
-        metrics[field] = _number(raw, field=field, unit=effective_unit)
-        units[field] = effective_unit
-        raw_values[field] = _clean(raw)
-        headers[field] = raw_header
+        metrics[metric] = _number(raw, field=metric, unit=effective_unit)
+        units[metric] = effective_unit
+        raw_values[metric] = _clean(raw)
+        headers[metric] = raw_header
 
-    required = {
-        "live_storage_mcm",
-        "inflow_mcm",
-        "power_house_discharge_mcm",
-        "spill_mcm",
-    }
-    missing = sorted(field for field in required if field not in metrics)
-    if missing:
+    if "live_storage_mcm" not in metrics:
         raise KSEBWorkbookParseError(
-            f"{sheet_name}: missing critical fields {missing}"
+            f"{sheet_name}: missing critical field live_storage_mcm"
         )
-    for field in (
-        "live_storage_mcm",
-        "inflow_mcm",
-        "power_house_discharge_mcm",
-        "spill_mcm",
-        "total_outflow_mcm",
-    ):
-        if field in units and units[field] != "MCM":
-            raise KSEBWorkbookParseError(
-                f"{sheet_name}: {field} does not carry MCM unit"
-            )
+    required_groups = {
+        "inflow": {"inflow_mcm", "inflow_cumecs", "average_inflow_cumecs"},
+        "power_house_discharge": {
+            "power_house_discharge_mcm",
+            "power_house_discharge_cumecs",
+        },
+        "spill": {"spill_mcm", "spill_cumecs"},
+    }
+    missing_groups = [
+        name
+        for name, choices in required_groups.items()
+        if not any(choice in metrics for choice in choices)
+    ]
+    if missing_groups:
+        raise KSEBWorkbookParseError(
+            f"{sheet_name}: missing critical flow groups {missing_groups}"
+        )
 
-    if (
-        metrics.get("total_outflow_mcm") is not None
-        and metrics.get("power_house_discharge_mcm") is not None
-        and metrics.get("spill_mcm") is not None
-    ):
-        component_sum = (
-            metrics["power_house_discharge_mcm"] + metrics["spill_mcm"]
-        )
-        metrics["outflow_component_residual_mcm"] = (
-            metrics["total_outflow_mcm"] - component_sum
-        )
+    for suffix, unit_name in (("_mcm", "MCM"), ("_cumecs", "cumecs")):
+        total_key = f"total_outflow{suffix}"
+        power_key = f"power_house_discharge{suffix}"
+        spill_key = f"spill{suffix}"
+        if (
+            metrics.get(total_key) is not None
+            and metrics.get(power_key) is not None
+            and metrics.get(spill_key) is not None
+        ):
+            residual_key = f"outflow_component_residual{suffix}"
+            metrics[residual_key] = (
+                metrics[total_key] - metrics[power_key] - metrics[spill_key]
+            )
 
     return {
         "date": day.isoformat(),
