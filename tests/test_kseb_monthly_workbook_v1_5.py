@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from openpyxl import Workbook
 import pytest
+from openpyxl import Workbook
 
 from kerala2040.kseb_monthly_workbook_v1_5 import (
     KSEBWorkbookParseError,
