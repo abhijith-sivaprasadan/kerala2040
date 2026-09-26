@@ -50,6 +50,7 @@ jobs:
             scripts/
             configs/
             data/
+            public/
             pyproject.toml
 
 # Both artifacts contain only public code/data or public package dependencies.
