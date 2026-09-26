@@ -1,0 +1,135 @@
+{
+  "classification": "FULL_PYPSA_HYDRO_DISPATCH_V1_1_ARTIFACT_BACKED_DAILY_ENERGY_FLEXIBILITY_NOT_RESERVOIR_MODEL",
+  "prepared_date": "2026-09-26",
+  "workflow": {
+    "run_id": 36205800310,
+    "head_sha": "a947f3fe2d71780442fe93aedb922a8176e1e231",
+    "artifact_id": 10894065318,
+    "artifact_name": "full-pypsa-hydro-dispatch-v1.1-NOT-RESERVOIR-MODEL",
+    "artifact_digest_sha256": "40cc294158cfb0b651e0c553a357fd4d8471bf3012c65f269909bcfb2bd9aded"
+  },
+  "matrix": {
+    "cases_solved": 24,
+    "hours_per_case": 8760,
+    "focus_case": {
+      "capacity_envelope": "reference",
+      "bess_cost": "low",
+      "import_price": "ksebl_weighted_purchase"
+    },
+    "demand_cases": [
+      "lower_FY2030",
+      "reference_FY2030_31"
+    ],
+    "transfer_cases_mw": [
+      4455,
+      3564,
+      2673
+    ],
+    "hydro_availability_mw": {
+      "full_available": 2284.42,
+      "n_minus_1_idukki_130mw": 2154.42,
+      "derate_90pct": 2055.978,
+      "derate_80pct": 1827.536
+    }
+  },
+  "key_results": {
+    "lower_FY2030": {
+      "atc_4455": {
+        "flat_unserved_gwh": 0.000001,
+        "flexible_full_unserved_gwh": 0.000001,
+        "flexible_full_build": {
+          "solar_mw": 4210.74,
+          "wind_mw": 0,
+          "bess_mw": 0
+        },
+        "flat_build": {
+          "solar_mw": 4210.74,
+          "wind_mw": 0,
+          "bess_mw": 9.034866833460205
+        },
+        "flexible_imports_gwh": 18992.56151822673,
+        "import_change_vs_flat_gwh": -8.136543998844923,
+        "partial_cost_change_vs_flat_million_real_2021_22_inr_per_year": -95.84719358790608,
+        "interpretation": "Same adequacy with flexible hydro removes the small 9.03 MW BESS build in this focused case."
+      },
+      "atc_3564": {
+        "flat_unserved_gwh": 24.689040069833307,
+        "flexible_full_unserved_gwh": 0.000001,
+        "reduction_gwh": 24.68903906983331,
+        "reduction_pct": 99.99999594960738,
+        "flexible_full_build": {
+          "solar_mw": 4210.74,
+          "wind_mw": 0,
+          "bess_mw": 0
+        },
+        "flat_build": {
+          "solar_mw": 4210.74,
+          "wind_mw": 2549.4748355671486,
+          "bess_mw": 250
+        },
+        "interpretation": "Intraday hydro flexibility removes the flat-hydro shortage and avoids the otherwise cap-binding wind/BESS build in the focused sensitivity."
+      },
+      "atc_2673": {
+        "flat_unserved_gwh": 801.7163270205089,
+        "flexible_full_unserved_gwh": 115.07715623284939,
+        "reduction_gwh": 686.6391707876595,
+        "reduction_pct": 85.64618528495954,
+        "flexible_80pct_derate_unserved_gwh": 118.861,
+        "interpretation": "Hydro timing materially lowers shortage, but hard transfer stress remains binding even with candidate limits."
+      }
+    },
+    "reference_FY2030_31": {
+      "atc_4455": {
+        "flat_unserved_gwh": 375.03030580544055,
+        "flexible_full_unserved_gwh": 11.751320509834198,
+        "reduction_gwh": 363.2789852956063,
+        "reduction_pct": 96.86866629295535,
+        "n_minus_1_unserved_gwh": 12.523,
+        "derate_90pct_unserved_gwh": 13.561,
+        "derate_80pct_unserved_gwh": 20.402
+      },
+      "atc_3564": {
+        "flat_unserved_gwh": 2301.6116858206738,
+        "flexible_full_unserved_gwh": 1187.85379373274,
+        "reduction_gwh": 1113.7578920879337,
+        "reduction_pct": 48.39035444918024,
+        "n_minus_1_unserved_gwh": 1188.173,
+        "derate_90pct_unserved_gwh": 1188.779,
+        "derate_80pct_unserved_gwh": 1193.536
+      },
+      "atc_2673": {
+        "flat_unserved_gwh": 6600.273110922715,
+        "flexible_full_unserved_gwh": 5571.388355835842,
+        "reduction_gwh": 1028.8847550868736,
+        "reduction_pct": 15.58851804643126,
+        "n_minus_1_unserved_gwh": 5578.368,
+        "derate_90pct_unserved_gwh": 5587.395,
+        "derate_80pct_unserved_gwh": 5628.802
+      }
+    }
+  },
+  "interpretation": [
+    "Flattening daily hydro energy across 24 hours materially overstates shortage in several 2030 proxy cases.",
+    "At full ATC and reference demand, daily-energy intraday hydro redispatch removes about 96.9% of the flat-hydro unserved energy while preserving the same daily hydro MWh.",
+    "At 80% ATC the flexibility benefit remains large, but at 60% ATC interstate-transfer scarcity dominates and substantial shortage remains.",
+    "A single 130 MW Idukki-unit outage has a smaller effect than the flat-versus-flexible hydro timing assumption; broad 20% derating becomes more visible in the hardest transfer cases.",
+    "Partial-cost comparisons are only directly comparable when served energy is unchanged. Where flexible hydro reduces unserved energy, higher import expenditure can reflect serving load that was previously shed."
+  ],
+  "limitations": [
+    "Daily hydro MWh are observed/imputed FY2024-25 totals, not future inflow forecasts.",
+    "No inter-day reservoir energy state, storage-volume curve or seasonal water optimization.",
+    "No cascade routing, travel time, head-dependent efficiency or environmental/irrigation release constraints.",
+    "Major station capacity groups are explicit, but observed daily hydro energy is not allocated to individual stations.",
+    "The N-1 Idukki case is source-anchored; 90% and 80% availability cases are synthetic stress assumptions.",
+    "No observed forced-outage chronology or probabilistic reliability.",
+    "Not a validated capacity plan or total-system-cost result."
+  ],
+  "model_admission": {
+    "daily_energy_constrained_intraday_hydro_dispatch": true,
+    "major_station_capacity_group_boundaries": true,
+    "hydro_availability_sensitivity": true,
+    "reservoir_model": false,
+    "observed_outage_chronology": false,
+    "validated_capacity_plan": false
+  }
+}
