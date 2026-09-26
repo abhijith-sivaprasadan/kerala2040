@@ -25,15 +25,15 @@
       "live_storage_mcm": 755.568,
       "inflow_cumecs": 3.22,
       "power_house_discharge_cumecs": 25.94,
-      "spillway_release_cumecs": 0.0,
+      "spillway_release_cumecs": 0,
       "total_outflow_cumecs": 25.94,
-      "rainfall_mm": 0.0
+      "rainfall_mm": 0
     },
     "2025-03-18": {
       "live_storage_mcm": 754.094,
       "inflow_cumecs": 17.94,
       "power_house_discharge_cumecs": 32.17,
-      "spillway_release_cumecs": 0.0,
+      "spillway_release_cumecs": 0,
       "total_outflow_cumecs": 32.17,
       "rainfall_mm": 8.8
     },
@@ -41,7 +41,7 @@
       "live_storage_mcm": 750.899,
       "inflow_cumecs": 6.57,
       "power_house_discharge_cumecs": 40.74,
-      "spillway_release_cumecs": 0.0,
+      "spillway_release_cumecs": 0,
       "total_outflow_cumecs": 40.74,
       "rainfall_mm": 6.8
     }
@@ -87,6 +87,15 @@
     "live_historical_year_extraction_ready": false,
     "full_year_schema_audit_ready": false,
     "stateful_operations_model_ready": false,
-    "validated_capacity_plan": false
+    "validated_capacity_plan": false,
+    "live_ci_source_reachability_ready": false,
+    "live_ci_source_gate_recorded": true
+  },
+  "ci_source_reachability": {
+    "tested_on": "2026-09-26",
+    "github_hosted_runner_status": "blocked_connect_timeout_to_dams.kseb.in",
+    "parser_unit_tests_status": "passed",
+    "interpretation": "The GitHub-hosted runner could not establish TCP/HTTPS connections to the KSEB host. This does not imply the source is absent or invalid; independent web retrieval of the official March pages succeeded.",
+    "must_not_be_reported_as_live_ci_source_validation": true
   }
 }
