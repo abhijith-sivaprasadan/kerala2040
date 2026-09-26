@@ -79,6 +79,49 @@
     "cascade_routing": false,
     "head_efficiency_curves": false,
     "environmental_release_constraints": false,
-    "validated_outage_chronology": false
+    "validated_outage_chronology": false,
+    "station_group_capacity_boundaries": true,
+    "full_station_level_energy_allocation": false
+  },
+  "station_dispatch_groups": {
+    "Idukki": {
+      "capacity_mw": 780,
+      "source": "March-2026 reconciled station fleet",
+      "units_mw": [
+        130,
+        130,
+        130,
+        130,
+        130,
+        130
+      ]
+    },
+    "Sabarigiri": {
+      "capacity_mw": 340,
+      "source": "March-2026 reconciled station fleet"
+    },
+    "Lower_Periyar": {
+      "capacity_mw": 180,
+      "source": "March-2026 reconciled station fleet"
+    },
+    "Kuttiyadi_complex": {
+      "capacity_mw": 225,
+      "composition_mw": {
+        "Kuttiyadi": 75,
+        "Kuttiyadi_Extension": 50,
+        "Kuttiyadi_Additional_Extension": 100
+      },
+      "source": "March-2026 reconciled station fleet"
+    },
+    "residual_hydro": {
+      "capacity_mw": 759.42,
+      "source": "March-2026 total less explicit major station groups",
+      "rule": "retains all remaining state and non-state hydro without inventing station-level energy allocation"
+    }
+  },
+  "station_dispatch_groups_qa": {
+    "explicit_major_mw": 1525,
+    "residual_mw": 759.42,
+    "arithmetic_total_mw": 2284.42
   }
 }
