@@ -1,0 +1,80 @@
+version: 1
+classification: full_pypsa_idukki_kseb_official_v1_5_monthly_reported_inflow_gate
+prepared_date: "2026-09-26"
+purpose: >-
+  Replace the v1.4 private-SLDC daily inflow gate with direct official KSEB Dam
+  Safety monthly-workbook observations. Require a complete 365-day Idukki
+  storage + Inflow (MCM) series and official daily-page anchor reconciliation,
+  then optimize the same 364-day stateful reservoir horizon.
+
+inherits:
+  idukki_stateful_reservoir: configs/full_pypsa_idukki_reservoir_v1_3.yaml
+  reported_inflow_solver: configs/full_pypsa_idukki_inflow_release_v1_4.yaml
+  monthly_inventory: data/evidence/hydro/kseb_monthly_inventory_fy2024_25_v1_5_2026_09_26.json
+  daily_anchor_evidence: data/evidence/hydro/idukki_v1_5_official_daily_gap_anchors_2026_09_26.json
+
+official_source:
+  authority: Kerala State Electricity Board Limited Dam Safety Organisation
+  index_url: https://dams.kseb.in/?p=329
+  required_months: 12
+  bundle_runtime_input: true
+  redistributed_in_public_repository: false
+  storage_field: Live Storage (MCM)
+  inflow_field: Inflow (MCM)
+  missing_value_policy: fail_closed_no_interpolation
+  schema_policy: header_semantic_not_fixed_column_position
+  formats: [xls, xlsx]
+
+pilot_period:
+  start: "2024-04-01"
+  dispatch_end: "2025-03-30"
+  terminal_storage_date: "2025-03-31"
+  required_calendar_days: 365
+  required_dispatch_inflow_days: 364
+  hours: 8736
+
+water_balance:
+  equation: >-
+    storage[t+1] = storage[t] + kseb_reported_inflow_mcm[t] -
+    turbine_water_equivalent[t] - non_turbine_release[t]
+  turbine_water_equivalent: generation_mwh_divided_by_1470_mwh_per_mcm
+  optimization_non_turbine_release:
+    lower_bound: 0
+    interpretation: >-
+      Endogenous aggregate water outflow not sent through the modelled Idukki
+      turbine. It is not labelled observed spill.
+  historical_diagnostic: >-
+    Compare direct KSEB storage change and Inflow (MCM) with the existing
+    SLDC-derived Idukki station generation / 1470 conversion. Preserve negative
+    residuals as source/conversion inconsistency.
+
+source_gate:
+  all_365_storage_days_direct_kseb_required: true
+  all_365_inflow_days_direct_kseb_required: true
+  all_364_dispatch_inflow_days_direct_kseb_required: true
+  daily_anchor_reconciliation_required: true
+  source_file_sha256_per_month_required: true
+  interpolation_allowed: false
+
+optimization:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: preserve_minimum_shortage_then_minimize_candidate_investment_plus_import_cost
+  stage_3: preserve_stage_2_system_cost_then_minimize_non_turbine_water_release
+  release_tie_break_only: true
+
+release:
+  monthly_package_inventory_ready: true
+  package_download_code_ready: true
+  xls_xlsx_header_driven_parser_ready: true
+  complete_source_gate_code_ready: true
+  physical_model_wiring_ready: true
+  physical_model_run_ready: false
+  reason_physical_model_not_run: official_monthly_workbook_bytes_not_acquired_in_current_environment
+  observed_spill_chronology_ready: false
+  observed_powerhouse_water_release_ready: false
+  environmental_release_constraint_ready: false
+  head_dependent_efficiency_ready: false
+  cascade_model_ready: false
+  full_reservoir_model_validated: false
+  validated_capacity_plan: false
+  scenario_recommendation: false
