@@ -38,6 +38,7 @@ jobs:
             --url 'https://dams.kseb.in/?p=5176' \
             --url 'https://dams.kseb.in/?p=5178' \
             --url 'https://dams.kseb.in/?p=5180' \
+            --timeout 5 \
             --out-json results/hydro/kseb_idukki_official_v1_5.json \
             --out-csv results/hydro/kseb_idukki_official_v1_5.csv
           echo "extract_exit_code=$?" >> "$GITHUB_ENV"
