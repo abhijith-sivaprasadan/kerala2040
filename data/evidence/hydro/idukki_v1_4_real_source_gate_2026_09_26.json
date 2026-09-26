@@ -1,0 +1,53 @@
+{
+  "classification": "SOURCE_HASH_VERIFIED_IDUKKI_V1_4_INFLOW_GATE_EXECUTION_NOT_PHYSICAL_MODEL_RUN",
+  "prepared_date": "2026-09-26",
+  "input_archive": {
+    "uploaded_filename": "Kerala2040_SLDC_Five_Sections_2019_2026(2).zip",
+    "regenerated_table": "reservoir_rows.csv",
+    "regenerated_reservoir_rows_sha256": "b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9",
+    "expected_phase4_sha256": "b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9",
+    "phase4_hash_match": true,
+    "regenerated_reservoir_rows": 34863,
+    "idukki_rows_archive_wide": 2577
+  },
+  "pilot_period": {
+    "start": "2024-04-01",
+    "dispatch_end": "2025-03-30",
+    "required_days": 364,
+    "valid_source_reported_inflow_days": 325,
+    "missing_or_invalid_days": 39,
+    "coverage_percent": 89.285714,
+    "reported_inflow_sum_mcm_on_valid_days": 2461.269,
+    "reported_inflow_min_mcm_day_on_valid_days": 0.005,
+    "reported_inflow_max_mcm_day_on_valid_days": 74.038
+  },
+  "missing_classification": {
+    "accepted_storage_report_but_daily_inflow_blank": 28,
+    "rejected_storage_section": 11,
+    "accepted_blank_dates": [
+      "2024-04-01","2024-04-02","2024-04-09","2024-04-11","2024-04-14","2024-04-15","2024-04-17","2024-04-23","2024-04-24","2024-04-25","2024-05-04","2024-05-06","2025-02-04","2025-02-06","2025-02-08","2025-02-10","2025-02-12","2025-02-17","2025-02-18","2025-02-20","2025-02-25","2025-02-27","2025-02-28","2025-03-01","2025-03-04","2025-03-07","2025-03-18","2025-03-24"
+    ],
+    "rejected_storage_dates": [
+      "2024-08-12","2024-09-06","2024-09-20","2024-10-26","2024-11-17","2024-11-30","2024-12-16","2025-02-19","2025-03-05","2025-03-10","2025-03-17"
+    ]
+  },
+  "cumulative_inflow_diagnostic": {
+    "description": "For consecutive accepted Idukki source rows within a calendar month, compare reported daily inflow against the day-to-day change in the source cumulative monthly inflow field.",
+    "paired_consecutive_days": 2308,
+    "median_absolute_difference_mcm": 4.9404924595819466e-15,
+    "within_0_01_mcm_percent": 99.740035,
+    "exact_within_1e_6_percent": 74.393414,
+    "accepted_blank_days_with_nonnegative_direct_cumulative_difference_candidate": 20,
+    "accepted_blank_days_with_exact_zero_cumulative_difference_candidate": 20,
+    "exact_zero_candidate_dates": [
+      "2024-04-14","2024-04-15","2024-04-17","2024-04-23","2024-04-24","2024-04-25","2024-05-06","2025-02-04","2025-02-06","2025-02-08","2025-02-10","2025-02-12","2025-02-17","2025-02-18","2025-02-25","2025-02-27","2025-02-28","2025-03-04","2025-03-07","2025-03-24"
+    ],
+    "not_admitted_as_observed_daily_inflow": true,
+    "reason": "Cumulative-field differencing is source-derived, not the source-reported daily inflow field, and archive-wide agreement is not exact on all days."
+  },
+  "physical_run": {
+    "v1_4_ready": false,
+    "reason": "39 of 364 pilot-day source-reported Idukki inflow values are absent/invalid under the strict no-interpolation gate.",
+    "next_action": "Recover the 11 rejected storage reports and resolve the 28 accepted-source blank daily inflow cells from authoritative source/revision evidence before the strict source-reported-inflow matrix is admitted."
+  }
+}
