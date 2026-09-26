@@ -284,7 +284,7 @@ def solve_hydro_interday_case(
         "hydro_peak_mw": float(hydro.max()),
         "hydro_available_power_mw": float(active_hydro_mw),
         "window_days": int(window_days),
-        "window_count": int(len(window_targets)),
+        "window_count": len(window_targets),
         "max_window_hydro_energy_residual_mwh": max_window_residual,
         "annual_hydro_energy_residual_mwh": annual_residual,
         "solver": {
