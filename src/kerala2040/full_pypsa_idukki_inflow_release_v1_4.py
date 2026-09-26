@@ -125,8 +125,8 @@ def validate_private_inflow_rows(
 
     return {
         "actual_sha256": actual_sha,
-        "idukki_source_rows": int(len(idukki)),
-        "pilot_days_required": int(len(days)),
+        "idukki_source_rows": len(idukki),
+        "pilot_days_required": len(days),
         "pilot_days_source_reported_valid": int(valid.sum()),
         "missing_or_invalid_pilot_dates": [
             day.strftime("%Y-%m-%d") for day in missing_days
