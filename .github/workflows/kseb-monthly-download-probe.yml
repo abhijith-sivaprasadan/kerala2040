@@ -40,10 +40,42 @@ jobs:
             file "probe/$id.bin" 2>/dev/null || true
             xxd -l 16 "probe/$id.bin" 2>/dev/null || true
           done
-      - name: Inspect cached official KSEB workbook exemplar
+      - name: Inspect cached official KSEB workbook exemplars
         shell: bash
         run: |
           set -e
+          python -m pip install --quiet openpyxl xlrd
+          curl -L --fail --retry 3 \
+            -o probe/kseb_legacy_window.xls \
+            'https://raw.githubusercontent.com/Am4l-babu/aqua-sync/6c6ba263ef832f0d696a51e9d3ebc0355a6d5b68/research/raw/kseb_monthly/corrupt_window'
+          file probe/kseb_legacy_window.xls
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import xlrd
+
+          p = Path("probe/kseb_legacy_window.xls")
+          info = {"size": p.stat().st_size}
+          try:
+              wb = xlrd.open_workbook(p)
+              info["sheet_names"] = wb.sheet_names()
+              info["sheet_count"] = wb.nsheets
+              samples = {}
+              for name in wb.sheet_names()[:3]:
+                  ws = wb.sheet_by_name(name)
+                  rows = []
+                  for r in range(min(ws.nrows, 15)):
+                      rows.append([ws.cell_value(r, col) for col in range(min(ws.ncols, 25))])
+                  samples[name] = {"nrows": ws.nrows, "ncols": ws.ncols, "rows": rows}
+              info["samples"] = samples
+          except Exception as exc:
+              info["xlrd_error"] = repr(exc)
+          Path("probe/kseb_legacy_structure.json").write_text(
+              json.dumps(info, indent=2, default=str), encoding="utf-8"
+          )
+          print(json.dumps(info, indent=2, default=str))
+          PY
+          
           curl -L --fail --retry 3 \
             -o probe/kseb_2026_07.xlsx \
             'https://raw.githubusercontent.com/Am4l-babu/aqua-sync/6c6ba263ef832f0d696a51e9d3ebc0355a6d5b68/research/raw/kseb_monthly/2026-07.xlsx'
