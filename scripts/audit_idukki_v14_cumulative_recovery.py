@@ -63,11 +63,51 @@ def audit(path: Path) -> dict:
             else None
         )
 
+    # Source convention check: whenever the first calendar day of a month has
+    # both fields, cumulative monthly inflow equals that day's direct inflow.
+    # This establishes an exact zero cumulative anchor at the month boundary.
+    first_day_rows = idukki.loc[
+        (idukki.index.day == 1)
+        & idukki["inflow_mcm_day"].notna()
+        & idukki["month_inflow_mu"].notna()
+    ]
+    month_start_differences = (
+        pd.to_numeric(first_day_rows["month_inflow_mu"], errors="coerce")
+        - pd.to_numeric(first_day_rows["inflow_mcm_day"], errors="coerce")
+    ).dropna()
+    if month_start_differences.empty or not (
+        month_start_differences.abs() <= 1e-9
+    ).all():
+        raise ValueError("Month-start cumulative inflow convention is not exact")
+
     recovered = {}
     intervals = {}
     for month in sorted(set(days.to_period("M"))):
         month_days = [d for d in days if d.to_period("M") == month]
         observed_cumulative = [d for d in month_days if cumulative[d] is not None]
+
+        # Use the verified source-defined zero anchor at the start of each
+        # month. This can recover a missing first-day inflow when a later
+        # cumulative observation plus all other daily values uniquely closes.
+        if observed_cumulative:
+            right = observed_cumulative[0]
+            interval = [d for d in month_days if d <= right]
+            unknown = [d for d in interval if direct[d] is None]
+            if len(unknown) == 1:
+                rhs = cumulative[right] - sum(
+                    direct[d] for d in interval if direct[d] is not None
+                )
+                if rhs >= -1e-9:
+                    day = unknown[0]
+                    value = max(0.0, float(rhs))
+                    recovered[day] = value
+                    intervals[day] = {
+                        "left_cumulative_date": "MONTH_START_ZERO_ANCHOR",
+                        "right_cumulative_date": right.strftime("%Y-%m-%d"),
+                        "derived_inflow_mcm_day": value,
+                        "source_row_present_on_target_date": present[day],
+                    }
+
         for left, right in pairwise(observed_cumulative):
             interval = [d for d in month_days if left < d <= right]
             unknown = [d for d in interval if direct[d] is None]
@@ -100,6 +140,13 @@ def audit(path: Path) -> dict:
         "pilot_days": len(days),
         "direct_reported_days": sum(direct[d] is not None for d in days),
         "missing_direct_daily_inflow_days": len(missing),
+        "month_start_identity_validation": {
+            "first_day_rows_with_both_fields": len(month_start_differences),
+            "exact_matches": int((month_start_differences.abs() <= 1e-9).sum()),
+            "maximum_absolute_difference": float(
+                month_start_differences.abs().max()
+            ),
+        },
         "uniquely_recovered_days": len(recovered),
         "coverage_after_source_derived_recovery_days": (
             sum(direct[d] is not None for d in days) + len(recovered)
