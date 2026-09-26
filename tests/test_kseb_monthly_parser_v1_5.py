@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 
 from kerala2040.kseb_monthly_parser_v1_5 import (
