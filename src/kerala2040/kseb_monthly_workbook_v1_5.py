@@ -17,9 +17,9 @@ import calendar
 import hashlib
 import re
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import xlrd
 from openpyxl import load_workbook
