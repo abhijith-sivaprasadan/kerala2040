@@ -67,7 +67,7 @@ def audit(path: Path) -> dict:
     for month in sorted(set(days.to_period("M"))):
         month_days = [d for d in days if d.to_period("M") == month]
         observed_cumulative = [d for d in month_days if cumulative[d] is not None]
-        for left, right in zip(observed_cumulative[:-1], observed_cumulative[1:]):
+        for left, right in pairwise(observed_cumulative):
             interval = [d for d in month_days if left < d <= right]
             unknown = [d for d in interval if direct[d] is None]
             if len(unknown) != 1:
