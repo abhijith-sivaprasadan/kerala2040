@@ -38,7 +38,7 @@ def load_hydro_interday_v12_suite(path: Path) -> dict[str, Any]:
         raise ValueError("v1.2 interday-hydro classification mismatch")
 
     windows = data["interday_windows"]
-    if [int(item["window_days"]) for item in windows] != [1, 3, 7, 30]:
+    if [int(item["window_days"]) for item in windows] != [1, 3, 15, 30]:
         raise ValueError("v1.2 interday windows changed")
 
     availability = data["hydro_availability_cases"]
@@ -478,7 +478,7 @@ def run_hydro_interday_v12_suite(
                 "its own hydro MWh."
             ),
             (
-                "The 3-, 7- and 30-day cases preserve hydro energy only within "
+                "The 3-, 15- and 30-day cases preserve hydro energy only within "
                 "non-overlapping windows and therefore quantify an increasingly "
                 "optimistic interday-flexibility upper bound."
             ),
