@@ -28,7 +28,7 @@
     "within_0_1_mcm_day_fraction": 0.0434782609,
     "interpretation": "The two series strongly track the same hydrological signal but are not numerically interchangeable at daily resolution. Dam Safety inflow is therefore not used to replace missing SLDC daily-volume observations."
   },
-  "remaining_11_dam_safety_rates_cumecs": {
+  "remaining_10_dam_safety_rates_cumecs": {
     "2024-04-01": 3.45,
     "2024-04-02": 10.46,
     "2024-04-09": 3.91,
@@ -37,7 +37,6 @@
     "2024-11-30": 20.84,
     "2025-02-19": 1.35,
     "2025-02-20": 2.72,
-    "2025-03-01": 4.44,
     "2025-03-17": 3.22,
     "2025-03-18": 17.94
   },
@@ -68,8 +67,7 @@
     "2024-04-09",
     "2024-04-11",
     "2024-05-04",
-    "2024-11-30",
-    "2025-03-01"
+    "2024-11-30"
   ],
   "strict_v1_4_gate_changed": false
 }
