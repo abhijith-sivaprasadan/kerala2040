@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Assess or run Full-PyPSA Idukki reported-inflow checkpoint v1.4."""
 from __future__ import annotations
 
