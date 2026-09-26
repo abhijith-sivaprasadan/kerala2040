@@ -188,7 +188,7 @@ async function main() {
       (await page.locator("#modelInsight").innerText()).includes("119.34"),
       "Reference envelope result",
     );
-    await page.locator("#sourceSearch").fill("economics");
+    await page.locator("#sourceSearch").fill("import-economics");
     check(
       (await page.locator("#sourceList .source-row").count()) === 1,
       "Library search",
@@ -274,3 +274,4 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
