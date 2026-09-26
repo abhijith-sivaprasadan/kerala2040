@@ -106,6 +106,8 @@ def semantic_header(header: str) -> tuple[str, str | None]:
         return "spillway_crest_level", unit
     if "water level" in text and "previous year" not in text:
         return "water_level", unit
+    if "storage wrt live storage" in text:
+        return "storage_wrt_live_storage_percent", "percent"
     if "% storage" in text or "percentage storage" in text:
         return "storage_percent", "percent"
     return "other", unit
