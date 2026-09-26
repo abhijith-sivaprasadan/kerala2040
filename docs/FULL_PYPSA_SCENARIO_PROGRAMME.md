@@ -813,3 +813,92 @@ energy.
 
 Durable evidence is recorded in
 `data/evidence/models/full_pypsa_hydro_flex_v1_1_2026_09_26.json`.
+
+
+## Implementation checkpoint 14 · interday hydro flexibility bracket v1.2
+
+v1.2 asks the next hydro question without crossing the evidence boundary into a
+fabricated reservoir model: **how much would adequacy change if the same admitted
+FY2024-25 hydro energy could move between days?**
+
+The v1.1 one-day energy constraint remains the baseline. v1.2 adds non-overlapping
+**3-day, 15-day and 30-day** energy-conservation windows. Within each window PyPSA
+may choose hourly hydro dispatch endogenously, but it must reproduce exactly the
+sum of the observed/imputed FY2024-25 daily hydro MWh targets in that window.
+Annual hydro energy is therefore unchanged in every case.
+
+The windows are deliberately nested (1 -> 3 -> 15 -> 30 days) so each longer case is a true relaxation of the shorter constraints. This is deliberately a flexibility bracket, not a storage-duration assumption.
+A 15-day case does **not** assert fifteen days of usable Kerala reservoir storage, and
+a 30-day case does not represent monthly reservoir operation. The retained official
+hydro-topology evidence explicitly blocks conversion to connected reservoir stores
+until inflows, releases/spill, shared-water accounting, head/efficiency curves,
+environmental releases and operating rule curves are reconciled.
+
+The v1.2 focused matrix fixes the v0.7 reference renewable envelope, v0.5 low BESS
+cost and v1.0 KSEBL weighted-purchase import-price proxy, then combines:
+
+- lower FY2030 and CEA/KSERC reference FY2030-31 demand;
+- 4,455 / 3,564 / 2,673 MW transfer sensitivities;
+- full 2,284.42 MW hydro availability and a source-anchored Idukki 130 MW N-1
+  stress;
+- 1 / 3 / 15 / 30 day hydro-energy conservation windows.
+
+That produces **48 full-year 8,760-hour cases**.
+
+The 130 MW outage anchor comes from the verified Idukki unit rating retained from
+the superseded parallel v1.1 branch. The broader station-group evidence is also
+preserved for future reservoir/cascade work, but v1.2 does not invent station-level
+daily water allocation or outage chronology.
+
+Release remains fail-closed:
+
+- interday hydro flexibility bracket: **ready**;
+- source-anchored Idukki N-1 sensitivity: **ready**;
+- reservoir water-balance model: **not ready**;
+- cascade routing/head-dependent efficiency: **not ready**;
+- pumped storage: **not ready**;
+- validated hydro economic dispatch or capacity plan: **not ready**.
+
+The next physical upgrade after this bracket is not a longer arbitrary window. It
+is a source-reconciled reservoir state model, starting with the best-observed
+system (Idukki) and admitting water balance only when catchment inflow, storage,
+release/spill and head/efficiency evidence can be reconciled without double
+counting cascade water.
+
+
+### Artifact-backed v1.2 result
+
+The corrected full-year run solved all **48 × 8,760-hour cases** successfully while
+preserving **7.4307198 TWh** of admitted FY2024-25 hydro energy. The maximum
+absolute window-energy residual across the matrix was **7.68e-9 MWh**.
+
+For the CEA/KSERC reference FY2030-31 demand with full hydro availability:
+
+| Transfer case | 1-day baseline | 3-day | 15-day | 30-day |
+|---|---:|---:|---:|---:|
+| 4,455 MW ATC | 11.751 GWh | 7.422 GWh | **0.160 GWh** | **0.160 GWh** |
+| 3,564 MW ATC | 1,187.854 GWh | 1,167.909 GWh | 1,060.346 GWh | **965.093 GWh** |
+| 2,673 MW ATC | 5,571.388 GWh | 5,542.035 GWh | 5,468.566 GWh | **5,454.820 GWh** |
+
+At full ATC, the 15-day bracket removes **98.64%** of the remaining v1.1 shortage
+and the 30-day case adds no further adequacy benefit. At 80% ATC the 30-day
+relaxation removes **18.75%** of the 1-day shortage, while at 60% ATC it removes
+only **2.09%**. This is the central v1.2 signal: interday hydro timing can almost
+eliminate the residual full-transfer shortage, but it cannot substitute for missing
+firm/transfer capability under the severe transfer stresses.
+
+For the lower FY2030 demand at 60% ATC, the same 30-day bracket reduces shortage
+from **115.077 GWh to 5.876 GWh (-94.89%)**. The source-anchored 130 MW Idukki
+N-1 sensitivity is much smaller than the timing-window effect in most cases and
+remains an outage stress only, not an observed outage chronology.
+
+Artifact provenance:
+- workflow run: `36212520762`
+- artifact: `10895958991`
+- head: `914c86af5f13680d95b20df7d49f2fa74c96018a`
+- artifact SHA256: `4efa8f4fb78c09e4fc4fc12819eea6c8bd4acd1dab230d43d69fa917cdf85680`
+- durable evidence: `data/evidence/models/full_pypsa_hydro_interday_v1_2_2026_09_26.json`
+
+These values remain a **temporal-flexibility upper-bound experiment, not reservoir
+operation**. The next physical checkpoint is an Idukki-first stateful reservoir pilot
+with admitted storage/inflow/release evidence.

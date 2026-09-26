@@ -1,0 +1,127 @@
+{
+  "classification": "SOURCE_BOUNDED_HYDRO_DISPATCH_AND_AVAILABILITY_BOUNDARIES_NOT_RESERVOIR_MODEL",
+  "prepared_date": "2026-09-26",
+  "aggregate_capacity": {
+    "march_2026_hydro_mw": 2284.42,
+    "source": "CEA transmission resource adequacy plan / Kerala2040 canonical March-2026 capacity boundary",
+    "ksebl_fy2024_25_hydro_mw": 2196.36,
+    "non_ksebl_hydro_remainder_mw": 88.06
+  },
+  "station_unit_anchor": {
+    "source": "KSEBL station-wise installed generating capacity / Annual Administration Report",
+    "source_url": "https://old.kseb.in/index.php?Itemid=811&catid=70&id=35634&lang=en&m=0&option=com_jdownloads&task=download.send",
+    "role": "unit-size/outage stress anchor only; not treated as a current March-2026 complete station register",
+    "known_major_units": {
+      "Idukki": {
+        "station_mw": 780,
+        "units_mw": [
+          130,
+          130,
+          130,
+          130,
+          130,
+          130
+        ]
+      },
+      "Sabarigiri": {
+        "station_mw": 340,
+        "units_mw": [
+          55,
+          55,
+          55,
+          60,
+          55,
+          60
+        ]
+      },
+      "Kuttiyadi": {
+        "station_mw": 75,
+        "units_mw": [
+          25,
+          25,
+          25
+        ]
+      }
+    },
+    "largest_verified_single_unit_mw": 130,
+    "caveat": "Legacy station/unit table predates the March-2026 aggregate boundary; later additions/re-ratings are not reconstructed station-by-station in v1.1."
+  },
+  "observed_energy_boundary": {
+    "source": "SLDC FY2024-25 daily balance archive already admitted in v0.2-v0.4",
+    "rule": "Conserve each observed/imputed FY2024-25 daily hydro MWh exactly in every v1.1 case.",
+    "interpretation": "Daily energy is evidence-backed; intraday allocation remains optimized."
+  },
+  "availability_cases": {
+    "full_available": {
+      "available_hydro_mw": 2284.42,
+      "type": "capacity_boundary"
+    },
+    "n_minus_1_idukki_130mw": {
+      "available_hydro_mw": 2154.42,
+      "type": "source_anchored_single_unit_outage"
+    },
+    "derate_90pct": {
+      "available_hydro_mw": 2055.978,
+      "type": "declared_synthetic_availability_sensitivity"
+    },
+    "derate_80pct": {
+      "available_hydro_mw": 1827.536,
+      "type": "declared_synthetic_availability_sensitivity"
+    }
+  },
+  "model_admission": {
+    "exact_daily_hydro_energy": true,
+    "aggregate_intraday_redispatch": true,
+    "source_anchored_largest_unit_outage": true,
+    "synthetic_derating_sensitivities": true,
+    "station_level_energy_allocation": false,
+    "reservoir_storage_state": false,
+    "cascade_routing": false,
+    "head_efficiency_curves": false,
+    "environmental_release_constraints": false,
+    "validated_outage_chronology": false,
+    "station_group_capacity_boundaries": true,
+    "full_station_level_energy_allocation": false
+  },
+  "station_dispatch_groups": {
+    "Idukki": {
+      "capacity_mw": 780,
+      "source": "March-2026 reconciled station fleet",
+      "units_mw": [
+        130,
+        130,
+        130,
+        130,
+        130,
+        130
+      ]
+    },
+    "Sabarigiri": {
+      "capacity_mw": 340,
+      "source": "March-2026 reconciled station fleet"
+    },
+    "Lower_Periyar": {
+      "capacity_mw": 180,
+      "source": "March-2026 reconciled station fleet"
+    },
+    "Kuttiyadi_complex": {
+      "capacity_mw": 225,
+      "composition_mw": {
+        "Kuttiyadi": 75,
+        "Kuttiyadi_Extension": 50,
+        "Kuttiyadi_Additional_Extension": 100
+      },
+      "source": "March-2026 reconciled station fleet"
+    },
+    "residual_hydro": {
+      "capacity_mw": 759.42,
+      "source": "March-2026 total less explicit major station groups",
+      "rule": "retains all remaining state and non-state hydro without inventing station-level energy allocation"
+    }
+  },
+  "station_dispatch_groups_qa": {
+    "explicit_major_mw": 1525,
+    "residual_mw": 759.42,
+    "arithmetic_total_mw": 2284.42
+  }
+}

@@ -1,0 +1,101 @@
+version: 1
+classification: full_pypsa_hydro_interday_v1_2_windowed_energy_bracket_not_reservoir_model
+prepared_date: "2026-09-26"
+purpose: >-
+  Extend the v1.1 exact-daily-energy hydro sensitivity into a bounded interday
+  flexibility experiment without inventing reservoir storage physics. Preserve
+  the same FY2024-25 hydro energy over non-overlapping 1, 3, 15 and 30 day
+  windows, enforce source-bounded hydro power ceilings, and quantify the value
+  of moving hydro energy between days.
+
+inherits:
+  daily_hydro: configs/full_pypsa_hydro_flex_v1_1.yaml
+  import_economics: configs/full_pypsa_import_economics_v1_0.yaml
+  future_demand: configs/full_pypsa_future_adequacy_v0_4.yaml
+  proxy_expansion: configs/full_pypsa_proxy_expansion_v0_8.yaml
+  cost_finance: configs/full_pypsa_cost_finance_v0_5.yaml
+  station_capacity_evidence: data/evidence/hydro/kerala_hydro_dispatch_boundaries_v1_1_2026_09_26.json
+  topology_evidence: configs/hydro_topology_evidence_2024_25.yaml
+
+focus_case:
+  capacity_envelope_case: reference
+  bess_cost_case: low
+  import_price_case: ksebl_weighted_purchase
+  rationale: isolate_interday_hydro_flexibility
+
+demand_cases:
+  - lower_FY2030
+  - reference_FY2030_31
+
+transfer_cases:
+  - atc_snapshot_reference
+  - atc_80pct_stress
+  - atc_60pct_stress
+
+hydro_availability_cases:
+  - id: full_available
+    available_hydro_mw: 2284.42
+    source_classification: March2026_capacity_boundary
+  - id: n_minus_1_idukki_130mw
+    available_hydro_mw: 2154.42
+    source_classification: source_anchored_single_verified_unit_outage
+
+interday_windows:
+  - id: exact_daily_1d
+    window_days: 1
+    classification: v1_1_equivalent_daily_energy_constraint
+  - id: interday_3d
+    window_days: 3
+    classification: synthetic_interday_flexibility_upper_bound
+  - id: interday_15d
+    window_days: 15
+    classification: synthetic_interday_flexibility_upper_bound
+  - id: interday_30d
+    window_days: 30
+    classification: synthetic_interday_flexibility_upper_bound
+
+hydro:
+  source_energy: FY2024_25_observed_or_imputed_SLDC_daily_hydro_MWh
+  conservation_rule: >-
+    Sum the admitted daily hydro-energy targets within each non-overlapping
+    model window and require optimized hourly hydro generation to reproduce
+    that window total exactly.
+  window_anchor: first_model_day
+  final_partial_window: allowed_and_energy_conserved
+  power_rule: 0_to_active_hydro_availability_MW
+  annual_energy_preserved: true
+  interpretation: >-
+    Windowed energy conservation is a temporal-flexibility bracket only. A 15-day
+    case does not mean Kerala has fifteen days of reservoir storage and a 30-day
+    case does not represent monthly reservoir operation.
+  explicitly_not_modelled:
+    - reservoir_state_of_charge
+    - water_balance_from_inflow_release_spill
+    - calibrated_mcm_to_mwh_conversion
+    - cascade_routing_and_travel_time
+    - environmental_irrigation_and_flood_release_constraints
+    - head_dependent_efficiency
+    - observed_station_outage_chronology
+    - unit_commitment_and_ramping
+    - pumped_storage
+    - internal_transmission_constraints
+
+objective:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: minimize_annualized_candidate_investment_plus_import_energy_cost
+  unserved_tolerance_mwh: 0.001
+  rule: >-
+    Hydro window energy is a hard equality in both stages. No VOLL or reservoir
+    water value is invented.
+
+release:
+  interday_hydro_flexibility_bracket_ready: true
+  source_anchored_idukki_n_minus_1_ready: true
+  reservoir_model_ready: false
+  water_balance_model_ready: false
+  cascade_model_ready: false
+  pumped_storage_model_ready: false
+  hydro_economic_dispatch_validated: false
+  total_system_cost_optimization: false
+  validated_capacity_plan: false
+  scenario_recommendation: false
