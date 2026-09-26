@@ -21,6 +21,7 @@ def test_v13_release_is_fail_closed():
     release = suite["release"]
     assert release["idukki_stateful_reservoir_pilot_ready"] is True
     assert release["reconstructed_net_water_balance_ready"] is True
+    assert release["endogenous_additional_release_slack_ready"] is True
     assert release["catchment_inflow_model_ready"] is False
     assert release["head_dependent_efficiency_ready"] is False
     assert release["cascade_model_ready"] is False
@@ -95,3 +96,5 @@ def test_v13_synthetic_stateful_reservoir_hits_terminal_stock():
     assert result["idukki_storage_min_mcm"] >= -1e-6
     assert result["idukki_storage_max_mcm"] <= 10.0 + 1e-6
     assert result["idukki_generation_peak_mw"] <= 20.0 + 1e-6
+    assert np.isfinite(result["idukki_additional_release_equivalent_mcm"])
+    assert result["idukki_additional_release_equivalent_mcm"] >= -1e-9
