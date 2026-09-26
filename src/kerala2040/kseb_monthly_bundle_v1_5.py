@@ -35,6 +35,20 @@ MONTH_NAMES = {
 MONTH_LOOKUP = {name: number for number, name in MONTH_NAMES.items()}
 
 SUPPORTED_FORMATS = {"pdf", "xlsx", "xls", "csv", "text", "zip"}
+EXPECTED_FORMATS = {
+    "2024-04": "xlsx",
+    "2024-05": "xlsx",
+    "2024-06": "xls",
+    "2024-07": "xls",
+    "2024-08": "xlsx",
+    "2024-09": "xls",
+    "2024-10": "xls",
+    "2024-11": "xlsx",
+    "2024-12": "xlsx",
+    "2025-01": "xls",
+    "2025-02": "xls",
+    "2025-03": "xlsx",
+}
 
 
 class KSEBMonthlyBundleError(ValueError):
@@ -189,6 +203,17 @@ def audit_bundle(
                     "reason": "unsupported_or_unknown_format",
                     "path": record["path"],
                     "detected_format": fmt,
+                }
+            )
+        expected = EXPECTED_FORMATS[month]
+        if fmt != expected:
+            invalid.append(
+                {
+                    "month": month,
+                    "reason": "format_mismatch_against_official_listing",
+                    "path": record["path"],
+                    "detected_format": fmt,
+                    "expected_format": expected,
                 }
             )
 
