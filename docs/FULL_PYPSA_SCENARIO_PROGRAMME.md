@@ -779,7 +779,44 @@ python scripts/run_full_pypsa_hydro_dispatch_v1_1.py \
   --hours 8760
 ```
 
-Passing v1.1 will tell us how much of the v1.0 shortage/build signal was an artefact
-of flattening hydro within each day. The next hydro step after that should be
-inter-day reservoir/cascade physics only where source-backed storage, inflow and
+The artifact-backed full-year run solved all **24 cases × 8,760 hours** successfully.
+
+The central result is that flattening daily hydro across all 24 hours materially
+overstates shortage in several 2030 screens.
+
+| Demand / transfer case | Flat hydro unserved | Flexible hydro unserved | Reduction |
+|---|---:|---:|---:|
+| Lower FY2030 / 4,455 MW | ~0 GWh | ~0 GWh | — |
+| Lower FY2030 / 3,564 MW | 24.689 GWh | ~0 GWh | ~100% |
+| Lower FY2030 / 2,673 MW | 801.716 GWh | 115.077 GWh | 85.65% |
+| Reference FY2030-31 / 4,455 MW | 375.030 GWh | 11.751 GWh | 96.87% |
+| Reference FY2030-31 / 3,564 MW | 2,301.612 GWh | 1,187.854 GWh | 48.39% |
+| Reference FY2030-31 / 2,673 MW | 6,600.273 GWh | 5,571.388 GWh | 15.59% |
+
+The lower-demand 3,564 MW case is especially revealing. Under the flat-hydro
+baseline it uses the full reference-envelope wind headroom and 250 MW BESS yet still
+has 24.689 GWh unserved. With the same daily hydro MWh made dispatchable within each
+day, the shortage disappears and that wind/BESS build is no longer required in this
+focused sensitivity.
+
+The source-anchored **130 MW Idukki N-1** outage has a much smaller effect than the
+flat-versus-flexible timing assumption. For reference demand, shortage rises from
+11.751 to 12.523 GWh at full ATC, from 1,187.854 to 1,188.173 GWh at the 80% ATC
+stress, and from 5,571.388 to 5,578.368 GWh at the 60% ATC stress. The synthetic
+20% aggregate hydro derating is more material, reaching 20.402 / 1,193.536 /
+5,628.802 GWh across those same transfer cases.
+
+Where served energy changes, the partial economic objective must not be compared as
+if it were a like-for-like cost metric: higher imports can simply mean the flexible
+hydro case serves load that the flat-hydro case shed. In the lower-demand/full-ATC
+case, where adequacy is unchanged, flexible hydro removes the small 9.03 MW BESS
+build, reduces imports by about 8.14 GWh and lowers the partial objective by about
+₹95.85 million/year on the common real-2021-22 basis.
+
+Durable evidence is recorded in
+`data/evidence/models/full_pypsa_hydro_dispatch_v1_1_2026_09_26.json`.
+
+v1.1 therefore establishes hydro timing as a **first-order adequacy variable** in
+the current Kerala2040 model. The next hydro step should be inter-day reservoir and
+cascade physics only where source-backed storage, inflow, rule-curve, head and
 operating constraints can be assembled.
