@@ -1,0 +1,49 @@
+name: KSEB monthly download probe
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/kseb-monthly-download-probe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe DNS and transport
+        shell: bash
+        run: |
+          set +e
+          echo "=== DNS ==="
+          getent ahostsv4 dams.kseb.in || true
+          getent ahostsv6 dams.kseb.in || true
+          echo "=== HTTPS HEAD ==="
+          curl -4 -I -L -A 'Mozilla/5.0' --connect-timeout 10 --max-time 30             'https://dams.kseb.in/?wpdmdl=4421' || true
+          echo "=== HTTP HEAD ==="
+          curl -4 -I -L -A 'Mozilla/5.0' --connect-timeout 10 --max-time 30             'http://dams.kseb.in/?wpdmdl=4421' || true
+      - name: Probe April and March packages
+        shell: bash
+        run: |
+          set +e
+          mkdir -p probe
+          for id in 4421 5212; do
+            echo "=== PACKAGE $id ==="
+            curl -4 -L -A 'Mozilla/5.0'               --connect-timeout 10 --max-time 60               -D "probe/$id.headers"               -o "probe/$id.bin"               "https://dams.kseb.in/?wpdmdl=$id"
+            code=$?
+            echo "curl_exit=$code"
+            sed -n '1,80p' "probe/$id.headers" || true
+            ls -l "probe/$id.bin" 2>/dev/null || true
+            file "probe/$id.bin" 2>/dev/null || true
+            xxd -l 16 "probe/$id.bin" 2>/dev/null || true
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kseb-monthly-download-probe
+          retention-days: 7
+          path: probe/
+          if-no-files-found: ignore
