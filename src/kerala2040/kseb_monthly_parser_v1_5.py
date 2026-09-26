@@ -157,7 +157,12 @@ def _number(value: Any) -> float | None:
     if text in {"", "-", "–", "—", "NA", "N/A", "Nil", "nil"}:
         return None
     text = text.replace(",", "")
-    text = re.sub(r"\s*(?:ft|m|metre|meter|cumecs?|mcm|mm|%)\.?\s*$", "", text, flags=re.IGNORECASE)
+    text = re.sub(
+        r"\s*(?:ft|m|metre|meter|cumecs?|mcm|mm|%)\.?\s*$",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
     text = text.strip()
     if not re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)", text):
         return None
@@ -280,12 +285,19 @@ def parse_sheet(
             "orange_level",
             "red_level",
         ):
-            old = f"{base}_metre"
-            if old in metrics:
-                metrics[f"{base}_ft"] = metrics.pop(old)
-                raw[f"{base}_ft"] = raw.pop(old)
-                headers_out[f"{base}_ft"] = headers_out.pop(old)
-                units[f"{base}_ft"] = "ft"
+            for suffix in ("metre", "unspecified"):
+                old = f"{base}_{suffix}"
+                if old not in metrics:
+                    continue
+                new = f"{base}_ft"
+                if new in metrics:
+                    raise KSEBMonthlyParseError(
+                        f"{source_file} {title!r}: duplicate Idukki feet field {new}"
+                    )
+                metrics[new] = metrics.pop(old)
+                raw[new] = raw.pop(old)
+                headers_out[new] = headers_out.pop(old)
+                units[new] = "ft"
                 units.pop(old, None)
 
     return {
