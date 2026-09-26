@@ -268,7 +268,7 @@ requirements:
 
 
   hydro_operating_representation:
-    status: research_intraday_flexibility_bracket_selected_reservoir_physics_blocked
+    status: research_interday_flexibility_bracket_selected_reservoir_physics_blocked
     evidence:
       - configs/full_pypsa_hydro_flexibility_v0_3.yaml
       - data/external/sldc_fy2024_25/daily_balance.csv
@@ -276,7 +276,7 @@ requirements:
       observed_daily_hydro_energy_354_days: true
       flat_daily_average_lower_flexibility_replay: true
       exact_daily_energy_redispatch_upper_bound: true
-      aggregate_installed_hydro_power_ceiling_enforced: true
+      aggregate_installed_hydro_power_ceiling_enforced: true\n      source_anchored_Idukki_130MW_N_minus_1_stress: true\n      nonoverlapping_3_7_30_day_energy_conservation_bracket: true
     remaining:
       - station availability and outage chronology
       - reservoir storage states and rule curves
@@ -443,7 +443,7 @@ release:
   research_proxy_capacity_expansion_counterfactual_completed: true
   direct_pypsa_proxy_expansion_equivalence_verified: true
   research_import_economic_sensitivity_possible_now: true
-  research_daily_energy_hydro_expansion_sensitivity_possible_now: true
+  research_daily_energy_hydro_expansion_sensitivity_possible_now: true\n  research_interday_hydro_flexibility_bracket_possible_now: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
