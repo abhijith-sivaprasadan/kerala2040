@@ -1,0 +1,86 @@
+{
+  "classification": "OFFICIAL_KSEB_MONTHLY_RESERVOIR_FILE_INVENTORY_FY2024_25_V1_5",
+  "prepared_date": "2026-09-26",
+  "official_index_url": "https://dams.kseb.in/?p=329",
+  "alternate_download_index_url": "https://dams.kseb.in/?p=399",
+  "description": "KSEB Dam Safety Organisation Monthly Statistics lists one downloadable file for each FY2024-25 month. The rendered index exposed title, listed file size and publication date, but the retrieval layer did not expose unique underlying download hrefs.",
+  "required_months": [
+    {
+      "month": "2024-04",
+      "title": "Water Level of main reservoirs of KSEB Limited during April 2024",
+      "listed_size_kb": 367.56,
+      "published_date": "2024-04-30"
+    },
+    {
+      "month": "2024-05",
+      "title": "Water level of main reservoirs of KSEB Limited during May 2024",
+      "listed_size_kb": 498.72,
+      "published_date": "2024-05-31"
+    },
+    {
+      "month": "2024-06",
+      "title": "Water Level of main reservoirs of KSEB Limited during June 2024",
+      "listed_size_kb": 419.5,
+      "published_date": "2024-07-02"
+    },
+    {
+      "month": "2024-07",
+      "title": "Water Level of main reservoirs of KSEB Limited during July 2024",
+      "listed_size_kb": 528.5,
+      "published_date": "2024-07-31"
+    },
+    {
+      "month": "2024-08",
+      "title": "Water Level of main reservoirs of KSEB Limited during August 2024",
+      "listed_size_kb": 533.27,
+      "published_date": "2024-08-31"
+    },
+    {
+      "month": "2024-09",
+      "title": "Water Level of main reservoirs of KSEB Limited during September 2024",
+      "listed_size_kb": 529.5,
+      "published_date": "2024-09-30"
+    },
+    {
+      "month": "2024-10",
+      "title": "Water Level of main reservoirs of KSEB Limited during October 2024",
+      "listed_size_kb": 533,
+      "published_date": "2024-11-01"
+    },
+    {
+      "month": "2024-11",
+      "title": "Water Level of main reservoirs of KSEB Limited during November 2024",
+      "listed_size_kb": 516.13,
+      "published_date": "2024-12-02"
+    },
+    {
+      "month": "2024-12",
+      "title": "Water Level of main reservoirs of KSEB Limited during December 2024",
+      "listed_size_kb": 601.74,
+      "published_date": "2024-12-31"
+    },
+    {
+      "month": "2025-01",
+      "title": "Water Level of main reservoirs of KSEB Ltd during January 2025",
+      "listed_size_kb": 542.5,
+      "published_date": "2025-01-31"
+    },
+    {
+      "month": "2025-02",
+      "title": "Water Level of main reservoir of KSEB Limited during February 2025",
+      "listed_size_kb": 398.5,
+      "published_date": "2025-03-03"
+    },
+    {
+      "month": "2025-03",
+      "title": "Water level of main reservoirs of KSEB Limited during March 2025",
+      "listed_size_kb": 451.41,
+      "published_date": "2025-04-04"
+    }
+  ],
+  "inventory_status": "12_of_12_months_listed_on_official_kseb_index",
+  "file_bytes_status": "not_acquired",
+  "direct_download_href_status": "not_exposed_by_current_rendered_retrieval",
+  "model_input_status": "blocked_until_monthly_file_bytes_are_acquired_and_schema_audited",
+  "fail_closed": true
+}
