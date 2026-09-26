@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from kerala2040.kseb_monthly_bundle_v1_5 import EXPECTED_FORMATS
-from scripts.acquire_kseb_monthly_fy2024_25_v1_5 import acquire
+from kerala2040.kseb_monthly_acquire_v1_5 import acquire
 
 
 def test_acquisition_accepts_complete_preexisting_bundle(tmp_path: Path):
