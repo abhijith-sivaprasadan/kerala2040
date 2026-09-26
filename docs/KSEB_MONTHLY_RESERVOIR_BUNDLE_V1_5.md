@@ -12,11 +12,20 @@ from April 2024 through March 2025. Their source inventory is stored in:
 
 `data/evidence/hydro/kseb_monthly_inventory_fy2024_25_v1_5_2026_09_26.json`
 
-At this checkpoint the KSEB index exposes the titles, listed file sizes and
-publication dates, but the retrieval surface used during the audit collapses
-the WordPress Download Manager buttons and does not expose the twelve unique
-underlying file hrefs. The file bytes have therefore **not** been claimed as
-acquired.
+A preserved raw snapshot of the official KSEB Download Manager listing was
+then located in `Am4l-babu/aqua-sync`. It retains the JavaScript download
+targets that are stripped from the text-rendered KSEB page. This resolves all
+twelve WordPress Download Manager package IDs and the file-type icons.
+
+The FY2024-25 bundle is a real mixture of legacy `.xls` and `.xlsx` files:
+
+- XLSX: April, May, August, November, December 2024 and March 2025;
+- XLS: June, July, September, October 2024 and January, February 2025.
+
+The exact package IDs and normalized official KSEB URLs are stored in the
+inventory JSON. The current execution environment still cannot retrieve the
+binary payloads from `dams.kseb.in`, so the file bytes have **not** been
+claimed as acquired.
 
 ## Fail-closed bundle gate
 
@@ -29,7 +38,8 @@ A local bundle is ready for content/schema audit only when:
 - exactly one file is mapped to each of the 12 required months;
 - no month is missing;
 - no month has duplicate candidates;
-- every file has a recognized container type; and
+- every file has the exact XLS/XLSX container type advertised by the preserved
+  official KSEB listing; and
 - every file is SHA-256 fingerprinted.
 
 Passing this gate **does not** make the files model input. It only allows the
@@ -93,3 +103,22 @@ Once the twelve official monthly files are acquired:
    anchors;
 6. evaluate storage/inflow/discharge/spill closure;
 7. only then create the next stateful Idukki optimization input.
+
+
+## Official downloader
+
+The package IDs are sufficiently resolved to make acquisition reproducible:
+
+```bash
+python scripts/download_kseb_monthly_fy2024_25_v1_5.py \
+  --out-dir PRIVATE/kseb_monthly_fy2024_25
+```
+
+The downloader uses the exact official package slug + `wpdmdl` pairs,
+streams each response to a temporary file, checks its magic bytes against the
+expected XLS/XLSX format, and only then renames it into the bundle. HTML error
+pages or unexpected containers are rejected rather than saved as spreadsheets.
+
+A successful run also writes `manifest.json` with the source URL, package ID,
+byte size and SHA-256 for every downloaded workbook. That manifest can be fed
+directly into the bundle gate.
