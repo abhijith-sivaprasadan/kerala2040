@@ -1,0 +1,100 @@
+version: 1
+classification: full_pypsa_idukki_reservoir_v1_3_stateful_net_water_balance_pilot_not_catchment_inflow_model
+prepared_date: "2026-09-26"
+purpose: >-
+  Replace the arbitrary interday timing window for Idukki with an explicit
+  stateful reservoir pilot. Reconstruct a daily net water-balance residual from
+  observed effective storage changes and observed/imputed Idukki station
+  generation, then optimize Idukki hourly generation subject to storage,
+  terminal stock and powerhouse limits. Keep all non-Idukki hydro constrained
+  to its admitted daily energy.
+
+inherits:
+  interday_hydro: configs/full_pypsa_hydro_interday_v1_2.yaml
+  import_economics: configs/full_pypsa_import_economics_v1_0.yaml
+  future_demand: configs/full_pypsa_future_adequacy_v0_4.yaml
+  proxy_expansion: configs/full_pypsa_proxy_expansion_v0_8.yaml
+  cost_finance: configs/full_pypsa_cost_finance_v0_5.yaml
+  source_boundary: data/evidence/hydro/idukki_stateful_reservoir_boundaries_v1_3_2026_09_26.json
+
+source_files:
+  reservoir_daily: data/external/sldc_fy2024_25/reservoir_daily.csv
+  hydro_station_daily: data/external/sldc_fy2024_25/hydro_station_daily.csv
+
+pilot_period:
+  start: "2024-04-01"
+  dispatch_end: "2025-03-30"
+  terminal_storage_date: "2025-03-31"
+  hours: 8736
+  rule: >-
+    Use 364 daily transitions so the final optimized state can be constrained
+    to an observed 2025-03-31 storage value without inventing a 2025-04-01 state.
+
+focus_case:
+  capacity_envelope_case: reference
+  bess_cost_case: low
+  import_price_case: ksebl_weighted_purchase
+  rationale: isolate_stateful_idukki_reservoir_effect
+
+demand_cases:
+  - lower_FY2030
+  - reference_FY2030_31
+
+transfer_cases:
+  - atc_snapshot_reference
+  - atc_80pct_stress
+  - atc_60pct_stress
+
+idukki_availability_cases:
+  - id: full_available
+    powerhouse_mw: 780.0
+    source_classification: source_anchored_station_capacity
+  - id: n_minus_1_130mw
+    powerhouse_mw: 650.0
+    source_classification: source_anchored_single_verified_unit_outage
+
+idukki:
+  full_effective_storage_mcm: 1460.0
+  station_energy_equivalent_mwh_per_mcm: 1470.0
+  initial_storage_source: observed_2024_04_01
+  terminal_storage_source: observed_2025_03_31
+  storage_min_mcm: 0.0
+  allow_spill: true
+  allow_pumping: false
+  standing_loss: 0.0
+  water_balance_input: reconstructed_net_residual_not_catchment_inflow
+
+other_hydro:
+  installed_power_mw: 1504.42
+  energy_rule: >-
+    Preserve each day's admitted total hydro MWh minus the Idukki daily station
+    generation MWh. Permit only intraday reshaping for this non-Idukki block.
+
+comparison:
+  same_horizon_v1_2_windows_days: [1, 30]
+  rule: >-
+    Compare the stateful Idukki pilot with the same 364-day v1.2 one-day and
+    thirty-day aggregate hydro timing brackets. These are diagnostic bounds,
+    not physical reservoir alternatives.
+
+objective:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: minimize_annualized_candidate_investment_plus_import_energy_cost
+  unserved_tolerance_mwh: 0.001
+  water_value: not_admitted
+  spill_cost: 0.0
+
+release:
+  idukki_stateful_reservoir_pilot_ready: true
+  reconstructed_net_water_balance_ready: true
+  same_horizon_v1_2_comparison_ready: true
+  catchment_inflow_model_ready: false
+  observed_spill_release_model_ready: false
+  head_dependent_efficiency_ready: false
+  cascade_model_ready: false
+  environmental_release_model_ready: false
+  hydro_economic_dispatch_validated: false
+  full_reservoir_model_validated: false
+  total_system_cost_optimization: false
+  validated_capacity_plan: false
+  scenario_recommendation: false
