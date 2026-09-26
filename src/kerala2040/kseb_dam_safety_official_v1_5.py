@@ -269,17 +269,60 @@ def parse_kseb_reservoir_page(
     metrics: dict[str, float | None] = {}
     units: dict[str, str | None] = {}
     duplicate_metric_keys: set[str] = set()
+    unit_overrides: list[dict[str, str]] = []
+
+    mwl_raw = next(
+        (raw for header, raw in zip(headers, values) if header.key == "mwl"),
+        "",
+    )
+    idukki_levels_in_feet = bool(re.search(r"\\bft\\b", mwl_raw, flags=re.I))
+
+    skipped_static_levels = {
+        "mwl",
+        "frl",
+        "rule_level",
+        "blue_level",
+        "orange_level",
+        "red_level",
+        "spillway_crest_level",
+    }
 
     for header, raw in zip(headers, values):
-        if header.key in {"other", "serial", "district", "dam_name", "remarks"}:
+        if header.key in {
+            "other",
+            "serial",
+            "district",
+            "dam_name",
+            "remarks",
+            *skipped_static_levels,
+        }:
             continue
-        metric = _metric_key(header)
+        effective = header
+        if (
+            idukki_levels_in_feet
+            and header.key in {"water_level", "previous_year_water_level"}
+            and header.unit == "metre"
+        ):
+            effective = HeaderField(header.key, "ft", header.raw)
+            unit_overrides.append(
+                {
+                    "field": header.key,
+                    "header_unit": "metre",
+                    "effective_row_unit": "ft",
+                    "reason": "Idukki MWL source cell is explicitly marked ft",
+                }
+            )
+        metric = _metric_key(effective)
         if metric in raw_by_header:
             duplicate_metric_keys.add(metric)
             continue
         raw_by_header[metric] = raw
-        units[metric] = header.unit
-        metrics[metric] = parse_numeric(raw, unit=header.unit, field=metric)
+        units[metric] = effective.unit
+        metrics[metric] = parse_numeric(
+            raw,
+            unit=effective.unit,
+            field=metric,
+        )
 
     if duplicate_metric_keys:
         raise KSEBSourceError(
@@ -317,6 +360,7 @@ def parse_kseb_reservoir_page(
         "metrics": metrics,
         "raw_values": raw_by_header,
         "units": units,
+        "unit_overrides": unit_overrides,
     }
 
 
