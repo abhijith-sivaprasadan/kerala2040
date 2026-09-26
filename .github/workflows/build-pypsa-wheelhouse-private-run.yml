@@ -1,0 +1,55 @@
+name: Build PyPSA wheelhouse for private local run
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/build-pypsa-wheelhouse-private-run.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wheelhouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download public Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          mkdir -p wheelhouse
+          python -m pip download \
+            --dest wheelhouse \
+            ".[dev]"
+          python - <<'PY'
+          from pathlib import Path
+          files = sorted(Path("wheelhouse").glob("*"))
+          assert files
+          print("wheel_count", len(files))
+          print("bytes", sum(p.stat().st_size for p in files))
+          for p in files:
+              print(p.name, p.stat().st_size)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kerala2040-private-run-wheelhouse-py313
+          retention-days: 7
+          compression-level: 0
+          path: wheelhouse/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kerala2040-private-run-public-runtime
+          retention-days: 7
+          path: |
+            src/
+            scripts/
+            configs/
+            data/
+            public/
+            pyproject.toml
+
+# Both artifacts contain only public code/data or public package dependencies.
+# Neither contains private reservoir rows or reconstructed private daily series.

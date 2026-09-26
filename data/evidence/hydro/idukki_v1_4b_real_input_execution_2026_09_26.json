@@ -1,0 +1,67 @@
+{
+  "classification": "V1_4B_REAL_PRIVATE_SOURCE_INPUT_EXECUTION_AGGREGATE_QA_ONLY",
+  "prepared_date": "2026-09-26",
+  "private_source": {
+    "sha256": "b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9",
+    "hash_matches_phase4_audited_source": true,
+    "daily_reconstructed_rows_published": false
+  },
+  "execution": {
+    "real_private_source_input_builder_executed": true,
+    "full_pypsa_60_case_matrix_executed": false,
+    "reason_matrix_not_executed_here": "Current local runtime does not have PyPSA/Linopy/HiGHS packages and cannot install them because package-network access is unavailable."
+  },
+  "archive_blank_convention": {
+    "direct_blank_cumulative_pairs": 153,
+    "maximum_blank_cumulative_increment_mcm": 0.0010000000000012221,
+    "minimum_blank_cumulative_increment_mcm": -1.6100000000000003,
+    "zeroish_pairs_within_0_0011_mcm": 101,
+    "negative_correction_pairs": 52,
+    "materially_positive_pairs": 0,
+    "blank_zero_convention_admitted_for_sensitivity": true
+  },
+  "pilot": {
+    "days": 364,
+    "source_reported_daily_inflow_days": 325,
+    "accepted_blank_zero_convention_days": 28,
+    "rejected_source_rows": 11,
+    "rejected_dates_recovered_by_adjacent_cumulative": 10,
+    "rejected_cumulative_derived_sum_mcm": 64.65600000000002,
+    "source_unconstrained_dates_after_recovery": ["2024-11-30"],
+    "base_inflow_total_mcm_excluding_unresolved_date": 2525.925
+  },
+  "scenarios": {
+    "nov30_zero_lower": {
+      "unresolved_date_assumed_inflow_mcm": 0.0,
+      "pilot_inflow_total_mcm": 2525.925,
+      "water_energy_equivalent_gwh_at_1470_mwh_per_mcm": 0.0
+    },
+    "nov30_same_month_median": {
+      "unresolved_date_assumed_inflow_mcm": 3.566,
+      "pilot_inflow_total_mcm": 2529.491,
+      "water_energy_equivalent_gwh_at_1470_mwh_per_mcm": 5.24202
+    },
+    "nov30_same_month_p95": {
+      "unresolved_date_assumed_inflow_mcm": 9.557399999999998,
+      "pilot_inflow_total_mcm": 2535.4824000000003,
+      "water_energy_equivalent_gwh_at_1470_mwh_per_mcm": 14.049377999999995
+    },
+    "nov30_same_month_max": {
+      "unresolved_date_assumed_inflow_mcm": 11.623,
+      "pilot_inflow_total_mcm": 2537.5480000000002,
+      "water_energy_equivalent_gwh_at_1470_mwh_per_mcm": 17.08581
+    },
+    "nov30_pilot_max_stress": {
+      "unresolved_date_assumed_inflow_mcm": 74.038,
+      "pilot_inflow_total_mcm": 2599.963,
+      "water_energy_equivalent_gwh_at_1470_mwh_per_mcm": 108.83586
+    }
+  },
+  "scientific_boundary": {
+    "strict_v1_4_source_reported_model_ready": false,
+    "v1_4b_is_source_informed_sensitivity_only": true,
+    "blank_zero_values_are_raw_observations": false,
+    "cumulative_derived_values_are_raw_observations": false,
+    "validated_capacity_plan": false
+  }
+}
