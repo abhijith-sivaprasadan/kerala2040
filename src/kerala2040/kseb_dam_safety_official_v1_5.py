@@ -171,7 +171,7 @@ def parse_numeric(raw: str, *, unit: str | None, field: str) -> float | None:
     if unit == "percent":
         cleaned = cleaned.replace("%", "").strip()
     if unit == "ft":
-        cleaned = re.sub(r"\s*ft\.?\s*$", "", cleaned, flags=re.I)
+        cleaned = re.sub(r"\s*ft\.?\s*$", "", cleaned, flags=re.IGNORECASE)
 
     if not re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)", cleaned):
         raise KSEBSourceError(f"{field} is not a clean numeric source value: {raw!r}")
@@ -275,7 +275,7 @@ def parse_kseb_reservoir_page(
         (raw for header, raw in zip(headers, values) if header.key == "mwl"),
         "",
     )
-    idukki_levels_in_feet = bool(re.search(r"\\bft\\b", mwl_raw, flags=re.I))
+    idukki_levels_in_feet = bool(re.search(r"\\bft\\b", mwl_raw, flags=re.IGNORECASE))
 
     skipped_static_levels = {
         "mwl",
