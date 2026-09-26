@@ -13,6 +13,7 @@ jobs:
   wheelhouse:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
@@ -40,6 +41,16 @@ jobs:
           retention-days: 7
           compression-level: 0
           path: wheelhouse/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kerala2040-private-run-public-runtime
+          retention-days: 7
+          path: |
+            src/
+            scripts/
+            configs/
+            data/
+            pyproject.toml
 
-# This artifact contains only public package wheels/sdists.
-# It contains no Kerala2040 source data and no private reservoir rows.
+# Both artifacts contain only public code/data or public package dependencies.
+# Neither contains private reservoir rows or reconstructed private daily series.
