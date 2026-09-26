@@ -10,7 +10,6 @@ from kerala2040.kseb_monthly_workbook_v1_5 import (
     parse_daily_sheet,
 )
 
-
 HEADERS = [
     "Sl. No.",
     "Name of Reservoir",
