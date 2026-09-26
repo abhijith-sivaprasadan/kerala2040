@@ -1,0 +1,51 @@
+name: Full PyPSA Idukki v1.4b sensitivity runner
+
+on:
+  pull_request:
+    paths:
+      - "configs/full_pypsa_idukki_v1_4b_sensitivity_runner.yaml"
+      - "src/kerala2040/full_pypsa_idukki_v1_4b_sensitivity.py"
+      - "scripts/run_full_pypsa_idukki_v1_4b_sensitivity.py"
+      - "tests/test_full_pypsa_idukki_v1_4b_sensitivity.py"
+      - ".github/workflows/full-pypsa-idukki-v1.4b-sensitivity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  wiring:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install model dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Lint and focused tests
+        run: |
+          ruff check \
+            src/kerala2040/full_pypsa_idukki_v1_4b_sensitivity.py \
+            scripts/run_full_pypsa_idukki_v1_4b_sensitivity.py \
+            tests/test_full_pypsa_idukki_v1_4b_sensitivity.py
+          pytest -q tests/test_full_pypsa_idukki_v1_4b_sensitivity.py
+      - name: Confirm real private matrix is not claimed
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from kerala2040.full_pypsa_idukki_v1_4b_sensitivity import (
+              load_v14b_runner_suite,
+          )
+
+          d = load_v14b_runner_suite(
+              Path("configs/full_pypsa_idukki_v1_4b_sensitivity_runner.yaml")
+          )
+          assert d["matrix"]["expected_cases"] == 60
+          assert d["release"]["real_60_case_matrix_executed"] is False
+          assert d["release"]["strict_v1_4_source_reported_model_ready"] is False
+          print("v1.4b private 60-case runner wiring ready; real matrix not run")
+          PY
+
+# Green CI means the execution wiring is tested. It does not mean the private
+# source-informed 60-case sensitivity matrix has been executed.
