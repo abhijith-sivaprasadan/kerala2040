@@ -1,0 +1,54 @@
+version: 1
+classification: full_pypsa_idukki_cumulative_inflow_v1_4b_source_informed_sensitivity_not_observed_daily_series
+prepared_date: "2026-09-26"
+purpose: >-
+  Build a source-informed Idukki inflow sensitivity series without weakening
+  the strict v1.4 source-reported-daily-inflow gate.
+
+source:
+  required_filename: reservoir_rows.csv
+  expected_sha256: b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9
+  required_columns:
+    - date
+    - reservoir
+    - inflow_mcm_day
+    - month_inflow_mu
+    - source_sha256
+  missing_daily_inflow_policy: no_interpolation_source_convention_and_cumulative_constraints_only
+  blank_cumulative_positive_tolerance_mcm: 0.0011
+  minimum_archive_blank_pairs_for_convention: 100
+  redistribution: private_daily_reconstructed_rows_not_for_public_commit
+
+pilot_period:
+  start: "2024-04-01"
+  dispatch_end: "2025-03-30"
+  days: 364
+
+method:
+  accepted_blank_daily_inflow: >-
+    Normalize to zero only after the full Idukki archive demonstrates that blank
+    daily-inflow cells do not carry materially positive same-month cumulative
+    increments above tolerance. Negative cumulative increments are retained as
+    source correction evidence, not negative physical inflow.
+  rejected_single_day_source_gap: >-
+    When previous and following same-month cumulative observations exist, derive
+    the rejected date by cumulative conservation after subtracting the following
+    day's admitted inflow, including the blank-zero sensitivity convention.
+  unresolved_date: >-
+    Keep any date without same-month cumulative closure explicit and create
+    source-empirical sensitivity cases rather than inventing a point estimate.
+
+unresolved_date_cases:
+  - nov30_zero_lower
+  - nov30_same_month_median
+  - nov30_same_month_p95
+  - nov30_same_month_max
+  - nov30_pilot_max_stress
+
+release:
+  source_informed_sensitivity_ready: true
+  strict_v1_4_source_reported_model_ready: false
+  observed_spill_chronology_ready: false
+  validated_reservoir_operation: false
+  validated_capacity_plan: false
+  scenario_recommendation: false

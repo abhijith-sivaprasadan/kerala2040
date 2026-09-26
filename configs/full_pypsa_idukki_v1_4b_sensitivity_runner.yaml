@@ -1,0 +1,51 @@
+version: 1
+classification: full_pypsa_idukki_v1_4b_sensitivity_runner_source_informed_not_observed_inflow
+prepared_date: "2026-09-26"
+purpose: >-
+  Feed the five private v1.4b source-informed Idukki inflow scenarios into the
+  v1.4 three-stage stateful reservoir optimization without changing the strict
+  v1.4 source-reported-inflow release gate.
+
+inherits:
+  cumulative_inflow: configs/full_pypsa_idukki_cumulative_inflow_v1_4b.yaml
+  strict_inflow_model: configs/full_pypsa_idukki_inflow_release_v1_4.yaml
+  stateful_reservoir: configs/full_pypsa_idukki_reservoir_v1_3.yaml
+
+matrix:
+  inflow_scenarios:
+    - nov30_zero_lower
+    - nov30_same_month_median
+    - nov30_same_month_p95
+    - nov30_same_month_max
+    - nov30_pilot_max_stress
+  demand_cases:
+    - lower_fy2030
+    - reference_fy2030_31
+  transfer_cases:
+    - atc_snapshot_reference
+    - atc_80pct_stress
+    - atc_60pct_stress
+  idukki_availability_cases:
+    - full_available
+    - n_minus_1_130mw
+  expected_cases: 60
+
+objective:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: preserve_minimum_shortage_then_minimize_candidate_investment_plus_import_cost
+  stage_3: preserve_stage_2_system_cost_then_minimize_non_turbine_water_release
+
+private_execution:
+  exact_phase4_reservoir_rows_required: true
+  detailed_daily_v1_4b_series_public_commit_allowed: false
+  public_ci_real_matrix_expected: false
+
+release:
+  runner_code_ready: true
+  synthetic_wiring_test_ready: true
+  real_60_case_matrix_executed: false
+  strict_v1_4_source_reported_model_ready: false
+  observed_spill_chronology_ready: false
+  validated_reservoir_operation: false
+  validated_capacity_plan: false
+  scenario_recommendation: false
