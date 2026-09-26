@@ -10,12 +10,19 @@
     "reason": "A terminal observed storage state is required to close the state equation without inventing 2025-04-01 storage."
   },
   "idukki": {
-    "powerhouse_mw": 780.0,
-    "units_mw": [130, 130, 130, 130, 130, 130],
-    "full_effective_storage_mcm": 1460.0,
-    "full_reservoir_storage_reported_mu_gross": 2190.0,
-    "gross_energy_equivalent_mwh_per_mcm": 1500.0,
-    "station_energy_equivalent_mwh_per_mcm": 1470.0,
+    "powerhouse_mw": 780,
+    "units_mw": [
+      130,
+      130,
+      130,
+      130,
+      130,
+      130
+    ],
+    "full_effective_storage_mcm": 1460,
+    "full_reservoir_storage_reported_mu_gross": 2190,
+    "gross_energy_equivalent_mwh_per_mcm": 1500,
+    "station_energy_equivalent_mwh_per_mcm": 1470,
     "initial_effective_storage_mcm_2024_04_01": 649.727,
     "terminal_effective_storage_mcm_2025_03_31": 689.054
   },
@@ -29,7 +36,7 @@
     "equation": "net_water_balance_residual[d] = storage[d+1] - storage[d] + idukki_generation_mwh[d] / 1470",
     "units": "mcm_per_day",
     "missing_source_days": "Internal missing daily storage and Idukki generation observations are linearly interpolated before differencing; counts are reported by the runner.",
-    "interpretation": "This residual is not catchment inflow. It absorbs any unobserved spill, environmental/other releases, evaporation, diversions, measurement error and the limits of a fixed energy-equivalent conversion.",
+    "interpretation": "This residual is not catchment inflow. It absorbs historical unobserved spill, environmental/other releases, evaporation, diversions, measurement error and the limits of a fixed energy-equivalent conversion.",
     "positive_and_negative_values_allowed": true
   },
   "model_admission": {
@@ -44,6 +51,9 @@
     "head_dependent_efficiency": false,
     "cascade_routing": false,
     "validated_reservoir_operation": false,
-    "validated_hydro_economic_dispatch": false
+    "validated_hydro_economic_dispatch": false,
+    "endogenous_additional_excess_water_release_slack": true,
+    "observed_release_chronology": false,
+    "storage_representation": "PyPSA Store on an Idukki water-equivalent bus with a bounded turbine Link"
   }
 }
