@@ -40,6 +40,36 @@ jobs:
             file "probe/$id.bin" 2>/dev/null || true
             xxd -l 16 "probe/$id.bin" 2>/dev/null || true
           done
+      - name: Inspect cached official KSEB workbook exemplar
+        shell: bash
+        run: |
+          set -e
+          curl -L --fail --retry 3 \
+            -o probe/kseb_2026_07.xlsx \
+            'https://raw.githubusercontent.com/Am4l-babu/aqua-sync/6c6ba263ef832f0d696a51e9d3ebc0355a6d5b68/research/raw/kseb_monthly/2026-07.xlsx'
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from openpyxl import load_workbook
+
+          path = Path("probe/kseb_2026_07.xlsx")
+          wb = load_workbook(path, read_only=True, data_only=True)
+          summary = {"sheets": wb.sheetnames, "sheet_count": len(wb.sheetnames), "samples": {}}
+          for name in wb.sheetnames[:5]:
+              ws = wb[name]
+              rows = []
+              for row in ws.iter_rows(min_row=1, max_row=min(ws.max_row, 15), values_only=True):
+                  rows.append([None if v is None else str(v) for v in row[:25]])
+              summary["samples"][name] = {
+                  "max_row": ws.max_row,
+                  "max_column": ws.max_column,
+                  "rows": rows,
+              }
+          Path("probe/kseb_2026_07_structure.json").write_text(
+              json.dumps(summary, indent=2), encoding="utf-8"
+          )
+          print(json.dumps(summary, indent=2))
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
