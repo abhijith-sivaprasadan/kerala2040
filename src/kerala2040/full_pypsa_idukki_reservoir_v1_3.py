@@ -259,7 +259,7 @@ def _build_idukki_network(
         raise ValueError("v1.3 non-Idukki daily hydro energy exceeds power ceiling")
 
     conversion = float(idukki_energy_equivalent_mwh_per_mcm)
-    inflow_energy_mw = _hourly_from_daily(
+    net_balance_energy_mw = _hourly_from_daily(
         idukki_net_water_balance_mcm_day * conversion,
         snapshots,
         divide_by_24=True,
@@ -267,37 +267,76 @@ def _build_idukki_network(
     full_storage_mwh = float(idukki_full_storage_mcm) * conversion
     initial_storage_mwh = float(idukki_initial_storage_mcm) * conversion
     terminal_storage_mwh = float(idukki_terminal_storage_mcm) * conversion
-    soc_set = pd.Series(np.nan, index=snapshots, dtype=float)
-    soc_set.iloc[-1] = terminal_storage_mwh
+    e_set = pd.Series(np.nan, index=snapshots, dtype=float)
+    e_set.iloc[-1] = terminal_storage_mwh
 
     n = pypsa.Network()
     n.set_snapshots(snapshots)
     n.snapshot_weightings.loc[:, :] = 1.0
     n.add("Bus", "kerala")
+    n.add("Bus", "idukki_water")
+
     n.add(
         "Load",
         "residual_after_nonhydro",
         bus="kerala",
         p_set=residual_after_nonhydro_mw,
     )
+
+    # The signed source residual is represented as a fixed load on the water
+    # bus. Positive residual adds water-equivalent energy (negative load);
+    # negative residual removes it. This avoids misusing StorageUnit.inflow,
+    # whose spill semantics are intended for ordinary non-negative inflow.
     n.add(
-        "StorageUnit",
+        "Load",
+        "idukki_net_non_generation_water_balance",
+        bus="idukki_water",
+        p_set=-net_balance_energy_mw,
+    )
+    n.add(
+        "Store",
         "idukki_reservoir",
-        bus="kerala",
-        p_nom=float(idukki_power_mw),
-        max_hours=full_storage_mwh / float(idukki_power_mw),
-        state_of_charge_initial=initial_storage_mwh,
-        state_of_charge_set=soc_set,
-        cyclic_state_of_charge=False,
-        p_min_pu=0.0,
-        p_max_pu=1.0,
-        efficiency_store=1.0,
-        efficiency_dispatch=1.0,
+        bus="idukki_water",
+        e_nom=full_storage_mwh,
+        e_initial=initial_storage_mwh,
+        e_set=e_set,
+        e_cyclic=False,
+        e_min_pu=0.0,
+        e_max_pu=1.0,
         standing_loss=0.0,
-        inflow=inflow_energy_mw,
-        spill_cost=0.0,
         marginal_cost=0.0,
     )
+    n.add(
+        "Link",
+        "idukki_turbine",
+        bus0="idukki_water",
+        bus1="kerala",
+        p_nom=float(idukki_power_mw),
+        p_min_pu=0.0,
+        p_max_pu=1.0,
+        efficiency=1.0,
+        marginal_cost=0.0,
+    )
+
+    # Optional extra release is a model slack above the reconstructed
+    # historical net non-generation balance. It is not labelled as observed
+    # spill. It lets a derated powerhouse remain feasible if excess water
+    # cannot be passed through the turbine while respecting storage bounds.
+    release_cap_mw = max(
+        float(np.maximum(net_balance_energy_mw, 0).max())
+        + float(idukki_power_mw),
+        1.0,
+    )
+    n.add(
+        "Generator",
+        "idukki_additional_water_release",
+        bus="idukki_water",
+        p_nom=release_cap_mw,
+        p_min_pu=-1.0,
+        p_max_pu=0.0,
+        marginal_cost=0.0,
+    )
+
     n.add(
         "Generator",
         "other_hydro",
@@ -341,7 +380,7 @@ def _build_idukki_network(
         p_nom=max(float(np.maximum(residual_after_nonhydro_mw, 0).max()), 1.0),
         marginal_cost=0.0,
     )
-    spill_cap = max(
+    electric_spill_cap = max(
         float(np.maximum(-residual_after_nonhydro_mw, 0).max())
         + float(caps["solar_total_headroom_mw"])
         + float(caps["wind_headroom_mw"])
@@ -354,7 +393,7 @@ def _build_idukki_network(
         "Generator",
         "electric_spill_sink",
         bus="kerala",
-        p_nom=spill_cap,
+        p_nom=electric_spill_cap,
         p_min_pu=-1.0,
         p_max_pu=0.0,
         marginal_cost=0.0,
@@ -373,7 +412,6 @@ def _build_idukki_network(
         marginal_cost=0.0,
     )
     return n
-
 
 def _add_other_hydro_daily_constraints(
     model,
@@ -495,22 +533,21 @@ def solve_idukki_reservoir_case(
 
     solution = model.variables
     p = solution["Generator-p"].solution
-    su_dispatch = solution["StorageUnit-p_dispatch"].solution
-    soc = solution["StorageUnit-state_of_charge"].solution
-    spill = solution["StorageUnit-spill"].solution
+    link_p = solution["Link-p"].solution
+    store_e = solution["Store-e"].solution
     solved_gen_nom = solution["Generator-p_nom"].solution
     solved_storage_nom = solution["StorageUnit-p_nom"].solution
 
     idukki_dispatch = np.asarray(
-        su_dispatch.sel(name="idukki_reservoir"),
+        link_p.sel(name="idukki_turbine"),
         dtype=float,
     )
     idukki_soc_mwh = np.asarray(
-        soc.sel(name="idukki_reservoir"),
+        store_e.sel(name="idukki_reservoir"),
         dtype=float,
     )
-    idukki_spill_mwh = np.asarray(
-        spill.sel(name="idukki_reservoir"),
+    additional_release_mwh = -np.asarray(
+        p.sel(name="idukki_additional_water_release"),
         dtype=float,
     )
     conversion = float(idukki_energy_equivalent_mwh_per_mcm)
@@ -549,9 +586,11 @@ def solve_idukki_reservoir_case(
         "idukki_storage_min_mcm": float(idukki_soc_mwh.min() / conversion),
         "idukki_storage_max_mcm": float(idukki_soc_mwh.max() / conversion),
         "idukki_storage_terminal_mcm": float(idukki_soc_mwh[-1] / conversion),
-        "idukki_spill_equivalent_mwh": float(idukki_spill_mwh.sum()),
-        "idukki_spill_equivalent_mcm": float(
-            idukki_spill_mwh.sum() / conversion
+        "idukki_additional_release_equivalent_mwh": float(
+            additional_release_mwh.sum()
+        ),
+        "idukki_additional_release_equivalent_mcm": float(
+            additional_release_mwh.sum() / conversion
         ),
         "solver": {
             "engine": "PyPSA/Linopy",
