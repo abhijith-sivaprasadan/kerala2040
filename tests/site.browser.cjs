@@ -96,6 +96,19 @@ async function main() {
       (await page.locator("#hydroStats").innerText()).includes("0.160 GWh"),
       "Full transfer hydro result",
     );
+    await page.locator("#hydroStudy").selectOption("idukki");
+    await page.locator("#hydroTransfer").selectOption("80pct");
+    check(
+      (await page.locator("#hydroStats").innerText()).includes("367.143 GWh"),
+      "Idukki pilot uses its same-horizon result",
+    );
+    check(
+      (await page.locator("#hydroBoundary").innerText()).includes(
+        "8,736 hours",
+      ),
+      "Pilot horizon is explicit",
+    );
+    await page.locator("#hydroStudy").selectOption("timing");
     check(
       (await page.locator(".chart canvas").count()) > 0,
       "Live evidence charts",
@@ -191,16 +204,41 @@ async function main() {
       (await page.locator("#modelInsight").innerText()).includes("119.34"),
       "Reference envelope result",
     );
-    await page.locator("summary").filter({hasText:"Energy history, petroleum sales and emissions"}).click();
+    await page
+      .locator("summary")
+      .filter({ hasText: "Energy history, petroleum sales and emissions" })
+      .click();
     await page.locator("#energyView").selectOption("ghg");
-    check(await page.locator("#totalEnergyGHGChart canvas").isVisible(), "Separately dated emissions view");
-    await page.locator("summary").filter({hasText:"KMML units and material streams"}).click();
+    check(
+      await page.locator("#totalEnergyGHGChart canvas").isVisible(),
+      "Separately dated emissions view",
+    );
+    await page
+      .locator("summary")
+      .filter({ hasText: "KMML units and material streams" })
+      .click();
     await page.locator('[data-unit="ARP"]').click();
-    check((await page.locator("#kmmlStreams").innerText()).includes("Reclaimed hydrochloric acid"), "Source-qualified material streams");
-    await page.locator("summary").filter({hasText:"Charging, stored energy and feasibility"}).click();
+    check(
+      (await page.locator("#kmmlStreams").innerText()).includes(
+        "Reclaimed hydrochloric acid",
+      ),
+      "Source-qualified material streams",
+    );
+    await page
+      .locator("summary")
+      .filter({ hasText: "Charging, stored energy and feasibility" })
+      .click();
     await page.locator('[data-storage-case="0"]').click();
-    check((await page.locator("#storageSensitivityResult").innerText()).includes("Infeasible"), "Infeasible storage is explicit");
-    check((await page.locator(".chart img,.chart svg").count()) === 0, "No static images or SVG data charts");
+    check(
+      (await page.locator("#storageSensitivityResult").innerText()).includes(
+        "Infeasible",
+      ),
+      "Infeasible storage is explicit",
+    );
+    check(
+      (await page.locator(".chart img,.chart svg").count()) === 0,
+      "No static images or SVG data charts",
+    );
     await page.locator("#sourceSearch").fill("import-economics");
     check(
       (await page.locator("#sourceList .source-row").count()) === 1,

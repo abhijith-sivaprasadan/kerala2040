@@ -2130,3 +2130,21 @@ footer > a:last-child {
     grid-row: 2;
   }
 }
+
+/* Restore the original display typography and its lighter italic rhythm. */
+body {
+  -webkit-font-smoothing: antialiased;
+}
+.hero h1 {
+  font-family: var(--display);
+  font-weight: 500;
+  line-height: 0.99;
+  letter-spacing: -0.055em;
+}
+.chapter-head h2 {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+.chapter-head h2 em {
+  font-weight: 500;
+}

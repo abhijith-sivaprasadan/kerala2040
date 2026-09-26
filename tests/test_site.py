@@ -232,6 +232,13 @@ def test_v2_preserves_identity_and_classified_model_results(tmp_path):
     records = json.loads((tmp_path / "data/metadata.json").read_text(encoding="utf-8"))
     published = records["published_model_records"]
     assert any(r["file"] == "hydro-interday.json" and len(r["sha256"]) == 64 for r in published)
+    idukki = json.loads((tmp_path / "data/idukki-reservoir.json").read_text(encoding="utf-8"))
+    assert idukki["pilot"]["hours"] == 8736
+    assert idukki["source_qa"]["interpolated_generation_days"] == 11
+    assert idukki["release"]["reported_daily_inflow_used"] is False
+    audit = json.loads((tmp_path / "data/idukki-cumulative-qa.json").read_text(encoding="utf-8"))
+    assert audit["release"]["full_pypsa_v1_4b_matrix_executed"] is False
+    assert any(r["file"] == "idukki-cumulative-qa.json" for r in records["published_source_audits"])
     catalogue = json.loads((tmp_path / "data/catalogue.json").read_text(encoding="utf-8"))
     assert all((tmp_path / "data" / row["file"]).is_file() for row in catalogue)
     assert any(row["file"] == "wp6-integrated-dispatch.json" for row in catalogue)

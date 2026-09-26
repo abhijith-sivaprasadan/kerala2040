@@ -71,7 +71,7 @@ def read(name):
 daily = read('daily-balance.json')['records']
 base = read('baseline-summary.json')
 ledger = read('research-ledger.json')
-hydro = read('hydro-interday.json')
+hydro = read('idukki-reservoir.json')
 months = []
 for month in sorted({row['date'][:7] for row in daily}):
     rows = [r for r in daily if r['date'].startswith(month)]
@@ -142,27 +142,28 @@ para(right, 1320, 'Global Solar Atlas 2, 1999-2018 climatology. Wind, terrain, e
      'grid access must also be checked. Eligible land and project capacity are unresolved.', cw-10, 20, MUTED)
 rule(1442)
 
-txt(left, 1484, '03 / NEW HYDRO-TIMING EXPERIMENTS', 19, 'Bold', GOLD)
-txt(left, 1525, 'Timing helps. Transfer limits still matter.', 42, 'Serif')
-para(left, 1598, '48 full-year PyPSA cases preserve annual hydro energy while testing synthetic '
-     '1, 3, 15 and 30-day timing windows. Window length is not reservoir storage duration.', 1480, 26, MUTED)
+txt(left, 1484, '03 / NEW IDUKKI RESERVOIR PILOT', 19, 'Bold', GOLD)
+txt(left, 1525, 'Seasonal flexibility helps. Constraints remain.', 42, 'Serif')
+para(left, 1598, '12 stateful cases and 24 comparisons use the same 364-day horizon. The pilot '
+     'interpolates 11 generation gaps and reconstructs a net water balance; this is not observed catchment inflow.', 1480, 26, MUTED)
 
-cases = hydro['key_findings']
-labels = [('full', '4,455 MW', '100% transfer'), ('80pct', '3,564 MW', '80% stress'),
-          ('60pct', '2,673 MW', '60% stress')]
+cases = hydro['reference_demand_full_idukki_availability']
+labels = [('atc_snapshot_reference', '4,455 MW', '100% transfer'),
+          ('atc_80pct_stress', '3,564 MW', '80% stress'),
+          ('atc_60pct_stress', '2,673 MW', '60% stress')]
 for i, (key, label, sub) in enumerate(labels):
     x = 75+i*495
     txt(x, 1713, label, 28, 'Bold')
     txt(x, 1761, sub, 20, colour=MUTED)
-    case = cases[f'reference_demand_{key}_atc_full_hydro']
-    value = case['30d_unserved_gwh']
+    case = cases[key]
+    value = case['stateful_unserved_gwh']
     rect(x, 1810, 390*value/6000, 27, GOLD)
     txt(x, 1850, f'{value:,.3f} GWh', 36, 'Serif')
-    txt(x, 1902, 'unserved with a 30-day window', 18, colour=MUTED)
-    txt(x, 1932, f'1-day window: {case["1d_unserved_gwh"]:,.3f} GWh', 18, colour=MUTED)
-para(left, 1977, 'Reference FY2030-31 demand, full hydro power availability, reference renewable '
-     'envelope, low battery cost and KSEBL import-price proxy. Synthetic timing bounds; no '
-     'reservoir water balance, cascades or validated capacity plan.', 1490, 22, MUTED)
+    txt(x, 1902, 'unserved in the stateful pilot', 18, colour=MUTED)
+    txt(x, 1932, f'1-day comparison: {case["same_horizon_1d_unserved_gwh"]:,.3f} GWh', 18, colour=MUTED)
+para(left, 1977, 'Reference FY2030-31 demand and full Idukki availability. All comparisons use '
+     'the pilot\'s 8,736-hour horizon, not the earlier full-year values. Numerical storage closure '
+     'does not validate inflow, releases, real operations or a capacity plan.', 1490, 22, MUTED)
 rule(2074)
 
 txt(left, 2110, 'METHOD', 17, 'Bold', GOLD)
@@ -174,7 +175,7 @@ para(right, 2147, 'Measured hourly demand; reservoir and cascade operation; outa
 rule(2264)
 txt(left, 2292, 'Explore the evidence: kerala2040.github.io', 24, 'Bold')
 c.linkURL('https://kerala2040.github.io/', (left, H-2325, 690, H-2290), relative=0)
-txt(left, 2340, 'Sources: SLDC daily archive; GSA2/NWIC resource ledger; PyPSA hydro v1.2 evidence, 26 Sep 2026.', 15, colour=MUTED)
+txt(left, 2340, 'Sources: SLDC daily archive; GSA2/NWIC resource ledger; Idukki v1.3 pilot evidence, 26 Sep 2026.', 15, colour=MUTED)
 txt(1080, 2301, 'Independent research / Draft 01', 19, colour=MUTED)
 c.save()
 print(OUT / 'Kerala2040_CET2026_Poster_Draft.pdf')

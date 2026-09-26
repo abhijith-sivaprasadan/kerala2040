@@ -839,6 +839,55 @@
   }
   function renderHydro() {
     const choice = $("hydroTransfer").value;
+    if ($("hydroStudy").value === "idukki") {
+      const record =
+        data.idukki.reference_demand_full_idukki_availability[
+          choice === "full" ? "atc_snapshot_reference" : `atc_${choice}_stress`
+        ];
+      const rows = [
+        { label: "1-day timing", value: record.same_horizon_1d_unserved_gwh },
+        { label: "30-day timing", value: record.same_horizon_30d_unserved_gwh },
+        { label: "Idukki state", value: record.stateful_unserved_gwh },
+      ];
+      text("hydroBadge", "12 stateful cases + 24 comparisons");
+      text(
+        "hydroBoundary",
+        "V1.3 pilot: 364 days / 8,736 hours, with 11 generation gaps and 11 storage gaps interpolated for this model only. Its reconstructed net water-balance term is not observed catchment inflow. All three bars use the same 364-day comparison horizon; they are not the full-year v1.2 values.",
+      );
+      plot("hydroChart", {
+        title: "Idukki stateful pilot and same-horizon timing comparisons",
+        rows,
+        kind: "bar",
+        unit: "Unserved energy · GWh",
+        series: [{ key: "value", name: "364-day comparison" }],
+        describe: (r) =>
+          `${r.label} · ${fmt(r.value, 3)} GWh · same 8,736-hour model horizon`,
+      });
+      mini(
+        "hydroStats",
+        rows.map((r) => [fmt(r.value, 3) + " GWh", r.label + " experiment"]),
+      );
+      text(
+        "hydroInsight",
+        choice === "full"
+          ? "At full transfer, the Idukki pilot reaches the same 0.160 GWh residual shortage as the same-horizon 30-day timing case. Numerical water-state closure is not validation of real reservoir operations."
+          : choice === "80pct"
+            ? "At 80% transfer, seasonal Idukki storage reduces the pilot's shortage to 367.143 GWh, below the same-horizon 30-day timing case. A seasonal state can move water beyond a 30-day window; these are different constraints."
+            : "At 60% transfer, the stateful pilot still leaves 5,131.227 GWh unserved. Reservoir flexibility alone cannot resolve this deep transfer stress.",
+      );
+      table(
+        "hydroTable",
+        ["Same-horizon experiment", "Unserved energy (GWh)"],
+        rows.map((r) => [r.label, fmt(r.value, 3)]),
+      );
+      return;
+    }
+    text("hydroBadge", "48 full-year experiments");
+    text(
+      "hydroBoundary",
+      "V1.2: 365 days / 8,760 hours. Hydro energy may move within nested synthetic time windows. Window length is not reservoir storage duration, and this experiment has no reservoir water-balance state.",
+    );
+
     const key = `reference_demand_${choice === "full" ? "full" : choice}_atc_full_hydro`;
     const source = data.hydro.key_findings[key];
     const rows = [1, 3, 15, 30].map((days) => ({
@@ -1160,6 +1209,17 @@
   function progress() {
     const rows = [
       {
+        title: "Official inflow evidence v1.4–v1.5 · 26 September",
+        summary:
+          "Strict daily inflow coverage remains incomplete. A separate cumulative sensitivity input is ready; its matrix is not yet reported complete. The official KSEB extractor and 12-month inventory are prepared, with monthly bytes and full-year schema validation still outstanding.",
+      },
+      {
+        title: "Stateful Idukki reservoir pilot v1.3 · 26 September",
+        summary:
+          "12 stateful cases and 24 same-horizon comparisons solved across 364 days. Storage-state replay closes numerically. Interpolated gaps and reconstructed net water balance remain model assumptions, not observed catchment inflow or validated operations.",
+      },
+
+      {
         title: "Hydro timing bounds v1.2 · 26 September",
         summary:
           "48 full-year cases solved across 1, 3, 15 and 30-day timing windows. Annual hydro energy is preserved; these are synthetic flexibility bounds, not reservoir storage durations or a validated water-balance model.",
@@ -1261,6 +1321,7 @@
         storage: "wp6-bess-psp.json",
         economics: "import-economics.json",
         hydro: "hydro-interday.json",
+        idukki: "idukki-reservoir.json",
         cooling: "wp6-cooling-pilot.json",
         integrated: "wp6-integrated-dispatch.json",
         catalogue: "catalogue.json",
@@ -1311,6 +1372,7 @@
         $(id).addEventListener("change", renderPilot),
       );
       $("hydroTransfer").addEventListener("change", renderHydro);
+      $("hydroStudy").addEventListener("change", renderHydro);
       $("envelope").addEventListener("change", renderModel);
       $("sourceSearch").addEventListener("input", library);
       $("moreSources").addEventListener("click", () => {

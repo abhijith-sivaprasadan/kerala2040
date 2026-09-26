@@ -616,7 +616,14 @@ def build_site(root: Path, output: Path) -> None:
     )
     # Durable, explicitly classified research results; not a validated capacity plan.
     model_records = []
+    source_audits = []
     for filename, source_path in {
+        "idukki-reservoir.json": "data/evidence/models/full_pypsa_idukki_reservoir_v1_3_2026_09_26.json",
+        "idukki-source-gate.json": "data/evidence/hydro/idukki_v1_4_real_source_gate_2026_09_26.json",
+        "idukki-cumulative-recovery.json": "data/evidence/hydro/idukki_v1_4_cumulative_recovery_2026_09_26.json",
+        "idukki-cumulative-qa.json": "data/evidence/hydro/idukki_v1_4b_cumulative_inflow_qa_2026_09_26.json",
+        "kseb-source-boundary.json": "data/evidence/hydro/idukki_v1_5_official_source_boundary_2026_09_26.json",
+        "kseb-monthly-inventory.json": "data/evidence/hydro/kseb_monthly_reservoir_inventory_fy2024_25_2026_09_26.json",
         "hydro-flex.json": "data/evidence/models/full_pypsa_hydro_flex_v1_1_2026_09_26.json",
         "hydro-interday.json": "data/evidence/models/full_pypsa_hydro_interday_v1_2_2026_09_26.json",
         "import-economics.json": "data/evidence/models/full_pypsa_import_economics_v1_0_2026_09_26.json",
@@ -628,15 +635,18 @@ def build_site(root: Path, output: Path) -> None:
         if not record.get("classification") or not record.get("prepared_date"):
             raise ValueError("Published model evidence must retain classification and date")
         if (record.get("model_admission", {}).get("validated_capacity_plan")
-                or record.get("guardrails", {}).get("validated_capacity_plan")):
+                or record.get("guardrails", {}).get("validated_capacity_plan")
+                or record.get("release", {}).get("validated_capacity_plan")):
             raise ValueError("V2 research experiments cannot be promoted to a capacity plan")
         shutil.copy2(root / source_path, data_dir / filename)
-        model_records.append({"file": filename, "source_path": source_path,
+        records = model_records if "/models/" in source_path else source_audits
+        records.append({"file": filename, "source_path": source_path,
                               "sha256": hashlib.sha256(raw).hexdigest(),
                               "prepared_date": record["prepared_date"],
                               "classification": record["classification"]})
         site["metadata"]["files"][filename.removesuffix(".json").replace("-", "_")] = filename
     site["metadata"]["published_model_records"] = model_records
+    site["metadata"]["published_source_audits"] = source_audits
     site["metadata"]["website_edition"] = 2
     site["metadata"]["publication_policy"] = (
         "observed_and_derived_evidence_plus_explicitly_labelled_resource_and_model_experiments"

@@ -16,7 +16,7 @@ The visitor journey follows one question: how can Kerala meet future demand reli
 - Hydro is a component of in-state generation. Reservoir energy storage is not water volume.
 - Source-grid solar and wind describe resources, not eligible land or permitted MW. Thresholds count source centres, not sites.
 - WP6 experiments use fictional inputs. All six published families remain available: EV, industrial scheduling, BESS, pumped-storage analogue, cooling/TES and integrated dispatch.
-- The v1.0 economic and v1.1/v1.2 hydro-timing PyPSA results are separately labelled partial economic sensitivities. The selected 2030 comparisons are not a 2040 forecast or a recommended capacity plan. V1.2 timing windows are synthetic bounds, never reservoir storage durations.
+- The v1.0 economic and v1.1/v1.2 hydro-timing and v1.3 Idukki PyPSA results are separately labelled partial economic sensitivities. The selected 2030 comparisons are not a 2040 forecast or a recommended capacity plan. V1.2 timing windows are synthetic bounds, never reservoir storage durations. V1.3 uses a separate 364-day horizon with model-only gap interpolation and reconstructed net water balance; comparisons use its own same-horizon results. V1.4–v1.5 source audits are published separately from solved model results.
 - The observed-bundle timestamp, resource-audit date, model-result date and publication commit remain separate. Build metadata records the source path and SHA-256 of each new model evidence file.
 - Original source products stay in the searchable evidence library. A visual release never promotes scientific gates.
 
