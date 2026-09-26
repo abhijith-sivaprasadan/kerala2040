@@ -33,7 +33,28 @@ jobs:
         shell: bash
         run: python -m pip install requests
 
+      - name: Preflight KSEB download host
+        id: preflight
+        continue-on-error: true
+        shell: bash
+        run: |
+          python - <<'PY'
+          import requests
+
+          url = "https://dams.kseb.in/?wpdmdl=4421"
+          with requests.get(
+              url,
+              headers={"User-Agent": "Mozilla/5.0"},
+              timeout=(8, 15),
+              allow_redirects=True,
+              stream=True,
+          ) as response:
+              response.raise_for_status()
+              print("KSEB download host reachable:", response.url)
+          PY
+
       - name: Probe and acquire official KSEB monthly workbooks
+        if: steps.preflight.outcome == 'success'
         id: acquire
         continue-on-error: true
         shell: bash
@@ -53,6 +74,7 @@ jobs:
         shell: bash
         env:
           RUNNER_OS_VALUE: ${{ runner.os }}
+          PREFLIGHT_OUTCOME: ${{ steps.preflight.outcome }}
           ACQUIRE_OUTCOME: ${{ steps.acquire.outcome }}
         run: |
           python - <<'PY'
@@ -70,6 +92,7 @@ jobs:
           status = {
               "classification": "KSEB_MONTHLY_GITHUB_RUNNER_ACQUISITION_PROBE_V1_5",
               "runner_os": os.environ["RUNNER_OS_VALUE"],
+              "preflight_outcome": os.environ["PREFLIGHT_OUTCOME"],
               "acquisition_step_outcome": os.environ["ACQUIRE_OUTCOME"],
               "report_present": report_path.is_file(),
               "downloaded_or_present": report.get("downloaded_or_present", 0),
