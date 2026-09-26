@@ -1,0 +1,73 @@
+{
+  "classification": "KSEB_DAM_SAFETY_SECONDARY_RATE_CROSSCHECK_NOT_SLDC_DAILY_VOLUME_SUBSTITUTE",
+  "prepared_date": "2026-09-26",
+  "source": {
+    "official_site": "https://dams.kseb.in/?page_id=45",
+    "archival_mirror_repository": "amith-vp/Kerala-Dam-Water-Levels",
+    "archival_mirror_file": "historic_data/Idukki.json",
+    "archival_mirror_blob_sha": "33a30c7ae831880a4f29dd6177c2eb0ae25a6767",
+    "mirror_documentation": "Repository states that KSEB historical data are scraped from KSEB Dam Safety Organisation and Kerala SDMA, with official-source enrichment and parsing-error caveat.",
+    "direct_official_pages_crosschecked": {
+      "2025-03-17": "https://dams.kseb.in/?p=5176",
+      "2025-03-18": "https://dams.kseb.in/?p=5178"
+    },
+    "direct_crosscheck_result": "Mirror values for Idukki inflow, live storage, powerhouse discharge, spillway release and rainfall match the two directly retrieved official KSEB pages."
+  },
+  "unit_boundary": {
+    "dam_safety_inflow": "cumecs (m3/s rate)",
+    "sldc_inflow": "source daily inflow field used by Phase 4, treated as MCM/day in the existing audit",
+    "simple_rate_to_daily_volume_conversion": "cumecs * 0.0864 = MCM/day if the reported rate is a 24-hour mean",
+    "direct_substitution_allowed": false
+  },
+  "crosscheck_sample": {
+    "paired_direct_sldc_days": 23,
+    "pearson_r_sldc_mcm_day_vs_dam_safety_rate_converted_mcm_day": 0.9696200439,
+    "mean_absolute_difference_mcm_day": 1.7500493913,
+    "median_absolute_difference_mcm_day": 1.753272,
+    "median_ratio_sldc_to_converted_dam_safety": 1.3471987649,
+    "within_0_1_mcm_day_fraction": 0.0434782609,
+    "interpretation": "The two series strongly track the same hydrological signal but are not numerically interchangeable at daily resolution. Dam Safety inflow is therefore not used to replace missing SLDC daily-volume observations."
+  },
+  "remaining_10_dam_safety_rates_cumecs": {
+    "2024-04-01": 3.45,
+    "2024-04-02": 10.46,
+    "2024-04-09": 3.91,
+    "2024-04-11": 3.21,
+    "2024-05-04": 10.86,
+    "2024-11-30": 20.84,
+    "2025-02-19": 1.35,
+    "2025-02-20": 2.72,
+    "2025-03-17": 3.22,
+    "2025-03-18": 17.94
+  },
+  "pair_timing_allocation_sensitivity": {
+    "principle": "Preserve the exact SLDC cumulative interval volume and use only the relative Dam Safety inflow rates to allocate that known volume between the two unresolved days.",
+    "2025-02-19_to_2025-02-20": {
+      "sldc_known_two_day_total_mcm": 0.698,
+      "dam_safety_rate_weights": [1.35, 2.72],
+      "allocated_mcm": {
+        "2025-02-19": 0.2315233415,
+        "2025-02-20": 0.4664766585
+      }
+    },
+    "2025-03-17_to_2025-03-18": {
+      "sldc_known_two_day_total_mcm": 1.76,
+      "dam_safety_rate_weights": [3.22, 17.94],
+      "allocated_mcm": {
+        "2025-03-17": 0.2678260870,
+        "2025-03-18": 1.4921739130
+      }
+    },
+    "admit_as_observed_daily_inflow": false,
+    "suitable_for_separately_labelled_timing_sensitivity": true
+  },
+  "unresolved_after_cumulative_plus_pair_timing_sensitivity": [
+    "2024-04-01",
+    "2024-04-02",
+    "2024-04-09",
+    "2024-04-11",
+    "2024-05-04",
+    "2024-11-30"
+  ],
+  "strict_v1_4_gate_changed": false
+}

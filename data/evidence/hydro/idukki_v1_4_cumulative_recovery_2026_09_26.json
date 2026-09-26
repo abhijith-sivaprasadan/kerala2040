@@ -1,0 +1,87 @@
+{
+  "classification": "SOURCE_DERIVED_CUMULATIVE_ACCOUNTING_RECOVERY_NOT_DIRECTLY_REPORTED_DAILY_INFLOW",
+  "prepared_date": "2026-09-26",
+  "source_sha256": "b7d4439135edbe02d9e577892e090aafaf92f58606cdc04ee9b6d39e608036c9",
+  "pilot_days": 364,
+  "direct_reported_days": 325,
+  "missing_direct_daily_inflow_days": 39,
+  "month_start_identity_validation": {
+    "first_day_rows_with_both_fields_archive_wide": 78,
+    "exact_matches": 78,
+    "maximum_absolute_difference": 0.0,
+    "interpretation": "On every source row where Idukki has both fields on calendar day 1, cumulative monthly inflow equals that day's direct inflow exactly. This verifies a zero cumulative anchor at each month boundary."
+  },
+  "uniquely_recovered_days": 29,
+  "coverage_after_source_derived_recovery_days": 354,
+  "coverage_after_source_derived_recovery_percent": 97.252747,
+  "recovered_sum_mcm": 62.198,
+  "recovered_values_mcm_day": {
+    "2024-04-14": 0.0,
+    "2024-04-15": 0.0,
+    "2024-04-17": 0.0,
+    "2024-04-23": 0.0,
+    "2024-04-24": 0.0,
+    "2024-04-25": 0.0,
+    "2024-05-06": 0.0,
+    "2024-08-12": 13.286,
+    "2024-09-06": 12.447,
+    "2024-09-20": 4.636,
+    "2024-10-26": 23.514,
+    "2024-11-17": 2.479,
+    "2024-12-16": 5.836,
+    "2025-02-04": 0.0,
+    "2025-02-06": 0.0,
+    "2025-02-08": 0.0,
+    "2025-02-10": 0.0,
+    "2025-02-12": 0.0,
+    "2025-02-17": 0.0,
+    "2025-02-18": 0.0,
+    "2025-02-25": 0.0,
+    "2025-02-27": 0.0,
+    "2025-02-28": 0.0,
+    "2025-03-01": 0.0,
+    "2025-03-04": 0.0,
+    "2025-03-05": 0.0,
+    "2025-03-07": 0.0,
+    "2025-03-10": 0.0,
+    "2025-03-24": 0.0
+  },
+  "unresolved_days": [
+    "2024-04-01",
+    "2024-04-02",
+    "2024-04-09",
+    "2024-04-11",
+    "2024-05-04",
+    "2024-11-30",
+    "2025-02-19",
+    "2025-02-20",
+    "2025-03-17",
+    "2025-03-18"
+  ],
+  "why_unresolved": {
+    "cumulative_correction_or_negative_increment": [
+      "2024-04-02",
+      "2024-04-09",
+      "2024-04-11",
+      "2024-05-04"
+    ],
+    "month_boundary_or_missing_cumulative_anchor": [
+      "2024-04-01",
+      "2024-11-30"
+    ],
+    "two_unknown_days_share_only_an_aggregate_increment": [
+      "2025-02-19",
+      "2025-02-20",
+      "2025-03-17",
+      "2025-03-18"
+    ]
+  },
+  "strict_v1_4_gate_changed": false,
+  "admit_as_observed_daily_inflow": false,
+  "interpretation": [
+    "These 29 values are algebraically determined from source cumulative monthly inflow accounting and directly reported daily inflows.",
+    "The 2025-03-01 zero uses the independently verified month-start zero cumulative anchor: 2025-03-02 cumulative inflow equals its directly reported daily inflow exactly.",
+    "They are not direct daily inflow observations and remain a separate sensitivity/evidence class.",
+    "The strict v1.4 364-of-364 source-reported daily inflow gate remains blocked."
+  ]
+}
