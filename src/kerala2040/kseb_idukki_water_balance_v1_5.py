@@ -84,7 +84,7 @@ def water_balance_qa(records: list[dict[str, Any]]) -> dict[str, Any]:
                 }
             )
 
-    for previous, current in zip(ordered, ordered[1:]):
+    for previous, current in pairwise(ordered):
         prev_date = previous["date"]
         cur_date = current["date"]
         from datetime import date as _date
