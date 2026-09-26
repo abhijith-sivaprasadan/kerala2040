@@ -29,7 +29,7 @@ def test_scope_is_statewide_and_primary_case_is_kmml():
 def test_rejects_mixed_snapshots(tmp_path):
     shutil.copytree(ROOT / "public", tmp_path / "public")
     manifest = tmp_path / "public/site-data.json"
-    data = json.loads(manifest.read_text())
+    data = json.loads(manifest.read_text(encoding="utf-8"))
     data["baseline"]["rows"] += 1
     manifest.write_text(json.dumps(data))
     with pytest.raises(ValueError, match="different snapshots"):
@@ -63,17 +63,17 @@ def test_live_website_includes_source_checked_audit_without_promoting_2040(tmp_p
     assert audit["checks"]["sldc_daily_coverage"]["status"] == "partial_or_provisional"
     assert not audit["release_gates"]["techno_economic_2040"]["passed"]
     assert not audit["release_gates"]["observed_full_year"]["passed"]
-    station = json.loads((tmp_path / "data/sldc-station-evidence.json").read_text())
+    station = json.loads((tmp_path / "data/sldc-station-evidence.json").read_text(encoding="utf-8"))
     assert audit["source_qa_sha256"] == station["source_archive_sha256"]
     html = (tmp_path / "index.html").read_text(encoding="utf-8")
-    assert 'data-view="audit"' in html and 'data-route="audit"' in html
+    assert 'id="audit"' in html
     assert not list((tmp_path / "data").glob("*proxy*"))
 
 
 def test_packaged_audit_rejects_tampered_finding_totals(tmp_path):
     site.build_site(ROOT, tmp_path)
     path = tmp_path / "data/audit-readiness.json"
-    audit = json.loads(path.read_text())
+    audit = json.loads(path.read_text(encoding="utf-8"))
     audit["closed_findings"] = 17
     path.write_text(json.dumps(audit))
     with pytest.raises(ValueError, match="totals disagree"):
@@ -102,7 +102,7 @@ def test_config_only_rebuild_preserves_acquired_evidence(tmp_path):
 def test_rejects_corrupt_hourly_chronology(tmp_path, corruption):
     shutil.copytree(ROOT / "public", tmp_path / "public")
     path = tmp_path / "public/hourly-load-proxy.json"
-    data = json.loads(path.read_text())
+    data = json.loads(path.read_text(encoding="utf-8"))
     if corruption == "timestamp":
         data["records"][1]["timestamp"] = data["records"][0]["timestamp"]
     else:
@@ -150,17 +150,17 @@ def test_packaged_research_workbench_uses_same_audited_snapshot(tmp_path):
     payload = site.validate_bundle(tmp_path / "data")
     ledger_name = payload["metadata"]["files"]["research_ledger"]
     assert ledger_name == "research-ledger.json"
-    ledger = json.loads((tmp_path / "data" / ledger_name).read_text())
-    audit = json.loads((tmp_path / "data/audit-readiness.json").read_text())
+    ledger = json.loads((tmp_path / "data" / ledger_name).read_text(encoding="utf-8"))
+    audit = json.loads((tmp_path / "data/audit-readiness.json").read_text(encoding="utf-8"))
     assert payload["research_ledger"] == ledger
     assert ledger["audit_open_findings"] == audit["open_findings"]
     assert len(ledger["workstreams"]) == 16
     assert ledger["eligible_area_sq_km"] is None
     assert ledger["potential_mw"] is None
     assert ledger["release_gates"]["techno_economic_2040"]["passed"] is False
-    html = (tmp_path / "index.html").read_text()
-    assert 'data-view="workbench"' in html
-    assert 'data-route="workbench"' in html
+    html = (tmp_path / "index.html").read_text(encoding="utf-8")
+    assert 'id="workbench"' in html
+    assert 'Research progress' in html
     assert 'href="data/research-ledger.json"' in html
     assert 'href="assets/kerala.css"' not in html
     assert any(x.name in html for x in (tmp_path / "assets").glob("kerala.*.css"))
@@ -169,7 +169,7 @@ def test_packaged_research_workbench_uses_same_audited_snapshot(tmp_path):
 def test_packaged_workbench_rejects_forged_gis_admission(tmp_path):
     site.build_site(ROOT, tmp_path)
     path = tmp_path / "data/research-ledger.json"
-    ledger = json.loads(path.read_text())
+    ledger = json.loads(path.read_text(encoding="utf-8"))
     ledger["potential_mw"] = 999
     path.write_text(json.dumps(ledger))
     with pytest.raises(ValueError, match="ledger and site manifest disagree"):
@@ -179,10 +179,10 @@ def test_packaged_workbench_rejects_forged_gis_admission(tmp_path):
 def test_packaged_workbench_rejects_cross_snapshot_findings(tmp_path):
     site.build_site(ROOT, tmp_path)
     path = tmp_path / "data/research-ledger.json"
-    ledger = json.loads(path.read_text())
+    ledger = json.loads(path.read_text(encoding="utf-8"))
     ledger["audit_open_findings"] = 0
     manifest = tmp_path / "data/site-data.json"
-    payload = json.loads(manifest.read_text())
+    payload = json.loads(manifest.read_text(encoding="utf-8"))
     payload["research_ledger"] = ledger
     path.write_text(json.dumps(ledger))
     manifest.write_text(json.dumps(payload))
@@ -193,13 +193,9 @@ def test_packaged_workbench_rejects_cross_snapshot_findings(tmp_path):
 def test_kerala_coded_site_packages_fresh_app_and_distinct_audit_clocks(tmp_path):
     site.build_site(ROOT, tmp_path)
     html = (tmp_path / "index.html").read_text(encoding="utf-8")
-    assert 'lang="ml"' in html and "കേരളത്തിന്റെ ഊർജഭാവി" in html
-    assert 'id="homeTitle"' in html and "A stronger" in html
-    assert 'id="spatialPipeline"' in html
-    assert 'id="headlineMetrics"' in html
-    assert 'data-view="workbench"' in html
-    assert 'data-view="audit"' in html
-    assert 'data-view="pathways"' in html
+    assert 'id="overview"' in html and "Our land." in html
+    assert 'id="atlas"' in html and 'id="pathways"' in html
+    assert 'id="workbench"' in html and 'id="audit"' in html
     assert 'href="assets/kerala.css"' not in html
     assert 'src="assets/app.js"' not in html
     assert any(x.name in html for x in (tmp_path / "assets").glob("kerala.*.css"))
@@ -220,38 +216,16 @@ def test_source_revision_refuses_unrelated_parent_git_checkout(tmp_path):
     assert site.source_revision(tmp_path) is None
 
 
-def test_kerala_social_thumbnail_touch_icon_and_vector_art_are_packaged(tmp_path):
-    import struct
-    from xml.etree import ElementTree as ET
-
+def test_v2_preserves_identity_and_classified_model_results(tmp_path):
     site.build_site(ROOT, tmp_path)
     html = (tmp_path / "index.html").read_text(encoding="utf-8")
-    assert 'property="og:image"' in html
-    assert 'content="https://kerala2040.github.io/assets/kerala2040-share.png"' in html
-    assert 'name="twitter:card" content="summary_large_image"' in html
-    assert 'id="welcomeCard"' in html and 'id="welcomeDismiss"' in html
-    assert 'class="welcome-card"' in html and 'aria-modal="true"' not in html
-    assert 'id="systemStoryTitle"' in html
-    assert 'not a mapped network or measured energy-flow diagram' in html
-    assert 'lang="ml"' in html
-    for name in (
-        "icons.svg", "mark.svg", "chapter-electric.svg", "chapter-land.svg",
-        "chapter-pathways.svg", "chapter-industry.svg",
-    ):
-        vector = tmp_path / "assets" / name
-        assert vector.is_file() and vector.stat().st_size > 100
-        assert ET.parse(vector).getroot().tag.endswith("svg")
-        assert name in html or name == "mark.svg"
-    share = tmp_path / "assets/kerala2040-share.png"
-    touch = tmp_path / "assets/kerala2040-touch.png"
-    for product, size in ((share, (1200, 630)), (touch, (180, 180))):
-        data = product.read_bytes()
-        assert len(data) > 5000 and data[:8] == bytes.fromhex("89504e470d0a1a0a")
-        assert data[12:16] == b"IHDR"
-        assert struct.unpack(">II", data[16:24]) == size
-    assert "assets/kerala2040-touch.png" in (
-        tmp_path / "manifest.webmanifest"
-    ).read_text(encoding="utf-8")
-    assert not (tmp_path / "assets/experience.css").exists()
-    assert not (tmp_path / "assets/workbench.css").exists()
-    assert not (tmp_path / "assets/app.js").exists()
+    assert 'class="scene-landscape"' in html
+    assert (tmp_path / "assets/chapter-land.svg").is_file()
+    assert (tmp_path / "assets/icons.svg").is_file()
+    assert 'id="balanceRing"' in html
+    result = json.loads((tmp_path / "data/import-economics.json").read_text(encoding="utf-8"))
+    assert result["matrix"]["cases_solved"] == 108
+    assert result["model_admission"]["validated_capacity_plan"] is False
+    catalogue = json.loads((tmp_path / "data/catalogue.json").read_text(encoding="utf-8"))
+    assert all((tmp_path / "data" / row["file"]).is_file() for row in catalogue)
+    assert any(row["file"] == "wp6-integrated-dispatch.json" for row in catalogue)

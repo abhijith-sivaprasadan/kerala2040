@@ -340,42 +340,15 @@ def build_site(root: Path, output: Path) -> None:
     for stale in assets.iterdir():
         if stale.is_file():
             stale.unlink()
-    shutil.copy2(root / "docs/assets/mark.svg", assets / "mark.svg")
-    # Curated vector chapter artwork, not legacy chart libraries or GIS files.
-    artwork = ("icons.svg", "chapter-electric.svg", "chapter-land.svg",
-               "chapter-pathways.svg", "chapter-industry.svg",
-               "wind-district-normalized-20260923.svg",
-               "wind-terrain-sensitivity-20260923.svg",
-               "solar-phase1-monthly-20260923.svg",
-               "solar-phase1-district-annual-20260923.svg",
-               "solar-phase1-district-seasonality-20260923.svg",
-               "cet-historical-official-consumption-20260924.svg",
-               "cet-historical-matched-month-demand-20260924.svg",
-               "cet-historical-import-hydro-shares-20260924.svg",
-               "cet-historical-evening-peaks-20260924.svg")
-    for name in artwork:
+    # Preserve the original decorative identity; quantitative charts stay live Canvas.
+    for name in (
+        "mark.svg", "icons.svg", "chapter-electric.svg", "chapter-land.svg",
+        "chapter-pathways.svg", "chapter-industry.svg",
+    ):
         shutil.copy2(root / "docs/assets" / name, assets / name)
-    # Social providers require a real PNG, not an SVG thumbnail or a browser
-    # screenshot. Rasterise the authored local vector artwork deterministically.
-    # The PNG and iOS touch icon are generated as build outputs, not source
-    # evidence or external-network downloads.
-    import cairosvg
-
-    share = assets / "kerala2040-share.png"
-    cairosvg.svg2png(
-        bytestring=(root / "docs/assets/social-card.svg").read_bytes(),
-        write_to=str(share), output_width=1200, output_height=630,
-    )
-    cairosvg.svg2png(
-        bytestring=(root / "docs/assets/mark.svg").read_bytes(),
-        write_to=str(assets / "kerala2040-touch.png"),
-        output_width=180, output_height=180,
-    )
-    if share.read_bytes()[:8] != bytes.fromhex("89504e470d0a1a0a"):
-        raise ValueError("The social thumbnail did not render as a PNG")
     # Immutable filenames prevent a new HTML page from running an old cached app.
     html = (output / "index.html").read_text(encoding="utf-8")
-    for name in ("app.js", "research-charts.js", "kerala.css"):
+    for name in ("app.js", "kerala.css"):
         asset = root / "docs/assets" / name
         digest = hashlib.sha256(asset.read_bytes()).hexdigest()[:12]
         versioned = f"{asset.stem}.{digest}{asset.suffix}"
@@ -638,6 +611,39 @@ def build_site(root: Path, output: Path) -> None:
     (data_dir / "metadata.json").write_text(
         json.dumps(site["metadata"], indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
+    # Durable, explicitly classified research results; not a validated capacity plan.
+    model_records = []
+    for filename, source_path in {
+        "import-economics.json": "data/evidence/models/full_pypsa_import_economics_v1_0_2026_09_26.json",
+        "model-equivalence.json": "data/evidence/models/full_pypsa_pypsa_equivalence_v0_9_2026_09_25.json",
+        "expansion-screen.json": "data/evidence/models/full_pypsa_proxy_expansion_v0_8_2026_09_25.json",
+    }.items():
+        raw = (root / source_path).read_bytes()
+        record = json.loads(raw)
+        if not record.get("classification") or not record.get("prepared_date"):
+            raise ValueError("Published model evidence must retain classification and date")
+        if record.get("model_admission", {}).get("validated_capacity_plan"):
+            raise ValueError("V2 research experiments cannot be promoted to a capacity plan")
+        shutil.copy2(root / source_path, data_dir / filename)
+        model_records.append({"file": filename, "source_path": source_path,
+                              "sha256": hashlib.sha256(raw).hexdigest(),
+                              "prepared_date": record["prepared_date"],
+                              "classification": record["classification"]})
+        site["metadata"]["files"][filename.removesuffix(".json").replace("-", "_")] = filename
+    site["metadata"]["published_model_records"] = model_records
+    site["metadata"]["website_edition"] = 2
+    site["metadata"]["publication_policy"] = (
+        "observed_and_derived_evidence_plus_explicitly_labelled_resource_and_model_experiments"
+    )
+    for name, payload in (("metadata.json", site["metadata"]), ("site-data.json", site)):
+        (data_dir / name).write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n",
+                                     encoding="utf-8")
+    catalogue = []
+    for path in sorted(data_dir.glob("*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        classification = payload.get("classification", payload.get("evidence", "Source bundle")) if isinstance(payload, dict) else "Source records"
+        catalogue.append({"file": path.name, "classification": classification})
+    (data_dir / "catalogue.json").write_text(json.dumps(catalogue, indent=2) + "\n", encoding="utf-8")
     validate_bundle(data_dir)
     validate_static_site(output)
     (output / ".nojekyll").touch()
