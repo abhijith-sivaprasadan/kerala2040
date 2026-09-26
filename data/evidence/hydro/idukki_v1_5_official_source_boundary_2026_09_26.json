@@ -1,0 +1,101 @@
+{
+  "classification": "OFFICIAL_KSEB_DAM_SAFETY_V1_5_SOURCE_BOUNDARY_AND_MIRROR_ERRATUM",
+  "prepared_date": "2026-09-26",
+  "purpose": "Establish the admissible source boundary for the next Idukki stateful-reservoir evidence layer.",
+  "official_pages_verified": {
+    "2025-03-17": "https://dams.kseb.in/?p=5176",
+    "2025-03-18": "https://dams.kseb.in/?p=5178",
+    "2025-03-19": "https://dams.kseb.in/?p=5180"
+  },
+  "current_official_schema": {
+    "source_fields_used": [
+      "Today's Live Storage (MCM)",
+      "Inflow (cumecs)",
+      "Power House Discharge (cumecs)",
+      "Spillway release (cumecs)",
+      "Total Outflow (cumecs)",
+      "Rainfall (mm)"
+    ],
+    "idukki_level_unit_quirk": "The generic table header says metre, while Idukki's MWL/FRL cells are explicitly marked in feet. Dynamic Idukki water-level values must therefore carry a row-level feet override when the same row exposes the ft convention.",
+    "fixed_column_positions_allowed": false,
+    "header_semantics_and_units_required": true
+  },
+  "official_idukki_rows": {
+    "2025-03-17": {
+      "live_storage_mcm": 755.568,
+      "inflow_cumecs": 3.22,
+      "power_house_discharge_cumecs": 25.94,
+      "spillway_release_cumecs": 0,
+      "total_outflow_cumecs": 25.94,
+      "rainfall_mm": 0
+    },
+    "2025-03-18": {
+      "live_storage_mcm": 754.094,
+      "inflow_cumecs": 17.94,
+      "power_house_discharge_cumecs": 32.17,
+      "spillway_release_cumecs": 0,
+      "total_outflow_cumecs": 32.17,
+      "rainfall_mm": 8.8
+    },
+    "2025-03-19": {
+      "live_storage_mcm": 750.899,
+      "inflow_cumecs": 6.57,
+      "power_house_discharge_cumecs": 40.74,
+      "spillway_release_cumecs": 0,
+      "total_outflow_cumecs": 40.74,
+      "rainfall_mm": 6.8
+    }
+  },
+  "ending_date_rate_balance_diagnostic": {
+    "assumption_for_diagnostic_only": "The flow rate published on a report date represents the preceding 24-hour interval.",
+    "2025-03-18_residual_mcm": -0.244528,
+    "2025-03-19_residual_mcm": -0.242712,
+    "interpretation": "The consecutive official rows are internally close under the ending-date convention, but the residual is not assigned to evaporation, diversion, rounding or another physical term without source documentation."
+  },
+  "mirror_erratum": {
+    "repository": "amith-vp/Kerala-Dam-Water-Levels",
+    "status": "secondary_locator_and_crosscheck_only",
+    "model_input_allowed_without_date_level_official_verification": false,
+    "reason": "Historical mirror records contain demonstrable schema/column-shift artefacts, including percentage- and feet-suffixed values appearing in the stored inflow field on some 2024 dates. Fixed-position historical extraction is therefore not sufficiently reliable for model admission across schema changes.",
+    "examples": [
+      {
+        "date": "2024-06-02",
+        "stored_inflow": "2313.56ft"
+      },
+      {
+        "date": "2024-10-15",
+        "stored_inflow": "44.85%"
+      },
+      {
+        "date": "2024-11-25",
+        "stored_inflow": "55.87%"
+      }
+    ],
+    "previous_v1_4_dam_safety_pair_timing_status": {
+      "2025-03-17_to_2025-03-18": "date-level official pages verified, but not admitted as strict SLDC daily inflow",
+      "2025-02-19_to_2025-02-20": "mirror-only timing weights remain secondary until the exact official pages are recovered"
+    }
+  },
+  "v1_4_status": {
+    "strict_source_reported_sldc_gate_changed": false,
+    "direct_sldc_days": 325,
+    "source_derived_cumulative_days": 29,
+    "combined_direct_plus_source_derived_days": 354
+  },
+  "v1_5_release": {
+    "official_header_driven_extractor_ready": true,
+    "live_historical_year_extraction_ready": false,
+    "full_year_schema_audit_ready": false,
+    "stateful_operations_model_ready": false,
+    "validated_capacity_plan": false,
+    "live_ci_source_reachability_ready": false,
+    "live_ci_source_gate_recorded": true
+  },
+  "ci_source_reachability": {
+    "tested_on": "2026-09-26",
+    "github_hosted_runner_status": "blocked_connect_timeout_to_dams.kseb.in",
+    "parser_unit_tests_status": "passed",
+    "interpretation": "The GitHub-hosted runner could not establish TCP/HTTPS connections to the KSEB host. This does not imply the source is absent or invalid; independent web retrieval of the official March pages succeeded.",
+    "must_not_be_reported_as_live_ci_source_validation": true
+  }
+}

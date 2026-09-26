@@ -44,7 +44,10 @@
     "principle": "Preserve the exact SLDC cumulative interval volume and use only the relative Dam Safety inflow rates to allocate that known volume between the two unresolved days.",
     "2025-02-19_to_2025-02-20": {
       "sldc_known_two_day_total_mcm": 0.698,
-      "dam_safety_rate_weights": [1.35, 2.72],
+      "dam_safety_rate_weights": [
+        1.35,
+        2.72
+      ],
       "allocated_mcm": {
         "2025-02-19": 0.2315233415,
         "2025-02-20": 0.4664766585
@@ -52,10 +55,13 @@
     },
     "2025-03-17_to_2025-03-18": {
       "sldc_known_two_day_total_mcm": 1.76,
-      "dam_safety_rate_weights": [3.22, 17.94],
+      "dam_safety_rate_weights": [
+        3.22,
+        17.94
+      ],
       "allocated_mcm": {
-        "2025-03-17": 0.2678260870,
-        "2025-03-18": 1.4921739130
+        "2025-03-17": 0.267826087,
+        "2025-03-18": 1.492173913
       }
     },
     "admit_as_observed_daily_inflow": false,
@@ -69,5 +75,16 @@
     "2024-05-04",
     "2024-11-30"
   ],
-  "strict_v1_4_gate_changed": false
+  "strict_v1_4_gate_changed": false,
+  "supersession": {
+    "status": "SUPERSEDED_FOR_MODEL_INPUT",
+    "superseded_by": "data/evidence/hydro/idukki_v1_5_official_source_boundary_2026_09_26.json",
+    "reason": "Historical third-party mirror rows contain demonstrable schema/column-shift artefacts. Use only official KSEB header-driven extraction for new physical model input.",
+    "historical_audit_record_retained": true
+  },
+  "mirror_erratum": {
+    "model_input_allowed_without_date_level_official_verification": false,
+    "march_17_18_2025_official_crosscheck_retained": true,
+    "february_19_20_2025_pair_weights_not_admitted_until_official_pages_recovered": true
+  }
 }
