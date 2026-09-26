@@ -11,9 +11,10 @@ performed here.
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 from datetime import date
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import openpyxl
 import xlrd
@@ -156,7 +157,7 @@ def _number(value: Any) -> float | None:
     if text in {"", "-", "–", "—", "NA", "N/A", "Nil", "nil"}:
         return None
     text = text.replace(",", "")
-    text = re.sub(r"\s*(?:ft|m|metre|meter|cumecs?|mcm|mm|%)\.?\s*$", "", text, flags=re.I)
+    text = re.sub(r"\s*(?:ft|m|metre|meter|cumecs?|mcm|mm|%)\.?\s*$", "", text, flags=re.IGNORECASE)
     text = text.strip()
     if not re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)", text):
         return None
@@ -193,9 +194,12 @@ def _header_row(rows: list[list[Any]]) -> tuple[int, list[str]] | None:
         score += 3 if "inflow" in semantics else 0
         score += 2 if "water_level" in semantics else 0
         score += 1 if "frl" in semantics else 0
-        if "reservoir" in semantics and score >= 8:
-            if best is None or score > best[0]:
-                best = (score, idx, headers)
+        if (
+            "reservoir" in semantics
+            and score >= 8
+            and (best is None or score > best[0])
+        ):
+            best = (score, idx, headers)
     if best is None:
         return None
     return best[1], best[2]
