@@ -1,0 +1,127 @@
+{
+  "classification": "FULL_PYPSA_HYDRO_FLEX_V1_1_DAILY_ENERGY_CONSTRAINED_PARTIAL_ECONOMICS_NOT_RESERVOIR_MODEL",
+  "prepared_date": "2026-09-26",
+  "workflow": {
+    "run_id": 36207963925,
+    "head_sha": "94dafb8db7cb8afe8d004dd0df77e2c925d4d261",
+    "artifact_id": 10893999083,
+    "artifact_name": "full-pypsa-hydro-flex-v1.1-NOT-RESERVOIR-MODEL",
+    "artifact_digest_sha256": "a6d152ac41728082927a2ef56af768a30a2169da552061967a1ebe5e42103def"
+  },
+  "formulation": {
+    "cases_solved": 54,
+    "hours_per_case": 8760,
+    "installed_hydro_mw": 2284.42,
+    "preserved_FY2024_25_hydro_energy_mwh": 7430719.8,
+    "max_daily_hydro_energy_residual_mwh": 2.9103830456733704e-11,
+    "hydro_availability_cases": {
+      "available_100pct": 1,
+      "available_85pct": 0.85,
+      "available_71pct_feasibility_floor": 0.71
+    },
+    "feasibility_floor": {
+      "maximum_observed_daily_hydro_mu": 38.8073,
+      "date": "2024-08-05",
+      "required_average_power_mw": 1616.970833333333,
+      "minimum_fraction_of_installed_hydro": 0.7078255457986417
+    },
+    "capacity_envelope_case": "reference",
+    "bess_cost_case": "low"
+  },
+  "key_results": {
+    "lower_FY2030_full_ATC_ksebl_price": {
+      "available_100pct": {
+        "unserved_gwh": 0.000001,
+        "solar_mw": 4210.74,
+        "wind_mw": 0,
+        "bess_mw": 0,
+        "imports_gwh": 18992.562,
+        "hydro_peak_mw": 2284.42
+      },
+      "available_85pct": {
+        "unserved_gwh": 0.000001,
+        "solar_mw": 4210.74,
+        "wind_mw": 0,
+        "bess_mw": 0,
+        "imports_gwh": 18992.562,
+        "hydro_peak_mw": 1941.757
+      },
+      "available_71pct_feasibility_floor": {
+        "unserved_gwh": 0.000001,
+        "solar_mw": 4210.74,
+        "wind_mw": 0,
+        "bess_mw": 0,
+        "imports_gwh": 18993.376,
+        "hydro_peak_mw": 1621.9382
+      }
+    },
+    "lower_FY2030_ATC_80pct_ksebl_price": {
+      "available_100pct": {
+        "unserved_gwh": 0.000001,
+        "bess_mw": 0
+      },
+      "available_85pct": {
+        "unserved_gwh": 0.000001,
+        "bess_mw": 0
+      },
+      "available_71pct_feasibility_floor": {
+        "unserved_gwh": 0.000001,
+        "bess_mw": 96.58617725701762
+      },
+      "interpretation": "Near-floor hydro power availability creates a storage requirement even though annual/daily hydro energy is unchanged."
+    },
+    "reference_FY2030_31_ksebl_price": {
+      "full_ATC": {
+        "v1_0_frozen_hydro_unserved_gwh": 375.0303,
+        "available_100pct_unserved_gwh": 11.751320509834203,
+        "available_85pct_unserved_gwh": 15.793302124391033,
+        "available_71pct_unserved_gwh": 35.384896299965696,
+        "reduction_vs_v1_0_at_100pct_gwh": 363.2789794901658,
+        "reduction_vs_v1_0_at_100pct_pct": 96.86656771203974
+      },
+      "ATC_80pct": {
+        "v1_0_frozen_hydro_unserved_gwh": 2301.6117,
+        "available_100pct_unserved_gwh": 1187.8537937327415,
+        "available_85pct_unserved_gwh": 1190.252572139794,
+        "available_71pct_unserved_gwh": 1209.5530818809727,
+        "reduction_vs_v1_0_at_100pct_gwh": 1113.7579062672587,
+        "reduction_vs_v1_0_at_100pct_pct": 48.390347784001044
+      },
+      "ATC_60pct": {
+        "v1_0_frozen_hydro_unserved_gwh": 6600.2731,
+        "available_100pct_unserved_gwh": 5571.388355835833,
+        "available_85pct_unserved_gwh": 5603.608042589731,
+        "available_71pct_unserved_gwh": 5703.310197236594,
+        "reduction_vs_v1_0_at_100pct_gwh": 1028.884744164167,
+        "reduction_vs_v1_0_at_100pct_pct": 15.58851775639658
+      },
+      "build_at_all_three_hydro_availability_cases": {
+        "solar_mw": 4210.74,
+        "wind_mw": 2549.475,
+        "bess_mw": 250
+      }
+    }
+  },
+  "interpretation": [
+    "Intraday hydro timing is a first-order adequacy driver: preserving the same daily hydro MWh but dispatching it endogenously removes most of the full-ATC reference-demand shortage.",
+    "The benefit of intraday hydro flexibility is smaller in percentage terms as interstate transfer stress deepens because the system remains capacity-constrained for many hours.",
+    "Reference-demand cases still bind the reference-envelope solar, wind and BESS limits, so better hydro timing does not by itself establish an adequate 2030 system.",
+    "Hydro available-power derating matters even when daily energy is held fixed; the near-floor 71% case increases residual shortage and can create additional BESS need in lower-demand stressed-ATC cases."
+  ],
+  "limitations": [
+    "Hydro energy cannot shift between days.",
+    "No reservoir storage state, rule curves or water-value optimization.",
+    "No cascade routing, travel time or head-dependent efficiency.",
+    "Availability cases are aggregate synthetic derates, not station forced-outage histories.",
+    "No environmental/irrigation release constraints, unit commitment/ramping or Kerala internal transmission.",
+    "Hydro marginal cost is zero in this partial-economic sensitivity because water opportunity cost and station O&M are not admitted."
+  ],
+  "model_admission": {
+    "daily_energy_constrained_intraday_hydro_sensitivity_complete": true,
+    "reservoir_model_ready": false,
+    "station_outage_model_ready": false,
+    "total_system_cost_optimization": false,
+    "validated_capacity_plan": false,
+    "scenario_recommendation": false
+  }
+}
