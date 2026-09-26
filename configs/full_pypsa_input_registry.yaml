@@ -276,7 +276,7 @@ requirements:
       observed_daily_hydro_energy_354_days: true
       flat_daily_average_lower_flexibility_replay: true
       exact_daily_energy_redispatch_upper_bound: true
-      aggregate_installed_hydro_power_ceiling_enforced: true\n      source_anchored_Idukki_130MW_N_minus_1_stress: true\n      nonoverlapping_3_7_30_day_energy_conservation_bracket: true
+      aggregate_installed_hydro_power_ceiling_enforced: true\n      source_anchored_Idukki_130MW_N_minus_1_stress: true\n      nested_3_15_30_day_energy_conservation_bracket: true
     remaining:
       - station availability and outage chronology
       - reservoir storage states and rule curves
