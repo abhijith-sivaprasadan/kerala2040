@@ -275,7 +275,7 @@ def parse_kseb_reservoir_page(
         (raw for header, raw in zip(headers, values) if header.key == "mwl"),
         "",
     )
-    idukki_levels_in_feet = bool(re.search(r"\\bft\\b", mwl_raw, flags=re.IGNORECASE))
+    idukki_levels_in_feet = bool(re.search(r"\bft\b", mwl_raw, flags=re.IGNORECASE))
 
     skipped_static_levels = {
         "mwl",
