@@ -42,6 +42,14 @@ hydro_availability_cases:
     classification: synthetic_20pct_aggregate_derating
 
 hydro_dispatch:
+  station_groups:
+    Idukki: 780.0
+    Sabarigiri: 340.0
+    Lower_Periyar: 180.0
+    Kuttiyadi_complex: 225.0
+    residual_hydro: 759.42
+  station_group_total_mw: 2284.42
+  n_minus_1_rule: subtract_130MW_from_Idukki_group_only
   daily_energy_target: exact_FY2024_25_observed_or_imputed_SLDC_MWh
   intraday_power_min_mw: 0
   intraday_power_max: availability_case
