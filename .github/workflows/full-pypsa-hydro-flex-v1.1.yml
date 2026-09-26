@@ -1,0 +1,117 @@
+name: Full PyPSA hydro flexibility v1.1
+
+on:
+  pull_request:
+    paths:
+      - "configs/full_pypsa_hydro_flex_v1_1.yaml"
+      - "src/kerala2040/full_pypsa_hydro_flex_v1_1.py"
+      - "scripts/run_full_pypsa_hydro_flex_v1_1.py"
+      - "tests/test_full_pypsa_hydro_flex_v1_1.py"
+      - "configs/full_pypsa_import_economics_v1_0.yaml"
+      - "configs/full_pypsa_hydro_flexibility_v0_3.yaml"
+      - "configs/full_pypsa_future_adequacy_v0_4.yaml"
+      - "configs/full_pypsa_proxy_expansion_v0_8.yaml"
+      - "configs/full_pypsa_cost_finance_v0_5.yaml"
+      - "configs/full_pypsa_era5_renewable_profiles_v0_6.yaml"
+      - ".github/workflows/full-pypsa-hydro-flex-v1.1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  hydro-flex:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install modelling and ERA5 dependencies
+        run: python -m pip install -e ".[dev,era5]"
+      - name: Lint and unit-test v1.1
+        run: |
+          ruff check \
+            src/kerala2040/full_pypsa_hydro_flex_v1_1.py \
+            scripts/run_full_pypsa_hydro_flex_v1_1.py \
+            tests/test_full_pypsa_hydro_flex_v1_1.py
+          pytest -q tests/test_full_pypsa_hydro_flex_v1_1.py
+      - name: Download verified Apr-Dec 2024 ERA5 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35622527064"
+          pattern: era5-*-2024-*_to_2024-*-SOURCE-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2024
+          merge-multiple: false
+      - name: Download verified Jan-Mar 2025 ERA5 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35623051780"
+          pattern: era5-*-2025-01_to_2025-03-REACQUIRED-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2025
+          merge-multiple: false
+      - name: Require exactly 20 independent location-quarter artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(find results/acquisition/era5/full-year-input -type f -name retrieval_attempt.json | wc -l)"
+          echo "retrieval manifests: $count"
+          test "$count" -eq 20
+      - name: Rebuild verified v0.6 renewable profiles
+        run: |
+          python scripts/build_full_pypsa_era5_profiles_v0_6.py \
+            results/acquisition/era5/full-year-input
+      - name: Run full 54-case v1.1 hydro-flex matrix
+        run: |
+          python scripts/run_full_pypsa_hydro_flex_v1_1.py \
+            --acknowledge-hydro-sensitivity-only \
+            --hours 8760
+      - name: Show compact v1.1 summary
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(
+              Path("results/models/full_pypsa/hydro_flex_v1_1/summary.json").read_text()
+          )
+          print("cases_solved:", data["cases_solved"])
+          print("installed_hydro_mw:", data["installed_hydro_mw"])
+          print("daily_hydro_energy_mwh:", data["daily_hydro_energy_mwh"])
+          print(
+              "max_daily_residual_mwh:",
+              max(x["max_daily_hydro_energy_residual_mwh"] for x in data["cases"]),
+          )
+          for row in data["cases"]:
+              if (
+                  row["import_price_case"] == "ksebl_weighted_purchase"
+                  and row["transfer_case"] == "atc_snapshot_reference"
+              ):
+                  print(
+                      row["demand_case"],
+                      row["hydro_availability_case"],
+                      "shortage_GWh=", round(row["stage2_unserved_mwh"] / 1000, 3),
+                      "solar=", round(row["built"]["solar_combined_mw"], 2),
+                      "wind=", round(row["built"]["wind_onshore_mw"], 2),
+                      "bess=", round(row["built"]["bess_4h_power_mw"], 2),
+                      "imports_GWh=", round(row["imports_mwh"] / 1000, 2),
+                      "hydro_peak=", round(row["hydro_peak_mw"], 2),
+                  )
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: full-pypsa-hydro-flex-v1.1-NOT-RESERVOIR-MODEL
+          retention-days: 90
+          if-no-files-found: error
+          path: |
+            results/models/full_pypsa/era5_renewables_v0_6/statewide_equal_weight_profile.parquet
+            results/models/full_pypsa/hydro_flex_v1_1/summary.json
+
+# Daily-energy hydro redispatch sensitivity only. Passing does not validate
+# reservoir/cascade physics, station outage histories or hydro opportunity cost.

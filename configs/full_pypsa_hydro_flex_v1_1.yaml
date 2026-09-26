@@ -1,0 +1,84 @@
+version: 1
+classification: full_pypsa_hydro_flex_v1_1_daily_energy_constrained_partial_economics
+prepared_date: "2026-09-26"
+purpose: >-
+  Replace the frozen hourly hydro replay in the v1.0 partial-economic expansion
+  screen with endogenous intraday hydro dispatch while conserving each observed
+  FY2024-25 daily hydro MWh total exactly. Add aggregate available-hydro power
+  sensitivities without claiming reservoir or station-level outage modelling.
+
+inherits:
+  import_economics: configs/full_pypsa_import_economics_v1_0.yaml
+  hydro_bracket: configs/full_pypsa_hydro_flexibility_v0_3.yaml
+  future_demand: configs/full_pypsa_future_adequacy_v0_4.yaml
+  proxy_expansion: configs/full_pypsa_proxy_expansion_v0_8.yaml
+  cost_finance: configs/full_pypsa_cost_finance_v0_5.yaml
+
+matrix:
+  demand_cases:
+    - lower_FY2030
+    - reference_FY2030_31
+  transfer_cases:
+    - atc_snapshot_reference
+    - atc_80pct_stress
+    - atc_60pct_stress
+  capacity_envelope_case: reference
+  bess_cost_case: low
+  import_price_cases:
+    - ksebl_weighted_purchase
+    - iex_dam_wholesale
+    - delivered_bulk_stress
+  hydro_availability_cases:
+    - id: available_100pct
+      available_power_fraction: 1.0
+      interpretation: aggregate installed-hydro power ceiling
+    - id: available_85pct
+      available_power_fraction: 0.85
+      interpretation: synthetic aggregate 15pct power-availability derate
+    - id: available_71pct_feasibility_floor
+      available_power_fraction: 0.71
+      interpretation: >-
+        near-floor aggregate power stress. FY2024-25 maximum daily hydro energy
+        (38.8073 MU on 2024-08-05) requires 1616.97 MW average over 24 hours,
+        equal to 70.783% of the 2284.42 MW observed installed hydel capacity.
+
+hydro:
+  daily_energy_rule: exact_FY2024_25_observed_or_imputed_daily_MWh_conservation
+  dispatch_rule: endogenous_within_each_day
+  power_rule: 0_to_installed_hydro_MW_times_availability_fraction
+  exact_daily_energy_feasibility_floor:
+    maximum_daily_hydro_mu: 38.8073
+    date: "2024-08-05"
+    required_average_power_mw: 1616.970833333333
+    installed_hydro_mw: 2284.42
+    minimum_available_power_fraction: 0.7078255457986417
+  marginal_cost_million_real_2021_22_INR_per_MWh: 0.0
+  note: >-
+    Zero hydro marginal cost is retained only because station-specific water value,
+    O&M and reservoir opportunity cost are not yet admitted. The stage remains
+    partial economics.
+  explicitly_not_modelled:
+    - reservoir_storage_state
+    - interday_water_shift
+    - station_specific_outages
+    - cascade_routing_and_travel_time
+    - environmental_and_irrigation_release_constraints
+    - head_dependent_efficiency
+    - ramping_and_unit_commitment
+    - internal_transmission_constraints
+
+objective:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: minimize_annualized_candidate_investment_plus_import_energy_cost
+  unserved_tolerance_mwh: 0.001
+  rule: >-
+    Daily hydro energy is a hard equality in both stages. No VOLL is invented.
+
+release:
+  daily_energy_constrained_hydro_expansion_sensitivity_ready: true
+  reservoir_model_ready: false
+  station_outage_model_ready: false
+  hydro_economic_dispatch_validated: false
+  total_system_cost_optimization: false
+  validated_capacity_plan: false
+  scenario_recommendation: false

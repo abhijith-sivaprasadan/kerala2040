@@ -707,3 +707,109 @@ python scripts/run_full_pypsa_import_economics_v1_0.py \
   --acknowledge-partial-economics \
   --hours 8760
 ```
+
+
+## Implementation checkpoint 13 · daily-energy-constrained hydro flexibility v1.1
+
+v1.1 replaces the frozen hourly hydro replay used by v1.0 with endogenous intraday
+hydro dispatch inside the same direct-PyPSA expansion framework.
+
+The key constraint is deliberately simple and auditable: **each FY2024-25 observed
+or imputed daily hydro MWh total is conserved exactly**, but the model may move that
+energy among the 24 hours of the same day. Hydro therefore gains intraday flexibility
+without gaining interday reservoir storage.
+
+Hydro power is bounded by aggregate installed hydel MW multiplied by one of three
+availability sensitivities:
+
+- **100% available power** — aggregate installed-hydro ceiling;
+- **85% available power** — synthetic 15% aggregate derate;
+- **71% available power** — near-feasibility-floor aggregate derate.
+
+The lowest case is data-bounded. FY2024-25's maximum hydro day is **5 August 2024**
+at **38.8073 MU**. Preserving that daily energy exactly requires at least
+**1,616.97 MW** continuously available on average over the day, or **70.783%** of
+the observed 2,284.42 MW installed hydel capacity. A 70% case is therefore
+mathematically incompatible with exact preservation of the historical daily energy
+and is rejected rather than silently relaxing the energy constraint.
+
+These are not historical forced-outage rates. They test how much the expansion
+result depends on the amount of hydro power available to reshape the same daily
+energy.
+
+To isolate the hydro question, v1.1 uses a focused 54-case matrix:
+
+- lower FY2030 and reference FY2030-31 demand;
+- 4,455 / 3,564 / 2,673 MW ATC sensitivities;
+- the v0.7 **reference** renewable envelope;
+- the v0.5 **low-BESS-cost** case;
+- all three v1.0 import-price sensitivities;
+- all three hydro-availability sensitivities.
+
+The direct PyPSA formulation includes candidate solar, wind and four-hour BESS,
+screened imports, unserved load, endogenous curtailment/spill and the new
+daily-energy-constrained hydro generator.
+
+The stage ordering remains adequacy-first:
+
+1. minimize unserved MWh;
+2. preserve the minimum shortage;
+3. minimize annualized candidate investment plus import-energy cost.
+
+Hydro carries zero marginal cost in this checkpoint because station-specific water
+value, O&M and reservoir opportunity cost are not yet admitted. That is a modelling
+limitation, not a claim that hydro is economically free.
+
+v1.1 is **not a reservoir model**. It still excludes interday water shifting,
+reservoir storage state, cascade routing/travel time, environmental/irrigation
+releases, head-dependent efficiency, station-specific outage histories, unit
+commitment/ramping and Kerala internal transmission constraints.
+
+Run:
+
+```bash
+python scripts/run_full_pypsa_hydro_flex_v1_1.py \
+  --acknowledge-hydro-sensitivity-only \
+  --hours 8760
+```
+
+The severe availability case is pinned just above the observed full-year feasibility floor: the maximum observed daily hydro energy (38.8073 MU on 2024-08-05) implies a 1,616.97 MW daily-average requirement, or 70.783% of the 2,284.42 MW installed hydel fleet. A 70% case would contradict exact daily-energy conservation before any optimization; the solved 71% case remains physically capable of reproducing every daily target.
+
+The checkpoint passes only if every modelled day's hydro MWh is conserved to
+numerical tolerance and all 54 configured cases solve successfully.
+
+The artifact-backed full-year run passed all 54 cases and conserved daily hydro
+energy to a maximum absolute residual of **2.91e-11 MWh**. Total preserved
+FY2024-25 hydro energy is **7.43072 TWh**.
+
+The central finding is that intraday hydro timing is a first-order adequacy
+assumption. For the CEA/KSERC reference FY2030-31 demand, reference renewable
+envelope, low BESS cost and KSEBL purchase-price proxy:
+
+| Transfer case | v1.0 frozen hydro | v1.1 100% hydro power | v1.1 85% | v1.1 71% |
+|---|---:|---:|---:|---:|
+| 4,455 MW ATC | 375.03 GWh | **11.75 GWh** | 15.79 GWh | 35.38 GWh |
+| 3,564 MW ATC | 2,301.61 GWh | **1,187.85 GWh** | 1,190.25 GWh | 1,209.55 GWh |
+| 2,673 MW ATC | 6,600.27 GWh | **5,571.39 GWh** | 5,603.61 GWh | 5,703.31 GWh |
+
+At full ATC, simply redispatching the **same daily hydro energy** cuts the
+reference-demand shortage by **363.28 GWh, or 96.87%**, relative to v1.0's frozen
+daily-average hydro replay. At the 80% and 60% ATC stresses the corresponding
+reductions are **48.39%** and **15.59%**. The declining percentage benefit shows
+that deeper transfer stress leaves a broader firm-capacity deficit that intraday
+hydro timing alone cannot remove.
+
+The reference-demand cases still use essentially the full reference candidate
+limits: **4,210.74 MW solar, 2,549.475 MW wind and 250 MW / 1 GWh BESS**. Better
+hydro timing therefore materially improves adequacy but does not establish a
+sufficient 2030 portfolio.
+
+For lower FY2030 demand at full ATC, 100% and 85% hydro availability achieve zero
+material shortage without new BESS in the selected reference-envelope case. At
+80% ATC, pushing hydro power down to the near-feasibility-floor 71% case creates
+a **96.59 MW four-hour BESS** requirement even though the daily hydro energy is
+unchanged. This isolates the value of hydro **power/flexibility**, not extra hydro
+energy.
+
+Durable evidence is recorded in
+`data/evidence/models/full_pypsa_hydro_flex_v1_1_2026_09_26.json`.

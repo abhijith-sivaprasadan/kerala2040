@@ -443,6 +443,7 @@ release:
   research_proxy_capacity_expansion_counterfactual_completed: true
   direct_pypsa_proxy_expansion_equivalence_verified: true
   research_import_economic_sensitivity_possible_now: true
+  research_daily_energy_hydro_expansion_sensitivity_possible_now: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
@@ -452,7 +453,9 @@ release:
     renewable-capacity envelopes, v0.8 completes an adequacy-first 2030 proxy
     expansion counterfactual, v0.9 reproduces all 36 full-year v0.8 cases through
     direct PyPSA/Linopy to solver precision, and v1.0 adds source-bounded annual
-    import-price sensitivities plus forward import-requirement benchmarks. Full
+    import-price sensitivities plus forward import-requirement benchmarks, and
+    v1.1 adds exact-daily-energy endogenous intraday hydro dispatch with aggregate
+    hydro-power availability sensitivities. Full
     economic capacity expansion remains blocked by validated landed/interval import
     economics, explicit future ATC, statutory/site-level siting, rooftop technical
     potential, capacity-weighted spatial allocation, outages, hydro/PSP physics and
