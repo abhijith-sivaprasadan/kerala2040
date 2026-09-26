@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Run the Full-PyPSA Idukki stateful reservoir pilot v1.3."""
 from __future__ import annotations
 
