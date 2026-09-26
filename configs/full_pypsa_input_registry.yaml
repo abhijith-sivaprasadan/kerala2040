@@ -28,6 +28,8 @@ sources:
   wri_kerala_re_2025: data/evidence/solar/wri_kerala_re_technology_assessment_2025_09_25.json
   import_economics_v1_0: configs/full_pypsa_import_economics_v1_0.yaml
   import_economics_evidence_v1_0: data/evidence/grid/kerala_import_economics_forward_transfer_v1_0_2026_09_25.json
+  hydro_dispatch_v1_1: configs/full_pypsa_hydro_dispatch_v1_1.yaml
+  hydro_dispatch_evidence_v1_1: data/evidence/hydro/kerala_hydro_dispatch_boundaries_v1_1_2026_09_26.json
 
 requirements:
   base_system:
@@ -122,6 +124,9 @@ requirements:
       state_solar_later_identity_candidates_near_reconcile_but_not_forced: true
       private_solar_FY2024_25_IPP_204_mw_aggregate_bridge: true
       alternate_MNRE_same_date_boundary_from_PR72_preserved_not_adopted: true
+      v1_1_major_hydro_station_groups_reconciled_to_2284_42MW: true
+      v1_1_Idukki_130MW_single_unit_outage_anchor: true
+      v1_1_daily_hydro_energy_conservation_dispatch: true
     remaining:
       - verify the FY2024-25 wind ownership split against a same-date March-2026 official unit register
       - close the remaining state solar identity/AC-MWp/overlap gap without patching 0.035 MW
@@ -443,6 +448,8 @@ release:
   research_proxy_capacity_expansion_counterfactual_completed: true
   direct_pypsa_proxy_expansion_equivalence_verified: true
   research_import_economic_sensitivity_possible_now: true
+  research_daily_energy_hydro_dispatch_possible_now: true
+  research_hydro_availability_sensitivity_possible_now: true
   research_assumption_capacity_expansion_possible_now: false
   reason: >-
     v0.2 admits deterministic proxy adequacy, v0.3 brackets intraday hydro flexibility,
@@ -451,10 +458,13 @@ release:
     five-point solar/wind screening profiles, v0.7 adds source-bounded statewide
     renewable-capacity envelopes, v0.8 completes an adequacy-first 2030 proxy
     expansion counterfactual, v0.9 reproduces all 36 full-year v0.8 cases through
-    direct PyPSA/Linopy to solver precision, and v1.0 adds source-bounded annual
-    import-price sensitivities plus forward import-requirement benchmarks. Full
+    direct PyPSA/Linopy to solver precision, v1.0 adds source-bounded annual
+    import-price sensitivities plus forward import-requirement benchmarks, and v1.1
+    adds exact-daily-energy intraday hydro dispatch with reconciled major-station
+    capacity groups plus source-anchored/synthetic availability sensitivities. Full
     economic capacity expansion remains blocked by validated landed/interval import
     economics, explicit future ATC, statutory/site-level siting, rooftop technical
-    potential, capacity-weighted spatial allocation, outages, hydro/PSP physics and
-    unresolved existing-fleet operating costs.
+    potential, capacity-weighted spatial allocation, observed outage chronology,
+    reservoir/cascade hydro physics, PSP physics and unresolved existing-fleet
+    operating costs.
   validated_run_possible_now: false
