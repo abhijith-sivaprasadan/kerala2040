@@ -14,6 +14,8 @@ from __future__ import annotations
 
 import math
 import statistics
+from datetime import date
+from itertools import pairwise
 from typing import Any
 
 CUMECS_DAY_TO_MCM = 0.0864
@@ -87,12 +89,7 @@ def water_balance_qa(records: list[dict[str, Any]]) -> dict[str, Any]:
     for previous, current in pairwise(ordered):
         prev_date = previous["date"]
         cur_date = current["date"]
-        from datetime import date as _date
-
-        if (
-            _date.fromisoformat(cur_date)
-            - _date.fromisoformat(prev_date)
-        ).days != 1:
+        if (date.fromisoformat(cur_date) - date.fromisoformat(prev_date)).days != 1:
             continue
 
         prev_storage = previous["metrics"].get("live_storage_mcm")
