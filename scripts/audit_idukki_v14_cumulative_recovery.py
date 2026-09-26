@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from itertools import pairwise
 from pathlib import Path
 
 import pandas as pd
