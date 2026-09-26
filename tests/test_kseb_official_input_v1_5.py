@@ -2,8 +2,6 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import pytest
-
 import kerala2040.kseb_official_input_v1_5 as module
 from kerala2040.kseb_monthly_bundle_v1_5 import EXPECTED_MONTHS
 
