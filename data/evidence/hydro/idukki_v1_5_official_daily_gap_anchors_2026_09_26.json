@@ -1,0 +1,100 @@
+{
+  "classification": "OFFICIAL_KSEB_IDUKKI_DAILY_GAP_ANCHORS_V1_5",
+  "prepared_date": "2026-09-26",
+  "purpose": "Pin official KSEB Dam Safety pages and Idukki operational rows for the six dates left unconstrained by the SLDC cumulative-accounting layer.",
+  "source_boundary": {
+    "authoritative_domain": "dams.kseb.in",
+    "relationship_to_v1_4": "Independent reservoir-operations evidence only. KSEB cumecs are not substituted for missing SLDC MCM/day direct observations.",
+    "strict_v1_4_gate_changed": false
+  },
+  "dates": {
+    "2024-04-01": {
+      "url": "https://dams.kseb.in/?p=4359",
+      "verification": "official_indexed_row_verified",
+      "live_storage_mcm": 653.348,
+      "inflow_cumecs": 3.45,
+      "power_house_discharge_cumecs": 40.93,
+      "spillway_release_cumecs": 0,
+      "total_outflow_cumecs": 40.93,
+      "rainfall_mm": 0
+    },
+    "2024-04-02": {
+      "url": "https://dams.kseb.in/?p=4362",
+      "verification": "official_indexed_row_verified",
+      "live_storage_mcm": 648.924,
+      "inflow_cumecs": 10.46,
+      "power_house_discharge_cumecs": 59.33,
+      "spillway_release_cumecs": 0,
+      "total_outflow_cumecs": 59.33,
+      "rainfall_mm": 0
+    },
+    "2024-04-09": {
+      "url": "https://dams.kseb.in/?p=4376",
+      "verification": "official_indexed_row_verified",
+      "live_storage_mcm": 611.101,
+      "inflow_cumecs": 3.91,
+      "power_house_discharge_cumecs": 58.47,
+      "spillway_release_cumecs": 0,
+      "total_outflow_cumecs": 58.47,
+      "rainfall_mm": 0
+    },
+    "2024-04-11": {
+      "url": "https://dams.kseb.in/?p=4380",
+      "verification": "official_indexed_row_verified",
+      "live_storage_mcm": 602.498,
+      "inflow_cumecs": 3.21,
+      "power_house_discharge_cumecs": 43.54,
+      "spillway_release_cumecs": 0,
+      "total_outflow_cumecs": 43.54,
+      "rainfall_mm": 0
+    },
+    "2024-05-04": {
+      "url": "https://dams.kseb.in/?p=4428",
+      "verification": "official_indexed_row_verified",
+      "live_storage_mcm": 508.667,
+      "inflow_cumecs": 10.86,
+      "power_house_discharge_cumecs": 56.01,
+      "spillway_release_cumecs": 0,
+      "total_outflow_cumecs": 56.01,
+      "rainfall_mm": 0
+    },
+    "2024-11-30": {
+      "url": "https://dams.kseb.in/?p=4934",
+      "verification": "official_indexed_core_row_verified_mirror_tail_not_promoted",
+      "live_storage_mcm": 1037.544,
+      "inflow_cumecs": 20.84,
+      "power_house_discharge_cumecs": 48.78,
+      "spillway_release_cumecs": null,
+      "total_outflow_cumecs": null,
+      "rainfall_mm": null,
+      "note": "Official indexed text verified storage, inflow and powerhouse discharge. Spill/total/rain values seen only in the secondary mirror are deliberately not promoted here."
+    }
+  },
+  "additional_official_pages_located": {
+    "2025-02-19": {
+      "url": "https://dams.kseb.in/?p=5119",
+      "status": "official_page_located_numeric_row_pending_independent_index_or_direct_confirmation"
+    },
+    "2025-02-20": {
+      "url": "https://dams.kseb.in/?p=5121",
+      "status": "official_page_located_numeric_row_pending_independent_index_or_direct_confirmation"
+    },
+    "2025-03-17": {
+      "url": "https://dams.kseb.in/?p=5176",
+      "status": "official_numeric_row_verified"
+    },
+    "2025-03-18": {
+      "url": "https://dams.kseb.in/?p=5178",
+      "status": "official_numeric_row_verified"
+    }
+  },
+  "diagnostic": {
+    "convention": "For diagnostic only, treat report-date cumecs as the average rate over the preceding 24 hours.",
+    "known_consecutive_balance_residuals_mcm": {
+      "2024-04-02": -0.201632,
+      "2025-02-20": 0.071968,
+      "2025-03-18": -0.244528
+    },
+    "caveat": "Residuals are not assigned to evaporation, diversion, rounding or another physical process without KSEB documentation."
+  }
+}
