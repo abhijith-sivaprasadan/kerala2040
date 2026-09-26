@@ -1,8 +1,9 @@
 # Idukki v1.4 — KSEB Dam Safety cross-check
 
-The cumulative-accounting audit reduced the 39 missing direct SLDC inflow days
-to 11 unresolved dates. A separate KSEB Dam Safety Organisation series was then
-reviewed as an independent hydro-operations source.
+The cumulative-accounting audit reduces the 39 missing direct SLDC inflow days
+to **10 unresolved dates** after adding the verified month-start zero anchor.
+A separate KSEB Dam Safety Organisation series was then reviewed as an
+independent hydro-operations source.
 
 The historical mirror used here is
 `amith-vp/Kerala-Dam-Water-Levels/historic_data/Idukki.json`. Its README and
@@ -50,14 +51,14 @@ Dam Safety rate on each day:
 | 2025-03-17 | 0.267826 |
 | 2025-03-18 | 1.492174 |
 
-This does not change monthly water volume and is not labelled as observed daily
+This does not change interval water volume and is not labelled as observed daily
 SLDC inflow.
 
-After combining the 28 unique cumulative recoveries with these two interval
-timing allocations, only **7 dates** remain unconstrained:
+After combining the **29** unique cumulative recoveries with these two interval
+timing allocations, only **6 dates** remain unconstrained:
 
-2024-04-01, 2024-04-02, 2024-04-09, 2024-04-11, 2024-05-04,
-2024-11-30 and 2025-03-01.
+2024-04-01, 2024-04-02, 2024-04-09, 2024-04-11, 2024-05-04 and
+2024-11-30.
 
-The strict v1.4 gate remains unchanged. The 7-day residual uncertainty should
-now be handled as an explicit sensitivity/bound rather than silently filled.
+The strict v1.4 gate remains unchanged. The remaining six-day uncertainty
+should be handled as an explicit sensitivity/bound rather than silently filled.
