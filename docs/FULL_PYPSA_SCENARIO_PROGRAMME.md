@@ -773,7 +773,7 @@ python scripts/run_full_pypsa_hydro_flex_v1_1.py \
   --hours 8760
 ```
 
-The severe availability case is kept above the observed full-year feasibility floor: the maximum observed daily hydro energy (38.8073 MU on 2024-08-05) implies a 1,616.97 MW daily-average requirement, or 70.78% of the 2,284.42 MW installed hydel fleet. A 70% case would therefore contradict exact daily-energy conservation before any optimization. The 75% case remains severe while physically capable of reproducing every daily target.
+The severe availability case is pinned just above the observed full-year feasibility floor: the maximum observed daily hydro energy (38.8073 MU on 2024-08-05) implies a 1,616.97 MW daily-average requirement, or 70.783% of the 2,284.42 MW installed hydel fleet. A 70% case would contradict exact daily-energy conservation before any optimization; the solved 71% case remains physically capable of reproducing every daily target.
 
 The checkpoint passes only if every modelled day's hydro MWh is conserved to
 numerical tolerance and all 54 configured cases solve successfully.
