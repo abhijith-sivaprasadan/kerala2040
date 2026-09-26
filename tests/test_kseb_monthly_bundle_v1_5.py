@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from kerala2040.kseb_monthly_bundle_v1_5 import (
+    EXPECTED_FORMATS,
     EXPECTED_MONTHS,
     KSEBMonthlyBundleError,
     audit_bundle,
@@ -52,8 +53,12 @@ def test_complete_auto_discovered_bundle_is_ready(tmp_path: Path):
             "11": "November",
             "12": "December",
         }
-        path = tmp_path / f"KSEB {names[number]} {year}.pdf"
-        path.write_bytes(b"%PDF-1.7\n")
+        expected = EXPECTED_FORMATS[month]
+        path = tmp_path / f"KSEB {names[number]} {year}.{expected}"
+        if expected == "xlsx":
+            path.write_bytes(b"PK\x03\x04fake")
+        else:
+            path.write_bytes(bytes.fromhex("D0CF11E0A1B11AE1") + b"x")
     result = audit_bundle(tmp_path)
     assert result["found_count"] == 12
     assert result["missing_months"] == []
@@ -77,3 +82,15 @@ def test_explicit_manifest_rejects_escape(tmp_path: Path):
     )
     with pytest.raises(KSEBMonthlyBundleError, match="escapes bundle root"):
         audit_bundle(tmp_path, manifest=manifest)
+
+
+def test_official_format_mismatch_fails_closed(tmp_path: Path):
+    path = tmp_path / "KSEB April 2024.xls"
+    path.write_bytes(bytes.fromhex("D0CF11E0A1B11AE1") + b"x")
+    result = audit_bundle(tmp_path)
+    assert result["ready_for_content_schema_audit"] is False
+    assert any(
+        item["month"] == "2024-04"
+        and item["reason"] == "format_mismatch_against_official_listing"
+        for item in result["invalid_files"]
+    )
