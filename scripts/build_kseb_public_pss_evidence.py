@@ -112,6 +112,7 @@ def _norm_name(value: Any) -> str:
         "AMBALAMUGHAL": "AMBALAMUGAL",
         "AREACODE": "AREEKODE",
         "CHENGANOOR": "CHENGANNUR",
+        "KATTAKKADA": "KATTAKADA",
     }.items():
         text = text.replace(old, new)
     return re.sub(r"[^A-Z0-9]+", "", text)
@@ -579,6 +580,10 @@ def _match_station(
             exact.append((pos, -len(loc), node))
     if not exact:
         return None, "NO_EXACT_NORMALIZED_LOCATION_MATCH"
+    # Prefer the earliest station-name occurrence, then the longest match at
+    # that position. Spelling aliases in _norm_name handle known variants
+    # such as New Kattakkada -> New Kattakada without letting district text
+    # later in the row steal the station match.
     exact.sort(
         key=lambda item: (
             item[0],

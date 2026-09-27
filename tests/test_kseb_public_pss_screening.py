@@ -131,3 +131,31 @@ def test_transport_screening_uses_canonical_8760_hour_proxy_loader() -> None:
     assert proxy["classification"] == "proxy_reconstruction_not_measured_telemetry"
     assert len(proxy["records"]) == 8760
     assert proxy["records"][0]["classification"] == "proxy_reconstruction"
+
+
+def test_pss_station_match_prefers_new_kattakada_over_nested_kattakada() -> None:
+    candidates = [
+        {
+            "node_id": "SS:KKDA:110",
+            "location": "Kattakkada",
+            "code": "KKDA",
+            "kind": "substation",
+            "voltage_class_kv": 110,
+            "norm_location": PSS._norm_name("Kattakkada"),
+        },
+        {
+            "node_id": "SS:NKDA:220",
+            "location": "New Kattakada",
+            "code": "NKDA",
+            "kind": "substation",
+            "voltage_class_kv": 220,
+            "norm_location": PSS._norm_name("New Kattakada"),
+        },
+    ]
+    node, basis = PSS._match_station(
+        "21 New Kattakkada Thiruvananthapuram ",
+        candidates,
+    )
+    assert node is not None
+    assert node["node_id"] == "SS:NKDA:220"
+    assert "EXACT_NORMALIZED_LOCATION" in basis

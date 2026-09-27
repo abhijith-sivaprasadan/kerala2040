@@ -236,6 +236,46 @@ def _match_endpoint(endpoint: tuple[float, float], feeder_name: str, feeder_volt
     }
 
 
+def _release_false_110kv_self_loop_endpoint(
+    base: dict[str, Any],
+    a: dict[str, Any],
+    b: dict[str, Any],
+    *,
+    degenerate: bool,
+) -> str | None:
+    """Release the farther endpoint of a false 110-kV station self-loop.
+
+    Public tap/LILO stub geometries often have one endpoint at the published
+    station point and the other endpoint on a parent feeder only tens or
+    hundreds of metres away. The broad <=1 km 110-kV station snap can therefore
+    map both ends back to the same station and create a non-physical self-loop.
+
+    We only intervene when:
+    - the feature is a non-degenerate 110-kV feeder;
+    - both endpoints resolved to the same public node; and
+    - the farther endpoint is >20 m from that node.
+
+    The released endpoint must then pass the existing <=20 m direct parent-line
+    geometry test. If it does not, it remains unresolved and is not promoted as
+    a fake electrical connection.
+    """
+    if degenerate or int(base.get("voltage_kv") or 0) != 110:
+        return None
+    if not a.get("node_id") or a.get("node_id") != b.get("node_id"):
+        return None
+    da = float(a.get("distance_km") or 0.0)
+    db = float(b.get("distance_km") or 0.0)
+    if max(da, db) <= JUNCTION_PARENT_MAX_KM:
+        return None
+    side = "from" if da >= db else "to"
+    base[f"{side}_node_id"] = None
+    base[f"{side}_resolution_method"] = (
+        "SELF_LOOP_ENDPOINT_RELEASED_FOR_GEOMETRY_JUNCTION"
+    )
+    base["endpoint_resolution"] = "UNRESOLVED_SELF_LOOP_ENDPOINT"
+    return side
+
+
 def _components(node_ids: set[str], edges: list[dict[str, Any]]) -> list[list[str]]:
     adjacency: dict[str, set[str]] = defaultdict(set)
     for edge in edges:
@@ -358,6 +398,20 @@ def main() -> int:
                 "endpoint_resolution": "DEGENERATE_GEOMETRY" if degenerate else ("RESOLVED" if a["resolved"] and b["resolved"] else "UNRESOLVED"),
                 "topology_admitted": not degenerate,
             })
+            released_side = _release_false_110kv_self_loop_endpoint(
+                base, a, b, degenerate=degenerate
+            )
+            if released_side is not None:
+                anomalies.append({
+                    "source_edge_id": source_edge_id,
+                    "anomaly": "FALSE_110KV_STATION_SELF_LOOP_ENDPOINT_RELEASED",
+                    "released_side": released_side,
+                    "name": name,
+                    "voltage_kv": voltage,
+                    "geometry_length_km": geometry_length,
+                    "from_distance_km": a["distance_km"],
+                    "to_distance_km": b["distance_km"],
+                })
             source_edges.append(base)
             runtime[source_edge_id] = {
                 "geometry": geometry,
@@ -421,6 +475,19 @@ def main() -> int:
             continue
         if edge.get("from_node_id") and edge.get("to_node_id"):
             edge["endpoint_resolution"] = "RESOLVED"
+            continue
+        # A released 110-kV self-loop endpoint is admitted only if the
+        # existing direct-coincidence junction rule actually resolves it.
+        # Otherwise exclude the source feature rather than retain a fake loop
+        # or an "admitted but unresolved" branch.
+        edge["topology_admitted"] = False
+        edge["endpoint_resolution"] = "UNRESOLVED_FAIL_CLOSED"
+        anomalies.append({
+            "source_edge_id": edge["source_edge_id"],
+            "anomaly": "UNRESOLVED_110KV_SOURCE_EDGE_EXCLUDED_FAIL_CLOSED",
+            "name": edge.get("name", ""),
+            "voltage_kv": edge.get("voltage_kv"),
+        })
 
     unresolved_by_voltage = Counter(e["voltage_kv"] for e in source_edges if e.get("topology_admitted") and e.get("endpoint_resolution") != "RESOLVED")
     if any(unresolved_by_voltage.get(kv, 0) for kv in (220, 320, 400)):
