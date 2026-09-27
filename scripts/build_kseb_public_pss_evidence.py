@@ -1,14 +1,17 @@
-"""Extract KSEBL Power System Statistics 2024-25 grid evidence.
+"""Build deterministic KSEBL PSS 2022-23 evidence for the public 110-kV+ graph.
 
-The public PSS report is dated 31 March 2023. This parser crosswalks its
-Table 33 substation transformer inventory and Table 34 line conductor inventory
-to the newer public KSEBL grid-map graph. Matches are deliberately fail-closed:
-no unmatched PSS row is promoted to a graph asset.
+The legacy KSEBL report endpoint is no longer reliable from automated runners.
+A model-relevant source snapshot therefore preserves exact, search-indexed rows
+from the official KSEBL Power System Statistics 2022-23 PDF. This builder
+cryptographically validates that snapshot, then crosswalks Table 33 transformer
+and Table 34 conductor evidence to the newer public grid graph. Matches remain
+fail-closed: no unmatched snapshot row is promoted to a graph asset.
 """
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import re
 from collections import Counter
@@ -19,29 +22,34 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GRAPH = ROOT / "results/network/public_grid_graph_v0_2/network_graph_110plus.json"
 DEFAULT_SOURCE_EDGES = ROOT / "results/network/public_grid_graph_v0_2/network_source_edges_110plus.csv"
 DEFAULT_OUT = ROOT / "results/network/public_pss_evidence_v0_1"
-DEFAULT_CACHE = (
+DEFAULT_SNAPSHOT = (
     ROOT
-    / "results/acquisition/kseb_pss_2024_25/"
-    "power_system_statistics_2024_25.pdf"
-)
-DEFAULT_TEXT_CACHE = (
-    ROOT
-    / "results/acquisition/kseb_pss_2024_25/"
-    "power_system_statistics_2024_25_rendered.txt"
+    / "data/evidence/network/"
+    "kseb_pss_2022_23_110plus_snapshot.json"
 )
 PSS_URL = (
-    "https://kseb.in/uploads/Downloadtemsuppy/"
-    "PSS%2024-25-1763198698832757145.pdf"
+    "https://old.kseb.in/index.php?Itemid=811&catid=70&id=35634&lang=en"
+    "&m=0&option=com_jdownloads&task=download.send"
 )
-PSS_TEXT_PROXY_URL = "https://r.jina.ai/" + PSS_URL
-SOURCE_AS_OF = "2025-03-31"
-CLASSIFICATION = "KSEBL_PSS_2024_25_PUBLIC_GRID_EVIDENCE_V0_1"
+SOURCE_AS_OF = "2023-03-31"
+CLASSIFICATION = "KSEBL_PSS_2022_23_PUBLIC_GRID_EVIDENCE_V0_1"
+SNAPSHOT_CLASSIFICATION = (
+    "KSEBL_PSS_2022_23_110PLUS_INDEXED_SOURCE_SNAPSHOT_V0_1"
+)
+EXPECTED_SNAPSHOT_SHA256 = (
+    "02371d67ca850083e29a4a9f53e0f0d5be66b6cc63c7bab158cd1ac6aa4aa4b5"
+)
 
 VOLTAGE_RATIO_RE = re.compile(
     r"(?<!\d)(400|320|220|110|66|33|22)\s*/\s*(220|110|66|33|22|11)(?!\d)"
 )
 NUMBER_RE = re.compile(r"(?<![A-Za-z])\d+(?:\.\d+)?")
 CONDUCTOR_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
+    ("STACIR", re.compile(r"\bSTACIR\b", re.IGNORECASE)),
+    ("AAAC", re.compile(r"\bAAAC\b", re.IGNORECASE)),
+    ("ZEBRA", re.compile(r"\b(?:ACSR\s+)?ZEBRA\b", re.IGNORECASE)),
+    ("ACSR_MINK", re.compile(r"\bACSR\s+MINK\b", re.IGNORECASE)),
+    ("ACSR_DOG", re.compile(r"\bACSR\s+DOG\b", re.IGNORECASE)),
     ("TWIN_GREAT_HORNBILL", re.compile(r"\bTWIN\s+GREAT\s+HORNBILL\b", re.IGNORECASE)),
     ("QUAD_MOOSE", re.compile(r"\bQUAD\s+(?:ACSR\s+)?MOOSE\b", re.IGNORECASE)),
     ("TWIN_MOOSE", re.compile(r"\b(?:TWIN|2)\s+(?:ACSR\s+)?MOOSE\b", re.IGNORECASE)),
@@ -67,7 +75,10 @@ CONDUCTOR_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     (
         "UG_CABLE",
         re.compile(
-            r"\b(?:UG|UNDERGROUND)\b.*?\bCABLE\b|\b\d+\s*SQ\s*MM\s+UG\b",
+            r"\b(?:UG|UNDERGROUND)\b.*?\bCABLE\b|"
+            r"\b\d+\s*SQ\s*MM\s+(?:SC\s+)?UG\b|"
+            r"\bXLPE\s+UG\b|\bACSR\s+WOLF\s*\+\s*UG\b|"
+            r"\bUG\s+CABLE\b|^UG$",
             re.IGNORECASE,
         ),
     ),
@@ -186,6 +197,231 @@ def _extract_conductor(text: str) -> str | None:
         if pattern.search(text):
             return name
     return None
+
+
+
+def _canonical_json(value: Any) -> str:
+    if isinstance(value, dict):
+        body = ",".join(
+            json.dumps(str(key), ensure_ascii=False)
+            + ":"
+            + _canonical_json(value[key])
+            for key in sorted(value)
+        )
+        return "{" + body + "}"
+    if isinstance(value, list):
+        return "[" + ",".join(_canonical_json(item) for item in value) + "]"
+    return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+
+
+def _load_snapshot(path: Path) -> dict[str, Any]:
+    snapshot = json.loads(path.read_text(encoding="utf-8"))
+    if snapshot.get("classification") != SNAPSHOT_CLASSIFICATION:
+        raise ValueError("Unexpected KSEBL PSS snapshot classification")
+    source = snapshot.get("source") or {}
+    scope = snapshot.get("scope") or {}
+    if source.get("source_as_of") != SOURCE_AS_OF:
+        raise ValueError("KSEBL PSS snapshot source date changed")
+    if int(scope.get("network_model_minimum_voltage_kv") or 0) != 110:
+        raise ValueError("KSEBL PSS snapshot scope is not 110-kV+")
+    if snapshot.get("table34_row_schema") != [
+        "feeder_code",
+        "conductor_text",
+        "voltage_kv",
+        "source_pdf_page",
+        "source_text_line",
+    ]:
+        raise ValueError("Unexpected KSEBL PSS Table 34 snapshot schema")
+    stored = str(snapshot.get("snapshot_payload_sha256") or "")
+    payload = dict(snapshot)
+    payload.pop("snapshot_payload_sha256", None)
+    calculated = hashlib.sha256(
+        _canonical_json(payload).encode("utf-8")
+    ).hexdigest()
+    if stored != EXPECTED_SNAPSHOT_SHA256 or calculated != stored:
+        raise ValueError(
+            "KSEBL PSS snapshot SHA-256 mismatch: "
+            f"stored={stored} calculated={calculated}"
+        )
+    if len(snapshot.get("table33_primary_station_rows") or []) < 130:
+        raise ValueError("KSEBL PSS snapshot has too few Table 33 rows")
+    if len(snapshot.get("table34_graph_crosswalk_rows") or []) < 250:
+        raise ValueError("KSEBL PSS snapshot has too few Table 34 rows")
+    return snapshot
+
+
+def _snapshot_line_evidence(
+    snapshot: dict[str, Any],
+    source_edges: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    code_meta: dict[str, dict[str, Any]] = {}
+    for edge in source_edges:
+        raw_code = _norm_space(edge.get("feeder_code"))
+        norm = _norm_code(raw_code)
+        voltage = int(float(edge.get("voltage_kv") or 0))
+        if len(norm) < 4 or voltage < 110:
+            continue
+        item = code_meta.setdefault(
+            norm, {"raw_codes": set(), "voltages": set()}
+        )
+        item["raw_codes"].add(raw_code)
+        item["voltages"].add(voltage)
+
+    admitted: dict[str, dict[str, Any]] = {}
+    rejected: list[dict[str, Any]] = []
+    for item in snapshot.get("table34_graph_crosswalk_rows") or []:
+        if not isinstance(item, list) or len(item) != 5:
+            raise ValueError(f"Malformed Table 34 snapshot row: {item!r}")
+        raw_code, conductor_text, voltage_raw, page, source_line = item
+        code = _norm_code(raw_code)
+        voltage = int(voltage_raw)
+        meta = code_meta.get(code)
+        if meta is None:
+            rejected.append(
+                {
+                    "page_index": page,
+                    "raw_text": f"{raw_code} | {conductor_text}",
+                    "candidate_normalized_codes": "",
+                    "reason": "SNAPSHOT_CODE_NOT_IN_CURRENT_GRAPH",
+                }
+            )
+            continue
+        if voltage not in meta["voltages"]:
+            rejected.append(
+                {
+                    "page_index": page,
+                    "raw_text": f"{raw_code} | {conductor_text}",
+                    "candidate_normalized_codes": code,
+                    "reason": "SNAPSHOT_VOLTAGE_DISAGREES_WITH_CURRENT_GRAPH",
+                }
+            )
+            continue
+        conductor = _extract_conductor(str(conductor_text))
+        evidence = {
+            "normalized_feeder_code": code,
+            "source_feeder_codes": ";".join(sorted(meta["raw_codes"])),
+            "source_voltage_kv": ";".join(
+                map(str, sorted(meta["voltages"]))
+            ),
+            "conductor": conductor or "",
+            "pdf_page_index": page,
+            "raw_text": (
+                f"{raw_code} | {conductor_text}; "
+                f"official indexed PDF text line {source_line}"
+            ),
+            "source_as_of": SOURCE_AS_OF,
+            "source_url": PSS_URL,
+            "mapping_basis": (
+                "EXACT_NORMALIZED_GRAPH_FEEDER_CODE_IN_"
+                "FROZEN_OFFICIAL_PSS_SNAPSHOT"
+            ),
+        }
+        previous = admitted.get(code)
+        if previous is not None and (
+            previous["conductor"] != evidence["conductor"]
+            or previous["source_voltage_kv"] != evidence["source_voltage_kv"]
+        ):
+            raise ValueError(
+                f"Conflicting frozen PSS evidence for feeder code {code}"
+            )
+        admitted[code] = evidence
+    return list(admitted.values()), rejected
+
+
+def _snapshot_station_transformers(
+    snapshot: dict[str, Any],
+    graph: dict[str, Any],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    candidates = _node_candidates(graph)
+    evidence: list[dict[str, Any]] = []
+    unmatched: list[dict[str, Any]] = []
+    for row_index, raw in enumerate(
+        snapshot.get("table33_primary_station_rows") or []
+    ):
+        text = _norm_space(raw)
+        ratios = list(VOLTAGE_RATIO_RE.finditer(text))
+        if not ratios:
+            unmatched.append(
+                {
+                    "pdf_page_index": "",
+                    "raw_text": text,
+                    "reason": "NO_SUPPORTED_VOLTAGE_RATIO",
+                }
+            )
+            continue
+        first_ratio = ratios[0]
+        node, basis = _match_station(
+            text[: first_ratio.start()], candidates
+        )
+        if node is None:
+            unmatched.append(
+                {
+                    "pdf_page_index": "",
+                    "raw_text": text,
+                    "reason": basis,
+                }
+            )
+            continue
+        for ratio_index, match in enumerate(ratios):
+            high, low = int(match.group(1)), int(match.group(2))
+            seg_end = (
+                ratios[ratio_index + 1].start()
+                if ratio_index + 1 < len(ratios)
+                else len(text)
+            )
+            after = text[match.end() : seg_end]
+            numbers = [float(value) for value in NUMBER_RE.findall(after)]
+            unit_mva = numbers[0] if len(numbers) >= 1 else None
+            count = (
+                int(numbers[1])
+                if len(numbers) >= 2 and numbers[1].is_integer()
+                else None
+            )
+            total_mva = numbers[2] if len(numbers) >= 3 else None
+            reconciled = False
+            if unit_mva is not None and count is not None and total_mva is not None:
+                expected = unit_mva * count
+                reconciled = abs(expected - total_mva) <= max(
+                    0.2, 0.02 * max(expected, total_mva, 1.0)
+                )
+                if not reconciled:
+                    total_mva = None
+            evidence.append(
+                {
+                    "node_id": node["node_id"],
+                    "code": node["code"],
+                    "location": node["location"],
+                    "kind": node["kind"],
+                    "voltage_class_kv": node["voltage_class_kv"],
+                    "high_kv": high,
+                    "low_kv": low,
+                    "unit_mva": unit_mva,
+                    "transformer_count": count,
+                    "total_mva": total_mva,
+                    "pdf_page_index": "",
+                    "raw_text": text,
+                    "source_as_of": SOURCE_AS_OF,
+                    "source_url": PSS_URL,
+                    "mapping_basis": (
+                        basis + "_FROM_FROZEN_OFFICIAL_PSS_SNAPSHOT"
+                    ),
+                    "capacity_tuple_reconciled": reconciled,
+                    "snapshot_row_index": row_index,
+                }
+            )
+    dedup: dict[tuple[Any, ...], dict[str, Any]] = {}
+    for row in evidence:
+        key = (
+            row["node_id"],
+            row["high_kv"],
+            row["low_kv"],
+            row["unit_mva"],
+            row["transformer_count"],
+            row["total_mva"],
+            row["raw_text"],
+        )
+        dedup[key] = row
+    return list(dedup.values()), unmatched
 
 
 def _write_csv(
@@ -462,42 +698,18 @@ def main() -> int:
         "--source-edges", type=Path, default=DEFAULT_SOURCE_EDGES
     )
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
-    parser.add_argument("--cache-pdf", type=Path, default=DEFAULT_CACHE)
-    parser.add_argument(
-        "--cache-text", type=Path, default=DEFAULT_TEXT_CACHE
-    )
-    parser.add_argument("--source-url", default=PSS_URL)
-    parser.add_argument(
-        "--text-proxy-url", default=PSS_TEXT_PROXY_URL
-    )
+    parser.add_argument("--snapshot", type=Path, default=DEFAULT_SNAPSHOT)
     args = parser.parse_args()
 
     graph = json.loads(args.graph.read_text(encoding="utf-8"))
     with args.source_edges.open(newline="", encoding="utf-8") as handle:
         source_edges = list(csv.DictReader(handle))
-    source_transport = "DIRECT_PDF"
-    source_size_bytes = 0
-    try:
-        pdf = _download_pdf(args.source_url, args.cache_pdf)
-        source_size_bytes = len(pdf)
-        lines = _pdf_lines(pdf)
-    except (OSError, RuntimeError) as exc:
-        print(
-            "Direct KSEBL PDF retrieval unavailable; "
-            f"using rendered text fallback: {type(exc).__name__}: {exc}"
-        )
-        rendered = _download_text_proxy(
-            args.text_proxy_url, args.cache_text
-        )
-        source_transport = "PUBLIC_TEXT_PROXY_OF_OFFICIAL_PDF"
-        source_size_bytes = len(rendered.encode("utf-8"))
-        lines = _text_lines(rendered)
-
-    line_evidence, line_ambiguous = _extract_line_evidence(
-        lines, source_edges
+    snapshot = _load_snapshot(args.snapshot)
+    line_evidence, line_ambiguous = _snapshot_line_evidence(
+        snapshot, source_edges
     )
-    station_evidence, station_unmatched = _extract_station_transformers(
-        lines, graph
+    station_evidence, station_unmatched = _snapshot_station_transformers(
+        snapshot, graph
     )
 
     code_to_evidence = {
@@ -564,17 +776,18 @@ def main() -> int:
     }
     qa = {
         "classification": CLASSIFICATION + "_QA",
-        "source_url": args.source_url,
+        "source_url": PSS_URL,
         "source_as_of": SOURCE_AS_OF,
-        "source_transport": source_transport,
-        "source_size_bytes": source_size_bytes,
-        "source_text_lines": len(lines),
-        "official_pdf_url": args.source_url,
-        "text_proxy_url": (
-            args.text_proxy_url
-            if source_transport != "DIRECT_PDF"
-            else ""
+        "source_transport": "FROZEN_INDEXED_OFFICIAL_PDF_SOURCE_SNAPSHOT",
+        "snapshot_path": str(args.snapshot),
+        "snapshot_payload_sha256": snapshot["snapshot_payload_sha256"],
+        "snapshot_table33_rows": len(
+            snapshot["table33_primary_station_rows"]
         ),
+        "snapshot_table34_rows": len(
+            snapshot["table34_graph_crosswalk_rows"]
+        ),
+        "live_network_fetch_used": False,
         "graph_feeder_codes_considered": len(graph_codes),
         "pss_feeder_codes_matched": len(matched_codes),
         "source_edges": len(edge_rows),
@@ -607,7 +820,8 @@ def main() -> int:
             )
         ),
         "interpretation": [
-            "PSS 2024-25 is official historical inventory as of 31 March 2023, not proof of unchanged 2026 equipment.",
+            "PSS 2022-23 is official historical inventory as of 31 March 2023, not proof of unchanged 2026 equipment.",
+            "The committed snapshot is a cryptographically pinned 110-kV+ model-relevant slice of search-indexed official KSEBL PDF text, not a full report transcription.",
             "Line rows are crosswalked only by exact normalized feeder code already present in the newer public graph.",
             "Substation rows are promoted only when the station name maps to a unique public graph node.",
             "Transformer MVA is admitted only when per-unit MVA times count reconciles to the printed total MVA.",
@@ -652,7 +866,12 @@ def main() -> int:
     _write_csv(
         args.out / "pss_line_ambiguous_rows.csv",
         line_ambiguous,
-        ["page_index", "raw_text", "candidate_normalized_codes"],
+        [
+            "page_index",
+            "raw_text",
+            "candidate_normalized_codes",
+            "reason",
+        ],
     )
     _write_csv(
         args.out / "pss_station_transformer_evidence.csv",
