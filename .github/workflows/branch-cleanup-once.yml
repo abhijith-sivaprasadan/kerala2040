@@ -17,8 +17,8 @@ jobs:
     steps:
       - name: Delete stale remote branches
         env:
-          GH_TOKEN: \${{ github.token }}
-          REPO: \${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         shell: bash
         run: |
           set -euo pipefail
@@ -39,11 +39,11 @@ jobs:
               --jq '.[].name'
           )
 
-          echo "Initial branches: \${#branches[@]}"
+          echo "Initial branches: ${#branches[@]}"
           deleted=0
           failed=0
 
-          for branch in "\${branches[@]}"; do
+          for branch in "${branches[@]}"; do
             if keep "$branch"; then
               echo "KEEP   $branch"
               continue
@@ -66,7 +66,7 @@ jobs:
               --jq '.[].name' | sort
           )
 
-          printf '%s\n' "\${remaining[@]}" | tee /tmp/remaining.txt
+          printf '%s\n' "${remaining[@]}" | tee /tmp/remaining.txt
           printf '%s\n' \
             'daily-anchored-quarter-hour-ensemble-20260925' \
             'main' \
@@ -75,7 +75,7 @@ jobs:
 
           echo "Deleted: $deleted"
           echo "Failed: $failed"
-          echo "Remaining: \${#remaining[@]}"
+          echo "Remaining: ${#remaining[@]}"
 
           diff -u /tmp/expected.txt /tmp/remaining.txt
 
