@@ -1,0 +1,66 @@
+version: 1
+classification: ksebl_network_chronological_screening_v1_0_dc_proxy_not_calibrated_power_flow
+prepared_date: "2026-09-27"
+purpose: >-
+  Run the first full-year network-constrained linear screening over the public
+  KSEBL 110-kV+ topology using the ERA5-sensitive statewide load reconstruction,
+  capacity-weighted spatial load allocation, mapped physical generators and
+  explicitly proxy-labelled boundary injections.
+
+official_installed_capacity_mw:
+  hydro: 2284.42
+  nonhydro: 2127.73
+  basis: >-
+    FY2024-25 reconciled installed-capacity census; nonhydro is the 4412.15 MW
+    category arithmetic total less 2284.42 MW hydro.
+
+generation_spatialization:
+  rule: >-
+    Each mapped physical generator receives the statewide daily-average
+    technology output multiplied by its installed MW share of the official
+    technology fleet. The remaining unmapped technology output is netted
+    proportionally at the 78 load buses and is not assigned to an invented plant.
+  hourly_plant_dispatch_measured: false
+  unlocated_generation_bus_assignment_invented: false
+
+boundary_injection:
+  minimum_voltage_kv: 220
+  rule: >-
+    Candidate external buses must have no Kerala district assignment, must not
+    be synthetic, and must connect by an admitted screening line to a bus with
+    a Kerala district. The hourly accounting residual is split by the screening
+    MVA of those cross-boundary lines.
+  hourly_import_telemetry_measured: false
+  atc_constraint_enforced: false
+  interpretation: >-
+    The boundary injection is the hourly accounting residual implied by the
+    reconstructed load and daily-average internal generation. It preserves
+    observed daily net-import energy but is not measured interface dispatch.
+
+transformer_missing_capacity:
+  method: max_incident_screening_line_mva
+  floor_mva: 50.0
+  rule: >-
+    Missing transformer capacity is used only to establish the DC screening
+    reactance base. Overload conclusions are reported separately for PSS-backed
+    transformer capacities; fallback-capacity transformer overloads are not
+    presented as operator constraints.
+
+component_balance:
+  tolerance_mw: 0.000001
+  rule: >-
+    Every disconnected component is checked before linear power flow. Any
+    residual component imbalance is closed by an explicit diagnostic supply or
+    sink proxy and reported; it is never silently treated as physical supply.
+
+release:
+  full_year_network_screening_target: true
+  thermal_congestion_screening: true
+  dc_flow_sensitivity: true
+  calibrated_dc_power_flow: false
+  ac_power_flow: false
+  measured_bus_load_telemetry: false
+  measured_generator_dispatch: false
+  measured_interface_dispatch: false
+  n_minus_1_reliability: false
+  validated_operational_security: false
