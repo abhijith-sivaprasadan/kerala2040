@@ -17,7 +17,6 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GRAPH = ROOT / "results/network/public_grid_graph_v0_2/network_graph_110plus.json"
@@ -108,6 +107,8 @@ def _download_pdf(url: str, cache: Path) -> bytes:
 
 
 def _pdf_lines(data: bytes) -> list[dict[str, Any]]:
+    from pypdf import PdfReader
+
     reader = PdfReader(io.BytesIO(data))
     rows: list[dict[str, Any]] = []
     for page_index, page in enumerate(reader.pages):
