@@ -334,13 +334,13 @@ def _build_screening_buses(
                     "topology_voltage_evidence": False,
                     "station_class_voltage_evidence": False,
                     "sld_transformer_voltage_evidence": False,
-                    "pss_2023_transformer_voltage_evidence": True,
+                    "pss_2025_transformer_voltage_evidence": True,
                     "screening_added_bus": True,
                 }
             )
     for row in output:
         row.setdefault(
-            "pss_2023_transformer_voltage_evidence", False
+            "pss_2025_transformer_voltage_evidence", False
         )
         row.setdefault("screening_added_bus", False)
     return output, lookup
@@ -413,8 +413,8 @@ def main() -> int:
         screening_lines.append(
             {
                 **line,
-                "pss_2023_conductor": conductor,
-                "pss_2023_row_matched": _as_bool(
+                "pss_2025_conductor": conductor,
+                "pss_2025_row_matched": _as_bool(
                     pss.get("pss_row_matched")
                 ),
                 "screening_current_a": round(current, 6),
@@ -457,13 +457,13 @@ def main() -> int:
             **row,
             "screening_s_nom_mva": "",
             "screening_capacity_basis": (
-                "NO_PSS_2023_CAPACITY_MATCH"
+                "NO_PSS_2025_CAPACITY_MATCH"
             ),
             "screening_x_pu": 0.10,
             "screening_x_basis": (
                 "GENERIC_TRANSFORMER_X_PU_ASSUMPTION"
             ),
-            "pss_2023_supplemented_link": False,
+            "pss_2025_supplemented_link": False,
         }
     for source in pss_tx:
         node_id = source["node_id"]
@@ -502,14 +502,14 @@ def main() -> int:
                 "screening_x_basis": (
                     "GENERIC_TRANSFORMER_X_PU_ASSUMPTION"
                 ),
-                "pss_2023_supplemented_link": True,
+                "pss_2025_supplemented_link": True,
             }
             tx_by_key[key] = row
         row["screening_s_nom_mva"] = round(cap, 6)
         row["screening_capacity_basis"] = (
-            "KSEBL_PSS_2022_23_PRINTED_TOTAL_TRANSFORMER_MVA"
+            "KSEBL_PSS_2024_25_PRINTED_TOTAL_TRANSFORMER_MVA"
         )
-        row["pss_2023_supplemented_link"] = True
+        row["pss_2025_supplemented_link"] = True
         row["connectivity_only"] = False
     screening_tx = list(tx_by_key.values())
 
@@ -541,7 +541,7 @@ def main() -> int:
                 "location": row.get("location", ""),
                 "code": row.get("code", ""),
                 "voltage_kv": int(float(row["v1_kv"])),
-                "pss_2023_distribution_interface_mva": round(
+                "pss_2025_distribution_interface_mva": round(
                     capacity, 6
                 ),
                 "load_weight": capacity / total_capacity,
@@ -614,7 +614,7 @@ def main() -> int:
         ),
         "screening_lines": len(screening_lines),
         "lines_with_pss_conductor_identity": sum(
-            bool(row["pss_2023_conductor"])
+            bool(row["pss_2025_conductor"])
             for row in screening_lines
         ),
         "lines_with_ksebl_sld_conductor_current_reference": (
@@ -635,11 +635,11 @@ def main() -> int:
             for row in screening_lines
         ),
         "screening_transformer_links": len(screening_tx),
-        "transformer_links_with_pss_2023_capacity": (
+        "transformer_links_with_pss_2025_capacity": (
             pss_capacity_links
         ),
-        "pss_2023_supplemented_transformer_links": sum(
-            _as_bool(row.get("pss_2023_supplemented_link"))
+        "pss_2025_supplemented_transformer_links": sum(
+            _as_bool(row.get("pss_2025_supplemented_link"))
             for row in screening_tx
         ),
         "load_buses": len(load_weights),
@@ -672,7 +672,7 @@ def main() -> int:
         "interpretation": [
             "Thermal line MVA is a screening derivation from conductor/current references or an explicit conservative fallback; it is not an operator emergency or seasonal rating.",
             "Line X is a generic voltage-class screening assumption because conductor identity alone does not determine tower geometry or positive-sequence reactance.",
-            "Transformer MVA from PSS is historical 31 March 2023 equipment evidence and may understate later upgrades.",
+            "Transformer MVA from PSS is historical 31 March 2025 equipment evidence and may understate later upgrades.",
             "Spatial bus load is allocated by PSS-backed distribution-interface MVA and exactly conserves the existing statewide 8760-hour proxy; it is not measured substation telemetry.",
             "A constrained transport/DC sensitivity model can now be instantiated, but calibrated DC/AC validation still requires authoritative current network parameters and bus telemetry.",
         ],
@@ -735,7 +735,7 @@ def main() -> int:
             "location",
             "code",
             "voltage_kv",
-            "pss_2023_distribution_interface_mva",
+            "pss_2025_distribution_interface_mva",
             "load_weight",
             "classification",
         ],
