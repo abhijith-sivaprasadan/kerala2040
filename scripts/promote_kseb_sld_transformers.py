@@ -25,26 +25,26 @@ CLASSIFICATION = "KSEBL_PUBLIC_SLD_TRANSFORMER_EVIDENCE_V0_1_NOT_NAMEPLATE_MASTE
 KV = r"(?:400|320|230|220|110|66|33|22|11)"
 VOLTAGE_EXPR_RE = re.compile(
     rf"(?<!\d)({KV})\s*(?:/|-)\s*({KV})(?:\s*(?:/|-)\s*({KV}))?\s*k\s*v\b",
-    re.I,
+    re.IGNORECASE,
 )
 RATING_EXPR_RE = re.compile(
     r"(?<![\d.])(\d+(?:\.\d+)?)"
     r"(?:\s*/\s*(\d+(?:\.\d+)?))?"
     r"(?:\s*/\s*(\d+(?:\.\d+)?))?\s*M\s*V\s*A\b",
-    re.I,
+    re.IGNORECASE,
 )
 TRANSFORMER_RE = re.compile(
     r"\b(?:POWER\s+TRANSFORMER|AUTO\s*TRANSFORMER|AUTOTRANSFORMER|TRANSFORMER|ICT|PTR|TFR|TR)\b",
-    re.I,
+    re.IGNORECASE,
 )
-FAULT_RE = re.compile(r"\b(?:FAULT\s*LEVEL|SHORT\s*CIRCUIT|SC\s*LEVEL|FAULT\s*MVA)\b", re.I)
-PROPOSED_RE = re.compile(r"\bPROPOSED\b", re.I)
-COMPONENT_BANK_RE = re.compile(r"M\s*V\s*A\s*[xX×]\s*\d+", re.I)
+FAULT_RE = re.compile(r"\b(?:FAULT\s*LEVEL|SHORT\s*CIRCUIT|SC\s*LEVEL|FAULT\s*MVA)\b", re.IGNORECASE)
+PROPOSED_RE = re.compile(r"\bPROPOSED\b", re.IGNORECASE)
+COMPONENT_BANK_RE = re.compile(r"M\s*V\s*A\s*[xX×]\s*\d+", re.IGNORECASE)
 
 LABEL_PATTERNS = [
-    re.compile(r"(?:TRANSFORMER|ICT|PTR|TFR|TR)\s*(?:BANK\s*)?(?:NO\.?|#|[-:]\s*)\s*([A-Z0-9IVX]+)\b", re.I),
-    re.compile(r"TRANSFORMER\s+BANK\s*[-:]?\s*([IVX]+|\d+)\b", re.I),
-    re.compile(r"\b(?:ICT|PTR|TFR|TR)\s*[-#:]\s*([A-Z0-9IVX]+)\b", re.I),
+    re.compile(r"(?:TRANSFORMER|ICT|PTR|TFR|TR)\s*(?:BANK\s*)?(?:NO\.?|#|[-:]\s*)\s*([A-Z0-9IVX]+)\b", re.IGNORECASE),
+    re.compile(r"TRANSFORMER\s+BANK\s*[-:]?\s*([IVX]+|\d+)\b", re.IGNORECASE),
+    re.compile(r"\b(?:ICT|PTR|TFR|TR)\s*[-#:]\s*([A-Z0-9IVX]+)\b", re.IGNORECASE),
 ]
 
 
