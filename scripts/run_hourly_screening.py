@@ -69,7 +69,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--acknowledge-proxy", action="store_true", help="Required: reconstructed hours are NOT telemetry")
     parser.add_argument("--hours", type=int, default=48, help="Consecutive hours from FY start; 8760 for full year")
-    parser.add_argument(\n        "--proxy",\n        type=Path,\n        default=Path(\n            "data/evidence/demand/"\n            "hourly_load_proxy_era5_weather_sensitive_v2/manifest.json"\n        ),\n    )
+    parser.add_argument(
+        "--proxy",
+        type=Path,
+        default=Path(
+            "data/evidence/demand/"
+            "hourly_load_proxy_era5_weather_sensitive_v2/manifest.json"
+        ),
+    )
     parser.add_argument("--daily", type=Path, default=Path("data/external/sldc_fy2024_25/daily_balance.csv"))
     parser.add_argument("--qa", type=Path, default=Path("data/external/sldc_fy2024_25/qa_report.json"))
     parser.add_argument("--observed", type=Path, default=Path("public/observed-reference.json"))
@@ -153,7 +160,8 @@ def main() -> int:
     args.output.mkdir(parents=True, exist_ok=True)
     dispatch.to_csv(args.output / "dispatch_screening.csv", index=False)
     (args.output / "summary.json").write_text(
-        json.dumps(summary, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+        json.dumps(summary, indent=2, allow_nan=False) + "
+", encoding="utf-8"
     )
     _make_figures(hourly, network, args.output / "figures")
     if args.export_network:
