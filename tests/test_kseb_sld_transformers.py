@@ -5,7 +5,6 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts/promote_kseb_sld_transformers.py"
 SPEC = importlib.util.spec_from_file_location("kseb_sld_transformers", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
