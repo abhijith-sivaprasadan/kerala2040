@@ -141,7 +141,7 @@ def _district(point: Point, districts: list[tuple[str, Any]]) -> str | None:
 
 
 def _build_nodes(geojson_dir: Path, districts: list[tuple[str, Any]]) -> list[dict[str, Any]]:
-    nodes: list[dict[str, Any]] = []
+    raw_nodes: list[dict[str, Any]] = []
     for kind, filename in NODE_FILES.items():
         obj = _load(geojson_dir / filename)
         for index, feature in enumerate(obj["features"]):
@@ -149,7 +149,7 @@ def _build_nodes(geojson_dir: Path, districts: list[tuple[str, Any]]) -> list[di
             geom = shape(feature["geometry"])
             if geom.is_empty or geom.geom_type != "Point":
                 continue
-            nodes.append({
+            raw_nodes.append({
                 "node_id": _node_id(kind, props, index),
                 "kind": kind,
                 "location": str(props.get("Location") or ""),
@@ -164,7 +164,46 @@ def _build_nodes(geojson_dir: Path, districts: list[tuple[str, Any]]) -> list[di
                 "lat": float(geom.y),
                 "district": _district(geom, districts),
                 "synthetic": False,
+                "source_feature_index": index,
+                "source_feature_count": 1,
+                "source_locations": str(props.get("Location") or ""),
             })
+
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for node in raw_nodes:
+        grouped[node["node_id"]].append(node)
+
+    nodes: list[dict[str, Any]] = []
+    for node_id, group in grouped.items():
+        if len(group) == 1:
+            nodes.append(group[0])
+            continue
+
+        anchor = group[0]
+        max_separation_km = max(
+            _haversine_km(
+                (anchor["lon"], anchor["lat"]),
+                (other["lon"], other["lat"]),
+            )
+            for other in group[1:]
+        )
+        if max_separation_km > 0.10:
+            raise RuntimeError(
+                f"non-coincident public node identity collision for {node_id}: "
+                f"{max_separation_km:.3f} km"
+            )
+
+        anchor["lon"] = sum(float(row["lon"]) for row in group) / len(group)
+        anchor["lat"] = sum(float(row["lat"]) for row in group) / len(group)
+        anchor["source_feature_count"] = len(group)
+        anchor["source_feature_indices"] = ";".join(
+            str(row["source_feature_index"]) for row in group
+        )
+        anchor["source_locations"] = " | ".join(
+            dict.fromkeys(str(row["location"]) for row in group)
+        )
+        nodes.append(anchor)
+
     return nodes
 
 
