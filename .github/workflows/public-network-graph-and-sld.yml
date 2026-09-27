@@ -15,6 +15,7 @@ on:
       - "data/evidence/network/kseb_pss_2022_23_110plus_snapshot.json"
       - "scripts/build_kseb_transport_screening_inputs.py"
       - "scripts/run_kseb_network_chronological_screening_v1_0.py"
+      - "scripts/run_kseb_network_bottleneck_robustness_v1_0.py"
       - "src/kerala2040/kseb_network_chronological_screen.py"
       - "configs/kseb_network_chronological_screening_v1_0.yaml"
       - "tests/test_kseb_network_chronological_screen.py"
@@ -270,6 +271,40 @@ jobs:
           print(json.dumps(summary, indent=2))
           PY
 
+      - name: Run boundary-allocation bottleneck robustness v1.0
+        run: |
+          python scripts/run_kseb_network_bottleneck_robustness_v1_0.py \
+            --hours 8760 \
+            --acknowledge-screening-only
+
+      - name: Validate bottleneck robustness classifications
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          qa = json.loads(
+              Path(
+                  "results/network/network_bottleneck_robustness_v1_0/"
+                  "case_summary.json"
+              ).read_text()
+          )
+          assert qa["hours_per_case"] == 8760
+          assert qa["admitted_interface_count"] == 6
+          assert qa["case_count"] == 8
+          assert qa["case_count"] == qa["expected_case_count"]
+          assert qa["all_cases_topology_closed_without_gap_supply"] is True
+          assert qa["source_backed_primary_lines_tested"] >= 200
+          assert qa["independent_pss_backed_transformers_tested"] >= 30
+          assert qa["calibrated_dc_power_flow"] is False
+          assert qa["ac_power_flow"] is False
+          assert qa["measured_interface_dispatch"] is False
+          assert qa["n_minus_1_reliability"] is False
+          assert qa["validated_operational_security"] is False
+          print("NETWORK BOTTLENECK ROBUSTNESS V1.0")
+          print(json.dumps(qa, indent=2))
+          PY
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -285,6 +320,7 @@ jobs:
             results/network/public_pss_evidence_v0_1/
             results/network/public_transport_screening_v0_1/
             results/network/network_chronological_screening_v1_0/
+            results/network/network_bottleneck_robustness_v1_0/
             results/inventory/fy2024_25_generator_census/
             results/acquisition/network_public_v0_1/public_sld_inventory.json
             results/acquisition/network_public_v0_1/acquisition_summary.json
