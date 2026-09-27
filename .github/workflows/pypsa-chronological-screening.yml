@@ -6,6 +6,7 @@ on:
       - "src/kerala2040/chronological_screen.py"
       - "src/kerala2040/weather_load_proxy.py"
       - "scripts/run_hourly_screening.py"
+      - "scripts/compare_hourly_screening_profiles.py"
       - "scripts/build_sldc_observed_figures.py"
       - "tests/test_chronological_screen.py"
       - "tests/test_weather_load_proxy.py"
@@ -19,6 +20,7 @@ on:
       - "src/kerala2040/chronological_screen.py"
       - "src/kerala2040/weather_load_proxy.py"
       - "scripts/run_hourly_screening.py"
+      - "scripts/compare_hourly_screening_profiles.py"
       - "scripts/build_sldc_observed_figures.py"
       - "tests/test_chronological_screen.py"
       - "tests/test_weather_load_proxy.py"
@@ -26,12 +28,6 @@ on:
       - "configs/pypsa_screening_example.yaml"
       - "data/evidence/demand/hourly_load_proxy_era5_weather_sensitive_v2/**"
   workflow_dispatch:
-    inputs:
-      hours:
-        description: "24..8760 complete-hour-day window (8760 is full-year proxy)"
-        default: "48"
-        required: true
-        type: string
 
 permissions:
   contents: read
@@ -48,19 +44,31 @@ jobs:
       - run: pip install -e ".[dev]"
       - name: Test provenance checks, HiGHS smoke solve and figures
         run: |
-          ruff check src/kerala2040/chronological_screen.py src/kerala2040/weather_load_proxy.py scripts/run_hourly_screening.py scripts/build_sldc_observed_figures.py tests/test_chronological_screen.py tests/test_weather_load_proxy.py tests/test_observed_figures.py
+          ruff check src/kerala2040/chronological_screen.py src/kerala2040/weather_load_proxy.py scripts/run_hourly_screening.py scripts/compare_hourly_screening_profiles.py scripts/build_sldc_observed_figures.py tests/test_chronological_screen.py tests/test_weather_load_proxy.py tests/test_observed_figures.py
           pytest -q tests/test_chronological_screen.py tests/test_weather_load_proxy.py tests/test_observed_figures.py
       - name: Build measured-daily evidence figures
         run: python scripts/build_sldc_observed_figures.py
-      - name: Solve proxy-based hourly PyPSA screening
-        env:
-          REQUEST_HOURS: ${{ inputs.hours || (github.event_name == 'push' && '8760') || '48' }}
+      - name: Solve old fixed-shape full-year PyPSA baseline
         run: |
-          python scripts/run_hourly_screening.py --acknowledge-proxy --hours "$REQUEST_HOURS"
+          python scripts/run_hourly_screening.py --acknowledge-proxy --hours 8760 \
+            --proxy public/hourly-load-proxy.json \
+            --output results/models/hourly_proxy_screening_old
+      - name: Solve ERA5-sensitive full-year PyPSA baseline
+        run: |
+          python scripts/run_hourly_screening.py --acknowledge-proxy --hours 8760 \
+            --output results/models/hourly_proxy_screening_era5
+      - name: Compare the two identical-assumption baselines
+        run: |
+          python scripts/compare_hourly_screening_profiles.py \
+            --old results/models/hourly_proxy_screening_old \
+            --era5 results/models/hourly_proxy_screening_era5 \
+            --out results/models/hourly_proxy_comparison/summary.json
       - uses: actions/upload-artifact@v4
         with:
-          name: pypsa-screening-and-observed-daily-figures
+          name: pypsa-screening-era5-weather-sensitive-comparison
           path: |
-            results/models/hourly_proxy_screening/
+            results/models/hourly_proxy_screening_old/
+            results/models/hourly_proxy_screening_era5/
+            results/models/hourly_proxy_comparison/
             results/figures/sldc_observed_fy2024_25/
           retention-days: 30
