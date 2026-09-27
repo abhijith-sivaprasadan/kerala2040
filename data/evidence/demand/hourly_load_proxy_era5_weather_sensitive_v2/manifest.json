@@ -1,0 +1,19 @@
+{
+  "classification": "proxy_reconstruction_not_measured_telemetry",
+  "profile_variant": "era5_weather_sensitive_sparse_extrema_v2",
+  "encoding": "zlib_base64_parts_v1",
+  "parts": [
+    {"file":"payload.part01.txt","chars":7000,"sha256":"5c25e7edce00e3e5dbb9fb94d7548e88dfa73ffe2b4f44484f06e4cf23512e97"},
+    {"file":"payload.part02.txt","chars":7000,"sha256":"9b86109a93ca4a26b6f80bd76910f925557bda17413fe3c3d587ecfa8fae6485"},
+    {"file":"payload.part03.txt","chars":7000,"sha256":"aff3a7bbefe0e74a1d772894d3464563fed7028ef4bbcc863478500a63032e19"},
+    {"file":"payload.part04.txt","chars":7000,"sha256":"f6cc44f2490546bc4204c07f65914ad6aa26ea3a256c36d6e955f5eb0d992488"},
+    {"file":"payload.part05.txt","chars":7000,"sha256":"5d532cb0d39b25172ed2fff26b3c7570a7780e6eb0186783dd7714256a133619"},
+    {"file":"payload.part06.txt","chars":7000,"sha256":"99806d4fae8ed5d756cd4dae95452c8627925399523ffe42d56fa6fdef7731d1"},
+    {"file":"payload.part07.txt","chars":6740,"sha256":"57b915ca31bcc40c4b22db1ed655b53695fc368bd2a4172ae1f64c1be8368de5"}
+  ],
+  "payload_chars": 48740,
+  "payload_text_sha256": "dec63bb7d4c60f23be2a0a7a0e4c7b3bc3c4964becc7860bfd0c1bc620baca71",
+  "compressed_sha256": "4629799c3ffde3e22c3ca5bfeb2ce827c0ab0b786ae0e6b9d7f1d2ba308bb9c9",
+  "decompressed_json_sha256": "ff6cbccddd099ee1002001c33bc6f154e4abbd680d4e3c107eea67bc4db3d1f0",
+  "decompressed_json_bytes": 80421
+}
