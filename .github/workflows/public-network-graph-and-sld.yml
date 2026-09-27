@@ -14,6 +14,10 @@ on:
       - "scripts/build_kseb_public_pss_evidence.py"
       - "data/evidence/network/kseb_pss_2022_23_110plus_snapshot.json"
       - "scripts/build_kseb_transport_screening_inputs.py"
+      - "scripts/run_kseb_network_chronological_screening_v1_0.py"
+      - "src/kerala2040/kseb_network_chronological_screen.py"
+      - "configs/kseb_network_chronological_screening_v1_0.yaml"
+      - "tests/test_kseb_network_chronological_screen.py"
       - "data/evidence/demand/hourly_load_proxy_era5_weather_sensitive_v2/**"
       - "scripts/build_generator_census_fy2024_25.py"
       - "src/kerala2040/generator_census.py"
@@ -65,7 +69,11 @@ jobs:
             "pypdf>=5,<7" \
             "fonttools>=4,<5" \
             "pandas>=2.2,<3" \
-            "pyarrow>=17,<22"
+            "pyarrow>=17,<22" \
+            "numpy>=2.0,<3" \
+            "pyyaml>=6,<7" \
+            "pypsa>=0.31,<2" \
+            "highspy>=1.8,<2"
 
       - name: Acquire public grid layers and SLD PDFs
         run: |
@@ -224,6 +232,44 @@ jobs:
           print(json.dumps(screening, indent=2))
           PY
 
+      - name: Run 8760-hour network-constrained DC screening v1.0
+        run: |
+          python scripts/run_kseb_network_chronological_screening_v1_0.py \
+            --hours 8760 \
+            --acknowledge-screening-only
+
+      - name: Validate chronological network-screening claims
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          summary = json.loads(
+              Path(
+                  "results/network/network_chronological_screening_v1_0/summary.json"
+              ).read_text()
+          )
+          assert summary["hours"] == 8760
+          assert summary["full_financial_year"] is True
+          assert summary["network"]["buses"] >= 500
+          assert summary["network"]["lines"] >= 550
+          assert summary["network"]["transformers"] >= 180
+          assert summary["network"]["load_buses"] >= 50
+          assert summary["network"]["boundary_interfaces"] >= 1
+          assert summary["chronology"]["hourly_import_telemetry_measured"] is False
+          assert summary["release"]["full_year_network_screening_executed"] is True
+          assert summary["release"]["thermal_congestion_screening"] is True
+          assert summary["release"]["dc_flow_sensitivity"] is True
+          assert summary["release"]["calibrated_dc_power_flow"] is False
+          assert summary["release"]["ac_power_flow"] is False
+          assert summary["release"]["measured_bus_load_telemetry"] is False
+          assert summary["release"]["measured_generator_dispatch"] is False
+          assert summary["release"]["measured_interface_dispatch"] is False
+          assert summary["release"]["n_minus_1_reliability"] is False
+          print("NETWORK CHRONOLOGICAL SCREENING V1.0")
+          print(json.dumps(summary, indent=2))
+          PY
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -238,7 +284,8 @@ jobs:
             results/network/public_multibus_skeleton_v0_1/
             results/network/public_pss_evidence_v0_1/
             results/network/public_transport_screening_v0_1/
-                        results/inventory/fy2024_25_generator_census/
+            results/network/network_chronological_screening_v1_0/
+            results/inventory/fy2024_25_generator_census/
             results/acquisition/network_public_v0_1/public_sld_inventory.json
             results/acquisition/network_public_v0_1/acquisition_summary.json
             results/acquisition/network_public_v0_1/geojson/
@@ -253,4 +300,7 @@ jobs:
 
 # Public web sources only. No authentication to SOS/TrAMS and no OCR guessing.
 # v0.2 resolves only geometry-supported tap/LILO junctions and remains fail-closed
-# on ambiguous equipment and distributed generation allocation. Screening ratings, reactance\n# and spatial loads are provenance-labelled proxies/assumptions, not calibrated operator data.
+# on ambiguous equipment and distributed generation allocation. Screening ratings,
+# reactance and spatial loads are provenance-labelled proxies/assumptions, not calibrated
+# operator data. The chronological v1.0 stage is a DC screening sensitivity, not AC or
+# calibrated operational security analysis.
