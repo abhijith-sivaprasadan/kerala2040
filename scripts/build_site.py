@@ -332,7 +332,7 @@ def build_site(root: Path, output: Path) -> None:
         raise ValueError("Build into a separate directory, not a source directory")
     source = validate_bundle(root / "public")
     output.mkdir(parents=True, exist_ok=True)
-    for name in ("index.html", "manifest.webmanifest", "robots.txt"):
+    for name in ("index.html", "network-acquisition.html", "manifest.webmanifest", "robots.txt"):
         shutil.copy2(root / "docs" / name, output / name)
     assets = output / "assets"
     assets.mkdir(exist_ok=True)
