@@ -122,7 +122,7 @@ def _expand_compact(proxy: dict[str, Any]) -> dict[str, Any]:
     imputed = proxy.get("daily_energy_imputed_dates")
     if not isinstance(imputed, list) or len(imputed) != 11 or len(set(imputed)) != 11:
         raise ValueError("Compact hourly proxy must retain the 11 model-only daily gaps")
-    imputed_set = set(str(value) for value in imputed)
+    imputed_set = {str(value) for value in imputed}
 
     records = []
     for timestamp, load_mw in zip(times, values, strict=True):
