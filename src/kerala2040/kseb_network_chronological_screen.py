@@ -503,16 +503,6 @@ def run_screening(
         bus_id = str(generator_by_asset[asset_id]["bus_id"])
         injections_by_bus[bus_id] = injections_by_bus[bus_id] + values
 
-    for interface in admitted_interfaces:
-        bus_id = str(interface["bus_id"])
-        injections_by_bus[bus_id] = (
-            injections_by_bus[bus_id]
-            + boundary_total * float(interface["allocation_weight"])
-        )
-
-    component_rows: list[dict[str, Any]] = []
-    component_supply: dict[int, np.ndarray] = {}
-    component_sink: dict[int, np.ndarray] = {}
     component_tolerance = float(
         suite["component_balance"]["tolerance_mw"]
     )
@@ -520,7 +510,7 @@ def run_screening(
         cid: np.zeros(hours, dtype=float)
         for cid in range(len(components))
     }
-    injection_by_component = {
+    mapped_injection_by_component = {
         cid: np.zeros(hours, dtype=float)
         for cid in range(len(components))
     }
@@ -529,37 +519,93 @@ def run_screening(
         load_by_component[cid] += net_load[bus_id].to_numpy(dtype=float)
     for bus_id, values in injections_by_bus.items():
         cid = component_lookup[bus_id]
-        injection_by_component[cid] += values
+        mapped_injection_by_component[cid] += values
 
+    interfaces_by_component: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for interface in admitted_interfaces:
+        interfaces_by_component[int(interface["component_id"])].append(interface)
+    for cid, rows in interfaces_by_component.items():
+        total_mva = sum(
+            float(row["cross_boundary_screening_mva"]) for row in rows
+        )
+        for row in rows:
+            row["component_allocation_weight"] = (
+                float(row["cross_boundary_screening_mva"]) / total_mva
+            )
+
+    component_supply: dict[int, np.ndarray] = {}
+    component_sink: dict[int, np.ndarray] = {}
+    interface_injection: dict[str, np.ndarray] = {}
+    explicit_boundary_total = np.zeros(hours, dtype=float)
     total_component_supply = np.zeros(hours, dtype=float)
     total_component_sink = np.zeros(hours, dtype=float)
+    component_rows: list[dict[str, Any]] = []
+
     for cid, group in enumerate(components):
-        net = injection_by_component[cid] - load_by_component[cid]
-        supply = np.maximum(-net, 0.0)
-        sink = np.maximum(net, 0.0)
-        if float(np.abs(net).max()) <= component_tolerance:
+        pre_boundary_net = (
+            load_by_component[cid] - mapped_injection_by_component[cid]
+        )
+        deficit = np.maximum(pre_boundary_net, 0.0)
+        surplus = np.maximum(-pre_boundary_net, 0.0)
+        component_interfaces = interfaces_by_component.get(cid, [])
+
+        if component_interfaces:
+            for interface in component_interfaces:
+                bus_id = str(interface["bus_id"])
+                values = (
+                    deficit
+                    * float(interface["component_allocation_weight"])
+                )
+                interface_injection[bus_id] = values
+                injections_by_bus[bus_id] = (
+                    injections_by_bus[bus_id] + values
+                )
+                explicit_boundary_total += values
+            supply = np.zeros(hours, dtype=float)
+        else:
+            supply = deficit
+
+        # A disconnected component with local generation surplus cannot export
+        # through the admitted topology. Preserve the accounting as an explicit
+        # diagnostic sink rather than inventing a tie-line.
+        sink = surplus
+
+        if float(supply.max()) <= component_tolerance:
             supply[:] = 0.0
+        if float(sink.max()) <= component_tolerance:
             sink[:] = 0.0
         component_supply[cid] = supply
         component_sink[cid] = sink
         total_component_supply += supply
         total_component_sink += sink
+
         component_rows.append(
             {
                 "component_id": cid,
                 "bus_count": len(group),
                 "load_bus_count": sum(bus in net_load.columns for bus in group),
-                "generator_bus_count": sum(bus in injections_by_bus for bus in group),
-                "boundary_interface_count": sum(
-                    str(row["bus_id"]) in group for row in admitted_interfaces
+                "generator_bus_count": sum(
+                    bus in injections_by_bus for bus in group
                 ),
+                "boundary_interface_count": len(component_interfaces),
                 "detected_boundary_interface_count": sum(
                     str(row["bus_id"]) in group for row in interfaces
                 ),
                 "net_load_peak_mw": float(load_by_component[cid].max()),
-                "mapped_and_boundary_injection_peak_mw": float(
-                    injection_by_component[cid].max()
+                "mapped_generation_peak_mw": float(
+                    mapped_injection_by_component[cid].max()
                 ),
+                "explicit_boundary_injection_peak_mw": float(
+                    sum(
+                        (
+                            interface_injection[str(row["bus_id"])]
+                            for row in component_interfaces
+                        ),
+                        np.zeros(hours, dtype=float),
+                    ).max()
+                )
+                if component_interfaces
+                else 0.0,
                 "diagnostic_balance_supply_peak_mw": float(supply.max()),
                 "diagnostic_balance_sink_peak_mw": float(sink.max()),
                 "diagnostic_balance_absolute_mwh": float(
@@ -568,12 +614,35 @@ def run_screening(
             }
         )
 
-    global_prebalance = (
-        sum(injections_by_bus.values(), np.zeros(hours, dtype=float))
-        - net_load.sum(axis=1).to_numpy(dtype=float)
+    accounting_residual = (
+        explicit_boundary_total
+        + total_component_supply
+        - total_component_sink
+        - boundary_total
     )
-    if float(np.abs(global_prebalance).max()) > 1e-6:
-        raise RuntimeError("global accounting does not balance before component diagnostics")
+    if float(np.abs(accounting_residual).max()) > 1e-6:
+        raise RuntimeError(
+            "component-aware boundary accounting does not reproduce "
+            "the statewide residual"
+        )
+
+    balanced_injection_by_component = {
+        cid: np.zeros(hours, dtype=float)
+        for cid in range(len(components))
+    }
+    for bus_id, values in injections_by_bus.items():
+        balanced_injection_by_component[component_lookup[bus_id]] += values
+    for cid in range(len(components)):
+        residual = (
+            balanced_injection_by_component[cid]
+            + component_supply[cid]
+            - load_by_component[cid]
+            - component_sink[cid]
+        )
+        if float(np.abs(residual).max()) > component_tolerance:
+            raise RuntimeError(
+                f"component {cid} remains unbalanced after explicit diagnostics"
+            )
 
     incident_line_mva: dict[str, list[float]] = defaultdict(list)
     for row in lines:
@@ -657,7 +726,7 @@ def run_screening(
         )
     for interface in admitted_interfaces:
         bus_id = str(interface["bus_id"])
-        values = boundary_total * float(interface["allocation_weight"])
+        values = interface_injection[bus_id]
         network.add(
             "Generator",
             f"BOUNDARY:{bus_id}",
@@ -701,7 +770,8 @@ def run_screening(
             "statewide_gross_load_mw": hourly["load_mw"].to_numpy(dtype=float),
             "unlocated_generation_netted_locally_mw": unlocated_generation,
             "network_net_load_mw": net_load.sum(axis=1).to_numpy(dtype=float),
-            "boundary_accounting_injection_mw": boundary_total,
+            "statewide_accounting_residual_mw": boundary_total,
+            "explicit_boundary_injection_mw": explicit_boundary_total,
             "component_balance_supply_mw": total_component_supply,
             "component_balance_sink_mw": total_component_sink,
             "max_line_loading_pu": line_loading.max(axis=1).to_numpy(dtype=float),
@@ -743,8 +813,16 @@ def run_screening(
         "chronology": {
             "load_proxy_classification": proxy["classification"],
             "statewide_peak_mw": float(hourly["load_mw"].max()),
-            "boundary_accounting_injection_peak_mw": float(boundary_total.max()),
-            "boundary_accounting_injection_mwh": float(boundary_total.sum()),
+            "statewide_accounting_residual_peak_mw": float(boundary_total.max()),
+            "statewide_accounting_residual_mwh": float(boundary_total.sum()),
+            "explicit_boundary_injection_peak_mw": float(
+                explicit_boundary_total.max()
+            ),
+            "explicit_boundary_injection_mwh": float(
+                explicit_boundary_total.sum()
+            ),
+            "topology_gap_supply_mwh": float(total_component_supply.sum()),
+            "topology_gap_sink_mwh": float(total_component_sink.sum()),
             "observed_days": chronology_meta["observed_days"],
             "imputed_days": chronology_meta["imputed_days"],
             "hourly_import_telemetry_measured": False,
@@ -765,6 +843,9 @@ def run_screening(
             "topology_closed_without_component_balance_proxy": bool(
                 float(total_component_supply.max()) <= component_tolerance
                 and float(total_component_sink.max()) <= component_tolerance
+            ),
+            "accounting_identity_max_residual_mw": float(
+                np.abs(accounting_residual).max()
             ),
         },
         "line_screening": {
@@ -824,7 +905,9 @@ def run_screening(
                 "Boundary injection preserves the statewide hourly accounting residual "
                 "and observed daily import energy, but is not measured interface dispatch. "
                 "Detected external interfaces in components with no spatial load are "
-                "reported but excluded from the allocation."
+                "reported but excluded from the allocation. Each connected component "
+                "is balanced separately; load-serving components without an admitted "
+                "external interface receive an explicit topology-gap supply diagnostic."
             ),
             (
                 "Line loading compares DC MW flow with screening MVA and is therefore a "
