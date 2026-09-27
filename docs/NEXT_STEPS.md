@@ -88,9 +88,16 @@ slow and should not run whenever the interface changes.
 
 The modelling foundation now includes an observed-day PyPSA replay, hydro/storage
 diagnostics, official energy-accounting reconciliation, weather-derived renewable
-availability proxies, a canonical generator inventory seed, structural 2040 scenario
-dimensions, a sourced techno-economic benchmark registry and a GIS acquisition
-manifest. These are foundations, not validated 2040 results.
+availability proxies, and a **reconciled FY2024-25 installed-capacity accounting
+census**. The census contains 112 station/farm/aggregate rows, all 44 KSEBL hydro
+stations, and explicit distributed-solar buckets; it preserves the official
+4,412.14 MW headline versus 4,412.15 MW category-arithmetic discrepancy rather
+than inserting a balancing asset. Plant/unit hourly availability, outages,
+deratings and station generation remain open, so installed MW is not yet
+dispatchable MW. Structural 2040 scenario dimensions, a sourced techno-economic
+benchmark registry and a GIS acquisition manifest also exist. These are
+foundations, not validated 2040 results. See
+[the capacity-accounting closeout](GENERATOR_CENSUS_FY2024_25_CLOSEOUT.md).
 
 The 8,760-hour load reconstruction remains **proxy data, not measured telemetry**.
 See [the mandatory provenance policy](PROVENANCE_CORE_RULES.md).
