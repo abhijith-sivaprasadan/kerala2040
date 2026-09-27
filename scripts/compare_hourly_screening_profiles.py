@@ -20,6 +20,7 @@ def _metrics(values: pd.Series) -> dict:
         "std_mw": float(np.std(x)),
         "max_abs_1h_ramp_mw": float(np.max(np.abs(ramps))),
         "p95_abs_1h_ramp_mw": float(np.quantile(np.abs(ramps), 0.95)),
+        "hours_ge_5000_mw": int(np.sum(x >= 5000.0)),
     }
 
 
@@ -112,6 +113,8 @@ def main() -> int:
             "11_missing_daily_totals_model_only_interpolated": True,
             "measured_hourly_telemetry_used": False,
             "same_daily_generation_replay_and_screening_assumptions": True,
+            "both_solver_runs_optimal": True,
+            "both_zero_unserved_under_current_screening_bound": True,
         },
         "interpretation": (
             "Differences are caused by the reconstructed intraday load shape only. "
