@@ -119,3 +119,15 @@ def test_mixed_conductor_screening_falls_back() -> None:
     assert current == 296.0
     assert "ASSUMPTION" in basis
     assert source_backed is False
+
+
+def test_transport_screening_uses_canonical_8760_hour_proxy_loader() -> None:
+    manifest = (
+        ROOT
+        / "data/evidence/demand/"
+        "hourly_load_proxy_era5_weather_sensitive_v2/manifest.json"
+    )
+    proxy = SCREEN._decode_load_proxy(manifest)
+    assert proxy["classification"] == "proxy_reconstruction_not_measured_telemetry"
+    assert len(proxy["records"]) == 8760
+    assert proxy["records"][0]["classification"] == "proxy_reconstruction"
