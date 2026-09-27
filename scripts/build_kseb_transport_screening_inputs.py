@@ -8,17 +8,17 @@ the existing statewide hourly load reconstruction. Assumptions remain explicit.
 from __future__ import annotations
 
 import argparse
-import base64
 import csv
 import json
 import math
 import re
-import zlib
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
+
+from kerala2040.weather_load_proxy import load_hourly_proxy
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BUSES = (
@@ -282,26 +282,13 @@ def _screen_resistance(
 
 
 def _decode_load_proxy(manifest_path: Path) -> dict[str, Any]:
-    manifest = json.loads(
-        manifest_path.read_text(encoding="utf-8")
-    )
-    payload = "".join(
-        (manifest_path.parent / part["file"])
-        .read_text(encoding="utf-8")
-        .strip()
-        for part in manifest["parts"]
-    )
-    data = zlib.decompress(base64.b64decode(payload))
-    result = json.loads(data)
-    if (
-        result.get("classification")
-        != "proxy_reconstruction_not_measured_telemetry"
-    ):
+    """Use the repository's canonical checksummed compact-proxy loader."""
+    result = load_hourly_proxy(manifest_path)
+    if len(result.get("records") or []) != 8760:
         raise ValueError(
-            "Refusing to relabel hourly load input as measured telemetry"
+            "Canonical hourly load proxy loader did not return 8,760 records"
         )
     return result
-
 
 def _build_screening_buses(
     buses: list[dict[str, Any]],
