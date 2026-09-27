@@ -1,10 +1,33 @@
 # Kerala 2040: next research steps
 
+## Current modelling position · 28 September 2026
+
+The earlier Step-9/Step-10 roadmap below is historical context. The independent
+TZ-OSeMOSYS benchmark and the PyPSA-OSeMOSYS common frontier are now implemented,
+ERA5 demand/renewable integration is complete for screening, and the public KSEBL
+110-kV+ network now runs a full 8,760-hour spatial screening.
+
+The latest network robustness envelope leaves **21 source-backed line bottlenecks**
+and **one independent PSS-backed transformer bottleneck** overloaded in every one
+of eight boundary-allocation cases. These are now a formal evidence gate for the
+Full-PyPSA and OSeMOSYS planning work. They are not yet transmission-investment
+constraints because future corridor capacities, reinforcement options/costs and a
+validated future spatial allocation have not been admitted.
+
+**Immediate modelling order:** (1) use the robust corridor register to define
+sourceable candidate transmission reinforcement options rather than inventing MW;
+(2) keep PyPSA/OSeMOSYS capacity results explicitly network-unvalidated until that
+promotion gate closes; (3) continue Idukki Phase 5 catchment-rainfall/inflow
+validation; (4) then combine spatial network, hydro and expansion scenarios.
+
+See [the robust network shortlist](KSEB_NETWORK_ROBUST_BOTTLENECKS_V1_0.md).
+
+
 ## Step 9 PyPSA equivalence gate closed · 25 September 2026
 
 The full [Step 9 independent PyPSA reproduction](../research/step9_pypsa/README.md) has now passed all **3,186** daily LP comparisons: 354 admitted SLDC days × three synthetic quarter-hour demand shapes × three balancing cases. Every solve was optimal and the maximum absolute daily unserved/surplus difference against the Step 8 SciPy reference was **1.2732925824820995e-10 MWh**, far below the predeclared 0.001 MWh tolerance. The compact result is frozen in [verification_summary.json](../research/step9_pypsa/verification_summary.json).
 
-**Next modelling task:** build the independent OSeMOSYS capacity-expansion benchmark and compare its accounting/technology representation with the Kerala2040 formulation. Do not interpret Step 9 as empirical validation: measured interval demand/interchange, physical hydro/grid limits, technology costs and spatial/environmental constraints remain separate release gates.
+**Historical next-task note:** the independent OSeMOSYS benchmark and later PyPSA-OSeMOSYS common frontier have now been implemented. Step 9 remains formulation evidence rather than empirical validation; the current network, hydro, measured-interval and spatial release gates are tracked in the current-position section above.
 
 ## WP6 BESS/pumped-storage: bounded electrical service screen · 24 September 2026
 
