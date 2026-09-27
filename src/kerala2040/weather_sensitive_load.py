@@ -155,10 +155,15 @@ def prepare_daily(daily_balance: pd.DataFrame, weather: pd.DataFrame) -> pd.Data
 
 
 def prepare_extrema(extrema: pd.DataFrame, daily: pd.DataFrame) -> pd.DataFrame:
+    e = extrema.rename(columns={
+        "category": "event",
+        "metric": "quantity",
+        "time_from": "time_from_ist",
+        "time_to": "time_to_ist",
+    }).copy()
     needed = {"date", "event", "period", "quantity", "mw", "time_from_ist", "time_to_ist"}
-    if not needed.issubset(extrema):
-        raise ValueError(f"Extrema file missing {sorted(needed - set(extrema))}")
-    e = extrema.copy()
+    if not needed.issubset(e):
+        raise ValueError(f"Extrema file missing {sorted(needed - set(e))}")
     e["date"] = pd.to_datetime(e.date).dt.normalize()
     e["event"] = e.event.astype(str).str.casefold()
     e["period"] = e.period.astype(str).str.casefold()
