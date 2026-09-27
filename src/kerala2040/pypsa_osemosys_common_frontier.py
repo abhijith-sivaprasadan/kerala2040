@@ -778,6 +778,7 @@ def run_common_frontier(
     *,
     profile_path: Path,
     suite_path: Path,
+    only_case: tuple[str, str, str] | None = None,
 ) -> dict[str, Any]:
     suite = load_common_frontier_suite(suite_path)
     contract = suite["common_contract"]
@@ -864,6 +865,9 @@ def run_common_frontier(
         for transfer_id in contract["transfer_cases"]:
             transfer = transfer_lookup[transfer_id]
             for availability_id in contract["idukki_availability_cases"]:
+                case_key = (demand_id, transfer_id, availability_id)
+                if only_case is not None and case_key != only_case:
+                    continue
                 availability = availability_lookup[availability_id]
                 common_kwargs = {
                     "residual_after_nonhydro_mw": residual,
@@ -943,8 +947,11 @@ def run_common_frontier(
                     "comparison": comparison,
                 })
 
-    if len(cases) != int(contract["expected_cases"]):
-        raise RuntimeError("common-frontier case matrix is incomplete")
+    expected_cases = 1 if only_case is not None else int(contract["expected_cases"])
+    if len(cases) != expected_cases:
+        raise RuntimeError(
+            f"common-frontier solved {len(cases)} cases, expected {expected_cases}"
+        )
 
     maxima: dict[str, float] = {}
     for row in cases:
@@ -959,6 +966,7 @@ def run_common_frontier(
         "hours": hours,
         "days": hours // 24,
         "cases_compared": len(cases),
+        "case_filter": list(only_case) if only_case is not None else None,
         "all_cases_pass": all(
             row["comparison"]["status"] == "PASS" for row in cases
         ),
