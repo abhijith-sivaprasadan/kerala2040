@@ -99,6 +99,8 @@ jobs:
           )
 
           assert graph["source_edge_ids_unique"] is True
+          assert graph["public_node_ids_unique"] is True
+          assert graph["duplicate_public_node_features_collapsed"] >= 2
           assert graph["all_220plus_edges_resolved"] is True
           assert graph["unresolved_admitted_source_edges_by_voltage"] == {}
           assert graph["synthetic_junction_nodes"] >= 8
