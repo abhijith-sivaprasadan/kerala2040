@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "classification": "PUBLIC_WEB_NETWORK_ACQUISITION_MANIFEST_NO_AUTH_BYPASS",
+  "prepared_date": "2026-09-27",
+  "purpose": "Acquire public Kerala transmission-network assets directly from official web-published sources without credentials or private-data requests.",
+  "sources": [
+    {
+      "id": "kseb_grid_map_index",
+      "label": "KSEBL geo-referenced power transmission grid v3.2",
+      "url": "http://pse.kseb.in/PSEHome/resources/gridnew/index.html",
+      "source_type": "public_qgis2web",
+      "acquisition": "auto",
+      "model_value": "Discovers public feeder, substation, generating-station and district layer files."
+    },
+    {
+      "id": "kseb_grid_map_manual",
+      "label": "KSEBL Grid Map 2026 user manual",
+      "url": "http://pse.kseb.in/PSEHome/resources/gridnew/resources/user-manual%20v.3.1.pdf",
+      "source_type": "public_pdf",
+      "acquisition": "auto",
+      "model_value": "Documents the public georeferenced queryable EHT-grid map."
+    },
+    {
+      "id": "cea_kerala_transmission_ra",
+      "label": "CEA Kerala transmission resource-adequacy plan to 2034-35",
+      "url": "https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf",
+      "source_type": "public_pdf",
+      "acquisition": "auto",
+      "model_value": "Current 400/220-kV system totals, interstate corridors, ATC/TTC, constraints and planning reinforcements."
+    },
+    {
+      "id": "kseb_scheduled_outages",
+      "label": "KSEBL public scheduled outage report",
+      "url": "https://pse.kseb.in/Outages/webreport",
+      "source_type": "public_html",
+      "acquisition": "auto",
+      "model_value": "Current public outage snapshot; useful as a monitoring source, not historical outage chronology."
+    },
+    {
+      "id": "kseb_sos",
+      "label": "KSEBL Substation Operating Statistics (SOS)",
+      "url": "https://pse.kseb.in/SOS3/",
+      "source_type": "login_gated",
+      "acquisition": "manual_credentials_only",
+      "model_value": "Potential operating statistics. Do not automate authentication or bypass access controls."
+    },
+    {
+      "id": "kseb_trams",
+      "label": "KSEBL Transmission Asset Management System (TrAMS)",
+      "url": "https://pse.kseb.in/Substation/home",
+      "source_type": "login_gated",
+      "acquisition": "manual_credentials_only",
+      "model_value": "Potential asset details. Do not automate authentication or bypass access controls."
+    }
+  ],
+  "qgis_layer_files_expected": [
+    "Districts_5.js",
+    "33kVFeederProposed_6.js",
+    "33kVFeederInservice_7.js",
+    "66kVFeederProposal_8.js",
+    "66kVFeederInservice_9.js",
+    "110kVFeederProposed_10.js",
+    "110kVFeederInservice_11.js",
+    "220kVFeederProposed_12.js",
+    "220kVFeederInservice_13.js",
+    "320kVFeederInservice_14.js",
+    "400kVFeederProposed_15.js",
+    "400kVFeederInservice_16.js",
+    "GeneratingStations_17.js",
+    "Substations_18.js"
+  ],
+  "release_gate": {
+    "public_grid_geometry_acquisition_ready": true,
+    "public_substation_coordinate_acquisition_ready": true,
+    "public_sld_link_inventory_ready": true,
+    "operating_load_data_ready": false,
+    "internal_branch_ratings_ready": false,
+    "sos_or_trams_auth_bypass_permitted": false
+  }
+}
