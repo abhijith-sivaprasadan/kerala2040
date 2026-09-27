@@ -5,6 +5,7 @@ import argparse
 import json
 from pathlib import Path
 
+from kerala2040.full_pypsa_proxy_expansion import load_proxy_expansion_suite
 from kerala2040.osemosys_capacity_benchmark import (
     BenchmarkCase,
     run_benchmark,
@@ -39,6 +40,11 @@ def main() -> None:
         help="DEMAND,TRANSFER,ENVELOPE,BESS_COST; may be repeated",
     )
     parser.add_argument(
+        "--all-v0-8-cases",
+        action="store_true",
+        help="Run the full Cartesian product declared by the v0.8 proxy suite.",
+    )
+    parser.add_argument(
         "--config",
         type=Path,
         default=ROOT / "configs/osemosys_capacity_benchmark_v0_1.yaml",
@@ -49,9 +55,23 @@ def main() -> None:
         default=ROOT / "results/models/osemosys_step10/benchmark.json",
     )
     args = parser.parse_args()
-    cases = args.case or [
-        BenchmarkCase("reference_FY2030_31", "atc_snapshot_reference", "high", "low")
-    ]
+    if args.all_v0_8_cases and args.case:
+        raise SystemExit("--all-v0-8-cases cannot be combined with --case")
+    if args.all_v0_8_cases:
+        suite = load_proxy_expansion_suite(
+            ROOT / "configs/full_pypsa_proxy_expansion_v0_8.yaml"
+        )
+        cases = [
+            BenchmarkCase(demand, transfer, envelope, bess_cost)
+            for demand in suite["demand_cases"]
+            for transfer in suite["transfer_cases"]
+            for envelope in suite["capacity_envelope_cases"]
+            for bess_cost in suite["bess_cost_cases"]
+        ]
+    else:
+        cases = args.case or [
+            BenchmarkCase("reference_FY2030_31", "atc_snapshot_reference", "high", "low")
+        ]
     report = run_benchmark(
         ROOT,
         profile_path=args.profile,
