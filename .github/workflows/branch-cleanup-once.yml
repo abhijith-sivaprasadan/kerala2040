@@ -78,3 +78,5 @@ jobs:
           echo "Remaining: \${#remaining[@]}"
 
           diff -u /tmp/expected.txt /tmp/remaining.txt
+
+# One-shot cleanup admitted on main.
