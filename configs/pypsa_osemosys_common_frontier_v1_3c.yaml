@@ -1,0 +1,109 @@
+version: 1
+classification: pypsa_osemosys_common_frontier_v1_3c_stateful_idukki_cross_framework
+prepared_date: "2026-09-27"
+purpose: >-
+  Compare direct PyPSA/Linopy and TZ-OSeMOSYS on the same latest fully
+  reproducible public Kerala2040 physical/economic model boundary. This common
+  frontier is based on the executed v1.3 stateful-Idukki pilot, not the older
+  v0.8 proxy-equivalence checkpoint and not the still-gated v1.4/v1.5 inflow work.
+
+common_contract:
+  stateful_idukki: configs/full_pypsa_idukki_reservoir_v1_3.yaml
+  import_economics: configs/full_pypsa_import_economics_v1_0.yaml
+  demand: configs/full_pypsa_future_adequacy_v0_4.yaml
+  candidate_expansion: configs/full_pypsa_proxy_expansion_v0_8.yaml
+  costs: configs/full_pypsa_cost_finance_v0_5.yaml
+  renewable_profiles: configs/full_pypsa_era5_renewable_profiles_v0_6.yaml
+  horizon_hours: 8736
+  horizon_days: 364
+  capacity_envelope_case: reference
+  bess_cost_case: low
+  import_price_case: ksebl_weighted_purchase
+  demand_cases:
+    - lower_FY2030
+    - reference_FY2030_31
+  transfer_cases:
+    - atc_snapshot_reference
+    - atc_80pct_stress
+    - atc_60pct_stress
+  idukki_availability_cases:
+    - full_available
+    - n_minus_1_130mw
+  expected_cases: 12
+
+frameworks:
+  pypsa:
+    formulation: direct_PyPSA_Network_Linopy
+    solver: HiGHS
+    source: src/kerala2040/full_pypsa_idukki_reservoir_v1_3.py
+  osemosys:
+    package: transition-zero/tz-osemosys
+    tz_osemosys_git_commit: 2c95ef395858ad530fb38a0dfb5c142283964d24
+    solver: HiGHS
+    formulation: canonical_OSeMOSYS_with_explicit_alignment_constraints
+    bridge_constraints:
+      - fixed_hourly_positive_and_negative_net_water_balance_activities
+      - exact_non_idukki_daily_hydro_energy
+      - fixed_existing_idukki_storage_capacity
+      - observed_initial_and_terminal_idukki_storage
+      - four_hour_BESS_energy_power_tie
+      - BESS_grid_side_charge_discharge_limits
+      - cyclic_BESS_boundary
+
+objectives:
+  stage_1: minimize_total_unserved_mwh
+  stage_2: >-
+    preserve stage-1 shortage floor and minimize annualized candidate investment
+    plus source-bounded import-energy cost
+  unserved_tolerance_mwh: 0.001
+
+acceptance:
+  unserved_abs_mwh: 0.05
+  capacity_abs_mw: 0.05
+  imports_abs_mwh: 2.0
+  hydro_generation_abs_mwh: 2.0
+  idukki_terminal_storage_abs_mcm: 0.01
+  idukki_storage_bound_tolerance_mcm: 0.01
+  objective_abs_million_inr: 0.5
+
+comparison_semantics:
+  planning_equivalence_gate:
+    - stage_1_unserved_energy
+    - stage_2_unserved_energy
+    - candidate_solar_wind_BESS_capacity
+    - import_energy
+    - total_other_hydro_generation
+    - total_Idukki_generation
+    - Idukki_terminal_storage
+    - stage_2_partial_economic_objective
+  operational_diagnostics_not_equivalence_gate:
+    - Idukki_hourly_generation_path
+    - Idukki_intermediate_storage_path
+    - Idukki_minimum_storage
+    - Idukki_maximum_storage
+    - non_turbine_release_if_total_release_is_objectively_degenerate
+  rationale: >-
+    The stage-1/stage-2 LP does not contain a common water-value or chronology
+    tie-break after the planning optimum is reached. Different solvers may
+    therefore choose different feasible hourly reservoir trajectories while
+    producing identical planning capacities, energy totals, cost and terminal
+    stock. Those trajectories are reported, not force-fitted.
+
+newer_evidence_not_admitted:
+  - full_pypsa_idukki_cumulative_inflow_v1_4b
+  - full_pypsa_idukki_kseb_official_v1_5
+  - corrected_LRIS_GLO90_Idukki_reservoir_intercepted_catchment
+  - FY2024_25_basin_weighted_ERA5_rainfall_currently_being_acquired
+  - unresolved_bottom_up_generator_census
+reason_not_admitted: >-
+  These layers are newer, but the daily observed/source-reported inflow gate,
+  basin-rainfall validation, or asset reconciliation is not yet complete enough
+  to promote them into a common optimizer input without adding assumptions.
+
+release:
+  common_cross_framework_comparison: true
+  latest_fully_reproducible_public_frontier: true
+  observed_catchment_inflow_model: false
+  total_system_cost_optimization: false
+  validated_capacity_plan: false
+  scenario_recommendation: false

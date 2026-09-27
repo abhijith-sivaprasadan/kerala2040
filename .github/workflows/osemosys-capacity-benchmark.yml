@@ -1,0 +1,115 @@
+name: OSeMOSYS capacity benchmark
+
+on:
+  pull_request:
+    paths:
+      - "configs/osemosys_capacity_benchmark_v0_1.yaml"
+      - "configs/full_pypsa_proxy_expansion_v0_8.yaml"
+      - "configs/full_pypsa_future_adequacy_v0_4.yaml"
+      - "configs/full_pypsa_cost_finance_v0_5.yaml"
+      - "configs/full_pypsa_era5_renewable_profiles_v0_6.yaml"
+      - "configs/full_pypsa_renewable_capacity_v0_7.yaml"
+      - "src/kerala2040/osemosys_capacity_benchmark.py"
+      - "src/kerala2040/full_pypsa_proxy_expansion.py"
+      - "research/step10_osemosys/**"
+      - "tests/test_osemosys_capacity_benchmark.py"
+      - ".github/workflows/osemosys-capacity-benchmark.yml"
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: "Benchmark hours (whole days, 24..8760)"
+        required: true
+        default: "8760"
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  osemosys-benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Kerala2040 and pinned TZ-OSeMOSYS
+        run: |
+          python -m pip install -e ".[dev,era5]"
+          python -m pip install \
+            "tz-osemosys @ git+https://github.com/transition-zero/tz-osemosys.git@2c95ef395858ad530fb38a0dfb5c142283964d24"
+
+      - name: Lint and synthetic cross-framework test
+        run: |
+          ruff check \
+            src/kerala2040/osemosys_capacity_benchmark.py \
+            research/step10_osemosys/run_osemosys_benchmark.py \
+            tests/test_osemosys_capacity_benchmark.py
+          pytest -q tests/test_osemosys_capacity_benchmark.py
+
+      - name: Download verified Apr-Dec 2024 ERA5 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35622527064"
+          pattern: era5-*-2024-*_to_2024-*-SOURCE-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2024
+          merge-multiple: false
+
+      - name: Download verified Jan-Mar 2025 ERA5 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35623051780"
+          pattern: era5-*-2025-01_to_2025-03-REACQUIRED-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2025
+          merge-multiple: false
+
+      - name: Require exactly 20 independent location-quarter artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(find results/acquisition/era5/full-year-input \
+            -type f -name retrieval_attempt.json | wc -l)"
+          echo "retrieval manifests: $count"
+          test "$count" -eq 20
+
+      - name: Rebuild verified v0.6 hourly renewable screening profile
+        run: |
+          python scripts/build_full_pypsa_era5_profiles_v0_6.py \
+            results/acquisition/era5/full-year-input
+
+      - name: Run OSeMOSYS 168-hour full v0.8 matrix
+        run: |
+          python research/step10_osemosys/run_osemosys_benchmark.py \
+            --hours 168 \
+            --all-v0-8-cases \
+            --output results/models/osemosys_step10/full_matrix_168h.json
+
+      - name: Run full-year OSeMOSYS reference benchmark
+        env:
+          DISPATCH_HOURS: ${{ github.event.inputs.hours }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          hours="8760"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            hours="${DISPATCH_HOURS:-8760}"
+          fi
+          python research/step10_osemosys/run_osemosys_benchmark.py \
+            --hours "$hours" \
+            --case reference_FY2030_31,atc_snapshot_reference,high,low \
+            --output results/models/osemosys_step10/full_year_reference.json
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: osemosys-capacity-benchmark-step10-NOT-VALIDATED
+          retention-days: 90
+          if-no-files-found: warn
+          path: results/models/osemosys_step10/*.json

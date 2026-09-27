@@ -1,0 +1,48 @@
+version: 1
+classification: independent_TZ_OSeMOSYS_capacity_expansion_benchmark_v0_1_not_validated_capacity_plan
+prepared_date: "2026-09-27"
+purpose: >-
+  Independently formulate the existing Full-PyPSA v0.8 adequacy-first proxy
+  capacity-expansion problem in OSeMOSYS and test whether the two frameworks
+  reproduce the same shortage floor, candidate build and minimum-import dispatch.
+  This is a cross-framework structural benchmark, not a new Kerala scenario.
+
+implementation:
+  package: transition-zero/tz-osemosys
+  tz_osemosys_git_commit: 2c95ef395858ad530fb38a0dfb5c142283964d24
+  solver: HiGHS
+  model_core: canonical_TZ_OSeMOSYS
+  bridge_constraints:
+    - four_hour_BESS_energy_to_power_tie
+    - grid_side_BESS_charge_power_limit_with_efficiency
+    - grid_side_BESS_discharge_power_limit_with_efficiency
+    - cyclic_storage_boundary_matching_v0_8
+  reason_for_bridge: >-
+    The reference v0.8 model defines one four-hour BESS power variable with
+    separate AC-side charge/discharge limits and a cyclic state of charge. The
+    canonical OSeMOSYS storage equations are retained; only these explicit
+    linking constraints are added so the compared feasible sets use the same
+    BESS definition.
+
+reference_model:
+  configuration: configs/full_pypsa_proxy_expansion_v0_8.yaml
+  implementation: src/kerala2040/full_pypsa_proxy_expansion.py
+  solver: scipy.optimize.linprog_HiGHS
+  objective_stages:
+    - minimize_total_unserved_mwh
+    - minimize_annualized_candidate_investment_at_shortage_floor
+    - minimize_import_mwh_with_stage2_capacities_fixed
+  note: >-
+    v0.8 is itself a proxy adequacy counterfactual and is not a validated
+    total-system-cost capacity plan.
+
+acceptance:
+  unserved_abs_mwh: 0.01
+  capacity_abs_mw: 0.01
+  imports_abs_mwh: 0.1
+
+release:
+  cross_framework_benchmark: true
+  economic_dispatch_ready: false
+  validated_capacity_plan: false
+  scenario_recommendation: false

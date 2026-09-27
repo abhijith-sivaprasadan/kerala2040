@@ -1,0 +1,215 @@
+name: PyPSA OSeMOSYS common frontier v1.3c
+
+on:
+  pull_request:
+    paths:
+      - "configs/pypsa_osemosys_common_frontier_v1_3c.yaml"
+      - "configs/full_pypsa_idukki_reservoir_v1_3.yaml"
+      - "configs/full_pypsa_import_economics_v1_0.yaml"
+      - "configs/full_pypsa_future_adequacy_v0_4.yaml"
+      - "configs/full_pypsa_proxy_expansion_v0_8.yaml"
+      - "configs/full_pypsa_cost_finance_v0_5.yaml"
+      - "src/kerala2040/pypsa_osemosys_common_frontier.py"
+      - "src/kerala2040/osemosys_capacity_benchmark.py"
+      - "src/kerala2040/full_pypsa_idukki_reservoir_v1_3.py"
+      - "scripts/run_pypsa_osemosys_common_frontier_v1_3c.py"
+      - "scripts/aggregate_pypsa_osemosys_common_frontier_v1_3c.py"
+      - "tests/test_pypsa_osemosys_common_frontier.py"
+      - ".github/workflows/pypsa-osemosys-common-frontier-v1.3c.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  prepare-profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install profile dependencies
+        run: python -m pip install -e ".[dev,era5]"
+
+      - name: Lint and contract tests
+        run: |
+          ruff check \
+            src/kerala2040/pypsa_osemosys_common_frontier.py \
+            scripts/run_pypsa_osemosys_common_frontier_v1_3c.py \
+            scripts/aggregate_pypsa_osemosys_common_frontier_v1_3c.py \
+            tests/test_pypsa_osemosys_common_frontier.py
+          pytest -q tests/test_pypsa_osemosys_common_frontier.py
+
+      - name: Download verified Apr-Dec 2024 ERA5 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35622527064"
+          pattern: era5-*-2024-*_to_2024-*-SOURCE-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2024
+          merge-multiple: false
+
+      - name: Download verified Jan-Mar 2025 ERA5 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35623051780"
+          pattern: era5-*-2025-01_to_2025-03-REACQUIRED-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2025
+          merge-multiple: false
+
+      - name: Require exactly 20 renewable-profile source artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(find results/acquisition/era5/full-year-input \
+            -type f -name retrieval_attempt.json | wc -l)"
+          echo "retrieval manifests: $count"
+          test "$count" -eq 20
+
+      - name: Rebuild common renewable profile
+        run: |
+          python scripts/build_full_pypsa_era5_profiles_v0_6.py \
+            results/acquisition/era5/full-year-input
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: common-frontier-v1.3c-profile
+          retention-days: 7
+          if-no-files-found: error
+          path: results/models/full_pypsa/era5_renewables_v0_6/statewide_equal_weight_profile.parquet
+
+  compare-case:
+    needs: prepare-profile
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        demand:
+          - lower_FY2030
+          - reference_FY2030_31
+        transfer:
+          - atc_snapshot_reference
+          - atc_80pct_stress
+          - atc_60pct_stress
+        availability:
+          - full_available
+          - n_minus_1_130mw
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install modelling stacks
+        run: |
+          python -m pip install -e ".[dev,era5]"
+          python -m pip install \
+            "tz-osemosys @ git+https://github.com/transition-zero/tz-osemosys.git@2c95ef395858ad530fb38a0dfb5c142283964d24"
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: common-frontier-v1.3c-profile
+          path: results/models/full_pypsa/era5_renewables_v0_6
+
+      - name: Solve one common-frontier case
+        run: |
+          mkdir -p results/models/cross_framework/common_frontier_v1_3c/cases
+          python scripts/run_pypsa_osemosys_common_frontier_v1_3c.py \
+            --acknowledge-net-water-balance-not-catchment-inflow \
+            --demand-case "${{ matrix.demand }}" \
+            --transfer-case "${{ matrix.transfer }}" \
+            --idukki-availability-case "${{ matrix.availability }}" \
+            --output "results/models/cross_framework/common_frontier_v1_3c/cases/${{ matrix.demand }}__${{ matrix.transfer }}__${{ matrix.availability }}.json"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: common-frontier-case-${{ matrix.demand }}-${{ matrix.transfer }}-${{ matrix.availability }}
+          retention-days: 30
+          if-no-files-found: warn
+          path: results/models/cross_framework/common_frontier_v1_3c/cases/*.json
+
+  aggregate:
+    needs: compare-case
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install project
+        run: python -m pip install -e .
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: common-frontier-case-*
+          path: results/models/cross_framework/common_frontier_v1_3c/cases
+          merge-multiple: true
+
+      - name: Aggregate 12 cases
+        run: |
+          python scripts/aggregate_pypsa_osemosys_common_frontier_v1_3c.py \
+            --input-dir results/models/cross_framework/common_frontier_v1_3c/cases \
+            --output results/models/cross_framework/common_frontier_v1_3c/summary.json
+
+      - name: Show final comparison
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(
+              Path(
+                  "results/models/cross_framework/common_frontier_v1_3c/summary.json"
+              ).read_text()
+          )
+          print("cases_compared:", data["cases_compared"])
+          print("all_cases_pass:", data["all_cases_pass"])
+          print("maximum_absolute_differences:")
+          for key, value in data["maximum_absolute_differences"].items():
+              print(" ", key, value)
+          print("\nPyPSA vs OSeMOSYS:")
+          for row in data["cases"]:
+              p = row["pypsa"]
+              o = row["osemosys"]
+              print(
+                  row["case_id"],
+                  row["comparison"]["status"],
+                  "unserved_GWh",
+                  round(p["stage2_unserved_mwh"] / 1000, 6),
+                  round(o["stage2_unserved_mwh"] / 1000, 6),
+                  "imports_GWh",
+                  round(p["imports_mwh"] / 1000, 3),
+                  round(o["imports_mwh"] / 1000, 3),
+                  "solar_MW",
+                  round(p["built"]["solar_combined_mw"], 4),
+                  round(o["built"]["solar_combined_mw"], 4),
+                  "wind_MW",
+                  round(p["built"]["wind_onshore_mw"], 4),
+                  round(o["built"]["wind_onshore_mw"], 4),
+                  "bess_MW",
+                  round(p["built"]["bess_4h_power_mw"], 4),
+                  round(o["built"]["bess_4h_power_mw"], 4),
+              )
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pypsa-osemosys-common-frontier-v1.3c-NOT-VALIDATED-PLAN
+          retention-days: 90
+          if-no-files-found: error
+          path: results/models/cross_framework/common_frontier_v1_3c/summary.json
+
+# Cross-framework comparison only. The v1.3 water term remains a reconstructed
+# net balance residual, not source-reported catchment inflow.
