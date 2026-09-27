@@ -64,7 +64,7 @@ def test_44_ksebl_hydro_stations_reconcile_to_official_rounding():
     assert summary["official_category_anchor_mw"]["Hydel: KSEB"] == pytest.approx(
         2196.36
     )
-    assert set(["Thottiyar HEP", "Pallivasal Extension Scheme"]).issubset(
+    assert {"Thottiyar HEP", "Pallivasal Extension Scheme"}.issubset(
         set(hydro["plant"])
     )
     micro = hydro.loc[hydro["plant"].eq("Poringalkuthu Micro")].iloc[0]
