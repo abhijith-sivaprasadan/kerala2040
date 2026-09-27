@@ -1,0 +1,251 @@
+{
+  "classification": "independent_TZ_OSeMOSYS_capacity_expansion_benchmark_v0_1_not_validated_capacity_plan",
+  "prepared_date": "2026-09-27",
+  "implementation": {
+    "package": "transition-zero/tz-osemosys",
+    "tz_osemosys_git_commit": "2c95ef395858ad530fb38a0dfb5c142283964d24",
+    "solver": "HiGHS",
+    "model_core": "canonical_TZ_OSeMOSYS",
+    "bridge_constraints": [
+      "four_hour_BESS_energy_to_power_tie",
+      "grid_side_BESS_charge_power_limit_with_efficiency",
+      "grid_side_BESS_discharge_power_limit_with_efficiency",
+      "cyclic_storage_boundary_matching_v0_8"
+    ],
+    "reason_for_bridge": "The reference v0.8 model defines one four-hour BESS power variable with separate AC-side charge/discharge limits and a cyclic state of charge. The canonical OSeMOSYS storage equations are retained; only these explicit linking constraints are added so the compared feasible sets use the same BESS definition."
+  },
+  "reference_model": {
+    "configuration": "configs/full_pypsa_proxy_expansion_v0_8.yaml",
+    "implementation": "src/kerala2040/full_pypsa_proxy_expansion.py",
+    "solver": "scipy.optimize.linprog_HiGHS",
+    "objective_stages": [
+      "minimize_total_unserved_mwh",
+      "minimize_annualized_candidate_investment_at_shortage_floor",
+      "minimize_import_mwh_with_stage2_capacities_fixed"
+    ],
+    "note": "v0.8 is itself a proxy adequacy counterfactual and is not a validated total-system-cost capacity plan."
+  },
+  "hours": 168,
+  "full_financial_year": false,
+  "cases": [
+    {
+      "case_id": "reference_FY2030_31__atc_snapshot_reference__high__low",
+      "hours": 168,
+      "status": "PASS",
+      "acceptance": {
+        "unserved_abs_mwh": 0.01,
+        "capacity_abs_mw": 0.01,
+        "imports_abs_mwh": 0.1
+      },
+      "differences": {
+        "stage1_unserved_mwh": -3.637978807091713e-12,
+        "stage2_unserved_mwh": -1.0913936421275139e-11,
+        "solar_mw": 5.089714250061661e-08,
+        "wind_mw": 0.0,
+        "bess_mw": 0.0,
+        "stage3_imports_mwh": 9.477377170696855e-05
+      },
+      "osemosys": {
+        "stage1": {
+          "status": "ok",
+          "termination": "optimal",
+          "unserved_mwh": 22763.83009801947,
+          "imports_mwh": 748440.0,
+          "solar_mw": 11407.74,
+          "wind_mw": 2921.475,
+          "bess_mw": 250.0,
+          "bess_energy_mwh": 1000.0,
+          "objective": 22215.22345324521
+        },
+        "stage2": {
+          "status": "ok",
+          "termination": "optimal",
+          "unserved_mwh": 22763.831098019462,
+          "imports_mwh": 748440.0,
+          "solar_mw": 11403.124703265088,
+          "wind_mw": 2921.475,
+          "bess_mw": 250.0,
+          "bess_energy_mwh": 1000.0,
+          "objective": 73935.92900488836
+        },
+        "stage3": {
+          "status": "ok",
+          "termination": "optimal",
+          "unserved_mwh": 22763.83109901947,
+          "imports_mwh": 454227.3717908445,
+          "solar_mw": 11403.124703265088,
+          "wind_mw": 2921.475,
+          "bess_mw": 250.0,
+          "bess_energy_mwh": 1000.0,
+          "objective": 443280.52526590554
+        }
+      },
+      "v0_8_reference": {
+        "stage1_minimum_unserved_mwh": 22763.830098019473,
+        "stage2_unserved_mwh": 22763.831098019473,
+        "stage3_reporting_unserved_mwh": 22763.83109901948,
+        "built": {
+          "solar_combined_mw": 11403.124703214191,
+          "wind_onshore_mw": 2921.475,
+          "bess_4h_power_mw": 250.0,
+          "bess_4h_energy_mwh": 1000.0,
+          "solar_subtype_allocation_range": {
+            "ground_solar_min_mw": 5765.124703214191,
+            "ground_solar_max_mw": 5769.74,
+            "floating_solar_min_mw": 5633.384703214191,
+            "floating_solar_max_mw": 5638.0
+          }
+        },
+        "imports_mwh": 454227.3716960707
+      },
+      "inputs": {
+        "import_limit_mw": 4455.0,
+        "caps": {
+          "ground_solar_headroom_mw": 5769.74,
+          "floating_solar_headroom_mw": 5638.0,
+          "solar_total_headroom_mw": 11407.74,
+          "wind_headroom_mw": 2921.475,
+          "bess_power_headroom_mw": 250.0
+        },
+        "costs": {
+          "solar_million_inr_per_mw_year": 4.61114276356068,
+          "wind_million_inr_per_mw_year": 6.748013800332702,
+          "bess_million_inr_per_mw_year": 6.561357720481868
+        },
+        "bess_duration_h": 4.0,
+        "charge_efficiency": 0.938083151964686,
+        "discharge_efficiency": 0.938083151964686
+      },
+      "metadata": {
+        "base_chronology_classification": "scenario_screening_using_proxy_not_measured_hourly_dispatch",
+        "renewable_profile_alignment": {
+          "cyclic_boundary_wrapped_local_hours": 6.0,
+          "solar_raw_full_load_hours": 1358.5833679527286,
+          "solar_IST_aligned_full_load_hours": 1358.5833679527286,
+          "solar_alignment_change_pct": 0.0,
+          "wind_raw_full_load_hours": 1035.6791625763626,
+          "wind_IST_aligned_full_load_hours": 1035.6791625763626,
+          "wind_alignment_change_pct": 0.0
+        },
+        "morph_scale": 1.0483026188621452,
+        "morph_offset_mw": 1321.117432647036,
+        "residual_min_mw": 4149.271960556879,
+        "residual_max_mw": 6058.235024725114,
+        "residual_energy_mwh": 833356.3132578356
+      }
+    },
+    {
+      "case_id": "lower_FY2030__atc_snapshot_reference__reference__high",
+      "hours": 168,
+      "status": "PASS",
+      "acceptance": {
+        "unserved_abs_mwh": 0.01,
+        "capacity_abs_mw": 0.01,
+        "imports_abs_mwh": 0.1
+      },
+      "differences": {
+        "stage1_unserved_mwh": 0.0,
+        "stage2_unserved_mwh": 0.0,
+        "solar_mw": 0.0,
+        "wind_mw": 0.0,
+        "bess_mw": -0.0,
+        "stage3_imports_mwh": 0.0004406808875501156
+      },
+      "osemosys": {
+        "stage1": {
+          "status": "ok",
+          "termination": "optimal",
+          "unserved_mwh": 0.0,
+          "imports_mwh": 748440.0,
+          "solar_mw": 4210.74,
+          "wind_mw": 2549.475,
+          "bess_mw": 250.0,
+          "bess_energy_mwh": 1000.0,
+          "objective": 0.0
+        },
+        "stage2": {
+          "status": "ok",
+          "termination": "optimal",
+          "unserved_mwh": 0.0,
+          "imports_mwh": 748440.0,
+          "solar_mw": 0.0,
+          "wind_mw": 0.0,
+          "bess_mw": -0.0,
+          "bess_energy_mwh": 0.0,
+          "objective": 0.0
+        },
+        "stage3": {
+          "status": "ok",
+          "termination": "optimal",
+          "unserved_mwh": 0.001001,
+          "imports_mwh": 568494.6147138837,
+          "solar_mw": -0.0,
+          "wind_mw": -0.0,
+          "bess_mw": -0.0,
+          "bess_energy_mwh": 0.0,
+          "objective": 554793.9359701273
+        }
+      },
+      "v0_8_reference": {
+        "stage1_minimum_unserved_mwh": 0.0,
+        "stage2_unserved_mwh": 0.0,
+        "stage3_reporting_unserved_mwh": 0.001001,
+        "built": {
+          "solar_combined_mw": 0.0,
+          "wind_onshore_mw": 0.0,
+          "bess_4h_power_mw": 0.0,
+          "bess_4h_energy_mwh": 0.0,
+          "solar_subtype_allocation_range": {
+            "ground_solar_min_mw": 0.0,
+            "ground_solar_max_mw": 0.0,
+            "floating_solar_min_mw": 0.0,
+            "floating_solar_max_mw": 0.0
+          }
+        },
+        "imports_mwh": 568494.6142732028
+      },
+      "inputs": {
+        "import_limit_mw": 4455.0,
+        "caps": {
+          "ground_solar_headroom_mw": 2082.74,
+          "floating_solar_headroom_mw": 2128.0,
+          "solar_total_headroom_mw": 4210.74,
+          "wind_headroom_mw": 2549.475,
+          "bess_power_headroom_mw": 250.0
+        },
+        "costs": {
+          "solar_million_inr_per_mw_year": 4.61114276356068,
+          "wind_million_inr_per_mw_year": 6.748013800332702,
+          "bess_million_inr_per_mw_year": 11.426771284398509
+        },
+        "bess_duration_h": 4.0,
+        "charge_efficiency": 0.938083151964686,
+        "discharge_efficiency": 0.938083151964686
+      },
+      "metadata": {
+        "base_chronology_classification": "scenario_screening_using_proxy_not_measured_hourly_dispatch",
+        "renewable_profile_alignment": {
+          "cyclic_boundary_wrapped_local_hours": 6.0,
+          "solar_raw_full_load_hours": 1358.5833679527286,
+          "solar_IST_aligned_full_load_hours": 1358.5833679527286,
+          "solar_alignment_change_pct": 0.0,
+          "wind_raw_full_load_hours": 1035.6791625763626,
+          "wind_IST_aligned_full_load_hours": 1035.6791625763626,
+          "wind_alignment_change_pct": 0.0
+        },
+        "morph_scale": 0.7607256309628649,
+        "morph_offset_mw": 1019.1474796304492,
+        "residual_min_mw": 2757.117727153841,
+        "residual_max_mw": 4177.392928597124,
+        "residual_energy_mwh": 568494.6157148837
+      }
+    }
+  ],
+  "all_cases_pass_numeric_equivalence": true,
+  "limitations": [
+    "inherits all Full-PyPSA v0.8 proxy demand, renewable, ATC and capacity-envelope limits",
+    "does not validate landed import prices, statutory siting, grid hosting or 2040 assets",
+    "reproduces v0.8 lexicographic accounting and is not a new policy scenario",
+    "BESS uses canonical OSeMOSYS storage plus explicit bridge constraints for exact v0.8 mapping"
+  ]
+}

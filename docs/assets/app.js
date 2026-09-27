@@ -116,7 +116,18 @@
       this.readout = document.createElement("div");
       this.readout.className = "chart-readout";
       this.readout.setAttribute("aria-live", "polite");
-      this.el.append(this.canvas, this.readout);
+      this.scrubber = document.createElement("input");
+      this.scrubber.type = "range";
+      this.scrubber.className = "chart-scrubber";
+      this.scrubber.min = 0;
+      this.scrubber.step = 1;
+      this.scrubber.setAttribute("aria-label", "Inspect values: " + config.title);
+      this.scrubber.addEventListener("input", () => {
+        this.index = Number(this.scrubber.value);
+        this.describe();
+        this.draw();
+      });
+      this.el.append(this.canvas, this.readout, this.scrubber);
       this.canvas.addEventListener("keydown", (e) => {
         if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) {
           e.preventDefault();
@@ -136,7 +147,7 @@
           this.draw();
         }
       });
-      this.canvas.addEventListener("pointermove", (e) => {
+      const inspect = (e) => {
         const r = this.canvas.getBoundingClientRect();
         if (this.config.kind === "scatter") {
           const p = this.points || [];
@@ -162,7 +173,9 @@
           );
         this.describe();
         this.draw();
-      });
+      };
+      this.canvas.addEventListener("pointermove", inspect);
+      this.canvas.addEventListener("pointerdown", inspect);
       new ResizeObserver(() => this.draw()).observe(this.el);
       this.describe();
       this.draw();
@@ -171,15 +184,18 @@
       const c = this.config,
         r = c.rows[this.index];
       if (!r) return;
+      this.scrubber.max = Math.max(0, c.rows.length - 1);
+      this.scrubber.value = this.index;
       this.readout.textContent = c.describe
         ? c.describe(r)
         : `${r.label} · ${c.series.map((s) => `${s.name}: ${fmt(r[s.key], s.decimals ?? 1)} ${c.unit || ""}`).join(" · ")}`;
+      this.scrubber.setAttribute("aria-valuetext", this.readout.textContent);
     }
     draw() {
       const c = this.config,
         canvas = this.canvas,
         w = this.el.clientWidth,
-        h = this.el.clientHeight;
+        h = parseFloat(getComputedStyle(this.el).getPropertyValue("--plot-height")) || 320;
       if (w < 30 || h < 30) return;
       const scale = Math.min(devicePixelRatio || 1, 2);
       canvas.width = w * scale;
@@ -193,10 +209,10 @@
       if (dark) pal.splice(0, 3, "#95c8a5", "#e2bb70", "#e89b7e");
       const fg = dark ? "#e5e8d9" : muted;
       ctx.clearRect(0, 0, w, h);
-      ctx.font = '11px "DM Sans", sans-serif';
+      ctx.font = '13px "DM Sans", sans-serif';
       const left = 52,
         right = w - 20,
-        top = w < 450 && c.series.length > 1 ? 57 : 39,
+        top = w < 450 ? 40 + c.series.length * 18 : 42,
         bottom = h - 45,
         pw = right - left,
         ph = bottom - top,
@@ -317,7 +333,7 @@
       for (let j = 0; j < c.series.length; j++) {
         const name = c.series[j].name;
         ctx.fillStyle = pal[j % 3];
-        let ly = w < 450 ? 23 + j * 16 : 23;
+        let ly = w < 450 ? 25 + j * 18 : 23;
         if (w < 450) lx = left;
         ctx.fillRect(lx, ly, 12, 3);
         ctx.fillStyle = fg;
@@ -334,7 +350,7 @@
         .get(id)
         .canvas.setAttribute(
           "aria-label",
-          c.title + ". Use left and right arrow keys to inspect values.",
+          c.title + ". Tap the chart or use the slider to inspect values.",
         );
       charts.get(id).describe();
       charts.get(id).draw();
@@ -1206,12 +1222,34 @@
     choose(cases.at(-1));
   }
 
+  function renderBenchmark() {
+    const b = data.benchmark;
+    const select = $("benchmarkCase");
+    if (!select.options.length) b.cases.forEach((c, i) => {
+      const option = document.createElement("option");
+      option.value = i;
+      option.textContent = `${c.hours === 8760 ? "Full year" : "One week"} · ${c.case_id.startsWith("reference") ? "reference" : "lower"} demand`;
+      select.append(option);
+    });
+    if (!select.dataset.initialized) {
+      select.value = b.cases.findIndex(c => c.hours === 8760);
+      select.dataset.initialized = "true";
+    }
+    const sample = b.cases[Number(select.value)];
+    const fields = [["stage1_unserved_mwh", "Shortage 1", "unserved_abs_mwh", "MWh"], ["stage2_unserved_mwh", "Shortage 2", "unserved_abs_mwh", "MWh"], ["solar_mw", "Solar", "capacity_abs_mw", "MW"], ["wind_mw", "Wind", "capacity_abs_mw", "MW"], ["bess_mw", "Battery", "capacity_abs_mw", "MW"], ["stage3_imports_mwh", "Imports", "imports_abs_mwh", "MWh"]];
+    const rows = fields.map(([key, label, tolerance, unit], i) => ({label, short: ["U1", "U2", "Solar", "Wind", "BESS", "Import"][i], value: 100 * Math.abs(sample.differences[key]) / sample.acceptance[tolerance], delta: Math.abs(sample.differences[key]), tolerance: sample.acceptance[tolerance], unit}));
+    plot("benchmarkChart", {title: "Independent numerical agreement", rows, series: [{key: "value", name: "Difference / allowed tolerance"}], max: 100, unit: "% of tolerance", describe: r => `${r.label}: ${r.delta === 0 ? "0" : r.delta.toPrecision(3)} ${r.unit} difference; allowed ${r.tolerance} ${r.unit} (${fmt(r.value, 2)}% of tolerance).`});
+    text("benchmarkInsight", `${sample.hours.toLocaleString()} hours · ${sample.status}. Largest difference is ${fmt(Math.max(...rows.map(r => r.value)), 2)}% of its allowed tolerance. This is a numerical check of a proxy model.`);
+  }
+
   function progress() {
     const rows = [
+      { title: "Independent OSeMOSYS benchmark · 27 September", summary: "Two 168-hour cases and one 8,760-hour case pass the predeclared numerical tolerances. Published artifact from PR106 (under review); implementation agreement does not validate physical assumptions." },
+      { title: "Idukki catchment evidence · 27 September", summary: "LRIS watershed, drainage and waterbody geometry recovered in PR105 (under review). Natural/intercepted catchments and ERA5 catchment weights are not yet admitted." },
       {
-        title: "Official inflow evidence v1.4–v1.5 · 26 September",
+        title: "Official KSEB acquisition pipeline v1.5 · 27 September",
         summary:
-          "Strict daily inflow coverage remains incomplete. A separate cumulative sensitivity input is ready; its matrix is not yet reported complete. The official KSEB extractor and 12-month inventory are prepared, with monthly bytes and full-year schema validation still outstanding.",
+          "The monthly downloader, semantic workbook parser and full-year input gate are implemented. All 12 official workbook downloads remain blocked in the reviewed acquisition run; no completed physical-model result is claimed.",
       },
       {
         title: "Stateful Idukki reservoir pilot v1.3 · 26 September",
@@ -1272,6 +1310,21 @@
       text("menu", "Explore +");
     }
   });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && $("menu").getAttribute("aria-expanded") === "true") {
+      $("menu").click();
+      $("menu").focus();
+    }
+  });
+  const chapterObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) if (entry.isIntersecting) {
+      document.querySelectorAll(".phone-nav a").forEach(a => {
+        if (a.hash === "#" + entry.target.id) a.setAttribute("aria-current", "location");
+        else a.removeAttribute("aria-current");
+      });
+    }
+  }, {rootMargin: "-15% 0px -65% 0px"});
+  ["electricity", "atlas", "pathways", "data"].forEach(id => chapterObserver.observe($(id)));
   function applyTheme(theme) {
     if (!["kasavu", "monsoon", "laterite"].includes(theme)) return;
     document.documentElement.dataset.theme = theme;
@@ -1322,6 +1375,7 @@
         economics: "import-economics.json",
         hydro: "hydro-interday.json",
         idukki: "idukki-reservoir.json",
+        benchmark: "osemosys-benchmark.json",
         cooling: "wp6-cooling-pilot.json",
         integrated: "wp6-integrated-dispatch.json",
         catalogue: "catalogue.json",
@@ -1356,9 +1410,11 @@
       $("storageKind").addEventListener("change", renderStorageDetail);
       library();
       progress();
+      renderBenchmark();
+      $("benchmarkCase").addEventListener("change", renderBenchmark);
       text(
         "publication",
-        `Observed bundle: ${data.metadata.generated_at_utc?.slice(0, 10) || "unavailable"} · Resource audit: ${data.ledger.reviewed_date} · Model results: ${data.economics.prepared_date} · Source: ${(data.metadata.research_source_commit || "unavailable").slice(0, 12)}`,
+        `Observed bundle: ${data.metadata.generated_at_utc?.slice(0, 10) || "unavailable"} · Resource audit: ${data.ledger.reviewed_date} · Model results: ${data.economics.prepared_date} · Independent benchmark: ${data.benchmark.prepared_date} · Source: ${(data.metadata.research_source_commit || "unavailable").slice(0, 12)}`,
       );
       $("heroMonth").addEventListener("input", ring);
       new ResizeObserver(ring).observe($("balanceRing").parentElement);

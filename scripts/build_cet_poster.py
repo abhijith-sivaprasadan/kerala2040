@@ -1,181 +1,617 @@
-"""Create the early A1 CET 2026 poster from the same publication evidence.
+"""A0 scientific poster: source-backed figures and a native PDF system schematic."""
 
-Requires reportlab. Build the website first. No raster images or SVG assets.
-The PDF contains selectable text and native PDF chart paths.
-"""
+import calendar
 import json
+import math
+from itertools import pairwise
 from pathlib import Path
 
-from reportlab.lib.colors import HexColor
+from reportlab.lib.colors import Color, HexColor, white
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
+from reportlab.platypus import Paragraph
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'output/pdf'
+OUT = ROOT / "output/pdf"
 OUT.mkdir(parents=True, exist_ok=True)
-FONT = Path('C:/Windows/Fonts')
-for name, filename in [('Sans', 'arial.ttf'), ('Bold', 'arialbd.ttf'),
-                       ('Serif', 'georgia.ttf'), ('Italic', 'georgiai.ttf')]:
-    pdfmetrics.registerFont(TTFont(name, str(FONT / filename)))
+for name, filename in [("Sans", "arial.ttf"), ("Bold", "arialbd.ttf"), ("Italic", "ariali.ttf")]:
+    pdfmetrics.registerFont(TTFont(name, str(Path("C:/Windows/Fonts") / filename)))
+pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Bold", italic="Italic")
+W, H = 1684, 2384
+PW, PH = 2383.937, 3370.394
+NAVY, INK, BLUE, GREEN, GOLD, PALE, LINE, MUTED, RED = map(
+    HexColor,
+    [
+        "#08065a",
+        "#202739",
+        "#277cad",
+        "#247b66",
+        "#ce8c31",
+        "#eef3f7",
+        "#c5d1dc",
+        "#536574",
+        "#ae4d45",
+    ],
+)
+OUTPUT = OUT / "Kerala2040_CET2026_Scientific_Poster_v5.pdf"
+c = canvas.Canvas(str(OUTPUT), pagesize=(PW, PH), pageCompression=1)
+c.scale(PW / W, PH / H)
+c.setTitle("Kerala2040: electricity flexibility | CET 2026 scientific poster")
+c.setAuthor("Abhijith Sivaprasadan")
+BOUNDS = []
 
-W, H = 1683.78, 2383.94  # A1 portrait, points
-PAPER, INK, GOLD, GREEN, MUTED, LINE = map(HexColor,
-    ['#f7f4e9', '#173f33', '#b27a24', '#287454', '#596b5f', '#cdd2bc'])
-c = canvas.Canvas(str(OUT / 'Kerala2040_CET2026_Poster_Draft.pdf'), pagesize=(W, H))
-c.setTitle('Kerala2040 | CET 2026 early poster')
-c.setAuthor('Kerala2040 research project')
-c.setFillColor(PAPER)
-c.rect(0, 0, W, H, fill=1, stroke=0)
 
-
-def txt(x, y, value, size=25, font='Sans', colour=INK):
+def txt(x, y, s, size=18, font="Sans", colour=INK, align="left"):
     c.setFillColor(colour)
     c.setFont(font, size)
-    c.drawString(x, H-y-size, value)
+    {"left": c.drawString, "center": c.drawCentredString, "right": c.drawRightString}[align](
+        x, H - y - size, str(s)
+    )
 
 
-def para(x, y, value, width, size=24, colour=INK, font='Sans', leading=1.4):
-    words = value.split()
-    lines, current = [], ''
-    for word in words:
-        trial = (current + ' ' + word).strip()
-        if current and pdfmetrics.stringWidth(trial, font, size) > width:
-            lines.append(current)
-            current = word
+def para(x, y, s, w, size=18, colour=INK, maxh=None):
+    p = Paragraph(
+        s,
+        ParagraphStyle("p", fontName="Sans", fontSize=size, leading=size * 1.25, textColor=colour),
+    )
+    _, h = p.wrap(w, H)
+    if maxh is not None and h > maxh + 0.1:
+        raise ValueError(f"Overflow ({h}>{maxh}): {s[:75]}")
+    if y + h > H - 10:
+        raise ValueError("Off page")
+    p.drawOn(c, x, H - y - h)
+    BOUNDS.append((x, y, w, h, s))
+    return y + h
+
+
+def box(x, y, w, h, fill=white, stroke=LINE, lw=1):
+    c.setFillColor(fill)
+    c.setStrokeColor(stroke)
+    c.setLineWidth(lw)
+    c.rect(x, H - y - h, w, h, fill=1, stroke=1)
+
+
+def line(x1, y1, x2, y2, col=LINE, lw=1, dash=None):
+    c.setStrokeColor(col)
+    c.setLineWidth(lw)
+    c.setDash(dash or [])
+    c.line(x1, H - y1, x2, H - y2)
+    c.setDash([])
+
+
+def section(x, y, w, title, height=62):
+    """Separate heading and content frames follow the supplied course poster."""
+    box(x, y, w, height, white, INK, 1.5)
+    txt(x + w / 2, y + (height - 38) / 2 - 3, title, 38, "Bold", NAVY, "center")
+
+
+def figure_heading(x, y, w, title, source):
+    txt(x + w / 2, y, title, 24, "Bold", NAVY, "center")
+    txt(x + w / 2, y + 36, source, 17, colour=MUTED, align="center")
+
+
+def legend(x, y, entries, size=15, gap=18):
+    for title, col in entries:
+        box(x, y + 4, 16, 10, col, col)
+        txt(x + 24, y, title, size)
+        x += 24 + pdfmetrics.stringWidth(title, "Sans", size) + gap
+
+
+def axes(x, y, w, h, ymax, ticks, unit, xticks, xlabels, xmax):
+    txt(x, y - 29, unit, 18, colour=MUTED)
+    for t in ticks:
+        yy = y + h - h * t / ymax
+        line(x, yy, x + w, yy, LINE, 0.7)
+        txt(x - 10, yy - 8, f"{t:g}", 17, colour=MUTED, align="right")
+    line(x, y, x, y + h, MUTED)
+    line(x, y + h, x + w, y + h, MUTED)
+    for t, s in zip(xticks, xlabels):
+        xx = x + w * t / xmax
+        line(xx, y + h, xx, y + h + 4, MUTED)
+        txt(xx, y + h + 9, s, 16, colour=MUTED, align="center")
+
+
+def plotline(x, y, w, h, vals, ymax, col, steps=False, markers=False):
+    if steps:
+        vals = list(vals) + [vals[-1]]
+    p = c.beginPath()
+    prev = H - y - h + h * vals[0] / ymax
+    for i, v in enumerate(vals):
+        xx = x + w * i / (len(vals) - 1)
+        yy = H - y - h + h * v / ymax
+        if i == 0:
+            p.moveTo(xx, yy)
         else:
-            current = trial
-    if current:
-        lines.append(current)
-    for line in lines:
-        txt(x, y, line, size, font, colour)
-        y += size*leading
-    return y
+            if steps:
+                p.lineTo(xx, prev)
+            p.lineTo(xx, yy)
+        prev = yy
+        if markers:
+            c.setFillColor(col)
+            c.circle(xx, yy, 3, fill=1, stroke=0)
+    c.setStrokeColor(col)
+    c.setLineWidth(2.5)
+    c.drawPath(p)
 
 
-def rule(y, x=65, width=W-130, colour=LINE):
-    c.setStrokeColor(colour)
-    c.setLineWidth(1.4)
-    c.line(x, H-y, x+width, H-y)
+def arrow(points, col=GREEN, both=False, dashed=False):
+    for a, b in pairwise(points):
+        line(*a, *b, col, 2.4, [5, 4] if dashed else None)
+
+    def head(a, b):
+        angle = math.atan2(b[1] - a[1], b[0] - a[0])
+        p = c.beginPath()
+        p.moveTo(b[0], H - b[1])
+        for turn in [-0.47, 0.47]:
+            p.lineTo(b[0] - 10 * math.cos(angle + turn), H - (b[1] - 10 * math.sin(angle + turn)))
+        p.close()
+        c.setFillColor(col)
+        c.drawPath(p, fill=1, stroke=0)
+
+    head(points[-2], points[-1])
+    if both:
+        head(points[1], points[0])
 
 
-def rect(x, y, width, height, colour):
-    c.setFillColor(colour)
-    c.rect(x, H-y-height, width, height, fill=1, stroke=0)
+def node(x, y, w, h, title, desc, col=GREEN, fill=white):
+    box(x, y, w, h, fill, col, 1.5)
+    txt(x + 15, y + 11, title, 19, "Bold", col)
+    para(x + 57, y + 37, desc, w - 71, 18, maxh=h - 39)
+    ix, iy = x + 17, y + 43
+    if title == "Solar & wind":
+        box(ix, iy, 29, 20, fill, col, 1.2)
+        for dx in [10, 20]:
+            line(ix + dx, iy, ix + dx, iy + 20, col, 1)
+        line(ix, iy + 10, ix + 29, iy + 10, col, 1)
+        line(ix + 14, iy + 20, ix + 14, iy + 27, col, 1.2)
+        line(ix + 5, iy + 27, ix + 24, iy + 27, col, 1.2)
+    elif title == "Interstate grid":
+        for dx in [-12, 12]:
+            line(ix + 15, iy - 3, ix + 15 + dx, iy + 29, col, 1.5)
+        for dy, half in [(4, 10), (14, 15)]:
+            line(ix + 15 - half, iy + dy, ix + 15 + half, iy + dy, col, 1.5)
+        line(ix + 6, iy + 22, ix + 22, iy + 8, col, 1)
+        line(ix + 24, iy + 22, ix + 8, iy + 8, col, 1)
+    elif title == "Idukki reservoir":
+        for dy in [9, 18, 27]:
+            line(ix, iy + dy, ix + 19, iy + dy, col, 1.3)
+        p = c.beginPath()
+        p.moveTo(ix + 23, H - iy)
+        p.lineTo(ix + 31, H - iy - 29)
+        p.lineTo(ix + 17, H - iy - 29)
+        p.close()
+        c.setFillColor(col)
+        c.drawPath(p, fill=1, stroke=0)
+    elif title == "Storage":
+        box(ix, iy + 3, 30, 22, fill, col, 1.5)
+        box(ix + 30, iy + 9, 3, 10, col, col)
+        for dx in [5, 12, 19]:
+            box(ix + dx, iy + 8, 4, 12, col, col, 0.2)
+    elif title == "Demand & service":
+        line(ix, iy + 15, ix + 7, iy + 15, col, 1.5)
+        box(ix + 7, iy + 6, 17, 19, fill, col, 1.5)
+        line(ix + 24, iy + 15, ix + 31, iy + 15, col, 1.5)
+        txt(ix + 15.5, iy + 6, "L", 14, "Bold", col, "center")
+    else:
+        c.setStrokeColor(col)
+        c.setLineWidth(1.5)
+        c.circle(ix + 15, H - iy - 14, 14, fill=0, stroke=1)
+        if title == "Hydropower":
+            for angle in [0, 2.094, 4.189]:
+                line(
+                    ix + 15,
+                    iy + 14,
+                    ix + 15 + 11 * math.cos(angle),
+                    iy + 14 + 11 * math.sin(angle),
+                    col,
+                    2,
+                )
+        else:
+            line(ix + 18, iy + 3, ix + 11, iy + 15, col, 2)
+            line(ix + 11, iy + 15, ix + 20, iy + 15, col, 2)
+            line(ix + 20, iy + 15, ix + 12, iy + 25, col, 2)
 
 
 def read(name):
-    return json.loads((ROOT / '_site/data' / name).read_text(encoding='utf-8'))
+    return json.loads((ROOT / "_site/data" / name).read_text(encoding="utf-8"))
 
 
-daily = read('daily-balance.json')['records']
-base = read('baseline-summary.json')
-ledger = read('research-ledger.json')
-hydro = read('idukki-reservoir.json')
-months = []
-for month in sorted({row['date'][:7] for row in daily}):
-    rows = [r for r in daily if r['date'].startswith(month)]
-    months.append((month, sum(r['internal_generation_mu'] for r in rows)/len(rows),
-                   sum(r['net_import_interface_mu'] for r in rows)/len(rows)))
+daily = read("daily-balance.json")["records"]
+solar = read("research-ledger.json")["solar_phase1"]["aggregate"]["statewide"]
+ev = read("wp6-ev-pilot.json")
+hydro = read("idukki-reservoir.json")
+windows = read("hydro-interday.json")
+econdata = read("import-economics.json")
 
-txt(65, 55, 'KERALA2040  /  CET 2026', 24, 'Bold')
-txt(1160, 59, 'EARLY RESEARCH POSTER', 18, 'Bold', GOLD)
-txt(65, 108, 'Our land. Our energy future.', 78, 'Serif')
-para(65, 215, 'Investigating energy resilience through electricity, seasonal resources, '
-     'land constraints, industrial systems and open modelling.', 1480, 29, MUTED)
-rule(320, colour=GOLD)
 
-txt(65, 363, 'THE RESEARCH QUESTION', 19, 'Bold', GOLD)
-para(65, 409, 'How can Kerala meet future demand reliably while respecting '
-     'its land and water?', 1480, 51, INK, 'Serif', 1.2)
-para(65, 555, 'Early experiments show why timing and transfer capability matter alongside '
-     'new generation. The current evidence supports comparison, not a final 2040 capacity plan.',
-     1490, 29, MUTED)
-rule(670)
+# Reader-first scientific layout: short claims, larger plots, local caveats.
+def rounded(value):
+    """Two significant figures for display; calculations retain original values."""
+    rounded_value = float(f"{value:.2g}")
+    if abs(rounded_value) >= 100:
+        return f"{rounded_value:,.0f}"
+    return f"{rounded_value:g}"
 
-left, right, cw = 65, 875, 740
-txt(left, 712, '01 / OBSERVED ELECTRICITY', 19, 'Bold', GOLD)
-txt(left, 751, 'A connected, seasonal system', 36, 'Serif')
-txt(left, 817, f"{base['aggregate_import_share']*100:.1f}%", 70, 'Serif')
-para(left+270, 830, 'of recorded consumption came from net imports.', 410, 25)
-txt(left, 924, 'MU per observed day', 17, 'Sans', MUTED)
-chart_x, chart_y, chart_w, chart_h = left+50, 968, 640, 250
-for tick in [0, 30, 60, 90, 120]:
-    yy = chart_y+chart_h-chart_h*tick/120
-    rule(yy, chart_x, chart_w)
-    txt(left, yy-9, str(tick), 16, colour=MUTED)
-for i, (month, internal, imports) in enumerate(months):
-    x = chart_x+i*chart_w/12+8
-    for value, offset, colour in [(internal, 0, GREEN), (imports, internal, GOLD)]:
-        rect(x, chart_y+chart_h-chart_h*(value+offset)/120, 34, chart_h*value/120, colour)
-    txt(x-1, chart_y+chart_h+15, ['A','M','J','J','A','S','O','N','D','J','F','M'][i], 17)
-rect(left, 1280, 18, 18, GREEN)
-txt(left+28, 1276, 'In-state generation', 18)
-rect(left+350, 1280, 18, 18, GOLD)
-txt(left+378, 1276, 'Net imports', 18)
-para(left, 1320, 'SLDC FY2024-25: 354 of 365 daily reports. The 11 missing days are not '
-     'filled. Bars show available-day means, not complete monthly totals.', cw-10, 20, MUTED)
 
-txt(right, 712, '02 / RESOURCE & LAND', 19, 'Bold', GOLD)
-txt(right, 751, 'Solar follows the seasons', 36, 'Serif')
-para(right, 822, 'Monthly median source-grid PV output', cw-10, 25)
-txt(right, 924, 'kWh / kWp / day', 17, colour=MUTED)
-solar = ledger['solar_phase1']['aggregate']['statewide']['monthly_marginal_pixel_median_PVOUT_kWh_kWp_day']
-sx, sy, sw, sh = right+48, 968, 650, 250
-for tick in [0, 2, 4, 6]:
-    yy = sy+sh-sh*tick/6
-    rule(yy, sx, sw)
-    txt(right, yy-9, str(tick), 16, colour=MUTED)
-path = c.beginPath()
-for i, value in enumerate(solar.values()):
-    x, y = sx+i*sw/11, H-(sy+sh-sh*value/6)
-    if i == 0:
-        path.moveTo(x, y)
-    else:
-        path.lineTo(x, y)
-    txt(x-5, sy+sh+15, list(solar)[i][0], 17)
-c.setStrokeColor(GREEN)
-c.setLineWidth(4)
-c.drawPath(path)
-txt(right, 1276, 'Resource is not permission to build.', 24, 'Bold')
-para(right, 1320, 'Global Solar Atlas 2, 1999-2018 climatology. Wind, terrain, ecology and '
-     'grid access must also be checked. Eligible land and project capacity are unresolved.', cw-10, 20, MUTED)
-rule(1442)
+def dot(x, y, colour, radius=7):
+    c.setFillColor(colour)
+    c.circle(x, H - y, radius, fill=1, stroke=0)
 
-txt(left, 1484, '03 / NEW IDUKKI RESERVOIR PILOT', 19, 'Bold', GOLD)
-txt(left, 1525, 'Seasonal flexibility helps. Constraints remain.', 42, 'Serif')
-para(left, 1598, '12 stateful cases and 24 comparisons use the same 364-day horizon. The pilot '
-     'interpolates 11 generation gaps and reconstructs a net water balance; this is not observed catchment inflow.', 1480, 26, MUTED)
 
-cases = hydro['reference_demand_full_idukki_availability']
-labels = [('atc_snapshot_reference', '4,455 MW', '100% transfer'),
-          ('atc_80pct_stress', '3,564 MW', '80% stress'),
-          ('atc_60pct_stress', '2,673 MW', '60% stress')]
-for i, (key, label, sub) in enumerate(labels):
-    x = 75+i*495
-    txt(x, 1713, label, 28, 'Bold')
-    txt(x, 1761, sub, 20, colour=MUTED)
-    case = cases[key]
-    value = case['stateful_unserved_gwh']
-    rect(x, 1810, 390*value/6000, 27, GOLD)
-    txt(x, 1850, f'{value:,.3f} GWh', 36, 'Serif')
-    txt(x, 1902, 'unserved in the stateful pilot', 18, colour=MUTED)
-    txt(x, 1932, f'1-day comparison: {case["same_horizon_1d_unserved_gwh"]:,.3f} GWh', 18, colour=MUTED)
-para(left, 1977, 'Reference FY2030-31 demand and full Idukki availability. All comparisons use '
-     'the pilot\'s 8,736-hour horizon, not the earlier full-year values. Numerical storage closure '
-     'does not validate inflow, releases, real operations or a capacity plan.', 1490, 22, MUTED)
-rule(2074)
+# A0 portrait: project and technologies, system framework, analysis, conclusions.
+box(0, 0, W, 222, NAVY, NAVY)
+txt(W / 2, 23, "Electricity flexibility in Kerala", 54, "Bold", white, "center")
+txt(W / 2, 89, "Import dependence, hydropower and demand timing", 36, "Bold", white, "center")
+txt(W / 2, 150, "Abhijith Sivaprasadan", 27, "Bold", white, "center")
+txt(
+    W / 2,
+    188,
+    "Independent study  |  KTH Royal Institute of Technology  |  CET 2026",
+    21,
+    colour=white,
+    align="center",
+)
 
-txt(left, 2110, 'METHOD', 17, 'Bold', GOLD)
-para(left, 2147, 'Preserve source records and gaps. Characterise resources. Test constrained '
-     'dispatch and investment. Check numerical equivalence. Keep assumptions traceable.', 705, 21)
-txt(right, 2110, 'WHAT STILL NEEDS WORK', 17, 'Bold', GOLD)
-para(right, 2147, 'Measured hourly demand; reservoir and cascade operation; outages; landed '
-     'prices; statutory siting; project finance and grid feasibility.', 705, 21)
-rule(2264)
-txt(left, 2292, 'Explore the evidence: kerala2040.github.io', 24, 'Bold')
-c.linkURL('https://kerala2040.github.io/', (left, H-2325, 690, H-2290), relative=0)
-txt(left, 2340, 'Sources: SLDC daily archive; GSA2/NWIC resource ledger; Idukki v1.3 pilot evidence, 26 Sep 2026.', 15, colour=MUTED)
-txt(1080, 2301, 'Independent research / Draft 01', 19, colour=MUTED)
+section(30, 242, 793, "Project description")
+section(841, 242, 813, "Resources and technologies")
+box(30, 318, 793, 461, white, INK, 1.5)
+box(841, 318, 813, 461, white, INK, 1.5)
+txt(426.5, 335, "Context and objective", 25, "Bold", NAVY, "center")
+para(
+    52,
+    378,
+    "Kerala's FY2024-25 electricity record is <b>74% net imports</b>. Hydropower supplies most in-state generation.",
+    747,
+    22,
+    maxh=61,
+)
+para(
+    52,
+    445,
+    "<b>Objective:</b> test how import constraints, hydro operation and demand timing affect electricity adequacy.",
+    747,
+    22,
+    maxh=58,
+)
+txt(426.5, 512, "A. Observed electricity balance [1]", 23, "Bold", NAVY, "center")
+mx, my, mw, mh = 99, 575, 679, 121
+axes(
+    mx,
+    my,
+    mw,
+    mh,
+    120,
+    [0, 40, 80, 120],
+    "GWh per observed day",
+    [i + 0.5 for i in range(12)],
+    ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"],
+    12,
+)
+for i, month in enumerate(sorted({r["date"][:7] for r in daily})):
+    rows = [r for r in daily if r["date"].startswith(month)]
+    internal = sum(r["internal_generation_mu"] for r in rows) / len(rows)
+    imports = sum(r["net_import_interface_mu"] for r in rows) / len(rows)
+    xx = mx + (i + 0.18) * mw / 12
+    for v, offset, col in [(internal, 0, GREEN), (imports, internal, GOLD)]:
+        box(xx, my + mh - mh * (v + offset) / 120, mw / 12 * 0.64, mh * v / 120, col, col, 0.1)
+    year, m = map(int, month.split("-"))
+    if len(rows) < calendar.monthrange(year, m)[1]:
+        txt(xx + 17, my + mh - mh * (imports + internal) / 120 - 23, "*", 22, "Bold", RED, "center")
+legend(82, 731, [("In-state", GREEN), ("Net imports", GOLD)], 18)
+txt(443, 731, "* Incomplete month", 18, colour=MUTED)
+txt(
+    426.5,
+    755,
+    "354 observed days; 11 gaps retained. Available-day means.",
+    17,
+    colour=MUTED,
+    align="center",
+)
+
+figure_heading(857, 335, 781, "B. Seasonal solar resource", "Global Solar Atlas 2 climatology [2]")
+axes(
+    907,
+    422,
+    433,
+    107,
+    6,
+    [0, 2, 4, 6],
+    "Solar yield (kWh/kWp/day)",
+    [0, 2, 4, 6, 8, 10, 11],
+    ["Jan", "Mar", "May", "Jul", "Sep", "Nov", "Dec"],
+    11,
+)
+plotline(
+    907,
+    422,
+    433,
+    107,
+    list(solar["monthly_marginal_pixel_median_PVOUT_kWh_kWp_day"].values()),
+    6,
+    BLUE,
+    markers=True,
+)
+para(
+    1370,
+    413,
+    "1999-2018 source-grid medians.<br/><br/>Resource evidence, not plant output.",
+    258,
+    20,
+    maxh=132,
+)
+line(862, 565, 1633, 565, LINE)
+figure_heading(857, 579, 781, "C. Managed vehicle charging", "Synthetic three-vehicle site [3]")
+axes(
+    907,
+    662,
+    433,
+    65,
+    15,
+    [0, 5, 10, 15],
+    "Site demand (kW)",
+    [0, 6, 12, 18, 24],
+    ["00", "06", "12", "18", "24"],
+    24,
+)
+plotline(
+    907, 662, 433, 65, [r["site_total_kw"] for r in ev["baseline"]["hourly"]], 15, GOLD, steps=True
+)
+plotline(
+    907, 662, 433, 65, [r["site_total_kw"] for r in ev["managed"]["hourly"]], 15, GREEN, steps=True
+)
+para(
+    1370,
+    653,
+    "<b>Peak demand</b><br/>13.3 → 12.0 kW<br/>Same energy and service.",
+    258,
+    21,
+    maxh=109,
+)
+legend(914, 754, [("Original", GOLD), ("Managed", GREEN)], 17)
+txt(1340, 754, "Hour", 17, colour=MUTED, align="right")
+
+section(30, 799, 1624, "System framework and methods")
+box(30, 875, 1624, 412, white, INK, 1.5)
+txt(605, 891, "Linked research modules", 25, "Bold", NAVY, "center")
+node(55, 947, 210, 80, "Solar & wind", "Resource limits")
+node(55, 1069, 210, 80, "Interstate grid", "Transfer / price")
+node(330, 932, 240, 100, "Idukki reservoir", "Daily water state", BLUE)
+node(660, 932, 220, 100, "Hydropower", "Energy / power limits", BLUE)
+node(460, 1069, 250, 80, "Electricity balance", "Supply + demand", GREEN)
+node(945, 932, 220, 100, "Storage", "Battery / hydro")
+node(945, 1069, 220, 80, "Demand & service", "Load / charging")
+arrow([(265, 987), (300, 987), (300, 1095), (460, 1095)])
+arrow([(265, 1112), (460, 1112)])
+arrow([(570, 972), (660, 972)], BLUE)
+arrow([(768, 1032), (768, 1089), (710, 1089)], BLUE)
+arrow([(945, 970), (913, 970), (913, 1099), (710, 1099)], GREEN, both=True)
+arrow([(710, 1130), (945, 1130)])
+legend(233, 1175, [("Electricity", GREEN), ("Water / hydro", BLUE)], 18)
+txt(818, 1175, "Arrows are unscaled.", 18, colour=MUTED)
+para(
+    59,
+    1217,
+    "<b>Scope:</b> separate model experiments, not a validated statewide capacity plan. Land, ecology and industrial integration remain future work.",
+    1098,
+    21,
+    maxh=55,
+)
+line(1190, 895, 1190, 1265, LINE, 1)
+para(
+    1210,
+    901,
+    "<b>Electricity balance</b><br/>G + M + P<sub>dis</sub> + U = D + P<sub>ch</sub>",
+    414,
+    22,
+    maxh=58,
+)
+para(
+    1210,
+    970,
+    "G generation; M imports; D demand; U unmet load; P storage charge/discharge.",
+    414,
+    18,
+    maxh=71,
+)
+para(
+    1210,
+    1055,
+    "<b>Daily reservoir balance</b><br/>S<sub>d+1</sub> = S<sub>d</sub> + W<sub>d</sub> - E<sub>d</sub>/κ - R<sub>d</sub>",
+    414,
+    22,
+    maxh=58,
+)
+para(
+    1210,
+    1124,
+    "S storage; W net water; E hydro energy; R extra release; κ = 1,470 MWh/Mm³.",
+    414,
+    18,
+    maxh=71,
+)
+para(1210, 1205, "<b>W is reconstructed, not measured inflow.</b>", 414, 20, maxh=53)
+
+section(30, 1307, 1624, "Analysis and assessment")
+box(30, 1383, 1624, 578, white, INK, 1.5)
+line(571, 1403, 571, 1939, LINE, 1)
+line(1112, 1403, 1112, 1939, LINE, 1)
+figure_heading(45, 1403, 511, "D. Import-price sensitivity", "Partial economics v1.0 [4]")
+figure_heading(586, 1403, 511, "E. Stateful reservoir model", "364 days / 8,736 hours · v1.3 [5]")
+figure_heading(1127, 1403, 511, "F. Hydro timing windows", "365 days / 8,760 hours · v1.2 [5]")
+
+econ = econdata["key_results"]["lower_FY2030_full_ATC_high_envelope_low_BESS"]
+enames = ["ksebl_weighted_purchase", "iex_dam_wholesale", "delivered_bulk_stress"]
+ex, ey, ew, eh = 92, 1535, 422, 189
+axes(
+    ex,
+    ey,
+    ew,
+    eh,
+    8,
+    [0, 2, 4, 6, 8],
+    "Selected solar build (GW)",
+    [0.5, 1.5, 2.5],
+    ["4.49", "4.66", "6.35"],
+    3,
+)
+for i, key in enumerate(enames):
+    v = econ[key]["solar_mw"] / 1000
+    xx = ex + i * ew / 3 + 43
+    box(xx, ey + eh - eh * v / 8, 55, eh * v / 8, BLUE, BLUE)
+    txt(xx + 27.5, ey + eh - eh * v / 8 - 33, rounded(v), 25, "Bold", NAVY, "center")
+txt(303, 1760, "Import-price proxy (INR/kWh)", 19, colour=MUTED, align="center")
+txt(303, 1786, "Real FY2021-22 prices", 17, colour=MUTED, align="center")
+para(
+    53,
+    1820,
+    "<b>Higher import prices select more solar.</b> Lower demand, full transfer, high renewables and low battery cost.",
+    495,
+    21,
+    maxh=83,
+)
+para(53, 1910, "Partial costs; not project finance.", 495, 19, maxh=28)
+
+legend(601, 1491, [("1-day timing", HexColor("#939daa")), ("Idukki state", GREEN)], 17, 18)
+start_x, plot_w = 701, 340
+casekeys = ["atc_snapshot_reference", "atc_80pct_stress", "atc_60pct_stress"]
+for i, (key, pct) in enumerate(zip(casekeys, ["100%", "80%", "60%"])):
+    yy = 1570 + i * 72
+    r = hydro["reference_demand_full_idukki_availability"][key]
+    old, new = r["same_horizon_1d_unserved_gwh"], r["stateful_unserved_gwh"]
+    txt(598, yy - 13, pct, 21, "Bold", NAVY)
+    line(start_x, yy, start_x + plot_w, yy, LINE, 1)
+    a, b = start_x + plot_w * old / 6000, start_x + plot_w * new / 6000
+    line(a, yy, b, yy, GREEN, 4)
+    dot(a, yy, HexColor("#939daa"), 7)
+    dot(b, yy, GREEN, 5)
+    txt(1068, yy - 31, f"{rounded(old)} → {rounded(new)}", 21, "Bold", GREEN, "right")
+for tick in [0, 2000, 4000, 6000]:
+    txt(start_x + plot_w * tick / 6000, 1737, f"{tick:,}", 16, colour=MUTED, align="center")
+txt(850, 1763, "Unserved energy (GWh)", 19, colour=MUTED, align="center")
+txt(846, 1788, "Transfer limit: 100% = 4,455 MW", 17, colour=MUTED, align="center")
+para(
+    594,
+    1820,
+    "<b>69% less shortage at 80% transfer.</b> FY2030-31 reference demand and renewables; full Idukki; low battery cost; KSEBL price.",
+    495,
+    21,
+    maxh=107,
+)
+
+# Different chart form and explicit horizons distinguish E from F.
+txt(1136, 1491, "Unserved energy (GWh)", 19, colour=MUTED)
+hmx, hmy, cw, ch = 1214, 1577, 100, 48
+for j, t in enumerate(["1 day", "3 days", "15 days", "30 days"]):
+    txt(hmx + cw * (j + 0.5), hmy - 34, t, 18, "Bold", align="center")
+heatkeys = [
+    "reference_demand_full_atc_full_hydro",
+    "reference_demand_80pct_atc_full_hydro",
+    "reference_demand_60pct_atc_full_hydro",
+]
+for i, (name, key) in enumerate(zip(["100%", "80%", "60%"], heatkeys)):
+    txt(hmx - 12, hmy + i * ch + 12, name, 20, "Bold", align="right")
+    for j, days in enumerate([1, 3, 15, 30]):
+        v = windows["key_findings"][key][f"{days}d_unserved_gwh"]
+        ratio = v / 6000
+        col = Color(0.91 - 0.78 * ratio, 0.95 - 0.58 * ratio, 0.97 - 0.43 * ratio)
+        box(hmx + j * cw, hmy + i * ch, cw, ch, col, white, 2)
+        txt(
+            hmx + cw * (j + 0.5),
+            hmy + i * ch + 11,
+            rounded(v),
+            22,
+            "Bold",
+            white if ratio > 0.6 else NAVY,
+            "center",
+        )
+txt(1136, 1539, "Transfer", 17, "Bold", NAVY)
+# Quantitative legend rather than a sentence about the colour scale.
+for j in range(100):
+    ratio = j / 99
+    col = Color(0.91 - 0.78 * ratio, 0.95 - 0.58 * ratio, 0.97 - 0.43 * ratio)
+    box(1214 + j * 4, 1744, 4, 12, col, col, 0)
+for value in [0, 3000, 6000]:
+    txt(1214 + value / 6000 * 400, 1762, f"{value:,}", 16, colour=MUTED, align="center")
+para(
+    1135,
+    1820,
+    "<b>Longer windows give limited relief under deep transfer stress.</b> Reference demand; full hydro; annual energy fixed at 7.43 TWh.",
+    495,
+    21,
+    maxh=107,
+)
+para(1135, 1910, "Windows are not reservoir durations.", 495, 19, maxh=28)
+
+section(30, 1981, 793, "Conclusions", 58)
+section(841, 1981, 813, "Limitations and next steps", 58)
+box(30, 2053, 793, 158, white, INK, 1.5)
+box(841, 2053, 813, 158, white, INK, 1.5)
+para(
+    53,
+    2069,
+    "Reservoir flexibility reduces shortage, but <b>5.1 TWh remains unserved at 60% transfer</b> in the stateful pilot (E).",
+    745,
+    23,
+    maxh=87,
+)
+para(53, 2161, "<b>Assess timing and interconnection together.</b>", 745, 23, maxh=34)
+para(
+    864,
+    2069,
+    "<b>Validation:</b> inflow, releases and efficiency remain unvalidated; 11 generation and 11 storage gaps interpolated in v1.3 only.",
+    763,
+    21,
+    maxh=81,
+)
+para(
+    864,
+    2155,
+    "<b>Next:</b> admit official KSEB records and catchment evidence before physical validation [6].",
+    763,
+    20,
+    maxh=53,
+)
+
+line(30, 2234, 1654, 2234, INK, 1)
+txt(30, 2248, "References and reproducibility", 23, "Bold", NAVY)
+para(
+    30,
+    2285,
+    "[1] Kerala SLDC daily statistics, FY2024-25.<br/>[2] GSA2, 1999-2018. [3] WP6 synthetic EV dispatch.<br/>[4] PyPSA economics v1.0. [5] Hydro v1.2 / Idukki v1.3.",
+    790,
+    17,
+    maxh=65,
+)
+para(
+    851,
+    2285,
+    "[6] KSEB v1.5: workbook acquisition blocked. LRIS catchment<br/>PR105: under review; catchment not admitted (27 Sep 2026).<br/>Full-precision data, assumptions and code: <b>kerala2040.github.io/#data</b>",
+    803,
+    17,
+    maxh=65,
+)
+c.linkURL("https://kerala2040.github.io/#data", (851, H - 2352, 1654, H - 2324), relative=1)
+c.linkURL(
+    "https://github.com/abhijith-sivaprasadan/kerala2040/pull/105",
+    (851, H - 2324, 1654, H - 2304),
+    relative=1,
+)
+c.linkURL(
+    "https://github.com/abhijith-sivaprasadan/kerala2040/blob/49acde2877e4d58f91d471bacb82cc3dab7ca1f4/docs/KSEB_MONTHLY_ACQUIRE_PARSE_V1_5.md",
+    (851, H - 2304, 1654, H - 2280),
+    relative=1,
+)
+txt(30, 2366, "Kerala2040  |  Abhijith Sivaprasadan  |  Independent study", 12, "Bold", MUTED)
+txt(
+    1654,
+    2366,
+    "A0 portrait  |  Scientific draft 05  |  27 September 2026",
+    12,
+    colour=MUTED,
+    align="right",
+)
 c.save()
-print(OUT / 'Kerala2040_CET2026_Poster_Draft.pdf')
+print(OUTPUT)
+print(f"Checked {len(BOUNDS)} paragraph regions; native PDF text and vector figures.")

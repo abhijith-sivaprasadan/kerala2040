@@ -618,6 +618,7 @@ def build_site(root: Path, output: Path) -> None:
     model_records = []
     source_audits = []
     for filename, source_path in {
+        "osemosys-benchmark.json": "data/evidence/models/osemosys_benchmark_2026_09_27.json",
         "idukki-reservoir.json": "data/evidence/models/full_pypsa_idukki_reservoir_v1_3_2026_09_26.json",
         "idukki-source-gate.json": "data/evidence/hydro/idukki_v1_4_real_source_gate_2026_09_26.json",
         "idukki-cumulative-recovery.json": "data/evidence/hydro/idukki_v1_4_cumulative_recovery_2026_09_26.json",

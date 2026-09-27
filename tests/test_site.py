@@ -242,3 +242,28 @@ def test_v2_preserves_identity_and_classified_model_results(tmp_path):
     catalogue = json.loads((tmp_path / "data/catalogue.json").read_text(encoding="utf-8"))
     assert all((tmp_path / "data" / row["file"]).is_file() for row in catalogue)
     assert any(row["file"] == "wp6-integrated-dispatch.json" for row in catalogue)
+
+
+def test_osemosys_published_checkpoint_matches_raw_results():
+    import hashlib
+
+    folder = ROOT / "data/evidence/models"
+    record = json.loads((folder / "osemosys_benchmark_2026_09_27.json").read_text())
+    assert record["model_admission"]["validated_capacity_plan"] is False
+    cases = []
+    for name in ["sentinel.json", "full_year_reference.json"]:
+        raw = (folder / ("osemosys_" + name)).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == record["provenance"]["files"][name]
+        payload = json.loads(raw)
+        for case in payload["cases"]:
+            assert case["status"] == "PASS"
+            for key, delta in case["differences"].items():
+                tolerance = "imports_abs_mwh" if key == "stage3_imports_mwh" else (
+                    "unserved_abs_mwh" if "unserved" in key else "capacity_abs_mw"
+                )
+                assert abs(delta) <= case["acceptance"][tolerance]
+            cases.append({"case_id": case["case_id"], "hours": payload["hours"],
+                          "status": case["status"], "acceptance": case["acceptance"],
+                          "differences": case["differences"]})
+    assert cases == record["cases"]
+    assert [case["hours"] for case in cases] == [168, 168, 8760]
