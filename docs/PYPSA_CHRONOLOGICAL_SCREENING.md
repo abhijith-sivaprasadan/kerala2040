@@ -11,11 +11,29 @@ observed/derived daily evidence; this experimental hourly solver's plots and CSV
    in a fixed-profile, 24-hour-weighted PyPSA network, with no filled days.
 2. `scripts/run_hourly_screening.py` solves an LP on a *reconstructed*, 8,760-hour
    FY2024–25 demand chronology, with station-group hydro and nonhydro held at
-   observed **daily-average MW**. The 11 missing SLDC days have explicit, **model-only**
-   interpolated demand and generation; raw observations and published daily totals
-   are never changed. Hourly import and storage dispatch are **model outcomes**.
+   observed **daily-average MW**. The default load shape is now the ERA5-Land
+   weather-sensitive / sparse-SLDC-extrema reconstruction documented in
+   `ERA5_WEATHER_SENSITIVE_HOURLY_LOAD_PROXY_2026_09_27.md`. The 11 missing SLDC
+   days have explicit, **model-only** interpolated demand and generation; raw
+   observations and published daily totals are never changed. Hourly import and
+   storage dispatch are **model outcomes**.
 
 PyPSA dispatch is genuine HiGHS optimisation; no measured hourly fit is claimed.
+
+## Hourly load reconstruction now used by default
+
+The previous released proxy used the same two-peak intraday shape every day. The new
+chronology fits a smooth shape to April–December 2024 published SLDC consumption extrema,
+adds weekend terms, and uses state-area ERA5-Land cooling, humid heat, solar radiation,
+rainfall and wind to perturb the within-day shape. Every day is renormalised so the 24 hourly
+values exactly conserve that day's SLDC consumption energy where observed.
+
+On 430 January–March 2025 held-out SLDC extrema, RMSE is **155.2 MW** versus **477.9 MW**
+for the released fixed two-peak proxy and **162.0 MW** for the sparse-extrema static model.
+The weather-sensitive FY peak is **5923.3 MW**, versus the CEA aggregate reference of
+**5904 MW**. These are sparse-extrema / aggregate-reference diagnostics, not independent
+validation against a measured 8,760-hour series. The legacy `public/hourly-load-proxy.json`
+is retained for comparison but is no longer the default PyPSA screening chronology.
 
 ### Run (in repo root with `pip install -e '.[dev]'`)
 
@@ -84,6 +102,7 @@ recorded missing-date qualification. The reproducible manifest records the
 source-archive SHA-256. Unlike hourly screening PNGs, these charts are derived
 from official daily reports rather than a reconstructed hourly chronology.
 
-GitHub Actions workflow `pypsa-chronological-screening.yml` tests HiGHS on a
-short window and uploads the figures, summary and dispatch CSV as an artifact;
-the annual proxy run is opt-in through the workflow's `hours=8760` input.
+GitHub Actions workflow `pypsa-chronological-screening.yml` tests the checksummed
+ERA5-sensitive proxy and HiGHS screening. Pull requests use a short window; a push to
+`main` runs the full **8,760-hour** no-additions screening automatically. A manual
+workflow dispatch can also select any complete-day window from 24 to 8,760 hours.
