@@ -1,6 +1,6 @@
 """Solve explicitly labelled hourly PyPSA screening from FY2024-25 SLDC evidence.
 
-Default is a 48-hour smoke test. Full 8760-hour solves are opt-in. The historical
+Default is a 48-hour smoke test. The main-branch CI runs all 8,760 hours. The historical
 354-day observed PyPSA replay remains scripts/build_historical_model.py.
 """
 
@@ -24,6 +24,7 @@ from kerala2040.chronological_screen import (
     prepare_inputs,
     solve_hourly_screening,
 )
+from kerala2040.weather_load_proxy import load_hourly_proxy
 
 
 def _make_figures(hourly: pd.DataFrame, network, output: Path) -> None:
@@ -68,7 +69,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--acknowledge-proxy", action="store_true", help="Required: reconstructed hours are NOT telemetry")
     parser.add_argument("--hours", type=int, default=48, help="Consecutive hours from FY start; 8760 for full year")
-    parser.add_argument("--proxy", type=Path, default=Path("public/hourly-load-proxy.json"))
+    parser.add_argument(
+        "--proxy",
+        type=Path,
+        default=Path(
+            "data/evidence/demand/"
+            "hourly_load_proxy_era5_weather_sensitive_v2/manifest.json"
+        ),
+    )
     parser.add_argument("--daily", type=Path, default=Path("data/external/sldc_fy2024_25/daily_balance.csv"))
     parser.add_argument("--qa", type=Path, default=Path("data/external/sldc_fy2024_25/qa_report.json"))
     parser.add_argument("--observed", type=Path, default=Path("public/observed-reference.json"))
@@ -81,7 +89,7 @@ def main() -> int:
         parser.error("Pass --acknowledge-proxy; this is NOT measured hourly Kerala telemetry")
     if not 1 <= args.hours <= 8760 or args.hours % 24:
         parser.error("--hours must be a whole number of days, between 24 and 8760")
-    proxy = json.loads(args.proxy.read_text(encoding="utf-8"))
+    proxy = load_hourly_proxy(args.proxy)
     qa = json.loads(args.qa.read_text(encoding="utf-8"))
     observed = json.loads(args.observed.read_text(encoding="utf-8"))
     settings = yaml.safe_load(args.assumptions.read_text(encoding="utf-8"))
@@ -99,7 +107,15 @@ def main() -> int:
            metadata["observed_days_energy_mu"]["consumption_mu"]) > 0.001:
         raise ValueError("QA totals disagree with model observations")
     metadata["source_archive_sha256"] = qa["source_archive_sha256"]
-    metadata["input_qa"] = "verified 354-day SLDC daily accounting; no hourly calibration"
+    metadata["input_qa"] = (
+        "verified 354-day SLDC daily accounting; hourly load remains reconstructed; "
+        "shape calibrated only to sparse SLDC extrema and aggregate CEA references"
+    )
+    metadata["load_profile_variant"] = proxy.get(
+        "profile_variant", "legacy_fixed_two_peak"
+    )
+    metadata["load_proxy_encoding"] = proxy.get("encoding", "records")
+    metadata["load_proxy_fit"] = proxy.get("fit")
     metadata["modeled_window_hours"] = args.hours
     if args.hours != 8760:
         metadata["window_note"] = "Short chronological sensitivity, NOT annual system totals"
