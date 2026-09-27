@@ -1,0 +1,37 @@
+version: 1
+classification: kseb_network_planning_evidence_bridge_v1_0
+prepared_date: "2026-09-28"
+evidence_file: data/evidence/network/kseb_network_robust_bottlenecks_v1_0_2026_09_28.json
+
+framework_treatment:
+  spatial_pypsa_network_screen:
+    internalized: true
+    scope: 559_bus_575_line_199_transformer_screening_network
+  full_pypsa_capacity_expansion:
+    internalized: false
+    treatment: required_evidence_gate
+  osemosys_capacity_benchmark:
+    internalized: false
+    treatment: required_evidence_gate_single_region
+  pypsa_osemosys_common_frontier:
+    internalized: false
+    treatment: required_evidence_gate_common_single_region_contract
+
+promotion_gate:
+  requires:
+    - authoritative_or_explicitly_scenario_defined_future_corridor_capacities
+    - candidate_transmission_upgrade_options
+    - candidate_transmission_upgrade_costs
+    - validated_spatial_or_zonal_mapping_for_generation_and_demand
+  prohibited:
+    - converting_screening_overload_ratio_directly_to_required_upgrade_mw
+    - treating_screening_mva_as_operator_emergency_rating
+    - claiming_N_minus_1_or_AC_security_from_current_evidence
+
+release:
+  robust_network_evidence_available: true
+  pypsa_spatial_screening_available: true
+  full_pypsa_network_investment_constraints_internalized: false
+  osemosys_spatial_network_constraints_internalized: false
+  common_frontier_network_constraints_internalized: false
+  validated_transmission_expansion_plan: false
