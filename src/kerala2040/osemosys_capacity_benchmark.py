@@ -59,13 +59,9 @@ class BenchmarkCase:
 
     @property
     def id(self) -> str:
-        return "__".join(
-            (
-                self.demand_case,
-                self.transfer_case,
-                self.envelope_case,
-                self.bess_cost_case,
-            )
+        return (
+            f"{self.demand_case}__{self.transfer_case}__"
+            f"{self.envelope_case}__{self.bess_cost_case}"
         )
 
 
