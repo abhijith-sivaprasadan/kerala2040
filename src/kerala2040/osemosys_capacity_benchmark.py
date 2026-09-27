@@ -556,7 +556,10 @@ def run_case(
             "unserved_tolerance_mwh",
         )
     }
-    reference = solve_proxy_expansion_case(**solve_kwargs)
+    reference = solve_proxy_expansion_case(
+        annualized_costs=solve_kwargs["costs"],
+        **{key: value for key, value in solve_kwargs.items() if key != "costs"},
+    )
     osemosys = solve_osemosys_three_stage(**solve_kwargs)
 
     differences = {
