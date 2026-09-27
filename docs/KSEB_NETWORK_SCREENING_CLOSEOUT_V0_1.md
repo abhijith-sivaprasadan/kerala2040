@@ -11,21 +11,34 @@ separate, replaceable model-input layer.
 
 ## New official evidence source
 
-KSEBL *Power System Statistics 2024-25* is ingested directly from the public
-KSEBL PDF. Its relevant inventories are dated **31 March 2025**:
+KSEBL *Power System Statistics 2022-23* supplies the historical equipment
+inventory, dated **31 March 2023**. The legacy KSEBL download endpoint is no
+longer reliable from automated runners, so the repository carries a compact,
+cryptographically pinned **110-kV+ source snapshot** of the model-relevant
+Table 33/34 rows preserved from search-indexed text of the official KSEBL PDF.
+No third-party values are used in that snapshot:
 
 - **Table 33** — EHV and 33 kV substations, including transformer voltage
   ratios, unit MVA, transformer count and printed total MVA.
 - **Table 34** — EHV and 33 kV transmission lines, including feeder code and
   conductor identity.
 
-The 2025 evidence is not silently treated as proof that equipment remained
+The 2023 evidence is not silently treated as proof that equipment remained
 unchanged in 2026.
 
-Table 34 rows are crosswalked to the newer public grid graph only by exact
-normalised feeder code. Table 33 rows are admitted only when the station name
-maps uniquely to a public graph site. Ambiguous and unmatched rows are exported
-for review rather than guessed.
+Table 34 snapshot rows are retained only where the normalised feeder code
+crosswalks exactly to the newer public grid graph. Table 33 primary station
+rows are admitted only when the station name maps uniquely to a public graph
+site and the printed unit-MVA × transformer-count reconciles with printed total
+MVA. Ambiguous and unmatched rows are exported for review rather than guessed.
+
+The snapshot is deliberately **not a complete transcription** of the report. It
+contains only evidence relevant to the 110-kV+ model. CI recomputes its canonical
+SHA-256 and fails closed if the payload changes without an explicit source
+refresh. The original KSEBL URL, report date, printed table-page ranges and
+source-text line locators are preserved in the snapshot metadata. Because the
+legacy live endpoint no longer yields the original PDF bytes reliably, no
+source-PDF SHA-256 is invented.
 
 ## Line screening parameters
 
@@ -47,11 +60,11 @@ line rating.
 
 ## Transformer screening parameters
 
-Printed Table 33 total MVA is used as historical transformer-capacity evidence
+Printed Table 33 total MVA from the 2022-23 snapshot is used as historical transformer-capacity evidence
 when the printed unit MVA × count reconciles with the printed total.
 
 Table 33 may also add a voltage-specific bus/link that is absent from the
-text-readable SLD evidence. These additions are labelled as 2025 PSS evidence;
+text-readable SLD evidence. These additions are labelled as 2023 PSS evidence;
 they do not overwrite newer SLD evidence.
 
 Transformer reactance remains a generic screening assumption. This stage does
