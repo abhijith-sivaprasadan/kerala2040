@@ -1,0 +1,83 @@
+name: Reconcile FY2024-25 generator capacity census
+
+on:
+  pull_request:
+    paths:
+      - "data/evidence/generation/fy2024_25_generator_capacity_census.json"
+      - "src/kerala2040/generator_census.py"
+      - "scripts/build_generator_census_fy2024_25.py"
+      - "tests/test_generator_census_fy2024_25.py"
+      - "docs/GENERATOR_CENSUS_FY2024_25_CLOSEOUT.md"
+      - ".github/workflows/generator-census-fy2024-25.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: src
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install inventory dependencies
+        run: |
+          python -m pip install \
+            "pandas>=2.2,<3" \
+            "pyarrow>=17,<22" \
+            "pytest>=8,<9" \
+            "ruff>=0.7,<1"
+
+      - name: Lint and test census
+        run: |
+          ruff check \
+            src/kerala2040/generator_census.py \
+            scripts/build_generator_census_fy2024_25.py \
+            tests/test_generator_census_fy2024_25.py
+          pytest -q tests/test_generator_census_fy2024_25.py
+
+      - name: Build reconciled capacity register
+        run: python scripts/build_generator_census_fy2024_25.py
+
+      - name: Enforce capacity-accounting boundary
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path(
+              "results/inventory/fy2024_25_generator_census/"
+              "generator_census_summary.json"
+          )
+          s = json.loads(p.read_text())
+          assert s["capacity_accounting_reconciled"] is True
+          assert s["included_register_rows"] == 112
+          assert s["ksebl_hydro_station_count"] == 44
+          assert abs(s["official_reported_total_mw"] - 4412.14) < 1e-9
+          assert abs(s["official_category_anchor_sum_mw"] - 4412.15) < 1e-9
+          assert abs(s["bottom_up_detailed_total_mw"] - 4412.156) < 1e-9
+          assert abs(s["bottom_up_minus_reported_total_mw"] - 0.016) < 1e-9
+          gate = s["release_gate"]
+          assert gate["plant_level_hourly_availability_verified"] is False
+          assert gate["unit_outage_derating_verified"] is False
+          assert gate["dispatch_model_ready_from_installed_capacity_alone"] is False
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fy2024-25-generator-capacity-census-ACCOUNTING-RECONCILED
+          retention-days: 90
+          if-no-files-found: error
+          path: results/inventory/fy2024_25_generator_census/
+
+# Passing closes installed-capacity accounting only. It does not convert
+# nameplate MW into available/dispatchable MW or validate unit outages.
