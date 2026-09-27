@@ -53,7 +53,7 @@ jobs:
           p = Path("results/acquisition/network_public_v0_1/acquisition_summary.json")
           data = json.loads(p.read_text())
           assert data["classification"] == "PUBLIC_NETWORK_ACQUISITION_V0_1_EXECUTED"
-          assert data["layer_files_discovered"] == 14
+          assert data["layer_files_downloaded"] == 14
           assert data["expected_layer_files"] == 14
           assert data["missing_expected_layers"] == []
           assert data["public_sld_links_discovered"] > 0
@@ -67,7 +67,7 @@ jobs:
           lines_220 = data["layers"]["220kVFeederInservice_13.js"]
           assert lines_220["feature_count"] > 0
           print(json.dumps({
-              "layers": data["layer_files_discovered"],
+              "layers": data["layer_files_downloaded"],
               "sld_links": data["public_sld_links_discovered"],
               "substations": substations["feature_count"],
               "220kV_inservice_features": lines_220["feature_count"],
