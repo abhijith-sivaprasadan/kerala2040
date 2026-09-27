@@ -84,20 +84,28 @@ jobs:
           python scripts/build_full_pypsa_era5_profiles_v0_6.py \
             results/acquisition/era5/full-year-input
 
-      - name: Run OSeMOSYS sentinel benchmark
+      - name: Run OSeMOSYS 168-hour sentinel benchmark
+        run: |
+          python research/step10_osemosys/run_osemosys_benchmark.py \
+            --hours 168 \
+            --case reference_FY2030_31,atc_snapshot_reference,high,low \
+            --case lower_FY2030,atc_snapshot_reference,reference,high \
+            --output results/models/osemosys_step10/sentinel.json
+
+      - name: Run full-year OSeMOSYS reference benchmark
         env:
           DISPATCH_HOURS: ${{ github.event.inputs.hours }}
         shell: bash
         run: |
           set -euo pipefail
-          hours="168"
+          hours="8760"
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             hours="${DISPATCH_HOURS:-8760}"
           fi
           python research/step10_osemosys/run_osemosys_benchmark.py \
             --hours "$hours" \
             --case reference_FY2030_31,atc_snapshot_reference,high,low \
-            --case lower_FY2030,atc_snapshot_reference,reference,high
+            --output results/models/osemosys_step10/full_year_reference.json
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -105,4 +113,4 @@ jobs:
           name: osemosys-capacity-benchmark-step10-NOT-VALIDATED
           retention-days: 90
           if-no-files-found: warn
-          path: results/models/osemosys_step10/benchmark.json
+          path: results/models/osemosys_step10/*.json
