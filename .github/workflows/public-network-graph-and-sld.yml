@@ -12,6 +12,7 @@ on:
       - "scripts/map_generator_census_to_public_grid.py"
       - "scripts/build_kseb_public_multibus_skeleton.py"
       - "scripts/build_kseb_public_pss_evidence.py"
+      - "data/evidence/network/kseb_pss_2022_23_110plus_snapshot.json"
       - "scripts/build_kseb_transport_screening_inputs.py"
       - "data/evidence/demand/hourly_load_proxy_era5_weather_sensitive_v2/**"
       - "scripts/build_generator_census_fy2024_25.py"
@@ -29,6 +30,7 @@ on:
       - "scripts/map_generator_census_to_public_grid.py"
       - "scripts/build_kseb_public_multibus_skeleton.py"
       - "scripts/build_kseb_public_pss_evidence.py"
+      - "data/evidence/network/kseb_pss_2022_23_110plus_snapshot.json"
       - "scripts/build_kseb_transport_screening_inputs.py"
       - "data/evidence/demand/hourly_load_proxy_era5_weather_sensitive_v2/**"
       - "scripts/build_generator_census_fy2024_25.py"
@@ -89,7 +91,7 @@ jobs:
       - name: Build fail-closed multi-bus skeleton
         run: python scripts/build_kseb_public_multibus_skeleton.py
 
-      - name: Extract official PSS 2024-25 grid evidence
+      - name: Build deterministic PSS 2022-23 110+ grid evidence
         run: python scripts/build_kseb_public_pss_evidence.py
 
       - name: Build provenance-labelled transport and DC screening inputs
@@ -174,17 +176,23 @@ jobs:
           assert multibus["dc_power_flow_ready"] is False
           assert multibus["ac_power_flow_ready"] is False
 
-          assert pss["pdf_bytes"] >= 100000
+          assert pss["source_as_of"] == "2023-03-31"
+          assert pss["source_transport"] == "FROZEN_INDEXED_OFFICIAL_PDF_SOURCE_SNAPSHOT"
+          assert pss["live_network_fetch_used"] is False
+          assert pss["snapshot_payload_sha256"] == "02371d67ca850083e29a4a9f53e0f0d5be66b6cc63c7bab158cd1ac6aa4aa4b5"
+          assert pss["snapshot_table33_rows"] >= 130
+          assert pss["snapshot_table34_rows"] >= 250
           assert pss["graph_feeder_codes_considered"] >= 450
           assert pss["pss_feeder_codes_matched"] >= 250
           assert pss["source_edges_with_conductor_identity"] >= 250
-          assert pss["stations_mapped"] >= 80
-          assert pss["aggregate_transformer_voltage_links_with_capacity"] >= 80
+          assert pss["station_transformer_rows_with_reconciled_capacity"] >= 100
+          assert pss["stations_mapped"] >= 100
+          assert pss["aggregate_transformer_voltage_links_with_capacity"] >= 100
 
           assert screening["screening_lines"] == multibus["topology_line_segments"]
           assert screening["lines_with_screening_x"] == screening["screening_lines"]
           assert screening["screening_transformer_links"] >= multibus["structural_transformer_links"]
-          assert screening["transformer_links_with_pss_2025_capacity"] >= 80
+          assert screening["transformer_links_with_pss_2023_capacity"] >= 80
           assert screening["load_buses"] >= 50
           assert abs(screening["load_weight_sum"] - 1.0) < 1e-9
           assert screening["load_proxy_hours"] == 8760
@@ -230,8 +238,7 @@ jobs:
             results/network/public_multibus_skeleton_v0_1/
             results/network/public_pss_evidence_v0_1/
             results/network/public_transport_screening_v0_1/
-            results/acquisition/kseb_pss_2024_25/
-            results/inventory/fy2024_25_generator_census/
+                        results/inventory/fy2024_25_generator_census/
             results/acquisition/network_public_v0_1/public_sld_inventory.json
             results/acquisition/network_public_v0_1/acquisition_summary.json
             results/acquisition/network_public_v0_1/geojson/
