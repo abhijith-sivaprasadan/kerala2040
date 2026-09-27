@@ -1,0 +1,80 @@
+name: One-shot repository branch cleanup
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/branch-cleanup-once.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Delete stale remote branches
+        env:
+          GH_TOKEN: \${{ github.token }}
+          REPO: \${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          keep() {
+            case "$1" in
+              main|research/wp8-finance-federal-value-2026-09-24|daily-anchored-quarter-hour-ensemble-20260925)
+                return 0 ;;
+              *)
+                return 1 ;;
+            esac
+          }
+
+          mapfile -t branches < <(
+            gh api --paginate \
+              -H "Accept: application/vnd.github+json" \
+              "repos/$REPO/branches?per_page=100" \
+              --jq '.[].name'
+          )
+
+          echo "Initial branches: \${#branches[@]}"
+          deleted=0
+          failed=0
+
+          for branch in "\${branches[@]}"; do
+            if keep "$branch"; then
+              echo "KEEP   $branch"
+              continue
+            fi
+            echo "DELETE $branch"
+            if gh api -X DELETE \
+              -H "Accept: application/vnd.github+json" \
+              "repos/$REPO/git/refs/heads/$branch"; then
+              deleted=$((deleted + 1))
+            else
+              echo "::warning::Failed to delete $branch"
+              failed=$((failed + 1))
+            fi
+          done
+
+          mapfile -t remaining < <(
+            gh api --paginate \
+              -H "Accept: application/vnd.github+json" \
+              "repos/$REPO/branches?per_page=100" \
+              --jq '.[].name' | sort
+          )
+
+          printf '%s\n' "\${remaining[@]}" | tee /tmp/remaining.txt
+          printf '%s\n' \
+            'daily-anchored-quarter-hour-ensemble-20260925' \
+            'main' \
+            'research/wp8-finance-federal-value-2026-09-24' \
+            | sort > /tmp/expected.txt
+
+          echo "Deleted: $deleted"
+          echo "Failed: $failed"
+          echo "Remaining: \${#remaining[@]}"
+
+          diff -u /tmp/expected.txt /tmp/remaining.txt
