@@ -62,7 +62,7 @@ CONDUCTOR_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
         "UG_CABLE",
         re.compile(
             r"\b(?:UG|UNDERGROUND)\b.*?\bCABLE\b|\b\d+\s*SQ\s*MM\s+UG\b",
-            re.I,
+            re.IGNORECASE,
         ),
     ),
 ]
