@@ -47,8 +47,19 @@ def main() -> int:
         old.daily_energy_imputed.to_numpy(), era5.daily_energy_imputed.to_numpy()
     ):
         raise ValueError("Old and ERA5 runs use different missing-day masks")
-    if abs(old.load_proxy_mw.sum() - era5.load_proxy_mw.sum()) > 1e-3:
-        raise ValueError("Old and ERA5 annual demand energy differ")
+    annual_energy_difference_mwh = float(
+        era5.load_proxy_mw.sum() - old.load_proxy_mw.sum()
+    )
+    # The compact ERA5 profile stores rounded hourly MW values. Each proxy is
+    # independently checked against the 354 observed daily SLDC energy totals;
+    # allow only the small full-year serialization difference implied by that
+    # compact representation.
+    annual_energy_rounding_tolerance_mwh = 10.0
+    if abs(annual_energy_difference_mwh) > annual_energy_rounding_tolerance_mwh:
+        raise ValueError(
+            "Old and ERA5 annual demand energy differ beyond compact-profile "
+            "rounding tolerance"
+        )
 
     for label, s in (("old", old_summary), ("era5", era5_summary)):
         if s["unserved_mwh_modelled"] > 1e-5:
@@ -90,8 +101,12 @@ def main() -> int:
                 era5_block["imports"]["max_abs_1h_ramp_mw"]
                 - old_block["imports"]["max_abs_1h_ramp_mw"],
         },
+        "annual_energy_comparison": {
+            "era5_minus_old_mwh": annual_energy_difference_mwh,
+            "absolute_tolerance_mwh": annual_energy_rounding_tolerance_mwh,
+            "within_compact_profile_rounding_tolerance": True,
+        },
         "invariants": {
-            "same_annual_proxy_energy": True,
             "same_missing_day_mask": True,
             "354_observed_daily_energy_totals_preserved": True,
             "11_missing_daily_totals_model_only_interpolated": True,
