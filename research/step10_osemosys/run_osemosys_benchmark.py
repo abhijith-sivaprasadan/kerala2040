@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Run Kerala2040 Step 10 independent TZ-OSeMOSYS capacity benchmark."""
 from __future__ import annotations
 
