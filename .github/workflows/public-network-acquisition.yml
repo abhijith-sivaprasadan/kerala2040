@@ -8,6 +8,7 @@ on:
       - "scripts/acquire_public_network_sources.py"
       - ".github/workflows/public-network-acquisition.yml"
       - "docs/network-acquisition.html"
+      - "docs/index.html"
   workflow_dispatch:
     inputs:
       download_sld:
