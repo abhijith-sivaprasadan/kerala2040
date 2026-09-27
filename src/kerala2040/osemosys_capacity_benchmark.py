@@ -310,7 +310,13 @@ def _build_osemosys_model(
         time_definition=TimeDefinition(
             id=f"hourly-{n}",
             years=[YEAR],
+            seasons=[1],
+            day_types=[1],
+            daily_time_brackets=[1],
             timeslices=timeslices,
+            timeslice_in_season={name: 1 for name in timeslices},
+            timeslice_in_daytype={name: 1 for name in timeslices},
+            timeslice_in_timebracket={name: 1 for name in timeslices},
             year_split=year_split,
         ),
         regions=[Region(id=REGION)],
