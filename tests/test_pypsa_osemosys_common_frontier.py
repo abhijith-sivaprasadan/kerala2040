@@ -21,6 +21,8 @@ def test_common_frontier_contract_is_guarded():
     assert suite["common_contract"]["expected_cases"] == 12
     assert suite["release"]["observed_catchment_inflow_model"] is False
     assert suite["release"]["validated_capacity_plan"] is False
+    assert suite["release"]["network_spatial_constraints_internalized"] is False
+    assert suite["common_contract"]["network_planning_evidence"] == "configs/network_planning_evidence_v1_0.yaml"
 
 
 def test_demand_mapping_preserves_negative_residual_as_fixed_source():
