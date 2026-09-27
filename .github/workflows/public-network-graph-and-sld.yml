@@ -95,3 +95,4 @@ jobs:
           path: results/acquisition/network_public_v0_1/sld/
 
 # Public web sources only. No authentication to SOS/TrAMS and no OCR guessing.
+# Triggered after workflow admission to main.
