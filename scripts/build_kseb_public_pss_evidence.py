@@ -45,6 +45,18 @@ VOLTAGE_RATIO_RE = re.compile(
 )
 NUMBER_RE = re.compile(r"(?<![A-Za-z])\d+(?:\.\d+)?")
 CONDUCTOR_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
+    (
+        "MIXED_WOLF_UG",
+        re.compile(r"\bACSR\s+WOLF\s*\+\s*UG\b", re.IGNORECASE),
+    ),
+    (
+        "MIXED_AL59_WOLF",
+        re.compile(r"\bAL\s*59\s*\+\s*ACSR\s+WOLF\b", re.IGNORECASE),
+    ),
+    (
+        "MIXED_AAAC_WOLF",
+        re.compile(r"\bAAAC\s*\+\s*ACSR\s+WOLF\b", re.IGNORECASE),
+    ),
     ("STACIR", re.compile(r"\bSTACIR\b", re.IGNORECASE)),
     ("AAAC", re.compile(r"\bAAAC\b", re.IGNORECASE)),
     ("ZEBRA", re.compile(r"\b(?:ACSR\s+)?ZEBRA\b", re.IGNORECASE)),
