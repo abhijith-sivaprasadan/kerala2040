@@ -192,13 +192,25 @@ def main() -> int:
     acquisition_log.append(index_meta)
 
     index_html = index_data.decode("utf-8", errors="replace")
-    layer_urls = discover_layer_urls(index_html, index_source["url"])
-    names = [Path(urllib.parse.urlparse(url).path).name for url in layer_urls]
+    discovered_layer_urls = discover_layer_urls(index_html, index_source["url"])
+    discovered_names = [
+        Path(urllib.parse.urlparse(url).path).name
+        for url in discovered_layer_urls
+    ]
     expected = config["qgis_layer_files_expected"]
-    missing = sorted(set(expected) - set(names))
-    extra = sorted(set(names) - set(expected))
-    if missing:
-        raise RuntimeError(f"public KSEBL grid map is missing expected layer files: {missing}")
+    missing_from_index = sorted(set(expected) - set(discovered_names))
+    extra = sorted(set(discovered_names) - set(expected))
+
+    # KSEBL's public qgis2web page is occasionally served differently to
+    # non-browser clients. The layer filenames are versioned in the audited
+    # manifest, so build their public URLs deterministically and validate the
+    # downloaded FeatureCollections rather than failing only because the index
+    # HTML omitted its script tags.
+    layer_root = urllib.parse.urljoin(index_source["url"], "layers/")
+    layer_urls = [
+        urllib.parse.urljoin(layer_root, name)
+        for name in expected
+    ]
 
     layer_summary: dict[str, Any] = {}
     all_sld: list[dict[str, str]] = []
@@ -271,10 +283,13 @@ def main() -> int:
         "classification": "PUBLIC_NETWORK_ACQUISITION_V0_1_EXECUTED",
         "prepared_date": config["prepared_date"],
         "kseb_grid_map_title_expected": "KERALA POWER SYSTEM NETWORK - Version. 3.2 (As on 31/03/2026)",
-        "layer_files_discovered": len(layer_urls),
+        "layer_files_discovered_from_index_html": len(discovered_layer_urls),
+        "layer_files_downloaded": len(layer_summary),
         "expected_layer_files": len(expected),
-        "missing_expected_layers": missing,
-        "unexpected_layers": extra,
+        "missing_expected_layers": sorted(set(expected) - set(layer_summary)),
+        "missing_from_index_html": missing_from_index,
+        "unexpected_layers_in_index_html": extra,
+        "index_discovery_fallback_used": bool(missing_from_index),
         "layers": layer_summary,
         "public_sld_links_discovered": len(sld_rows),
         "public_sld_download_requested": bool(args.download_sld),
@@ -296,10 +311,12 @@ def main() -> int:
 
     print(json.dumps(
         {
-            "layer_files_discovered": len(layer_urls),
+            "layer_files_discovered_from_index_html": len(discovered_layer_urls),
+            "layer_files_downloaded": len(layer_summary),
             "public_sld_links_discovered": len(sld_rows),
             "output": str(out),
-            "missing_expected_layers": missing,
+            "missing_expected_layers": sorted(set(expected) - set(layer_summary)),
+            "missing_from_index_html": missing_from_index,
         },
         indent=2,
     ))
