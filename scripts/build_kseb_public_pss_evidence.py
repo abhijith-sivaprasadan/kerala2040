@@ -24,10 +24,16 @@ DEFAULT_CACHE = (
     / "results/acquisition/kseb_pss_2024_25/"
     "power_system_statistics_2024_25.pdf"
 )
+DEFAULT_TEXT_CACHE = (
+    ROOT
+    / "results/acquisition/kseb_pss_2024_25/"
+    "power_system_statistics_2024_25_rendered.txt"
+)
 PSS_URL = (
     "https://kseb.in/uploads/Downloadtemsuppy/"
     "PSS%2024-25-1763198698832757145.pdf"
 )
+PSS_TEXT_PROXY_URL = "https://r.jina.ai/" + PSS_URL
 SOURCE_AS_OF = "2025-03-31"
 CLASSIFICATION = "KSEBL_PSS_2024_25_PUBLIC_GRID_EVIDENCE_V0_1"
 
@@ -107,6 +113,50 @@ def _download_pdf(url: str, cache: Path) -> bytes:
     cache.parent.mkdir(parents=True, exist_ok=True)
     cache.write_bytes(data)
     return data
+
+
+def _download_text_proxy(url: str, cache: Path) -> str:
+    import urllib.request
+
+    if cache.exists() and cache.stat().st_size > 100_000:
+        text = cache.read_text(encoding="utf-8")
+        if "POWER SYSTEM STATISTICS 2024-25" in text.upper():
+            return text
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "kerala2040-public-research/1.0",
+            "Accept": "text/plain,text/markdown;q=0.9,*/*;q=0.1",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=120) as response:
+        data = response.read()
+    text = data.decode("utf-8", errors="replace")
+    if (
+        len(text) < 100_000
+        or "POWER SYSTEM STATISTICS 2024-25" not in text.upper()
+    ):
+        raise RuntimeError(
+            "KSEBL PSS text proxy did not return a usable rendered report"
+        )
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    cache.write_text(text, encoding="utf-8")
+    return text
+
+
+def _text_lines(text: str) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for line_index, raw in enumerate(text.splitlines()):
+        line = _norm_space(raw)
+        if line:
+            rows.append(
+                {
+                    "page_index": -1,
+                    "line_index": line_index,
+                    "text": line,
+                }
+            )
+    return rows
 
 
 def _pdf_lines(data: bytes) -> list[dict[str, Any]]:
@@ -413,14 +463,35 @@ def main() -> int:
     )
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--cache-pdf", type=Path, default=DEFAULT_CACHE)
+    parser.add_argument(
+        "--cache-text", type=Path, default=DEFAULT_TEXT_CACHE
+    )
     parser.add_argument("--source-url", default=PSS_URL)
+    parser.add_argument(
+        "--text-proxy-url", default=PSS_TEXT_PROXY_URL
+    )
     args = parser.parse_args()
 
     graph = json.loads(args.graph.read_text(encoding="utf-8"))
     with args.source_edges.open(newline="", encoding="utf-8") as handle:
         source_edges = list(csv.DictReader(handle))
-    pdf = _download_pdf(args.source_url, args.cache_pdf)
-    lines = _pdf_lines(pdf)
+    source_transport = "DIRECT_PDF"
+    source_size_bytes = 0
+    try:
+        pdf = _download_pdf(args.source_url, args.cache_pdf)
+        source_size_bytes = len(pdf)
+        lines = _pdf_lines(pdf)
+    except (OSError, RuntimeError) as exc:
+        print(
+            "Direct KSEBL PDF retrieval unavailable; "
+            f"using rendered text fallback: {type(exc).__name__}: {exc}"
+        )
+        rendered = _download_text_proxy(
+            args.text_proxy_url, args.cache_text
+        )
+        source_transport = "PUBLIC_TEXT_PROXY_OF_OFFICIAL_PDF"
+        source_size_bytes = len(rendered.encode("utf-8"))
+        lines = _text_lines(rendered)
 
     line_evidence, line_ambiguous = _extract_line_evidence(
         lines, source_edges
@@ -495,8 +566,15 @@ def main() -> int:
         "classification": CLASSIFICATION + "_QA",
         "source_url": args.source_url,
         "source_as_of": SOURCE_AS_OF,
-        "pdf_bytes": len(pdf),
-        "pdf_text_lines": len(lines),
+        "source_transport": source_transport,
+        "source_size_bytes": source_size_bytes,
+        "source_text_lines": len(lines),
+        "official_pdf_url": args.source_url,
+        "text_proxy_url": (
+            args.text_proxy_url
+            if source_transport != "DIRECT_PDF"
+            else ""
+        ),
         "graph_feeder_codes_considered": len(graph_codes),
         "pss_feeder_codes_matched": len(matched_codes),
         "source_edges": len(edge_rows),
