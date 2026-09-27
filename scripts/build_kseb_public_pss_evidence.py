@@ -112,6 +112,7 @@ def _norm_name(value: Any) -> str:
         "AMBALAMUGHAL": "AMBALAMUGAL",
         "AREACODE": "AREEKODE",
         "CHENGANOOR": "CHENGANNUR",
+        "KATTAKKADA": "KATTAKADA",
     }.items():
         text = text.replace(old, new)
     return re.sub(r"[^A-Z0-9]+", "", text)
@@ -579,10 +580,13 @@ def _match_station(
             exact.append((pos, -len(loc), node))
     if not exact:
         return None, "NO_EXACT_NORMALIZED_LOCATION_MATCH"
+    # Prefer the most specific (longest) station name before position.
+    # This prevents a nested name such as "Kattakada" from stealing the
+    # historical "New Kattakkada" row from the distinct New Kattakada node.
     exact.sort(
         key=lambda item: (
-            item[0],
             item[1],
+            item[0],
             0 if str(item[2]["node_id"]).startswith("SS:") else 1,
         )
     )
