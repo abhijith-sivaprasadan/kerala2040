@@ -22,12 +22,13 @@ import json
 import math
 import re
 from collections import Counter, defaultdict, deque
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
+from pyproj import Transformer
 from shapely.geometry import Point, shape
 from shapely.ops import linemerge, transform
-from pyproj import Transformer
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ACQ = ROOT / "results/acquisition/network_public_v0_1"
@@ -110,7 +111,7 @@ def _endpoints(geometry: Any) -> list[tuple[float, float]]:
 def _geometry_length_km(geometry: Any) -> float:
     total = 0.0
     for coords in _line_parts(geometry):
-        for a, b in zip(coords, coords[1:], strict=False):
+        for a, b in pairwise(coords):
             total += _haversine_km(tuple(a), tuple(b))
     return total
 
@@ -414,7 +415,7 @@ def main() -> int:
             if cleaned and abs(item[0] - cleaned[-1][0]) < 1.0 and item[1] == cleaned[-1][1]:
                 continue
             cleaned.append(item)
-        for seg_index, (left, right) in enumerate(zip(cleaned, cleaned[1:], strict=False), start=1):
+        for seg_index, (left, right) in enumerate(pairwise(cleaned), start=1):
             seg_m = max(0.0, right[0] - left[0])
             if seg_m < 1.0:
                 continue
