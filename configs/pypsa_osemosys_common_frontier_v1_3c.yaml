@@ -14,6 +14,7 @@ common_contract:
   candidate_expansion: configs/full_pypsa_proxy_expansion_v0_8.yaml
   costs: configs/full_pypsa_cost_finance_v0_5.yaml
   renewable_profiles: configs/full_pypsa_era5_renewable_profiles_v0_6.yaml
+  network_planning_evidence: configs/network_planning_evidence_v1_0.yaml
   horizon_hours: 8736
   horizon_days: 364
   capacity_envelope_case: reference
@@ -36,11 +37,13 @@ frameworks:
     formulation: direct_PyPSA_Network_Linopy
     solver: HiGHS
     source: src/kerala2040/full_pypsa_idukki_reservoir_v1_3.py
+    spatial_network_treatment: separate_559_bus_screening_evidence_not_internalized
   osemosys:
     package: transition-zero/tz-osemosys
     tz_osemosys_git_commit: 2c95ef395858ad530fb38a0dfb5c142283964d24
     solver: HiGHS
     formulation: canonical_OSeMOSYS_with_explicit_alignment_constraints
+    spatial_network_treatment: single_region_network_evidence_gate_not_internalized
     bridge_constraints:
       - fixed_hourly_positive_and_negative_net_water_balance_activities
       - exact_non_idukki_daily_hydro_energy
@@ -106,4 +109,5 @@ release:
   observed_catchment_inflow_model: false
   total_system_cost_optimization: false
   validated_capacity_plan: false
+  network_spatial_constraints_internalized: false
   scenario_recommendation: false
