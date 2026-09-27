@@ -25,6 +25,10 @@ from kerala2040.full_pypsa_future_adequacy import (
     load_future_adequacy_suite,
     morph_load_to_energy_and_peak,
 )
+from kerala2040.network_planning_evidence import (
+    load_network_planning_evidence,
+    planning_network_summary,
+)
 from kerala2040.full_pypsa_proxy_expansion import (
     _align_profiles,
     _annualized_costs,
@@ -75,7 +79,12 @@ def load_benchmark_suite(path: Path) -> dict[str, Any]:
         raise ValueError("TZ-OSeMOSYS commit pin changed without code review")
     if data["release"]["cross_framework_benchmark"] is not True:
         raise ValueError("benchmark release flag is false")
-    for key in ("validated_capacity_plan", "scenario_recommendation", "economic_dispatch_ready"):
+    for key in (
+        "validated_capacity_plan",
+        "scenario_recommendation",
+        "economic_dispatch_ready",
+        "spatial_network_constraints_internalized",
+    ):
         if data["release"][key] is not False:
             raise ValueError(f"benchmark incorrectly enables {key}")
     return data
@@ -623,6 +632,10 @@ def run_benchmark(
     suite = load_benchmark_suite(suite_path)
     acceptance = {key: float(value) for key, value in suite["acceptance"].items()}
     results = [run_case(root, profile_path, case, hours, acceptance) for case in cases]
+    network_evidence = load_network_planning_evidence(
+        root / "data/evidence/network/"
+        "kseb_network_robust_bottlenecks_v1_0_2026_09_28.json"
+    )
     return {
         "classification": BENCHMARK_CLASS,
         "prepared_date": suite["prepared_date"],
@@ -632,9 +645,11 @@ def run_benchmark(
         "full_financial_year": hours == 8760,
         "cases": results,
         "all_cases_pass_numeric_equivalence": all(row["status"] == "PASS" for row in results),
+        "network_planning_evidence": planning_network_summary(network_evidence),
         "limitations": [
             "inherits all Full-PyPSA v0.8 proxy demand, renewable, ATC and capacity-envelope limits",
             "does not validate landed import prices, statutory siting, grid hosting or 2040 assets",
+            "single-region OSeMOSYS does not internalize the 21 robust line and one robust transformer screening constraints",
             "reproduces v0.8 lexicographic accounting and is not a new policy scenario",
             "BESS uses canonical OSeMOSYS storage plus explicit bridge constraints for exact v0.8 mapping",
         ],
