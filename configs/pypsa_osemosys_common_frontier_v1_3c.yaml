@@ -62,8 +62,32 @@ acceptance:
   capacity_abs_mw: 0.05
   imports_abs_mwh: 2.0
   hydro_generation_abs_mwh: 2.0
-  idukki_storage_abs_mcm: 0.01
+  idukki_terminal_storage_abs_mcm: 0.01
+  idukki_storage_bound_tolerance_mcm: 0.01
   objective_abs_million_inr: 0.5
+
+comparison_semantics:
+  planning_equivalence_gate:
+    - stage_1_unserved_energy
+    - stage_2_unserved_energy
+    - candidate_solar_wind_BESS_capacity
+    - import_energy
+    - total_other_hydro_generation
+    - total_Idukki_generation
+    - Idukki_terminal_storage
+    - stage_2_partial_economic_objective
+  operational_diagnostics_not_equivalence_gate:
+    - Idukki_hourly_generation_path
+    - Idukki_intermediate_storage_path
+    - Idukki_minimum_storage
+    - Idukki_maximum_storage
+    - non_turbine_release_if_total_release_is_objectively_degenerate
+  rationale: >-
+    The stage-1/stage-2 LP does not contain a common water-value or chronology
+    tie-break after the planning optimum is reached. Different solvers may
+    therefore choose different feasible hourly reservoir trajectories while
+    producing identical planning capacities, energy totals, cost and terminal
+    stock. Those trajectories are reported, not force-fitted.
 
 newer_evidence_not_admitted:
   - full_pypsa_idukki_cumulative_inflow_v1_4b
