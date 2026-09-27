@@ -84,13 +84,12 @@ jobs:
           python scripts/build_full_pypsa_era5_profiles_v0_6.py \
             results/acquisition/era5/full-year-input
 
-      - name: Run OSeMOSYS 168-hour sentinel benchmark
+      - name: Run OSeMOSYS 168-hour full v0.8 matrix
         run: |
           python research/step10_osemosys/run_osemosys_benchmark.py \
             --hours 168 \
-            --case reference_FY2030_31,atc_snapshot_reference,high,low \
-            --case lower_FY2030,atc_snapshot_reference,reference,high \
-            --output results/models/osemosys_step10/sentinel.json
+            --all-v0-8-cases \
+            --output results/models/osemosys_step10/full_matrix_168h.json
 
       - name: Run full-year OSeMOSYS reference benchmark
         env:
