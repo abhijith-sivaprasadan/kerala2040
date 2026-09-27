@@ -751,12 +751,16 @@ def _compare(
         <= acceptance["hydro_generation_abs_mwh"]
         and abs(differences["idukki_generation_mwh"])
         <= acceptance["hydro_generation_abs_mwh"]
-        and abs(differences["idukki_storage_min_mcm"])
-        <= acceptance["idukki_storage_abs_mcm"]
-        and abs(differences["idukki_storage_max_mcm"])
-        <= acceptance["idukki_storage_abs_mcm"]
         and abs(differences["idukki_storage_terminal_mcm"])
-        <= acceptance["idukki_storage_abs_mcm"]
+        <= acceptance["idukki_terminal_storage_abs_mcm"]
+        and float(pypsa["idukki_storage_min_mcm"])
+        >= -acceptance["idukki_storage_bound_tolerance_mcm"]
+        and float(osemosys["idukki_storage_min_mcm"])
+        >= -acceptance["idukki_storage_bound_tolerance_mcm"]
+        and float(pypsa["idukki_storage_max_mcm"])
+        <= 1460.0 + acceptance["idukki_storage_bound_tolerance_mcm"]
+        and float(osemosys["idukki_storage_max_mcm"])
+        <= 1460.0 + acceptance["idukki_storage_bound_tolerance_mcm"]
         and abs(differences["stage2_objective_million_inr"])
         <= acceptance["objective_abs_million_inr"]
     )
@@ -769,6 +773,19 @@ def _compare(
         "osemosys_stage2_objective_million_inr": _objective(
             osemosys, costs, import_price
         ),
+        "operational_path_diagnostics": {
+            "idukki_min_storage_difference_mcm": differences[
+                "idukki_storage_min_mcm"
+            ],
+            "idukki_max_storage_difference_mcm": differences[
+                "idukki_storage_max_mcm"
+            ],
+            "note": (
+                "Intermediate reservoir trajectories are not a planning-"
+                "equivalence gate because the shared stage-2 objective does "
+                "not uniquely determine hourly water timing."
+            ),
+        },
         "release_difference_is_diagnostic_not_gate": True,
     }
 
