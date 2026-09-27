@@ -25,16 +25,16 @@ from kerala2040.full_pypsa_future_adequacy import (
     load_future_adequacy_suite,
     morph_load_to_energy_and_peak,
 )
-from kerala2040.network_planning_evidence import (
-    load_network_planning_evidence,
-    planning_network_summary,
-)
 from kerala2040.full_pypsa_proxy_expansion import (
     _align_profiles,
     _annualized_costs,
     _candidate_caps,
     load_proxy_expansion_suite,
     solve_proxy_expansion_case,
+)
+from kerala2040.network_planning_evidence import (
+    load_network_planning_evidence,
+    planning_network_summary,
 )
 
 TZ_OSEMOSYS_GIT_COMMIT = "2c95ef395858ad530fb38a0dfb5c142283964d24"
