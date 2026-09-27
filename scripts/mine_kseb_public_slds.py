@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from pypdf import PdfReader
+from pypdf.errors import PdfReadError
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ACQ = ROOT / "results/acquisition/network_public_v0_1"
@@ -21,24 +22,24 @@ DEFAULT_OUT = ROOT / "results/network/public_sld_mining_v0_1"
 
 CLASSIFICATION = "KSEBL_PUBLIC_SLD_TEXT_MINING_V0_1_NOT_EQUIPMENT_MASTER"
 
-VOLTAGE_RE = re.compile(r"(?<!\d)(11|22|33|66|110|220|230|320|400)\s*k\s*v", re.I)
-MVA_RE = re.compile(r"(?<![\d.])(\d+(?:\.\d+)?)\s*M\s*V\s*A\b", re.I)
-MW_RE = re.compile(r"(?<![\d.])(\d+(?:\.\d+)?)\s*M\s*W\b", re.I)
-MVAR_RE = re.compile(r"(?<![\d.])(\d+(?:\.\d+)?)\s*M\s*V\s*A\s*R\b", re.I)
-PLACEHOLDER_RE = re.compile(r"SLD\s+Not\s+Available", re.I)
+VOLTAGE_RE = re.compile(r"(?<!\d)(11|22|33|66|110|220|230|320|400)\s*k\s*v", re.IGNORECASE)
+MVA_RE = re.compile(r"(?<![\d.])(\d+(?:\.\d+)?)\s*M\s*V\s*A\b", re.IGNORECASE)
+MW_RE = re.compile(r"(?<![\d.])(\d+(?:\.\d+)?)\s*M\s*W\b", re.IGNORECASE)
+MVAR_RE = re.compile(r"(?<![\d.])(\d+(?:\.\d+)?)\s*M\s*V\s*A\s*R\b", re.IGNORECASE)
+PLACEHOLDER_RE = re.compile(r"SLD\s+Not\s+Available", re.IGNORECASE)
 AS_ON_RE = re.compile(
     r"\bAs\s+On\s*[:\-]?\s*(\d{1,2}[./-]\d{1,2}[./-]\d{2,4})",
-    re.I,
+    re.IGNORECASE,
 )
 CONDUCTOR_AMPACITY_RE = re.compile(
     r"CONDUCTOR\s*[-:]?\s*([A-Z][A-Z0-9_-]{1,24})[^\n]{0,50}?"
     r"(?<![/\d])(\d{2,4})\s*A\b",
-    re.I,
+    re.IGNORECASE,
 )
 EQUIPMENT_WORDS = re.compile(
     r"\b(?:ICT|PTR|TRANSFORMER|TR\.?|AUTO\s*TRANSFORMER|BUS\s*COUPLER|"
     r"BUS\s*SECTION|MAIN\s*BUS|TRANSFER\s*BUS|REACTOR|CAPACITOR)\b",
-    re.I,
+    re.IGNORECASE,
 )
 
 
@@ -86,7 +87,7 @@ def _extract_pdf(path: Path) -> dict[str, Any]:
     for index, page in enumerate(reader.pages):
         try:
             page_text.append(page.extract_text() or "")
-        except Exception as exc:  # source PDF quality is an evidence property
+        except (PdfReadError, KeyError, TypeError, ValueError) as exc:  # source PDF quality is an evidence property
             page_text.append("")
             page_errors.append({"page": index + 1, "error": type(exc).__name__})
 
@@ -116,7 +117,7 @@ def _extract_pdf(path: Path) -> dict[str, Any]:
             if re.search(
                 r"\b(?:ICT|PTR|TRANSFORMER|TR\.?|AUTO\s*TRANSFORMER)\b",
                 hit["context"],
-                re.I,
+                re.IGNORECASE,
             )
         }
     )
@@ -145,7 +146,7 @@ def _extract_pdf(path: Path) -> dict[str, Any]:
                 for match in re.finditer(
                     r"\b(?:MAIN\s*BUS|TRANSFER\s*BUS|BUS\s*COUPLER|BUS\s*SECTION)\b",
                     text,
-                    re.I,
+                    re.IGNORECASE,
                 )
             }
         ),
@@ -232,7 +233,7 @@ def main() -> int:
         else:
             try:
                 result = _extract_pdf(pdf)
-            except Exception as exc:
+            except (OSError, PdfReadError, KeyError, TypeError, ValueError) as exc:
                 result = {
                     "pages": 0,
                     "text_chars": 0,
