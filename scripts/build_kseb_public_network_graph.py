@@ -19,6 +19,7 @@ import json
 import math
 import re
 from collections import Counter, defaultdict, deque
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -105,7 +106,7 @@ def _endpoints(geometry: Any) -> list[tuple[float, float]]:
 def _geometry_length_km(geometry: Any) -> float:
     total = 0.0
     for coords in _line_parts(geometry):
-        for a, b in zip(coords, coords[1:], strict=False):
+        for a, b in pairwise(coords):
             total += _haversine_km(tuple(a), tuple(b))
     return total
 
