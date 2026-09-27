@@ -390,7 +390,7 @@ def run_screening(
     components, component_lookup = connected_components(
         bus_ids, lines, transformers
     )
-    interfaces = identify_boundary_interfaces(
+    detected_interfaces = identify_boundary_interfaces(
         buses,
         lines,
         minimum_voltage_kv=int(
@@ -419,6 +419,40 @@ def run_screening(
         raise ValueError("spatial load timestamps disagree with canonical chronology")
     if set(gross_load.columns) != {str(row["bus_id"]) for row in weights}:
         raise ValueError("spatial load columns disagree with load-weight buses")
+
+    load_bus_ids = set(map(str, gross_load.columns))
+    load_components = {component_lookup[bus] for bus in load_bus_ids}
+    interfaces: list[dict[str, Any]] = []
+    for row in detected_interfaces:
+        enriched = dict(row)
+        cid = component_lookup[str(row["bus_id"])]
+        enriched["component_id"] = cid
+        enriched["load_serving_component"] = cid in load_components
+        enriched["admitted_for_boundary_allocation"] = cid in load_components
+        enriched["exclusion_reason"] = (
+            ""
+            if cid in load_components
+            else "TOPOLOGY_COMPONENT_HAS_NO_SPATIAL_LOAD"
+        )
+        interfaces.append(enriched)
+
+    admitted_interfaces = [
+        row for row in interfaces if row["admitted_for_boundary_allocation"]
+    ]
+    admitted_interface_mva = sum(
+        float(row["cross_boundary_screening_mva"])
+        for row in admitted_interfaces
+    )
+    if admitted_interface_mva <= 0:
+        raise ValueError(
+            "No detected external interface belongs to a load-serving component"
+        )
+    for row in interfaces:
+        row["allocation_weight"] = (
+            float(row["cross_boundary_screening_mva"]) / admitted_interface_mva
+            if row["admitted_for_boundary_allocation"]
+            else 0.0
+        )
     if float(
         np.abs(
             gross_load.sum(axis=1).to_numpy()
@@ -469,7 +503,7 @@ def run_screening(
         bus_id = str(generator_by_asset[asset_id]["bus_id"])
         injections_by_bus[bus_id] = injections_by_bus[bus_id] + values
 
-    for interface in interfaces:
+    for interface in admitted_interfaces:
         bus_id = str(interface["bus_id"])
         injections_by_bus[bus_id] = (
             injections_by_bus[bus_id]
@@ -517,6 +551,9 @@ def run_screening(
                 "load_bus_count": sum(bus in net_load.columns for bus in group),
                 "generator_bus_count": sum(bus in injections_by_bus for bus in group),
                 "boundary_interface_count": sum(
+                    str(row["bus_id"]) in group for row in admitted_interfaces
+                ),
+                "detected_boundary_interface_count": sum(
                     str(row["bus_id"]) in group for row in interfaces
                 ),
                 "net_load_peak_mw": float(load_by_component[cid].max()),
@@ -618,7 +655,7 @@ def run_screening(
             p_nom=float(row["p_nom_mw"]),
             p_set=pd.Series(values, index=snapshots),
         )
-    for interface in interfaces:
+    for interface in admitted_interfaces:
         bus_id = str(interface["bus_id"])
         values = boundary_total * float(interface["allocation_weight"])
         network.add(
@@ -691,7 +728,11 @@ def run_screening(
             "connected_components": len(components),
             "largest_component_buses": len(components[0]) if components else 0,
             "load_buses": len(net_load.columns),
-            "boundary_interfaces": len(interfaces),
+            "boundary_interfaces_detected": len(interfaces),
+            "boundary_interfaces": len(admitted_interfaces),
+            "boundary_interfaces_excluded_topology_isolated": (
+                len(interfaces) - len(admitted_interfaces)
+            ),
             "source_backed_transformer_capacities": int(
                 sum(value[2] for value in tx_capacities.values())
             ),
@@ -781,7 +822,9 @@ def run_screening(
             ),
             (
                 "Boundary injection preserves the statewide hourly accounting residual "
-                "and observed daily import energy, but is not measured interface dispatch."
+                "and observed daily import energy, but is not measured interface dispatch. "
+                "Detected external interfaces in components with no spatial load are "
+                "reported but excluded from the allocation."
             ),
             (
                 "Line loading compares DC MW flow with screening MVA and is therefore a "
