@@ -22,9 +22,32 @@ DEFAULT_OUT = ROOT / "results/network/public_sld_transformers_v0_1"
 
 CLASSIFICATION = "KSEBL_PUBLIC_SLD_TRANSFORMER_EVIDENCE_V0_1_NOT_NAMEPLATE_MASTER"
 
+KV_LEVELS = (400, 320, 230, 220, 110, 66, 33, 22, 11)
 KV = r"(?:400|320|230|220|110|66|33|22|11)"
 VOLTAGE_EXPR_RE = re.compile(
-    rf"(?<!\d)({KV})\s*(?:/|-)\s*({KV})(?:\s*(?:/|-)\s*({KV}))?\s*k\s*v\b",
+    rf"(?<!\\d)({KV})\\s*(?:k\\s*v)?\\s*(?:/|-)\\s*"
+    rf"({KV})\\s*(?:k\\s*v)?"
+    rf"(?:\\s*(?:/|-)\\s*({KV})\\s*(?:k\\s*v)?)?\\b",
+    re.IGNORECASE,
+)
+COMPACT_VOLTAGE_MAP = {
+    f"{high}{low}": (high, low)
+    for high in KV_LEVELS
+    for low in KV_LEVELS
+    if high > low
+}
+COMPACT_VOLTAGE_MAP.update(
+    {
+        f"{high}{middle}{low}": (high, middle, low)
+        for high in KV_LEVELS
+        for middle in KV_LEVELS
+        for low in KV_LEVELS
+        if high > middle > low
+    }
+)
+_COMPACT_PATTERN = "|".join(sorted(COMPACT_VOLTAGE_MAP, key=len, reverse=True))
+COMPACT_VOLTAGE_RE = re.compile(
+    rf"(?<!\\d)({_COMPACT_PATTERN})\\s*k\\s*v\\b",
     re.IGNORECASE,
 )
 RATING_EXPR_RE = re.compile(
