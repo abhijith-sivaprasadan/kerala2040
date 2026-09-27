@@ -89,7 +89,7 @@ jobs:
       - name: Build fail-closed multi-bus skeleton
         run: python scripts/build_kseb_public_multibus_skeleton.py
 
-      - name: Extract official PSS 2022-23 grid evidence
+      - name: Extract official PSS 2024-25 grid evidence
         run: python scripts/build_kseb_public_pss_evidence.py
 
       - name: Build provenance-labelled transport and DC screening inputs
@@ -184,7 +184,7 @@ jobs:
           assert screening["screening_lines"] == multibus["topology_line_segments"]
           assert screening["lines_with_screening_x"] == screening["screening_lines"]
           assert screening["screening_transformer_links"] >= multibus["structural_transformer_links"]
-          assert screening["transformer_links_with_pss_2023_capacity"] >= 80
+          assert screening["transformer_links_with_pss_2025_capacity"] >= 80
           assert screening["load_buses"] >= 50
           assert abs(screening["load_weight_sum"] - 1.0) < 1e-9
           assert screening["load_proxy_hours"] == 8760
@@ -230,7 +230,7 @@ jobs:
             results/network/public_multibus_skeleton_v0_1/
             results/network/public_pss_evidence_v0_1/
             results/network/public_transport_screening_v0_1/
-            results/acquisition/kseb_pss_2022_23/
+            results/acquisition/kseb_pss_2024_25/
             results/inventory/fy2024_25_generator_census/
             results/acquisition/network_public_v0_1/public_sld_inventory.json
             results/acquisition/network_public_v0_1/acquisition_summary.json
