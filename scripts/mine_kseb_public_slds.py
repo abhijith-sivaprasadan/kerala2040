@@ -25,6 +25,16 @@ VOLTAGE_RE = re.compile(r"(?<!\d)(11|22|33|66|110|220|230|320|400)\s*k\s*v", re.
 MVA_RE = re.compile(r"(?<![\d.])(\d+(?:\.\d+)?)\s*M\s*V\s*A\b", re.I)
 MW_RE = re.compile(r"(?<![\d.])(\d+(?:\.\d+)?)\s*M\s*W\b", re.I)
 MVAR_RE = re.compile(r"(?<![\d.])(\d+(?:\.\d+)?)\s*M\s*V\s*A\s*R\b", re.I)
+PLACEHOLDER_RE = re.compile(r"SLD\s+Not\s+Available", re.I)
+AS_ON_RE = re.compile(
+    r"\bAs\s+On\s*[:\-]?\s*(\d{1,2}[./-]\d{1,2}[./-]\d{2,4})",
+    re.I,
+)
+CONDUCTOR_AMPACITY_RE = re.compile(
+    r"CONDUCTOR\s*[-:]?\s*([A-Z][A-Z0-9_-]{1,24})[^\n]{0,50}?"
+    r"(?<![/\d])(\d{2,4})\s*A\b",
+    re.I,
+)
 EQUIPMENT_WORDS = re.compile(
     r"\b(?:ICT|PTR|TRANSFORMER|TR\.?|AUTO\s*TRANSFORMER|BUS\s*COUPLER|"
     r"BUS\s*SECTION|MAIN\s*BUS|TRANSFER\s*BUS|REACTOR|CAPACITOR)\b",
@@ -87,6 +97,18 @@ def _extract_pdf(path: Path) -> dict[str, Any]:
     mvar = _numeric_hits(MVAR_RE, text)
     equipment_contexts = _equipment_contexts(text)
 
+    placeholder = bool(PLACEHOLDER_RE.search(text))
+    as_on_dates = sorted({match.group(1) for match in AS_ON_RE.finditer(text)})
+    conductor_ampacity_candidates = []
+    for match in CONDUCTOR_AMPACITY_RE.finditer(text):
+        conductor_ampacity_candidates.append(
+            {
+                "conductor": match.group(1).upper(),
+                "ampere": int(match.group(2)),
+                "context": _context(text, match.start(), match.end(), radius=100),
+            }
+        )
+
     transformer_mva_values = sorted(
         {
             hit["value"]
@@ -102,13 +124,20 @@ def _extract_pdf(path: Path) -> dict[str, Any]:
     return {
         "pages": len(reader.pages),
         "text_chars": len(compact),
-        "extractable_text": len(compact) >= 50,
+        "extractable_text": len(compact) >= 50 and not placeholder,
+        "document_status": (
+            "PLACEHOLDER_NOT_AVAILABLE"
+            if placeholder
+            else ("TEXT_EXTRACTABLE" if len(compact) >= 50 else "NO_EXTRACTABLE_TEXT")
+        ),
+        "as_on_dates": as_on_dates,
         "page_extraction_errors": page_errors,
         "voltages_kv": _voltage_hits(text),
         "mva_hits": mva,
         "mw_hits": mw,
         "mvar_hits": mvar,
         "transformer_mva_values": transformer_mva_values,
+        "conductor_ampacity_candidates": conductor_ampacity_candidates,
         "equipment_contexts": equipment_contexts,
         "busbar_keywords": sorted(
             {
@@ -137,6 +166,8 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         "pages",
         "text_chars",
         "extractable_text",
+        "document_status",
+        "as_on_dates",
         "voltages_kv",
         "transformer_mva_values",
         "mva_hit_count",
@@ -184,12 +215,15 @@ def main() -> int:
                 "pages": 0,
                 "text_chars": 0,
                 "extractable_text": False,
+                "document_status": "PDF_NOT_AVAILABLE",
+                "as_on_dates": [],
                 "page_extraction_errors": [],
                 "voltages_kv": [],
                 "mva_hits": [],
                 "mw_hits": [],
                 "mvar_hits": [],
                 "transformer_mva_values": [],
+                "conductor_ampacity_candidates": [],
                 "equipment_contexts": [],
                 "busbar_keywords": [],
                 "text_preview": "",
@@ -236,6 +270,8 @@ def main() -> int:
                 "pages": result["pages"],
                 "text_chars": result["text_chars"],
                 "extractable_text": result["extractable_text"],
+                "document_status": result["document_status"],
+                "as_on_dates": ";".join(result["as_on_dates"]),
                 "voltages_kv": ";".join(map(str, result["voltages_kv"])),
                 "transformer_mva_values": ";".join(
                     f"{value:g}" for value in result["transformer_mva_values"]
@@ -266,6 +302,11 @@ def main() -> int:
     parseable = sum(bool(row["extractable_text"]) for row in summary_rows)
     present = sum(bool(row["pdf_present"]) for row in summary_rows)
     transformer_rows = sum(bool(row["transformer_mva_values"]) for row in summary_rows)
+    placeholder_rows = sum(
+        row.get("document_status") == "PLACEHOLDER_NOT_AVAILABLE"
+        for row in summary_rows
+    )
+    dated_rows = sum(bool(row.get("as_on_dates")) for row in summary_rows)
     qa = {
         "classification": "KSEBL_PUBLIC_SLD_TEXT_MINING_V0_1_QA",
         "inventory_records_valid": valid_inventory,
@@ -274,6 +315,8 @@ def main() -> int:
         "pdfs_with_extractable_text": parseable,
         "pdfs_needing_visual_review": valid_inventory - parseable,
         "pdfs_with_transformer_mva_candidates": transformer_rows,
+        "placeholder_sld_not_available_pdfs": placeholder_rows,
+        "pdfs_with_explicit_as_on_date": dated_rows,
         "automatic_ocr_used": False,
         "equipment_master_ready": False,
         "interpretation": [
