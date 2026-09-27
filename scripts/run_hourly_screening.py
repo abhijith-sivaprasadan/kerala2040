@@ -1,6 +1,6 @@
 """Solve explicitly labelled hourly PyPSA screening from FY2024-25 SLDC evidence.
 
-Default is a 48-hour smoke test. Full 8760-hour solves are opt-in. The historical
+Default is a 48-hour smoke test. The main-branch CI runs all 8,760 hours. The historical
 354-day observed PyPSA replay remains scripts/build_historical_model.py.
 """
 
@@ -24,6 +24,7 @@ from kerala2040.chronological_screen import (
     prepare_inputs,
     solve_hourly_screening,
 )
+from kerala2040.weather_load_proxy import load_hourly_proxy
 
 
 def _make_figures(hourly: pd.DataFrame, network, output: Path) -> None:
@@ -99,7 +100,15 @@ def main() -> int:
            metadata["observed_days_energy_mu"]["consumption_mu"]) > 0.001:
         raise ValueError("QA totals disagree with model observations")
     metadata["source_archive_sha256"] = qa["source_archive_sha256"]
-    metadata["input_qa"] = "verified 354-day SLDC daily accounting; no hourly calibration"
+    metadata["input_qa"] = (
+        "verified 354-day SLDC daily accounting; hourly load remains reconstructed; "
+        "shape calibrated only to sparse SLDC extrema and aggregate CEA references"
+    )
+    metadata["load_profile_variant"] = proxy.get(
+        "profile_variant", "legacy_fixed_two_peak"
+    )
+    metadata["load_proxy_encoding"] = proxy.get("encoding", "records")
+    metadata["load_proxy_fit"] = proxy.get("fit")
     metadata["modeled_window_hours"] = args.hours
     if args.hours != 8760:
         metadata["window_note"] = "Short chronological sensitivity, NOT annual system totals"
