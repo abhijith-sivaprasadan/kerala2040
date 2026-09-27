@@ -25,6 +25,9 @@ def main() -> None:
     parser.add_argument("--profile", type=Path, default=DEFAULT_PROFILE)
     parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--demand-case")
+    parser.add_argument("--transfer-case")
+    parser.add_argument("--idukki-availability-case")
     parser.add_argument(
         "--acknowledge-net-water-balance-not-catchment-inflow",
         action="store_true",
@@ -37,10 +40,25 @@ def main() -> None:
             "v1.3 reconstructed water term is not observed catchment inflow."
         )
 
+    selectors = (
+        args.demand_case,
+        args.transfer_case,
+        args.idukki_availability_case,
+    )
+    if any(value is not None for value in selectors) and not all(
+        value is not None for value in selectors
+    ):
+        raise SystemExit(
+            "Provide all of --demand-case, --transfer-case and "
+            "--idukki-availability-case, or none of them."
+        )
+    only_case = selectors if all(value is not None for value in selectors) else None
+
     result = run_common_frontier(
         ROOT,
         profile_path=args.profile,
         suite_path=args.config,
+        only_case=only_case,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
