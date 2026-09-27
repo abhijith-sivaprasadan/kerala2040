@@ -762,7 +762,45 @@ def run_screening(
         transformers,
         tx_capacities,
     )
+
+    interface_component_ids = {
+        int(row["component_id"]) for row in admitted_interfaces
+    }
+    line_metrics["component_id"] = line_metrics["bus0"].map(
+        component_lookup
+    )
+    line_metrics["interface_served_component"] = (
+        line_metrics["component_id"].isin(interface_component_ids)
+    )
+    line_metrics["primary_congestion_claim_eligible"] = (
+        line_metrics["interface_served_component"]
+    )
+    primary_lines = line_metrics[
+        line_metrics["primary_congestion_claim_eligible"]
+    ]
+    primary_source_lines = primary_lines[
+        primary_lines["rating_uses_ksebl_conductor_current_reference"]
+    ]
+    primary_fallback_lines = primary_lines[
+        ~primary_lines["rating_uses_ksebl_conductor_current_reference"]
+    ]
+
+    tx_metrics["component_id"] = tx_metrics["bus0"].map(component_lookup)
+    tx_metrics["interface_served_component"] = (
+        tx_metrics["component_id"].isin(interface_component_ids)
+    )
+    tx_metrics["used_for_spatial_load_allocation"] = (
+        tx_metrics["bus1"].isin(load_bus_ids)
+    )
+    tx_metrics["independent_capacity_bottleneck_claim_eligible"] = (
+        tx_metrics["capacity_source_backed"]
+        & tx_metrics["interface_served_component"]
+        & ~tx_metrics["used_for_spatial_load_allocation"]
+    )
     source_tx = tx_metrics[tx_metrics["capacity_source_backed"]]
+    independent_source_tx = tx_metrics[
+        tx_metrics["independent_capacity_bottleneck_claim_eligible"]
+    ]
 
     hourly_metrics = pd.DataFrame(
         {
@@ -776,9 +814,11 @@ def run_screening(
             "component_balance_sink_mw": total_component_sink,
             "max_line_loading_pu": line_loading.max(axis=1).to_numpy(dtype=float),
             "overloaded_line_count": (line_loading > 1.0 + 1e-9).sum(axis=1).to_numpy(dtype=int),
-            "max_source_backed_transformer_loading_pu": (
-                tx_loading[source_tx["transformer_link_id"]].max(axis=1).to_numpy(dtype=float)
-                if not source_tx.empty
+            "max_independent_source_backed_transformer_loading_pu": (
+                tx_loading[
+                    independent_source_tx["transformer_link_id"]
+                ].max(axis=1).to_numpy(dtype=float)
+                if not independent_source_tx.empty
                 else np.zeros(hours)
             ),
         }
@@ -849,31 +889,73 @@ def run_screening(
             ),
         },
         "line_screening": {
-            "lines_over_100pct_any_hour": int(
+            "raw_all_components_lines_over_100pct_any_hour": int(
                 (line_metrics["hours_over_100pct"] > 0).sum()
             ),
-            "lines_ge_80pct_any_hour": int(
-                (line_metrics["hours_ge_80pct"] > 0).sum()
+            "primary_interface_served_lines": int(len(primary_lines)),
+            "primary_lines_over_100pct_any_hour": int(
+                (primary_lines["hours_over_100pct"] > 0).sum()
             ),
-            "max_loading_pu": float(line_metrics["max_loading_pu"].max()),
-            "max_overloaded_lines_in_one_hour": int(
+            "primary_lines_ge_80pct_any_hour": int(
+                (primary_lines["hours_ge_80pct"] > 0).sum()
+            ),
+            "primary_source_backed_rating_lines_over_100pct_any_hour": int(
+                (primary_source_lines["hours_over_100pct"] > 0).sum()
+            ),
+            "primary_fallback_rating_lines_over_100pct_any_hour": int(
+                (primary_fallback_lines["hours_over_100pct"] > 0).sum()
+            ),
+            "max_primary_loading_pu": (
+                float(primary_lines["max_loading_pu"].max())
+                if not primary_lines.empty
+                else None
+            ),
+            "max_primary_source_backed_loading_pu": (
+                float(primary_source_lines["max_loading_pu"].max())
+                if not primary_source_lines.empty
+                else None
+            ),
+            "max_overloaded_lines_in_one_hour_raw_all_components": int(
                 hourly_metrics["overloaded_line_count"].max()
             ),
+            "excluded_topology_gap_component_lines": int(
+                (~line_metrics["primary_congestion_claim_eligible"]).sum()
+            ),
             "line_rating_interpretation": (
-                "screening MVA, not operator emergency/seasonal rating"
+                "screening MVA, not operator emergency/seasonal rating; "
+                "primary counts exclude components supplied only by topology-gap diagnostics"
             ),
         },
         "transformer_screening": {
-            "source_backed_transformers_over_100pct_any_hour": int(
+            "raw_source_backed_transformers_over_100pct_any_hour": int(
                 (source_tx["hours_over_100pct"].fillna(0) > 0).sum()
             ),
-            "max_source_backed_loading_pu": (
-                float(source_tx["max_loading_pu"].max())
-                if not source_tx.empty
+            "independent_source_backed_transformers": int(
+                len(independent_source_tx)
+            ),
+            "independent_source_backed_transformers_over_100pct_any_hour": int(
+                (
+                    independent_source_tx["hours_over_100pct"].fillna(0)
+                    > 0
+                ).sum()
+            ),
+            "max_independent_source_backed_loading_pu": (
+                float(independent_source_tx["max_loading_pu"].max())
+                if not independent_source_tx.empty
                 else None
+            ),
+            "load_allocation_transformers_excluded_from_independent_claims": int(
+                (
+                    tx_metrics["capacity_source_backed"]
+                    & tx_metrics["used_for_spatial_load_allocation"]
+                ).sum()
             ),
             "fallback_capacity_transformers_not_used_for_overload_claims": int(
                 (~tx_metrics["capacity_source_backed"]).sum()
+            ),
+            "interpretation": (
+                "Transformers whose PSS MVA directly defines the spatial load weight "
+                "are non-independent and excluded from bottleneck claims."
             ),
         },
         "release": {
@@ -911,7 +993,13 @@ def run_screening(
             ),
             (
                 "Line loading compares DC MW flow with screening MVA and is therefore a "
-                "congestion indicator, not an operational security-limit assessment."
+                "congestion indicator, not an operational security-limit assessment. "
+                "Primary line counts exclude topology-gap-only components."
+            ),
+            (
+                "Distribution-interface transformer MVA used to weight spatial load is "
+                "not independent validation of transformer loading and is excluded from "
+                "primary transformer bottleneck claims."
             ),
         ],
     }
