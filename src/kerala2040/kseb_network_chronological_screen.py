@@ -420,7 +420,7 @@ def run_screening(
     if set(gross_load.columns) != {str(row["bus_id"]) for row in weights}:
         raise ValueError("spatial load columns disagree with load-weight buses")
     if float(
-        (
+        np.abs(
             gross_load.sum(axis=1).to_numpy()
             - hourly["load_mw"].to_numpy(dtype=float)
         ).max(initial=0)
@@ -656,7 +656,7 @@ def run_screening(
         transformers,
         tx_capacities,
     )
-    source_tx = tx_metrics[tx_metrics["capacity_source_backed"] == True]  # noqa: E712
+    source_tx = tx_metrics[tx_metrics["capacity_source_backed"]]
 
     hourly_metrics = pd.DataFrame(
         {
