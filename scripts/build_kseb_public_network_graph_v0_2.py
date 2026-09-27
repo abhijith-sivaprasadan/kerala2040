@@ -475,6 +475,19 @@ def main() -> int:
             continue
         if edge.get("from_node_id") and edge.get("to_node_id"):
             edge["endpoint_resolution"] = "RESOLVED"
+            continue
+        # A released 110-kV self-loop endpoint is admitted only if the
+        # existing direct-coincidence junction rule actually resolves it.
+        # Otherwise exclude the source feature rather than retain a fake loop
+        # or an "admitted but unresolved" branch.
+        edge["topology_admitted"] = False
+        edge["endpoint_resolution"] = "UNRESOLVED_FAIL_CLOSED"
+        anomalies.append({
+            "source_edge_id": edge["source_edge_id"],
+            "anomaly": "UNRESOLVED_110KV_SOURCE_EDGE_EXCLUDED_FAIL_CLOSED",
+            "name": edge.get("name", ""),
+            "voltage_kv": edge.get("voltage_kv"),
+        })
 
     unresolved_by_voltage = Counter(e["voltage_kv"] for e in source_edges if e.get("topology_admitted") and e.get("endpoint_resolution") != "RESOLVED")
     if any(unresolved_by_voltage.get(kv, 0) for kv in (220, 320, 400)):
