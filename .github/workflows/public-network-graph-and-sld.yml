@@ -10,6 +10,7 @@ on:
       - "scripts/mine_kseb_public_slds.py"
       - "scripts/promote_kseb_sld_transformers.py"
       - "scripts/map_generator_census_to_public_grid.py"
+      - "scripts/build_kseb_public_multibus_skeleton.py"
       - "scripts/build_generator_census_fy2024_25.py"
       - "src/kerala2040/generator_census.py"
       - "data/evidence/generation/fy2024_25_generator_capacity_census.json"
@@ -23,6 +24,7 @@ on:
       - "scripts/mine_kseb_public_slds.py"
       - "scripts/promote_kseb_sld_transformers.py"
       - "scripts/map_generator_census_to_public_grid.py"
+      - "scripts/build_kseb_public_multibus_skeleton.py"
       - "scripts/build_generator_census_fy2024_25.py"
       - "src/kerala2040/generator_census.py"
       - "data/evidence/generation/fy2024_25_generator_capacity_census.json"
@@ -78,7 +80,10 @@ jobs:
       - name: Crosswalk physical generation to public buses
         run: python scripts/map_generator_census_to_public_grid.py
 
-      - name: Validate topology, transformer evidence and generator crosswalk
+      - name: Build fail-closed multi-bus skeleton
+        run: python scripts/build_kseb_public_multibus_skeleton.py
+
+      - name: Validate topology, transformer evidence, generators and multi-bus skeleton
         shell: bash
         run: |
           python - <<'PY'
@@ -96,6 +101,9 @@ jobs:
           )
           generators = json.loads(
               Path("results/network/generator_bus_crosswalk_v0_1/generator_bus_crosswalk_qa.json").read_text()
+          )
+          multibus = json.loads(
+              Path("results/network/public_multibus_skeleton_v0_1/multibus_skeleton_qa.json").read_text()
           )
 
           assert graph["source_edge_ids_unique"] is True
@@ -127,6 +135,27 @@ jobs:
           assert generators["all_aggregate_capacity_left_unallocated"] is True
           assert generators["power_flow_ready"] is False
 
+          assert multibus["physical_site_nodes"] >= 320
+          assert multibus["voltage_specific_buses"] >= 460
+          assert multibus["topology_line_segments"] >= 550
+          assert multibus["structural_transformer_links"] >= 100
+          assert multibus["attached_generator_rows"] >= 30
+          assert multibus["attached_generator_capacity_mw"] >= 2700
+          assert multibus["sites_with_incomplete_transformer_connectivity"] >= 1
+          assert multibus["line_segments_with_admitted_thermal_rating"] == 0
+          assert multibus["line_segments_with_admitted_impedance"] == 0
+          assert multibus["load_rows"] == 0
+          assert multibus["bus_ids_unique"] is True
+          assert multibus["line_ids_unique"] is True
+          assert multibus["transformer_link_ids_unique"] is True
+          assert multibus["all_line_bus_references_valid"] is True
+          assert multibus["all_transformer_bus_references_valid"] is True
+          assert multibus["all_attached_generator_bus_references_valid"] is True
+          assert multibus["topology_skeleton_ready"] is True
+          assert multibus["transport_dispatch_ready"] is False
+          assert multibus["dc_power_flow_ready"] is False
+          assert multibus["ac_power_flow_ready"] is False
+
           print("GRAPH QA")
           print(json.dumps(graph, indent=2))
           print("SLD QA")
@@ -135,6 +164,8 @@ jobs:
           print(json.dumps(transformers, indent=2))
           print("GENERATOR QA")
           print(json.dumps(generators, indent=2))
+          print("MULTIBUS QA")
+          print(json.dumps(multibus, indent=2))
           PY
 
       - uses: actions/upload-artifact@v4
@@ -148,6 +179,7 @@ jobs:
             results/network/public_sld_mining_v0_1/
             results/network/public_sld_transformers_v0_1/
             results/network/generator_bus_crosswalk_v0_1/
+            results/network/public_multibus_skeleton_v0_1/
             results/inventory/fy2024_25_generator_census/
             results/acquisition/network_public_v0_1/public_sld_inventory.json
             results/acquisition/network_public_v0_1/acquisition_summary.json
