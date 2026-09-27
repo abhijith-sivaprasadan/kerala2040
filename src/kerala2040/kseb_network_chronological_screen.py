@@ -892,7 +892,7 @@ def run_screening(
             "raw_all_components_lines_over_100pct_any_hour": int(
                 (line_metrics["hours_over_100pct"] > 0).sum()
             ),
-            "primary_interface_served_lines": int(len(primary_lines)),
+            "primary_interface_served_lines": len(primary_lines),
             "primary_lines_over_100pct_any_hour": int(
                 (primary_lines["hours_over_100pct"] > 0).sum()
             ),
@@ -930,8 +930,8 @@ def run_screening(
             "raw_source_backed_transformers_over_100pct_any_hour": int(
                 (source_tx["hours_over_100pct"].fillna(0) > 0).sum()
             ),
-            "independent_source_backed_transformers": int(
-                len(independent_source_tx)
+            "independent_source_backed_transformers": len(
+                independent_source_tx
             ),
             "independent_source_backed_transformers_over_100pct_any_hour": int(
                 (
