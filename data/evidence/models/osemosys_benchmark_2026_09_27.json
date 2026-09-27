@@ -1,0 +1,75 @@
+{
+  "classification": "INDEPENDENT_OSEMOSYS_NUMERICAL_BENCHMARK_NOT_PHYSICAL_VALIDATION",
+  "prepared_date": "2026-09-27",
+  "provenance": {
+    "pull_request": "https://github.com/abhijith-sivaprasadan/kerala2040/pull/106",
+    "status_at_review": "open",
+    "head_sha": "9ba2688abc3a033e5a70137b47de01bfe269a847",
+    "workflow_run_id": 36303344671,
+    "artifact_id": 10926885349,
+    "files": {
+      "full_year_reference.json": "9de94f1351c84743f491bf9ab76fecc69b0f11f849b7d3fe074e4689953a4e51",
+      "sentinel.json": "a164fefb2d1a52fc12ef4445292de3ec09e52d75117eb38c77f1f88c43109792"
+    }
+  },
+  "cases": [
+    {
+      "case_id": "reference_FY2030_31__atc_snapshot_reference__high__low",
+      "hours": 168,
+      "status": "PASS",
+      "acceptance": {
+        "unserved_abs_mwh": 0.01,
+        "capacity_abs_mw": 0.01,
+        "imports_abs_mwh": 0.1
+      },
+      "differences": {
+        "stage1_unserved_mwh": -3.637978807091713e-12,
+        "stage2_unserved_mwh": -1.0913936421275139e-11,
+        "solar_mw": 5.089714250061661e-08,
+        "wind_mw": 0.0,
+        "bess_mw": 0.0,
+        "stage3_imports_mwh": 9.477377170696855e-05
+      }
+    },
+    {
+      "case_id": "lower_FY2030__atc_snapshot_reference__reference__high",
+      "hours": 168,
+      "status": "PASS",
+      "acceptance": {
+        "unserved_abs_mwh": 0.01,
+        "capacity_abs_mw": 0.01,
+        "imports_abs_mwh": 0.1
+      },
+      "differences": {
+        "stage1_unserved_mwh": 0.0,
+        "stage2_unserved_mwh": 0.0,
+        "solar_mw": 0.0,
+        "wind_mw": 0.0,
+        "bess_mw": -0.0,
+        "stage3_imports_mwh": 0.0004406808875501156
+      }
+    },
+    {
+      "case_id": "reference_FY2030_31__atc_snapshot_reference__high__low",
+      "hours": 8760,
+      "status": "PASS",
+      "acceptance": {
+        "unserved_abs_mwh": 0.01,
+        "capacity_abs_mw": 0.01,
+        "imports_abs_mwh": 0.1
+      },
+      "differences": {
+        "stage1_unserved_mwh": 0.0,
+        "stage2_unserved_mwh": -5.820766091346741e-11,
+        "solar_mw": 2.764863893389702e-10,
+        "wind_mw": 0.0,
+        "bess_mw": 0.0,
+        "stage3_imports_mwh": 0.003931783139705658
+      }
+    }
+  ],
+  "interpretation": "Independent OSeMOSYS and the v0.8 reference implementation agree within predeclared tolerances in these three cases. Both use HiGHS. This verifies implementation of the proxy problem, not physical assumptions, buildable capacities or a recommended plan.",
+  "model_admission": {
+    "validated_capacity_plan": false
+  }
+}

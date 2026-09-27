@@ -66,7 +66,7 @@ async function main() {
   const base = "http://127.0.0.1:" + httpd.address().port + "/";
   let browser;
   try {
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || undefined });
     const page = await browser.newPage({
       viewport: { width: 1440, height: 900 },
     });
@@ -260,7 +260,9 @@ async function main() {
       (await page.locator("#workbench").getAttribute("open")) !== null,
       "Legacy deep link opens its section",
     );
-    for (const width of [320, 390, 768, 1440]) {
+    await page.locator("#benchmarkCase").selectOption("2");
+    check((await page.locator("#benchmarkInsight").innerText()).includes("3.93%"), "Full-year benchmark uses published tolerance ratio");
+    for (const width of [320, 390, 430, 768, 1440]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(base + "#overview");
       check(
@@ -282,9 +284,24 @@ async function main() {
           "Mobile menu closes",
         );
       }
-      await page.screenshot({
-        path: path.join(artifactDir, "v2-" + width + ".png"),
-      });
+      await page.goto(base + "#overview");
+      await page.evaluate(() => window.scrollTo({top: 0, behavior: "instant"}));
+      await page.screenshot({path: path.join(artifactDir, "v2-" + width + ".png")});
+      if (width <= 430) {
+        await page.locator('.phone-nav a[href="#electricity"]').click();
+        const slider = page.locator(".chart-scrubber:visible").first();
+        await slider.fill("3");
+        check(await slider.getAttribute("aria-valuetext"), "Touch scrubber exposes selected values");
+        check((await slider.boundingBox()).height >= 44, "Phone chart slider has a 44px touch target");
+        const overlap = await slider.evaluate(el => {
+          const readout = el.previousElementSibling.getBoundingClientRect();
+          const canvas = el.parentElement.querySelector("canvas").getBoundingClientRect();
+          return canvas.bottom > readout.top + 1;
+        });
+        check(!overlap, "Chart readout has its own flow space");
+        await slider.scrollIntoViewIfNeeded();
+        await page.screenshot({path:path.join(artifactDir,"phone-chart-"+width+".png")});
+      }
     }
     await page.locator('[data-theme-choice="monsoon"]').click();
     check(

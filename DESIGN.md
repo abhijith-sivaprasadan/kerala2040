@@ -32,6 +32,18 @@ The separate Pages repository continues to pin an immutable research commit in `
 
 ## CET 2026 poster
 
-`docs/posters/Kerala2040_CET2026_Poster_Draft.pdf` is an early A1 portrait draft. Its charts use the same source evidence. The source builder is `scripts/build_cet_poster.py` (ReportLab and Arial/Georgia fonts). Final author/institution credits, conference specifications and QR integration remain editorial steps for the final poster.
+`docs/posters/Kerala2040_CET2026_Poster_Draft.pdf` is scientific draft 05, an A0 portrait poster. Its builder is `scripts/build_cet_poster.py` (ReportLab and Arial); the review output is `output/pdf/Kerala2040_CET2026_Scientific_Poster_v5.pdf`. The author is Abhijith Sivaprasadan, independent study, with KTH Royal Institute of Technology as the CET 2026 affiliation. No supervisor is listed.
 
-The composition borrows the supplied Polygeneration poster's results hierarchy and the plain-language finding emphasis described in the [BetterPoster design discussion](https://blog.nrca.uconn.edu/2019/12/12/better-poster/). It does not reproduce that poster's project claims, branding or artwork.
+The user rejected draft 04's house/palm motif and decorative navigation, requesting a complete return to the supplied Polygeneration example. Draft 05 uses its conventional academic hierarchy: a centered navy title band, separate outlined white section headings, project description beside technology figures, a full-width system framework and a three-column analysis section. There are no cultural motifs, locator decoration, numbered badges or navigation icons. Small equipment symbols in the technical schematic represent functional components; demand uses an electrical load symbol.
+
+The six scientific figures are reorganized into A: observed balance; B: solar resource; C: EV charging; D: economic sensitivity; E: stateful Idukki; F: hydro timing windows. The observed balance now establishes the research problem before the model results. Display values remain rounded; source values and model calculations are unchanged. The 364-day and 365-day experiments have distinct chart forms and explicit horizons. Conclusions, limitations and references remain separate. The PDF contains selectable text and native vector graphics; no institutional logo or reference-poster research claim is copied.
+
+Source status remains the reviewed 27 September snapshot at main commit `49acde2`, with PR105 explicitly under review. See `docs/posters/SCIENTIFIC_POSTER_EVIDENCE_NOTES.md`. QR integration and conference print specifications remain for a later pass.
+
+## Phone-first edition 2 update, 27 September
+
+QR visitors receive a compact opening with the existing fonts, Kerala illustrations and themes. A safe-area-aware bottom chapter bar keeps the four main destinations reachable. Themes live in the expanded header menu on small screens. All Canvas figures have touch-range controls with accessible selected values; chart, readout and slider occupy separate document-flow space. Chart labels and primary phone controls are larger, native form text avoids iOS focus zoom, and ornamental motion stops on small screens.
+
+The published OSeMOSYS evidence is a frozen result artifact from workflow 36303344671 / PR106 head 9ba2688, explicitly under review. Two 168-hour cases and one 8,760-hour case pass their predeclared tolerance checks. The chart shows absolute differences divided by each metric's own tolerance, on a 0–100% scale. Raw result files and their hashes are retained. This is independent framework implementation evidence (both use HiGHS), never physical validation. KSEB acquisition and LRIS catchment status are updated separately.
+
+The user is now composing the poster in Gamma. The approved draft05 remains the local PDF; `output/gamma` contains the self-contained prompt and real observation/charging CSVs. No unfinished poster06 replaces the approved poster.

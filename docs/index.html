@@ -200,11 +200,11 @@
             </p>
             <div class="actions">
               <a class="button" href="#electricity"
-                >Explore the story <span>↓</span></a
+                >Start with the evidence <span>↓</span></a
               ><a class="text-link" href="#pathways">Try the experiments ↗</a>
             </div>
             <p class="micro">
-              CET 2026 · Research in progress · Website edition 2
+              CET 2026 · Research in progress · Updated 27 September
             </p>
           </div>
         </div>
@@ -1192,6 +1192,16 @@
             </div>
           </div>
         </details>
+        <article class="chart-card" id="benchmark">
+          <p class="eyebrow">NEW · 27 SEPTEMBER 2026</p>
+          <h3>Does another model get the same answer?</h3>
+          <p>OSeMOSYS reproduces the reference implementation in two one-week cases and one full-year case. Each bar is the difference as a percentage of its allowed tolerance; 100% is the acceptance limit.</p>
+          <div class="controls"><label>Comparison<select id="benchmarkCase"></select></label></div>
+          <div id="benchmarkChart" class="chart compact"></div>
+          <p id="benchmarkInsight" class="insight"></p>
+          <p class="micro">Implementation agreement, not physical validation. Both frameworks use HiGHS. PR106 is under review.</p>
+          <a class="text-link" href="data/osemosys-benchmark.json" download>Download results and provenance ↓</a>
+        </article>
         <div class="library">
           <div class="card-head">
             <h3>The evidence library</h3>
@@ -1217,6 +1227,9 @@
         </div>
       </section>
     </main>
+    <nav class="phone-nav" aria-label="Quick chapters">
+      <a href="#electricity">Today</a><a href="#atlas">Land</a><a href="#pathways">Choices</a><a href="#data">Evidence</a>
+    </nav>
     <footer class="wrap">
       <a class="brand" href="#overview">kerala<b>2040</b></a>
       <p>

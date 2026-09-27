@@ -2148,3 +2148,67 @@ body {
 .chapter-head h2 em {
   font-weight: 500;
 }
+
+/* Phone-first reading and touch inspection, retaining the original themes. */
+.chart { --plot-height: 320px; height: auto; }
+.chart.compact { --plot-height: 290px; height: auto; }
+.chart canvas { height: var(--plot-height); }
+.chart-readout { font-size: 14px; line-height: 1.5; min-height: 3em; padding: 12px 0 0; }
+.chart:has(.chart-readout) { margin-bottom: 14px; }
+.chart-scrubber { display: block; width: 100%; min-height: 44px; margin: 6px 0 0; accent-color: var(--green); cursor: ew-resize; }
+.phone-nav { display: none; }
+#benchmark { margin-block: 30px; scroll-margin-top: 110px; }
+#benchmark .controls select { max-width: 100%; }
+@media (max-width: 850px) {
+  .header { min-height: 68px; padding-block: 9px; gap: 8px; }
+  .header .menu { min-height: 44px; padding: 8px 10px; font-size: 14px; }
+  .header .theme-switch { display: none; }
+  .header:has(nav.open) .theme-switch { display: flex; order: 5; margin-left: 0; }
+  .header .theme-switch button { min-width: 44px; min-height: 44px; }
+  .header nav.open { max-height: 45svh; overflow-y: auto; }
+  .header nav a { display: flex; align-items: center; min-height: 44px; }
+  .phone-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); position: fixed; z-index: 30; bottom: 0; inset-inline: 0; background: var(--paper); border-top: 1px solid var(--line); padding: 4px 8px max(4px, env(safe-area-inset-bottom)); }
+  .phone-nav a { display: grid; place-items: center; min-height: 48px; font-size: 14px; font-weight: 600; text-decoration: none; border-radius: 4px; }
+  .phone-nav a[aria-current] { background: var(--green); color: var(--paper); }
+  body { padding-bottom: calc(65px + env(safe-area-inset-bottom)); }
+  section[id], details[id] { scroll-margin-top: 85px; }
+}
+@media (max-width: 600px) {
+  .hero.scene { padding: 26px 0 94px; }
+  .hero h1 { font-size: clamp(46px, 12.5vw, 66px); line-height: 1.06; margin-block: 12px 18px; }
+  .hero .intro { font-size: 18px; line-height: 1.5; }
+  .hero-sub { display: none; }
+  .hero .eyebrow { font-size: 11px; }
+  .hero .micro { font-size: 12px; }
+  .hero .actions { margin: 18px 0; gap: 12px; }
+  .scene-landscape { height: 150px; opacity: .72; }
+  .scene-sun { width: 105px; bottom: 30px; }
+  .hero-copy { position: relative; z-index: 2; }
+  .hero-malayalam { margin-block: 10px; }
+  .journey { gap: 18px 12px; }
+  .journey-label strong { font-size: 14px; }
+  .journey-label div span { font-size: 10px; }
+  .chapter { padding-block: 42px; }
+  .chapter-head { margin-bottom: 22px; }
+  .chapter-head h2 { font-size: 34px; line-height: 1.16; }
+  .stat-row span, .micro, .chart-legend, .controls label { font-size: 14px; line-height: 1.5; }
+  .stat-row > div { gap: 15px; }
+  .stat-row strong { min-width: 115px; font-size: 34px; }
+  .chart-card { padding: 20px 14px; }
+  .chart { --plot-height: 290px; }
+  .chart.compact { --plot-height: 270px; }
+  .chart-readout { min-height: 4.5em; }
+  .controls select, input[type="search"] { width: 100%; min-height: 48px; font-size: 16px; }
+  .segmented { flex-wrap: wrap; gap: 4px; }
+  .segmented button, .secondary, .process-buttons button { min-height: 44px; font-size: 14px; }
+  .controls input[type="checkbox"] { width: 22px; height: 22px; }
+  .controls .check { min-height: 44px; }
+  .deep > summary, .deep-dive > summary { min-height: 56px; }
+  .source-row { gap: 12px; }
+  .source-row a { min-height: 44px; display: inline-flex; align-items: center; }
+  .closing { margin-top: 32px; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 850px) {
+  .scene-wave, .scene-palm, .scene-vallam, .scene-rain { animation: none; }
+}
+@media print { .phone-nav, .chart-scrubber { display: none; } body { padding-bottom: 0; } }
