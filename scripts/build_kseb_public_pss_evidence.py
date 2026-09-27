@@ -1,4 +1,4 @@
-"""Extract KSEBL Power System Statistics 2022-23 grid evidence.
+"""Extract KSEBL Power System Statistics 2024-25 grid evidence.
 
 The public PSS report is dated 31 March 2023. This parser crosswalks its
 Table 33 substation transformer inventory and Table 34 line conductor inventory
@@ -15,18 +15,21 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GRAPH = ROOT / "results/network/public_grid_graph_v0_2/network_graph_110plus.json"
 DEFAULT_SOURCE_EDGES = ROOT / "results/network/public_grid_graph_v0_2/network_source_edges_110plus.csv"
 DEFAULT_OUT = ROOT / "results/network/public_pss_evidence_v0_1"
-DEFAULT_CACHE = ROOT / "results/acquisition/kseb_pss_2022_23/power_system_statistics_2022_23.pdf"
-PSS_URL = (
-    "https://old.kseb.in/index.php?Itemid=811&catid=70&id=35634&lang=en"
-    "&m=0&option=com_jdownloads&task=download.send"
+DEFAULT_CACHE = (
+    ROOT
+    / "results/acquisition/kseb_pss_2024_25/"
+    "power_system_statistics_2024_25.pdf"
 )
-SOURCE_AS_OF = "2023-03-31"
-CLASSIFICATION = "KSEBL_PSS_2022_23_PUBLIC_GRID_EVIDENCE_V0_1"
+PSS_URL = (
+    "https://kseb.in/uploads/Downloadtemsuppy/"
+    "PSS%2024-25-1763198698832757145.pdf"
+)
+SOURCE_AS_OF = "2025-03-31"
+CLASSIFICATION = "KSEBL_PSS_2024_25_PUBLIC_GRID_EVIDENCE_V0_1"
 
 VOLTAGE_RATIO_RE = re.compile(
     r"(?<!\d)(400|320|220|110|66|33|22)\s*/\s*(220|110|66|33|22|11)(?!\d)"
@@ -187,7 +190,7 @@ def _extract_line_evidence(
     for index, line_row in enumerate(lines):
         text = line_row["text"]
         upper = text.upper()
-        if "LIST OF EHV AND 33 KV TRANSMISSION LINES" in upper:
+        if "LIST OF EHV AND 33 KV TRANSMISSION LINE" in upper:
             table_started = True
             continue
         if table_started and (
@@ -314,12 +317,12 @@ def _extract_station_transformers(
     for row in lines:
         text = row["text"]
         upper = text.upper()
-        if "LIST OF EHV AND 33 KV SUBSTATIONS" in upper:
+        if "LIST OF EHV AND 33 KV SUBSTATION" in upper:
             table_started = True
             continue
         if (
             table_started
-            and "LIST OF EHV AND 33 KV TRANSMISSION LINES" in upper
+            and "LIST OF EHV AND 33 KV TRANSMISSION LINE" in upper
         ):
             table_ended = True
         if not table_started or table_ended:
@@ -526,7 +529,7 @@ def main() -> int:
             )
         ),
         "interpretation": [
-            "PSS 2022-23 is official historical inventory as of 31 March 2023, not proof of unchanged 2026 equipment.",
+            "PSS 2024-25 is official historical inventory as of 31 March 2023, not proof of unchanged 2026 equipment.",
             "Line rows are crosswalked only by exact normalized feeder code already present in the newer public graph.",
             "Substation rows are promoted only when the station name maps to a unique public graph node.",
             "Transformer MVA is admitted only when per-unit MVA times count reconciles to the printed total MVA.",
