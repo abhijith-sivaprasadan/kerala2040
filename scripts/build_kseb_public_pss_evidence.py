@@ -9,10 +9,8 @@ from __future__ import annotations
 
 import argparse
 import csv
-import io
 import json
 import re
-import urllib.request
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -88,6 +86,8 @@ def _norm_name(value: Any) -> str:
 
 
 def _download_pdf(url: str, cache: Path) -> bytes:
+    import urllib.request
+
     if cache.exists() and cache.stat().st_size > 100_000:
         data = cache.read_bytes()
         if data.startswith(b"%PDF"):
@@ -107,6 +107,8 @@ def _download_pdf(url: str, cache: Path) -> bytes:
 
 
 def _pdf_lines(data: bytes) -> list[dict[str, Any]]:
+    import io
+
     from pypdf import PdfReader
 
     reader = PdfReader(io.BytesIO(data))
