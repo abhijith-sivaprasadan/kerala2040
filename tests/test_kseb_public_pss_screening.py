@@ -80,3 +80,42 @@ def test_screen_current_bundle_and_fallback() -> None:
     assert current == 296.0
     assert "ASSUMPTION" in basis
     assert source_backed is False
+
+
+def test_frozen_pss_snapshot_integrity_and_scope() -> None:
+    snapshot = PSS._load_snapshot(PSS.DEFAULT_SNAPSHOT)
+    assert snapshot["classification"] == PSS.SNAPSHOT_CLASSIFICATION
+    assert snapshot["source"]["source_as_of"] == "2023-03-31"
+    assert snapshot["scope"]["network_model_minimum_voltage_kv"] == 110
+    assert len(snapshot["table33_primary_station_rows"]) == 134
+    assert len(snapshot["table34_graph_crosswalk_rows"]) == 253
+    assert (
+        snapshot["snapshot_payload_sha256"]
+        == PSS.EXPECTED_SNAPSHOT_SHA256
+    )
+
+
+def test_pss_conductor_parser_preserves_mixed_and_fallback_types() -> None:
+    assert PSS._extract_conductor("ACSR Wolf+UG") == "MIXED_WOLF_UG"
+    assert (
+        PSS._extract_conductor("AL59+ACSR Wolf")
+        == "MIXED_AL59_WOLF"
+    )
+    assert (
+        PSS._extract_conductor("AAAC+ACSR Wolf")
+        == "MIXED_AAAC_WOLF"
+    )
+    assert PSS._extract_conductor("AAAC") == "AAAC"
+    assert PSS._extract_conductor("Zebra") == "ZEBRA"
+    assert PSS._extract_conductor("ACSR Dog") == "ACSR_DOG"
+    assert PSS._extract_conductor("STACIR") == "STACIR"
+
+
+def test_mixed_conductor_screening_falls_back() -> None:
+    ampacity = {"WOLF": 343.0}
+    current, basis, source_backed = SCREEN._screen_current(
+        "MIXED_WOLF_UG", 110, ampacity
+    )
+    assert current == 296.0
+    assert "ASSUMPTION" in basis
+    assert source_backed is False
