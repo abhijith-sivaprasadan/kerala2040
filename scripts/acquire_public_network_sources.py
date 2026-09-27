@@ -18,6 +18,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
@@ -171,7 +172,15 @@ def main() -> int:
         action="store_true",
         help="Also download all public SLD PDFs referenced by the KSEBL map.",
     )
+    parser.add_argument(
+        "--sld-workers",
+        type=int,
+        default=4,
+        help="Concurrent public SLD downloads; deliberately capped at 8.",
+    )
     args = parser.parse_args()
+    if not 1 <= args.sld_workers <= 8:
+        raise SystemExit("--sld-workers must be between 1 and 8")
 
     config = load_config(args.config)
     out = args.out
@@ -249,16 +258,24 @@ def main() -> int:
     sld_downloads: list[dict[str, Any]] = []
     if args.download_sld:
         sld_dir.mkdir(parents=True, exist_ok=True)
-        for row in sld_rows:
-            filename = Path(urllib.parse.urlparse(row["url"]).path).name
-            if not filename:
-                continue
+
+        def download_sld(row: dict[str, str]) -> dict[str, Any]:
+            url = row["url"]
+            filename = Path(urllib.parse.urlparse(url).path).name
+            if not filename or filename == ".pdf":
+                return {"url": url, "error": "INVALID_SLD_FILENAME"}
             try:
-                meta = save_download(row["url"], sld_dir / filename)
+                meta = save_download(url, sld_dir / filename)
                 meta["source_id"] = "kseb_grid_map_public_sld"
-                sld_downloads.append(meta)
+                return meta
             except RuntimeError as exc:
-                sld_downloads.append({"url": row["url"], "error": str(exc)})
+                return {"url": url, "error": str(exc)}
+
+        with ThreadPoolExecutor(max_workers=args.sld_workers) as executor:
+            futures = [executor.submit(download_sld, row) for row in sld_rows]
+            for future in as_completed(futures):
+                sld_downloads.append(future.result())
+        sld_downloads.sort(key=lambda row: str(row.get("requested_url") or row.get("url") or ""))
 
     # Other public source documents/pages. Login-gated sources are recorded but never fetched.
     for source in config["sources"]:
