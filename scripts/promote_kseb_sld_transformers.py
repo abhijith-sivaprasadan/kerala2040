@@ -52,6 +52,25 @@ def _norm_space(text: str) -> str:
     return re.sub(r"\s+", " ", str(text or "")).strip()
 
 
+def _normalize_voltage_notation(text: str) -> tuple[str, bool]:
+    """Normalize only unambiguous KSEBL transformer voltage notation.
+
+    Public SLD text extraction often emits either repeated units
+    (220KV/110KV/11KV) or concatenated voltage levels (11066 KV, 6611 KV).
+    Compact forms are expanded only when the complete numeric token is an
+    ordered pair/triple of known system voltage levels and is immediately
+    followed by kV. Other numeric strings are left untouched.
+    """
+    normalized = _norm_space(text)
+
+    def expand(match: re.Match[str]) -> str:
+        levels = COMPACT_VOLTAGE_MAP[match.group(1)]
+        return "/".join(map(str, levels)) + " kV"
+
+    expanded = COMPACT_VOLTAGE_RE.sub(expand, normalized)
+    return expanded, expanded != normalized
+
+
 def _span_distance(a: tuple[int, int], b: tuple[int, int]) -> int:
     if a[1] < b[0]:
         return b[0] - a[1]
@@ -74,9 +93,10 @@ def _extract_label(text: str, center: tuple[int, int]) -> str | None:
 
 
 def _parse_context(context: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    text = _norm_space(context)
-    if not text:
+    source_text = _norm_space(context)
+    if not source_text:
         return [], []
+    text, voltage_notation_normalized = _normalize_voltage_notation(source_text)
     voltages = list(VOLTAGE_EXPR_RE.finditer(text))
     ratings = list(RATING_EXPR_RE.finditer(text))
     transformers = list(TRANSFORMER_RE.finditer(text))
@@ -105,7 +125,9 @@ def _parse_context(context: str) -> tuple[list[dict[str, Any]], list[dict[str, A
             reason = "NO_NEARBY_TRANSFORMER_TERM"
 
         base = {
-            "context": text,
+            "context": source_text,
+            "normalized_context": text if voltage_notation_normalized else None,
+            "voltage_notation_normalized": voltage_notation_normalized,
             "rating_values_mva": values,
             "rating_expression": rating.group(0),
             "voltage_distance_chars": None if nearest_v is None else vdist,
@@ -127,7 +149,11 @@ def _parse_context(context: str) -> tuple[list[dict[str, Any]], list[dict[str, A
             "equipment_label": label,
             "identity_complete": bool(label),
             "proposed": bool(PROPOSED_RE.search(local)),
-            "admission_class": "HIGH_CONFIDENCE_TEXT_TUPLE",
+            "admission_class": (
+                "HIGH_CONFIDENCE_TEXT_TUPLE_NORMALIZED_VOLTAGE_NOTATION"
+                if voltage_notation_normalized
+                else "HIGH_CONFIDENCE_TEXT_TUPLE"
+            ),
         })
     return accepted, rejected
 
@@ -259,6 +285,7 @@ def main() -> int:
             "Unlabelled duplicate tuples are de-duplicated conservatively and never used to infer transformer counts.",
             "Proposed equipment is retained but excluded from active bus evidence.",
             "Fault-level/short-circuit MVA values and component-times-bank expressions are rejected.",
+            "KSEBL text-extraction forms such as 220KV/110KV/11KV, 11066 KV and 6611 KV are normalized only when they resolve unambiguously to known ordered system voltage levels.",
         ],
     }
 
@@ -273,6 +300,8 @@ def main() -> int:
             "fault_level_rejected": True,
             "proposed_separated_from_active": True,
             "ocr_used": False,
+            "compact_voltage_notation_normalized": True,
+            "repeated_kv_voltage_notation_supported": True,
         },
         "transformer_evidence": admitted,
         "station_bus_inventory": buses,
