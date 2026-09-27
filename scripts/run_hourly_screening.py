@@ -160,8 +160,7 @@ def main() -> int:
     args.output.mkdir(parents=True, exist_ok=True)
     dispatch.to_csv(args.output / "dispatch_screening.csv", index=False)
     (args.output / "summary.json").write_text(
-        json.dumps(summary, indent=2, allow_nan=False) + "
-", encoding="utf-8"
+        json.dumps(summary, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     _make_figures(hourly, network, args.output / "figures")
     if args.export_network:
