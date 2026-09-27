@@ -25,9 +25,9 @@ CLASSIFICATION = "KSEBL_PUBLIC_SLD_TRANSFORMER_EVIDENCE_V0_1_NOT_NAMEPLATE_MASTE
 KV_LEVELS = (400, 320, 230, 220, 110, 66, 33, 22, 11)
 KV = r"(?:400|320|230|220|110|66|33|22|11)"
 VOLTAGE_EXPR_RE = re.compile(
-    rf"(?<!\\d)({KV})\\s*(?:k\\s*v)?\\s*(?:/|-)\\s*"
-    rf"({KV})\\s*(?:k\\s*v)?"
-    rf"(?:\\s*(?:/|-)\\s*({KV})\\s*(?:k\\s*v)?)?\\b",
+    rf"(?<!\d)({KV})\s*(?:k\s*v)?\s*(?:/|-)\s*"
+    rf"({KV})\s*(?:k\s*v)?"
+    rf"(?:\s*(?:/|-)\s*({KV})\s*(?:k\s*v)?)?\b",
     re.IGNORECASE,
 )
 COMPACT_VOLTAGE_MAP = {
@@ -47,9 +47,10 @@ COMPACT_VOLTAGE_MAP.update(
 )
 _COMPACT_PATTERN = "|".join(sorted(COMPACT_VOLTAGE_MAP, key=len, reverse=True))
 COMPACT_VOLTAGE_RE = re.compile(
-    rf"(?<!\\d)({_COMPACT_PATTERN})\\s*k\\s*v\\b",
+    rf"(?<!\d)({_COMPACT_PATTERN})\s*k\s*v\b",
     re.IGNORECASE,
 )
+
 RATING_EXPR_RE = re.compile(
     r"(?<![\d.])(\d+(?:\.\d+)?)"
     r"(?:\s*/\s*(\d+(?:\.\d+)?))?"
