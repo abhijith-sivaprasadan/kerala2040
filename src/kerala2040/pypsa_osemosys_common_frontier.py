@@ -243,6 +243,8 @@ def _build_osemosys_v13_model(
         technology_id: str,
         capacity_mw: float,
         mode: OperatingMode,
+        *,
+        activity_annual_max: float | None = None,
     ) -> Technology:
         return Technology(
             id=technology_id,
@@ -252,6 +254,7 @@ def _build_osemosys_v13_model(
             residual_capacity=max(float(capacity_mw), 1e-9),
             capacity_activity_unit_ratio=float(n),
             capacity_additional_max=0,
+            activity_annual_max=activity_annual_max,
             operating_modes=[mode],
         )
 
@@ -319,6 +322,7 @@ def _build_osemosys_v13_model(
                 opex_variable=1.0 if stage == 1 else 0.0,
                 output_activity_ratio={ELECTRICITY: 1.0},
             ),
+            activity_annual_max=unserved_limit,
         ),
         fixed_technology(
             OTHER_HYDRO,
@@ -419,10 +423,6 @@ def _build_osemosys_v13_model(
             ],
         ),
     ]
-
-    # ActivityAnnualMax belongs on Technology, but keeping the generic fixed
-    # helper above simple makes the physical technologies easier to audit.
-    technologies[3].activity_annual_max = unserved_limit
 
     model = Model(
         id=f"kerala2040-common-frontier-v13-stage{stage}",
