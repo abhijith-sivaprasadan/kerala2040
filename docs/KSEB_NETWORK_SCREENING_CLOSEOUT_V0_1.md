@@ -11,15 +11,15 @@ separate, replaceable model-input layer.
 
 ## New official evidence source
 
-KSEBL *Power System Statistics 2022-23* is ingested directly from the public
-KSEBL PDF. Its relevant inventories are dated **31 March 2023**:
+KSEBL *Power System Statistics 2024-25* is ingested directly from the public
+KSEBL PDF. Its relevant inventories are dated **31 March 2025**:
 
 - **Table 33** — EHV and 33 kV substations, including transformer voltage
   ratios, unit MVA, transformer count and printed total MVA.
 - **Table 34** — EHV and 33 kV transmission lines, including feeder code and
   conductor identity.
 
-The 2023 evidence is not silently treated as proof that equipment remained
+The 2025 evidence is not silently treated as proof that equipment remained
 unchanged in 2026.
 
 Table 34 rows are crosswalked to the newer public grid graph only by exact
@@ -51,7 +51,7 @@ Printed Table 33 total MVA is used as historical transformer-capacity evidence
 when the printed unit MVA × count reconciles with the printed total.
 
 Table 33 may also add a voltage-specific bus/link that is absent from the
-text-readable SLD evidence. These additions are labelled as 2023 PSS evidence;
+text-readable SLD evidence. These additions are labelled as 2025 PSS evidence;
 they do not overwrite newer SLD evidence.
 
 Transformer reactance remains a generic screening assumption. This stage does
