@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 
 from kerala2040.kseb_network_chronological_screen import (
+    assign_interface_weights,
     connected_components,
     identify_boundary_interfaces,
     spatialize_generation,
@@ -130,3 +131,45 @@ def test_transformer_capacity_prefers_source_then_incident_line_proxy() -> None:
     assert cap == 200.0
     assert "NOT_OPERATOR_RATING" in basis
     assert backed is False
+
+
+def _interfaces() -> list[dict[str, object]]:
+    return [
+        {"bus_id": "a", "cross_boundary_screening_mva": 100.0},
+        {"bus_id": "b", "cross_boundary_screening_mva": 300.0},
+    ]
+
+
+def test_interface_weights_screening_mva() -> None:
+    rows = _interfaces()
+    assign_interface_weights(rows, mode="screening_mva")
+    assert rows[0]["component_allocation_weight"] == 0.25
+    assert rows[1]["component_allocation_weight"] == 0.75
+
+
+def test_interface_weights_equal() -> None:
+    rows = _interfaces()
+    assign_interface_weights(rows, mode="equal_interface")
+    assert rows[0]["component_allocation_weight"] == 0.5
+    assert rows[1]["component_allocation_weight"] == 0.5
+
+
+def test_interface_weights_single() -> None:
+    rows = _interfaces()
+    assign_interface_weights(
+        rows, mode="single_interface", single_interface_bus="b"
+    )
+    assert rows[0]["component_allocation_weight"] == 0.0
+    assert rows[1]["component_allocation_weight"] == 1.0
+
+
+def test_interface_weights_reject_invalid_single_bus() -> None:
+    rows = _interfaces()
+    try:
+        assign_interface_weights(
+            rows, mode="single_interface", single_interface_bus="missing"
+        )
+    except ValueError as exc:
+        assert "admitted interface bus" in str(exc)
+    else:
+        raise AssertionError("invalid single-interface bus was accepted")

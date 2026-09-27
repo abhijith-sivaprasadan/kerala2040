@@ -359,6 +359,48 @@ def _transformer_metrics(
     return pd.DataFrame(metrics), loading
 
 
+def assign_interface_weights(
+    rows: list[dict[str, Any]],
+    *,
+    mode: str,
+    single_interface_bus: str | None = None,
+) -> None:
+    """Assign one explicit boundary-allocation sensitivity within a component."""
+    if not rows:
+        raise ValueError("interface-weight assignment requires at least one interface")
+    allowed = {"screening_mva", "equal_interface", "single_interface"}
+    if mode not in allowed:
+        raise ValueError(f"unknown boundary allocation mode: {mode}")
+    bus_ids = [str(row["bus_id"]) for row in rows]
+    if mode == "single_interface":
+        if not single_interface_bus or single_interface_bus not in bus_ids:
+            raise ValueError(
+                "single_interface mode requires an admitted interface bus "
+                "in the load-serving component"
+            )
+        for row in rows:
+            row["component_allocation_weight"] = (
+                1.0 if str(row["bus_id"]) == single_interface_bus else 0.0
+            )
+        return
+    if single_interface_bus is not None:
+        raise ValueError(
+            "single_interface_bus is valid only with single_interface mode"
+        )
+    if mode == "equal_interface":
+        weight = 1.0 / len(rows)
+        for row in rows:
+            row["component_allocation_weight"] = weight
+        return
+    total_mva = sum(float(row["cross_boundary_screening_mva"]) for row in rows)
+    if total_mva <= 0:
+        raise ValueError("screening-MVA boundary weights require positive MVA")
+    for row in rows:
+        row["component_allocation_weight"] = (
+            float(row["cross_boundary_screening_mva"]) / total_mva
+        )
+
+
 def run_screening(
     root: Path,
     *,
@@ -374,6 +416,8 @@ def run_screening(
     daily_qa_path: Path,
     out_dir: Path,
     hours: int = 8760,
+    boundary_allocation_mode: str = "screening_mva",
+    single_interface_bus: str | None = None,
 ) -> dict[str, Any]:
     if not 24 <= hours <= 8760 or hours % 24:
         raise ValueError("hours must be whole days from 24 through 8760")
@@ -524,14 +568,27 @@ def run_screening(
     interfaces_by_component: dict[int, list[dict[str, Any]]] = defaultdict(list)
     for interface in admitted_interfaces:
         interfaces_by_component[int(interface["component_id"])].append(interface)
-    for cid, rows in interfaces_by_component.items():
-        total_mva = sum(
-            float(row["cross_boundary_screening_mva"]) for row in rows
-        )
-        for row in rows:
-            row["component_allocation_weight"] = (
-                float(row["cross_boundary_screening_mva"]) / total_mva
+
+    if boundary_allocation_mode == "single_interface":
+        component_ids = set(interfaces_by_component)
+        if len(component_ids) != 1:
+            raise ValueError(
+                "single-interface sensitivity requires all admitted interfaces "
+                "to belong to one load-serving component"
             )
+    for rows in interfaces_by_component.values():
+        assign_interface_weights(
+            rows,
+            mode=boundary_allocation_mode,
+            single_interface_bus=single_interface_bus,
+        )
+    for row in interfaces:
+        row["boundary_allocation_mode"] = boundary_allocation_mode
+        row["allocation_weight"] = (
+            float(row.get("component_allocation_weight") or 0.0)
+            if row["admitted_for_boundary_allocation"]
+            else 0.0
+        )
 
     component_supply: dict[int, np.ndarray] = {}
     component_sink: dict[int, np.ndarray] = {}
@@ -849,6 +906,18 @@ def run_screening(
             "transformer_dc_base_capacity_proxies": int(
                 sum(not value[2] for value in tx_capacities.values())
             ),
+        },
+        "boundary_allocation": {
+            "mode": boundary_allocation_mode,
+            "single_interface_bus": single_interface_bus,
+            "admitted_interface_buses": [
+                str(row["bus_id"]) for row in admitted_interfaces
+            ],
+            "weights": {
+                str(row["bus_id"]): float(row["allocation_weight"])
+                for row in admitted_interfaces
+            },
+            "measured_interface_dispatch": False,
         },
         "chronology": {
             "load_proxy_classification": proxy["classification"],
