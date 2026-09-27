@@ -580,13 +580,14 @@ def _match_station(
             exact.append((pos, -len(loc), node))
     if not exact:
         return None, "NO_EXACT_NORMALIZED_LOCATION_MATCH"
-    # Prefer the most specific (longest) station name before position.
-    # This prevents a nested name such as "Kattakada" from stealing the
-    # historical "New Kattakkada" row from the distinct New Kattakada node.
+    # Prefer the earliest station-name occurrence, then the longest match at
+    # that position. Spelling aliases in _norm_name handle known variants
+    # such as New Kattakkada -> New Kattakada without letting district text
+    # later in the row steal the station match.
     exact.sort(
         key=lambda item: (
-            item[1],
             item[0],
+            item[1],
             0 if str(item[2]["node_id"]).startswith("SS:") else 1,
         )
     )
