@@ -487,6 +487,11 @@ def main() -> int:
     total_by_voltage = Counter(e["voltage_kv"] for e in source_edges if e.get("topology_admitted"))
     junction_count = sum(n.get("synthetic", False) for n in active_nodes)
     source_ids = [e["source_edge_id"] for e in source_edges]
+    public_node_ids = [n["node_id"] for n in public_nodes]
+    duplicate_public_node_features_collapsed = sum(
+        max(0, int(n.get("source_feature_count") or 1) - 1)
+        for n in public_nodes
+    )
 
     graph = {
         "classification": CLASSIFICATION,
@@ -526,6 +531,8 @@ def main() -> int:
     qa = {
         "classification": "KSEBL_PUBLIC_GRID_GRAPH_V0_2_QA",
         "source_edge_ids_unique": len(source_ids) == len(set(source_ids)),
+        "public_node_ids_unique": len(public_node_ids) == len(set(public_node_ids)),
+        "duplicate_public_node_features_collapsed": duplicate_public_node_features_collapsed,
         "all_220plus_edges_resolved": all(unresolved_by_voltage.get(kv, 0) == 0 for kv in (220, 320, 400)),
         "unresolved_admitted_source_edges_by_voltage": dict(sorted(unresolved_by_voltage.items())),
         "synthetic_junction_nodes": junction_count,
