@@ -189,6 +189,8 @@ def _conductor_components(
     value = str(label or "").upper().strip()
     if not value:
         return [], False
+    if value.startswith("MIXED_"):
+        return [], False
     if value == "QUAD_MOOSE":
         return [("MOOSE", 4)], False
     if value == "TWIN_MOOSE":
