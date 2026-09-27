@@ -1,0 +1,176 @@
+{
+  "classification": "LRIS_PUBLIC_WMS_VECTOR_RECOVERY_CATCHMENT_RECONSTRUCTION_GATE_NOT_FINAL_CATCHMENT",
+  "reviewed_on": "2026-09-27",
+  "lris": {
+    "app": "https://lris.kslub.kerala.gov.in/app/",
+    "backend_wms": "https://gis.duk.ac.in/wlris/wms",
+    "workspace": "LRIS_shp",
+    "wfs_status": "disabled",
+    "layers": {
+      "watersheds": {
+        "name": "LRIS_shp:watersheds_idukki",
+        "kml_sha256": "8b769c717449682d58a37687431858f42fdee88129dd63db018cb71ad68a2405",
+        "source_bytes": 45245939,
+        "feature_count": 853,
+        "invalid_source_geometries": 1,
+        "crs": "EPSG:4326"
+      },
+      "drains": {
+        "name": "LRIS_shp:drains_idukki",
+        "kml_sha256": "a1ef943d114769d39da2d024bb3eb83f834d64adc721d48620bd0058f48afb0c",
+        "source_bytes": 105176969,
+        "feature_count": 30429,
+        "invalid_source_geometries": 0,
+        "order_counts": {
+          "order 1": 18103,
+          "order 2": 7808,
+          "order 3": 3939,
+          "order 4": 262,
+          "order 5": 139,
+          "order 6": 118,
+          "order 7": 39,
+          "order 8": 21
+        },
+        "crs": "EPSG:4326"
+      },
+      "waterbodies": {
+        "name": "LRIS_shp:waterbodies_idukki",
+        "kml_sha256": "71f07b891413ca7ee6d4edd1cd88121d34636dd9171965c7fb35a67722f991e6",
+        "source_bytes": 19884215,
+        "feature_count": 268,
+        "invalid_source_geometries": 1,
+        "crs": "EPSG:4326"
+      }
+    },
+    "basin_name_counts": {
+      "PERIYAR": 559,
+      "MUVATTUPUZHA": 144,
+      "PAMBAR": 81,
+      "PAMBA": 37,
+      "MANIMALA": 24,
+      "MINACHIL": 8
+    },
+    "all_watershed_geometry_area_km2_approx": 4546.952476875555,
+    "periyar_union_area_km2_approx": 3187.059128,
+    "raw_geometry_redistribution_rights_reviewed": false,
+    "raw_kml_committed_publicly": false
+  },
+  "idukki_reservoir_anchor": {
+    "lris_fid_waterb": "743",
+    "lris_name": "Idukki Reservoir (Cheruthoni_Kulamavu_Idukki Dam)",
+    "administrative_fragments": 6,
+    "dissolved_geodesic_area_km2": 49.39821530163265,
+    "bounds_wgs84": [
+      76.88465614516525,
+      9.696291010222215,
+      77.10831051521824,
+      9.8477045823009
+    ],
+    "matching_watershed_WB_feature_ids": [
+      "661",
+      "586",
+      "702",
+      "722",
+      "671",
+      "743"
+    ]
+  },
+  "dem_source": {
+    "product": "Copernicus GLO-90 DSM",
+    "existing_repository_evidence": "data/evidence/gis/copernicus_glo90_envelope_2026_09_20.json",
+    "github_actions_run": 35515526369,
+    "github_actions_artifact": 10606398141,
+    "exact_original_tiles_used_for_exploration": [
+      "N09E076",
+      "N09E077",
+      "N10E076",
+      "N10E077"
+    ],
+    "note": "DSM routing diagnostics only; source is not bare-earth DTM and no heuristic catchment is admitted."
+  },
+  "independent_area_crosscheck": {
+    "expected_natural_catchment_area_km2": 649.3,
+    "use": "external validation target only; never used to tune geometry",
+    "sources": [
+      {
+        "authority": "Central Electricity Authority",
+        "document_context": "Idukki Pumped Storage Project DPR / upper dam site catchment statement",
+        "value_km2": 649.3
+      },
+      {
+        "authority": "FAO reservoir fisheries literature",
+        "value_km2": 649.3,
+        "role": "secondary corroboration"
+      }
+    ]
+  },
+  "rejected_reconstruction_candidates": [
+    {
+      "method": "strict_directed_LRIS_drain_endpoint_graph_with_snap_tolerance_sweep",
+      "result_area_km2_approx": 347.2,
+      "status": "REJECTED_UNDER_CAPTURE",
+      "reason": "network topology gaps/admin splits prevent complete upstream graph recovery"
+    },
+    {
+      "method": "undirected_LRIS_drain_graph_low_snap_example",
+      "result_area_km2_approx": 987,
+      "status": "REJECTED_OVER_CAPTURE",
+      "reason": "removing direction merges neighboring drainage systems"
+    },
+    {
+      "method": "marker_watershed_on_raw_GLO90",
+      "result_area_km2_approx": 3346.1,
+      "status": "REJECTED_OVER_CAPTURE",
+      "reason": "generic marker segmentation does not represent a routed reservoir catchment"
+    },
+    {
+      "method": "priority_flood_GLO90_Periyar_mask_reservoir_target",
+      "result_area_km2_approx": 1280.7,
+      "status": "REJECTED_OVER_CAPTURE",
+      "reason": "modern reservoir/dam surface and routing ambiguity distort outlet connectivity"
+    },
+    {
+      "method": "high_order_LRIS_drain_burn_GLO90_any_reservoir_target",
+      "result_area_km2_approx": 1316.4,
+      "status": "REJECTED_OVER_CAPTURE",
+      "reason": "hydrographic burn did not resolve artificial-reservoir routing ambiguity"
+    },
+    {
+      "method": "high_order_LRIS_drain_burn_GLO90_near_dam_target",
+      "result_area_km2_approx": 1237.6,
+      "status": "REJECTED_OVER_CAPTURE",
+      "reason": "outlet-target refinement remains incompatible with independent area evidence"
+    }
+  ],
+  "augmentation_boundary": {
+    "natural_topographic_catchment_is_not_intercepted_catchment": true,
+    "kseb_diversions_must_be_added_separately": true,
+    "examples_documented_by_kseb": [
+      "Narakakkanam",
+      "Azhutha",
+      "Vazhikkadavu",
+      "Vadakkepuzha",
+      "Kuttiar",
+      "Kallar-Erattayar"
+    ],
+    "source": "https://dams.kseb.in/?p=168"
+  },
+  "second_geometry_gate": {
+    "preferred_source": "Government of India Hydrological Boundaries / NWIC / India-WRIS",
+    "catalogue": "https://www.data.gov.in/catalog/hydrological-boundaries",
+    "required": "original or byte-verifiable official WRIS watershed/sub-basin geometry covering Idukki",
+    "secondary_crosscheck_only": {
+      "repository": "yashveeeeeeer/india-geodata",
+      "release_tag": "water/hydro-boundaries",
+      "asset": "WRIS_Watershed.geojsonl.7z",
+      "asset_sha256": "62f6b26f06d48a1ea05bdd035fa66e98786090ac34c1b432c5b72c202804aa59",
+      "role": "secondary mirror; not substitute for original NWIC/WRIS provenance"
+    }
+  },
+  "release_gates": {
+    "natural_catchment_ready": false,
+    "intercepted_catchment_ready": false,
+    "phase5_weights_ready": false,
+    "era5_phase5_run_ready": false
+  }
+}
