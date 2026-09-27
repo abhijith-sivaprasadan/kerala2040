@@ -6,7 +6,26 @@ on:
     paths:
       - "scripts/acquire_public_network_sources.py"
       - "scripts/build_kseb_public_network_graph.py"
+      - "scripts/build_kseb_public_network_graph_v0_2.py"
       - "scripts/mine_kseb_public_slds.py"
+      - "scripts/promote_kseb_sld_transformers.py"
+      - "scripts/map_generator_census_to_public_grid.py"
+      - "scripts/build_generator_census_fy2024_25.py"
+      - "src/kerala2040/generator_census.py"
+      - "data/evidence/generation/fy2024_25_generator_capacity_census.json"
+      - "configs/public_network_acquisition_v0_1.json"
+      - ".github/workflows/public-network-graph-and-sld.yml"
+  pull_request:
+    paths:
+      - "scripts/acquire_public_network_sources.py"
+      - "scripts/build_kseb_public_network_graph.py"
+      - "scripts/build_kseb_public_network_graph_v0_2.py"
+      - "scripts/mine_kseb_public_slds.py"
+      - "scripts/promote_kseb_sld_transformers.py"
+      - "scripts/map_generator_census_to_public_grid.py"
+      - "scripts/build_generator_census_fy2024_25.py"
+      - "src/kerala2040/generator_census.py"
+      - "data/evidence/generation/fy2024_25_generator_capacity_census.json"
       - "configs/public_network_acquisition_v0_1.json"
       - ".github/workflows/public-network-graph-and-sld.yml"
   workflow_dispatch:
@@ -18,6 +37,9 @@ jobs:
   build-public-network:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    env:
+      PYTHONPATH: src
+
     steps:
       - uses: actions/checkout@v4
 
@@ -25,12 +47,15 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install network/SVG-PDF mining dependencies
+      - name: Install network, SLD and census dependencies
         run: |
           python -m pip install \
             "shapely>=2.0,<3" \
+            "pyproj>=3.6,<4" \
             "pypdf>=5,<7" \
-            "fonttools>=4,<5"
+            "fonttools>=4,<5" \
+            "pandas>=2.2,<3" \
+            "pyarrow>=17,<22"
 
       - name: Acquire public grid layers and SLD PDFs
         run: |
@@ -38,53 +63,90 @@ jobs:
             --download-sld \
             --sld-workers 4
 
-      - name: Build 110 kV+ physical-site graph
-        run: |
-          python scripts/build_kseb_public_network_graph.py
+      - name: Build geometry-resolved 110 kV+ topology v0.2
+        run: python scripts/build_kseb_public_network_graph_v0_2.py
 
       - name: Mine public SLD text
-        run: |
-          python scripts/mine_kseb_public_slds.py
+        run: python scripts/mine_kseb_public_slds.py
 
-      - name: Validate graph and SLD acquisition
+      - name: Promote high-confidence SLD transformer evidence
+        run: python scripts/promote_kseb_sld_transformers.py
+
+      - name: Build reconciled FY2024-25 generator census
+        run: python scripts/build_generator_census_fy2024_25.py
+
+      - name: Crosswalk physical generation to public buses
+        run: python scripts/map_generator_census_to_public_grid.py
+
+      - name: Validate topology, transformer evidence and generator crosswalk
         shell: bash
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          graph_qa = json.loads(
-              Path("results/network/public_grid_graph_v0_1/network_graph_qa.json").read_text()
+          graph = json.loads(
+              Path("results/network/public_grid_graph_v0_2/network_graph_qa.json").read_text()
           )
-          sld_qa = json.loads(
+          sld = json.loads(
               Path("results/network/public_sld_mining_v0_1/sld_mining_qa.json").read_text()
           )
+          transformers = json.loads(
+              Path("results/network/public_sld_transformers_v0_1/transformer_evidence_qa.json").read_text()
+          )
+          generators = json.loads(
+              Path("results/network/generator_bus_crosswalk_v0_1/generator_bus_crosswalk_qa.json").read_text()
+          )
 
-          assert graph_qa["all_220plus_edges_resolved"] is True
-          assert graph_qa["edge_counts_by_voltage"]["220"] >= 90
-          assert graph_qa["edge_counts_by_voltage"]["400"] >= 20
-          assert graph_qa["power_flow_ready"] is False
+          assert graph["source_edge_ids_unique"] is True
+          assert graph["all_220plus_edges_resolved"] is True
+          assert graph["unresolved_admitted_source_edges_by_voltage"] == {}
+          assert graph["synthetic_junction_nodes"] >= 8
+          assert graph["connected_components_with_edges"] <= 12
+          assert graph["largest_component_nodes"] >= 300
+          assert graph["split_failures"] == []
+          assert graph["power_flow_ready"] is False
 
-          assert sld_qa["inventory_records_valid"] >= 600
-          assert sld_qa["pdfs_present"] >= 570
-          assert sld_qa["automatic_ocr_used"] is False
-          assert sld_qa["equipment_master_ready"] is False
+          assert sld["inventory_records_valid"] >= 600
+          assert sld["pdfs_present"] >= 570
+          assert sld["automatic_ocr_used"] is False
+
+          assert transformers["high_confidence_evidence_records"] >= 200
+          assert transformers["stations_with_high_confidence_evidence"] >= 100
+          assert transformers["automatic_ocr_used"] is False
+          assert transformers["equipment_master_ready"] is False
+          assert transformers["power_flow_ready"] is False
+
+          assert generators["census_rows"] == 112
+          assert abs(generators["census_capacity_mw"] - 4412.156) < 1e-6
+          assert generators["physical_rows_attached_to_110plus_network"] >= 25
+          assert generators["physical_capacity_attached_to_110plus_network_mw"] >= 2500
+          assert generators["aggregate_capacity_attached_to_bus_mw"] == 0
+          assert generators["all_aggregate_capacity_left_unallocated"] is True
+          assert generators["power_flow_ready"] is False
 
           print("GRAPH QA")
-          print(json.dumps(graph_qa, indent=2))
+          print(json.dumps(graph, indent=2))
           print("SLD QA")
-          print(json.dumps(sld_qa, indent=2))
+          print(json.dumps(sld, indent=2))
+          print("TRANSFORMER QA")
+          print(json.dumps(transformers, indent=2))
+          print("GENERATOR QA")
+          print(json.dumps(generators, indent=2))
           PY
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: kseb-public-network-graph-and-sld-mining-v0.1
+          name: kseb-public-network-model-evidence-v0.2
           retention-days: 90
           if-no-files-found: error
           path: |
-            results/network/public_grid_graph_v0_1/
+            results/network/public_grid_graph_v0_2/
             results/network/public_sld_mining_v0_1/
+            results/network/public_sld_transformers_v0_1/
+            results/network/generator_bus_crosswalk_v0_1/
+            results/inventory/fy2024_25_generator_census/
             results/acquisition/network_public_v0_1/public_sld_inventory.json
             results/acquisition/network_public_v0_1/acquisition_summary.json
             results/acquisition/network_public_v0_1/geojson/
@@ -92,10 +154,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: kseb-public-sld-pdf-archive-v0.1
+          name: kseb-public-sld-pdf-archive-v0.2
           retention-days: 30
           if-no-files-found: warn
           path: results/acquisition/network_public_v0_1/sld/
 
 # Public web sources only. No authentication to SOS/TrAMS and no OCR guessing.
-# Triggered after workflow admission to main.
+# v0.2 resolves only geometry-supported tap/LILO junctions and remains fail-closed
+# on ambiguous equipment, distributed generation allocation and power-flow inputs.
