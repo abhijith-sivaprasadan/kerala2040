@@ -21,6 +21,8 @@ def test_benchmark_config_stays_non_recommendation():
     assert suite["release"]["cross_framework_benchmark"] is True
     assert suite["release"]["validated_capacity_plan"] is False
     assert suite["release"]["scenario_recommendation"] is False
+    assert suite["release"]["spatial_network_constraints_internalized"] is False
+    assert suite["network_evidence"]["treatment"] == "required_evidence_gate_not_spatial_constraint"
 
 
 def test_residual_demand_profile_is_energy_preserving_and_rejects_negative_load():
