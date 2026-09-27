@@ -1,0 +1,84 @@
+name: Public network source acquisition
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "configs/public_network_acquisition_v0_1.json"
+      - "scripts/acquire_public_network_sources.py"
+      - ".github/workflows/public-network-acquisition.yml"
+      - "docs/network-acquisition.html"
+  workflow_dispatch:
+    inputs:
+      download_sld:
+        description: "Also download public KSEBL single-line-diagram PDFs"
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    - cron: "17 3 * * 0"
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Acquire public KSEBL/CEA network sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.download_sld }}" == "true" ]]; then
+            args+=(--download-sld)
+          fi
+          python scripts/acquire_public_network_sources.py "${args[@]}"
+
+      - name: Validate public acquisition
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path("results/acquisition/network_public_v0_1/acquisition_summary.json")
+          data = json.loads(p.read_text())
+          assert data["classification"] == "PUBLIC_NETWORK_ACQUISITION_V0_1_EXECUTED"
+          assert data["layer_files_discovered"] == 14
+          assert data["expected_layer_files"] == 14
+          assert data["missing_expected_layers"] == []
+          assert data["public_sld_links_discovered"] > 0
+          assert data["release_gate"]["operating_load_data_ready"] is False
+          assert data["release_gate"]["sos_or_trams_auth_bypass_permitted"] is False
+
+          substations = data["layers"]["Substations_18.js"]
+          assert substations["feature_count"] > 100
+          assert substations["bounds"] is not None
+
+          lines_220 = data["layers"]["220kVFeederInservice_13.js"]
+          assert lines_220["feature_count"] > 0
+          print(json.dumps({
+              "layers": data["layer_files_discovered"],
+              "sld_links": data["public_sld_links_discovered"],
+              "substations": substations["feature_count"],
+              "220kV_inservice_features": lines_220["feature_count"],
+          }, indent=2))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public-network-source-acquisition-v0.1
+          retention-days: 90
+          if-no-files-found: error
+          path: results/acquisition/network_public_v0_1/
+
+# Public sources only. This workflow deliberately does not authenticate to
+# KSEBL SOS/TrAMS or attempt to bypass access controls.
