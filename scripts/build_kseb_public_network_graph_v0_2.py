@@ -141,7 +141,7 @@ def _district(point: Point, districts: list[tuple[str, Any]]) -> str | None:
 
 
 def _build_nodes(geojson_dir: Path, districts: list[tuple[str, Any]]) -> list[dict[str, Any]]:
-    nodes: list[dict[str, Any]] = []
+    raw_nodes: list[dict[str, Any]] = []
     for kind, filename in NODE_FILES.items():
         obj = _load(geojson_dir / filename)
         for index, feature in enumerate(obj["features"]):
@@ -149,7 +149,7 @@ def _build_nodes(geojson_dir: Path, districts: list[tuple[str, Any]]) -> list[di
             geom = shape(feature["geometry"])
             if geom.is_empty or geom.geom_type != "Point":
                 continue
-            nodes.append({
+            raw_nodes.append({
                 "node_id": _node_id(kind, props, index),
                 "kind": kind,
                 "location": str(props.get("Location") or ""),
@@ -164,7 +164,46 @@ def _build_nodes(geojson_dir: Path, districts: list[tuple[str, Any]]) -> list[di
                 "lat": float(geom.y),
                 "district": _district(geom, districts),
                 "synthetic": False,
+                "source_feature_index": index,
+                "source_feature_count": 1,
+                "source_locations": str(props.get("Location") or ""),
             })
+
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for node in raw_nodes:
+        grouped[node["node_id"]].append(node)
+
+    nodes: list[dict[str, Any]] = []
+    for node_id, group in grouped.items():
+        if len(group) == 1:
+            nodes.append(group[0])
+            continue
+
+        anchor = group[0]
+        max_separation_km = max(
+            _haversine_km(
+                (anchor["lon"], anchor["lat"]),
+                (other["lon"], other["lat"]),
+            )
+            for other in group[1:]
+        )
+        if max_separation_km > 0.10:
+            raise RuntimeError(
+                f"non-coincident public node identity collision for {node_id}: "
+                f"{max_separation_km:.3f} km"
+            )
+
+        anchor["lon"] = sum(float(row["lon"]) for row in group) / len(group)
+        anchor["lat"] = sum(float(row["lat"]) for row in group) / len(group)
+        anchor["source_feature_count"] = len(group)
+        anchor["source_feature_indices"] = ";".join(
+            str(row["source_feature_index"]) for row in group
+        )
+        anchor["source_locations"] = " | ".join(
+            dict.fromkeys(str(row["location"]) for row in group)
+        )
+        nodes.append(anchor)
+
     return nodes
 
 
@@ -448,6 +487,11 @@ def main() -> int:
     total_by_voltage = Counter(e["voltage_kv"] for e in source_edges if e.get("topology_admitted"))
     junction_count = sum(n.get("synthetic", False) for n in active_nodes)
     source_ids = [e["source_edge_id"] for e in source_edges]
+    public_node_ids = [n["node_id"] for n in public_nodes]
+    duplicate_public_node_features_collapsed = sum(
+        max(0, int(n.get("source_feature_count") or 1) - 1)
+        for n in public_nodes
+    )
 
     graph = {
         "classification": CLASSIFICATION,
@@ -487,6 +531,8 @@ def main() -> int:
     qa = {
         "classification": "KSEBL_PUBLIC_GRID_GRAPH_V0_2_QA",
         "source_edge_ids_unique": len(source_ids) == len(set(source_ids)),
+        "public_node_ids_unique": len(public_node_ids) == len(set(public_node_ids)),
+        "duplicate_public_node_features_collapsed": duplicate_public_node_features_collapsed,
         "all_220plus_edges_resolved": all(unresolved_by_voltage.get(kv, 0) == 0 for kv in (220, 320, 400)),
         "unresolved_admitted_source_edges_by_voltage": dict(sorted(unresolved_by_voltage.items())),
         "synthetic_junction_nodes": junction_count,
