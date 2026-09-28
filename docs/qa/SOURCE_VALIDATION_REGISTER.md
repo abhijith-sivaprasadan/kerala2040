@@ -139,6 +139,26 @@ This is **S6 external physical/planning corroboration of hotspot geography**, no
 
 No Phase 5 basin result may be promoted until the geometry gate passes.
 
+### Idukki v1.3 storage and energy-equivalent trace
+
+The retained FY2024–25 SLDC `reservoir_daily.csv` contains **354 Idukki rows** and explicitly carries the source columns `full_reservoir_storage_mcm`, `full_reservoir_storage_reported_mu`, `effective_storage_mcm`, `generation_capability_gross_mu` and `generation_capability_station_mu`.
+
+For Idukki the source rows report:
+
+- full reservoir storage: **1,460 MCM**;
+- full reservoir reported capability: **2,190 MU**;
+- therefore gross source ratio: **2,190,000 MWh / 1,460 MCM = 1,500 MWh/MCM**.
+
+The v1.3 runner does **not** use 1,500. It derives a station-equivalent conversion from every admissible daily row:
+
+`generation_capability_station_mu × 1000 / effective_storage_mcm`.
+
+Independent QA recomputation over all **354 Idukki rows** gives median **1,470.00001987 MWh/MCM** (range approximately 1,469.9979–1,470.0017), matching the configured **1,470 MWh/MCM**.
+
+This establishes provenance and arithmetic. It does **not** make 1,470 a first-principles hydraulic conversion: it inherits the SLDC source's station-generation-capability field and collapses changing head, turbine efficiency and hydraulic losses into one fixed operational equivalent.
+
+KSEBL Dam Safety independently confirms the Idukki HEP installed capacity of **780 MW** and the physical Idukki/Cheruthoni/Kulamavu common-reservoir configuration; KSEBL's rule-level report states six 130 MW machines.
+
 ## GIS / ecology
 
 | Source | Use | QA |
