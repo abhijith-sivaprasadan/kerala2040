@@ -9,6 +9,9 @@ import pandas as pd
 import xarray as xr
 import yaml
 
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 from kerala2040.full_pypsa_cost_finance import load_cost_finance_suite
 from kerala2040.full_pypsa_future_adequacy import (
     _load_base,
@@ -397,6 +400,7 @@ def run_hydro_flex_v11_suite(root: Path, *, profile_path: Path, hours: int = 876
         "renewable_profile_alignment": alignment,
         "cases": cases,
         "release": suite["release"],
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": [
             "Hydro can move within each day but cannot move energy between days.",
             "Every modelled day preserves the same FY2024-25 observed/imputed hydro MWh as v0.3.",
