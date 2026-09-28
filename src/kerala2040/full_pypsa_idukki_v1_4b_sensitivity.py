@@ -13,9 +13,6 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from kerala2040.network_planning_evidence import (
-    planning_network_summary_from_root,
-)
 from kerala2040.full_pypsa_cost_finance import load_cost_finance_suite
 from kerala2040.full_pypsa_future_adequacy import (
     _load_base,
@@ -40,6 +37,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
 from kerala2040.idukki_cumulative_inflow_v1_4b import (
     build_source_informed_inflow_scenarios,
     load_v14b_suite,
+)
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
 )
 
 RUNNER_CLASS = (
