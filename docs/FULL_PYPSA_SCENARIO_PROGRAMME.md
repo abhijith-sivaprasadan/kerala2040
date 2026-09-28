@@ -641,7 +641,7 @@ Three annual price sensitivities are retained:
 | Case | Source value | Real 2021-22 value | Interpretation |
 |---|---:|---:|---|
 | KSEBL weighted purchase | ₹5.05/kWh | ₹4,494.07/MWh | annual KSEBL purchase-cost proxy |
-| IEX DAM wholesale | ₹5.24/kWh | ₹4,663.15/MWh | exchange MCP proxy before Kerala-specific adders |
+| IEX DAM average MCP proxy | ₹5.24/kWh | ₹4,663.15/MWh | FY2023–24 IEX average MCP (~₹5.238/kWh), not the volume-weighted MCP (~₹5.174/kWh) and before Kerala-specific adders |
 | Delivered bulk stress | ₹7.13/kWh | ₹6,345.09/MWh | downstream KSEBL bulk-supply stress boundary |
 
 The last case is deliberately **not** called Kerala-border import cost. The exchange
