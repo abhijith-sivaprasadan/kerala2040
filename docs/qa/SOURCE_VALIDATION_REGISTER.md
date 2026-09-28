@@ -283,6 +283,27 @@ They do not establish a current measured plant-wide mass-energy-water balance.
 
 EMC/CII total-energy statistics and PPAC fuel sales are historical contextual datasets. Preserve their dates/units and do not merge them as if contemporaneous.
 
+## Critical primary-source lock
+
+These are the primary documents/pages that should be opened first if an expert challenges a headline number:
+
+| Topic | Primary source |
+|---|---|
+| CEA Kerala generation resource adequacy | https://cea.nic.in/resource_adequacy_st/report-on-resource-adequacy-plan-for-kerala-up-to-2035-36/ |
+| CEA Kerala transmission resource adequacy / TTC-ATC / current constraints | https://cea.nic.in/wp-content/uploads/2021/03/Kerela_RA_Plan.pdf |
+| CEA 2029–30 Version 2.0 cost assumptions | https://cea.nic.in/wp-content/uploads/notification/2023/05/Optimal_mix_report__2029_30_Version_2.0__For_Uploading.pdf |
+| CERC FY2026–27 generic RE tariff order, 12/SM/2026 | https://cercind.gov.in/2026/Orders/12-SM-2026.pdf |
+| CERC 2026 order index | https://cercind.gov.in/recent_orders.html |
+| IEX FY2023–24 DAM yearly market snapshot | https://www.iexindia.com/market-data/day-ahead-market/market-snapshot?dp=FINANCIAL_YEAR&fromDate=1&interval=YEARLY&showGraph=false&toDate=2023-2024 |
+| Kerala official statistics / Economic Review | https://spb.kerala.gov.in/en/7036/ |
+| Kerala geographical area | https://ecostat.kerala.gov.in/page/key-statistics |
+| KSEBL Dam Safety / Idukki project context | https://dams.kseb.in/?p=108 |
+| CIAL 2025 AGM / renewable+BESS context | https://www.cial.aero/News-Updates/AGM2025 |
+| Kochi Metro project solar configuration | https://corporate.kochimetro.org/the-project |
+| Kerala Mining & Geology / Chavara minerals | https://dmg.kerala.gov.in/en/mineral-resources/ |
+
+A URL in this table is a retrieval pointer, not permission to collapse the source's accounting or time boundary into another dataset.
+
 ## Source-quality rule for the conference
 
 When a source has changed over time, the safest answer is:
