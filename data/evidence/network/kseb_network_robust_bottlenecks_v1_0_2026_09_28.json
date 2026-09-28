@@ -343,5 +343,200 @@
     "Line MVA uses KSEBL conductor/current-backed screening ratings, not operator seasonal/emergency limits.",
     "Reactance remains generic screening data; calibrated DC, AC and N-1 security are not validated.",
     "The robust transformer is independent of the load-weighting transformer set and uses historical PSS 2022-23 capacity evidence."
-  ]
+  ],
+  "robust_corridors": [
+    {
+      "corridor_id": "C01",
+      "label": "Malapparamba-Shornur-Koppam-Perinthalmanna-Melattur 110 kV",
+      "voltage_kv": 110,
+      "line_count": 6,
+      "districts": [
+        "Malappuram",
+        "Palakkad"
+      ],
+      "line_ids": [
+        "110:1MRSH:0251:seg01",
+        "110:1MRKP:0168:seg01",
+        "110:1SHKP:0250:seg01",
+        "110:1MRPT:0023:seg01",
+        "110:1MRMA:0347:seg01",
+        "110:1MRMA-T-ME:0412:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 2.176929,
+      "strongest_min_case_hours_over_100pct": 8297,
+      "interpretation": "Largest connected robust 110-kV subgraph; converges on Malapparamba/Shornur and remains overloaded across all boundary-allocation cases."
+    },
+    {
+      "corridor_id": "C02",
+      "label": "Kalamassery-Edayar 110 kV",
+      "voltage_kv": 110,
+      "line_count": 3,
+      "districts": [
+        "Ernakulam"
+      ],
+      "line_ids": [
+        "110:1KLED II:0132:seg02",
+        "110:1KLED II:0132:seg01",
+        "110:1KLED II:0133:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.069253,
+      "strongest_min_case_hours_over_100pct": 55,
+      "interpretation": "Three robust segments connect the Kalamassery-Edayar industrial-area path."
+    },
+    {
+      "corridor_id": "C03",
+      "label": "Pallom-Pampady-Kanjirappally 110 kV",
+      "voltage_kv": 110,
+      "line_count": 2,
+      "districts": [
+        "Kottayam"
+      ],
+      "line_ids": [
+        "110:1PLPM:0216:seg01",
+        "110:1PMKJ:0218:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 2.145152,
+      "strongest_min_case_hours_over_100pct": 8064,
+      "interpretation": "Persistent Kottayam 110-kV path dominated by Pallom-Pampady."
+    },
+    {
+      "corridor_id": "C04",
+      "label": "Shornur-Areacode-Elankur 220 kV",
+      "voltage_kv": 220,
+      "line_count": 2,
+      "districts": [
+        "Malappuram",
+        "Palakkad"
+      ],
+      "line_ids": [
+        "220:2SHAR:0043:seg01",
+        "220:2ENAR:0056:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.80273,
+      "strongest_min_case_hours_over_100pct": 4528,
+      "interpretation": "Robust 220-kV path sharing Shornur with the strongest 110-kV subgraph."
+    },
+    {
+      "corridor_id": "C05",
+      "label": "Kunnamangalam-Kuttikattoor 110 kV",
+      "voltage_kv": 110,
+      "line_count": 1,
+      "districts": [
+        "Kozhikode"
+      ],
+      "line_ids": [
+        "110:1KGKT:0411:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.695426,
+      "strongest_min_case_hours_over_100pct": 4270
+    },
+    {
+      "corridor_id": "C06",
+      "label": "TERLS-Veli 110 kV",
+      "voltage_kv": 110,
+      "line_count": 1,
+      "districts": [
+        "Thiruvananthapuram"
+      ],
+      "line_ids": [
+        "110:1TEVE:0043:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.695426,
+      "strongest_min_case_hours_over_100pct": 4270
+    },
+    {
+      "corridor_id": "C07",
+      "label": "CIAL-Carborandum 110 kV",
+      "voltage_kv": 110,
+      "line_count": 1,
+      "districts": [
+        "Ernakulam",
+        "Thrissur"
+      ],
+      "line_ids": [
+        "110:1KLCB:0422:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.418875,
+      "strongest_min_case_hours_over_100pct": 2164
+    },
+    {
+      "corridor_id": "C08",
+      "label": "Madakkathara-Athani 110 kV",
+      "voltage_kv": 110,
+      "line_count": 1,
+      "districts": [
+        "Thrissur"
+      ],
+      "line_ids": [
+        "110:1MDAT:0154:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.405072,
+      "strongest_min_case_hours_over_100pct": 1333
+    },
+    {
+      "corridor_id": "C09",
+      "label": "Vennakkara-Malampuzha 110 kV",
+      "voltage_kv": 110,
+      "line_count": 1,
+      "districts": [
+        "Palakkad"
+      ],
+      "line_ids": [
+        "110:1VNMA:0285:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.377533,
+      "strongest_min_case_hours_over_100pct": 1054
+    },
+    {
+      "corridor_id": "C10",
+      "label": "Chalakudy-Kodakara 110 kV",
+      "voltage_kv": 110,
+      "line_count": 1,
+      "districts": [
+        "Thrissur"
+      ],
+      "line_ids": [
+        "110:1CHKA:0096:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.267734,
+      "strongest_min_case_hours_over_100pct": 826
+    },
+    {
+      "corridor_id": "C11",
+      "label": "Edappal-Kuttippuram 110 kV",
+      "voltage_kv": 110,
+      "line_count": 1,
+      "districts": [
+        "Malappuram"
+      ],
+      "line_ids": [
+        "110:1EPKU:0082:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.128286,
+      "strongest_min_case_hours_over_100pct": 180
+    },
+    {
+      "corridor_id": "C12",
+      "label": "Kundara-Perinadu 110 kV",
+      "voltage_kv": 110,
+      "line_count": 1,
+      "districts": [
+        "Kollam"
+      ],
+      "line_ids": [
+        "110:1KDPR:0202:seg01"
+      ],
+      "strongest_min_case_max_loading_pu": 1.059641,
+      "strongest_min_case_hours_over_100pct": 40
+    }
+  ],
+  "system_pattern": {
+    "strongest_hub": "Shornur",
+    "evidence": [
+      "C01 is the largest robust 110-kV connected subgraph and includes Shornur.",
+      "C04 is a robust 220-kV Shornur-Areacode-Elankur path.",
+      "The sole robust independent transformer bottleneck is Shornur 220/110 kV, historical PSS capacity 100 MVA."
+    ],
+    "interpretation": "The coincident robust 220-kV, 110-kV and 220/110-kV transformer signals make Shornur the strongest multi-voltage screening hotspot in the current public-data model. This remains screening evidence, not validated operator congestion."
+  }
 }
