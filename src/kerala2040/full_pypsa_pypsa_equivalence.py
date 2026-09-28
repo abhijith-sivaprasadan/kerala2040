@@ -8,6 +8,9 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 from kerala2040.full_pypsa_cost_finance import load_cost_finance_suite
 from kerala2040.full_pypsa_future_adequacy import (
     _load_base,
@@ -522,6 +525,7 @@ def run_pypsa_equivalence_suite(
         "tolerances": tolerances,
         "renewable_profile_alignment": alignment,
         "comparisons": comparisons,
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": [
             (
                 "v0.9 rebuilds v0.8 through direct PyPSA Network/Linopy optimization "
