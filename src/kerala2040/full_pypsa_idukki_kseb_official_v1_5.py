@@ -7,6 +7,9 @@ from typing import Any
 import pandas as pd
 import yaml
 
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 from kerala2040.full_pypsa_cost_finance import load_cost_finance_suite
 from kerala2040.full_pypsa_future_adequacy import (
     _load_base,
@@ -322,6 +325,7 @@ def run_kseb_official_v15_suite(
             ],
         },
         "profile_alignment": alignment,
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": {
             "reservoir_storage_is_direct_kseb_monthly_field": True,
             "reported_inflow_is_direct_kseb_monthly_mcm_field": True,
