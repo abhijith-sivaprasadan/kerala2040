@@ -9,9 +9,6 @@ import pandas as pd
 import xarray as xr
 import yaml
 
-from kerala2040.network_planning_evidence import (
-    planning_network_summary_from_root,
-)
 from kerala2040.full_pypsa_cost_finance import load_cost_finance_suite
 from kerala2040.full_pypsa_future_adequacy import (
     _load_base,
@@ -25,6 +22,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
     _candidate_caps,
     _solar_allocation_range,
     load_proxy_expansion_suite,
+)
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
 )
 
 SUITE_CLASS = "full_pypsa_hydro_flex_v1_1_daily_energy_constrained_partial_economics"
