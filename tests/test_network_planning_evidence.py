@@ -23,4 +23,6 @@ def test_network_planning_evidence_is_guarded_and_not_promoted() -> None:
     assert summary["robust_source_backed_line_bottlenecks"] == 21
     assert summary["robust_independent_pss_backed_transformer_bottlenecks"] == 1
     assert summary["robust_transformer_location"] == "Shornur"
+    assert summary["robust_corridor_groups"] == 12
+    assert summary["strongest_multi_voltage_screening_hub"] == "Shornur"
     assert summary["spatial_constraints_internalized_in_planning_optimizers"] is False
