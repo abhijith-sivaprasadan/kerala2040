@@ -69,8 +69,8 @@ Small/distributed generation category differences must stay explicit. Do not cla
 | IEX FY2023–24 DAM reporting | ₹5.24/kWh DAM benchmark | **AMBER until first-party IEX table/page is pinned in the QA register** |
 | Kerala regulatory downstream-licensee order | ₹7.13/kWh high delivered-cost example | **GREEN as downstream stress proxy**, **RED as Kerala-border import tariff** |
 | RBI CPI | nominal→real conversion | **GREEN** if exact index rows retained |
-| CERC RE tariff order / methodology | debt/equity, RoE, interest/WACC benchmark | **AMBER pending exact primary order/table pin** |
-| CEA optimal-generation-mix cost assumptions | solar/wind/BESS capex benchmark | **AMBER pending exact primary table/unit pin** |
+| CERC Order 12/SM/2026 (23 Aug 2026) + RE Tariff Regulations 2024 | debt/equity, RoE, loan interest and WACC-equivalent discount benchmark | **GREEN regulatory benchmark**: order states 70:30 debt/equity, 10.71% loan interest, 14% post-tax RoE for non-SHP RE and derives 9.08% post-tax WACC-equivalent discount factor for all non-SHP technologies. This remains a national regulatory benchmark, not a Kerala project WACC. |
+| CEA *Report on Optimal Generation Capacity Mix for 2029–30, Version 2.0* (Apr 2023), Annexure financial parameters | solar/wind/BESS capex benchmark | **GREEN source/unit verification**: table is explicitly at 2021–22 cost level; solar declines to ₹4.1 Cr/MW (=₹41,000/kW), onshore wind ₹6 Cr/MW (=₹60,000/kW), 4-hour BESS ₹8.22→4.72 Cr/MW (=₹82,200→₹47,200/kW), 1% O&M and 14-year BESS life. Technical annexure gives 12% BESS round-trip losses (=88% efficiency). These are CEA planning assumptions, not Kerala EPC quotes. |
 
 ## Transmission network
 
