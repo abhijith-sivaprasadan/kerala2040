@@ -22,6 +22,10 @@ on:
       - ".github/workflows/pypsa-osemosys-common-frontier-v1.3c.yml"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   actions: read
