@@ -15,6 +15,9 @@ import pandas as pd
 import xarray as xr
 import yaml
 
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 from kerala2040.full_pypsa_cost_finance import load_cost_finance_suite
 from kerala2040.full_pypsa_future_adequacy import (
     _load_base,
@@ -815,6 +818,7 @@ def run_idukki_reservoir_v13_suite(
             ),
         },
         "profile_alignment": alignment,
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": {
             "stateful_idukki": True,
             "net_water_balance_is_catchment_inflow": False,
