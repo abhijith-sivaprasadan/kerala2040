@@ -197,7 +197,7 @@ The cases intentionally span:
 - wholesale IEX DAM;
 - a downstream high delivered-cost example.
 
-They are not a time series of the same border price.
+They are not a time series of the same border price. In particular, the ₹5.24/kWh IEX case is the FY2023–24 **average MCP** (IEX: ₹5.23759/kWh), not its volume-weighted MCP (₹5.17449/kWh; CERC annual summary ~₹5.16/kWh).
 
 **Status:** **GREEN if boundaries remain explicit.**
 
