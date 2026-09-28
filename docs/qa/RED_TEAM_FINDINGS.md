@@ -188,21 +188,15 @@ Do not sum them and call the result “Kerala's renewable potential.”
 
 ---
 
-## P2 — 1470 MWh/MCM is an operational equivalent, not hydraulic first principles
+## CLOSED WITH LIMITATION — 1,460 MCM / 1,470 MWh/MCM provenance
 
-The v1.3 conversion is derived from source-reported generation capability / effective storage ratio and fixed in the pilot.
+The retained SLDC source rows directly report Idukki full reservoir storage as **1,460 MCM** and full reported capability as **2,190 MU**, giving **1,500 MWh/MCM gross** by arithmetic.
 
-It does not independently identify:
+The v1.3 code instead uses the median of source-reported **station generation capability / effective storage**. Independent QA recomputation across all 354 Idukki rows gives **1,470.00001987 MWh/MCM**, reproducing the configured 1,470 value.
 
-- gross/net head;
-- tailwater;
-- turbine efficiency;
-- penstock losses;
-- time-varying reservoir elevation.
+The provenance is therefore sound. The physical interpretation remains limited: 1,470 is a source-derived **station energy-equivalent approximation**, not a derivation from head, turbine efficiency, tailwater or penstock losses.
 
-Treat it as a source-derived energy-equivalent approximation used in the pilot.
-
-**Status: P2.**
+**Status: CLOSED provenance / AMBER physical approximation.**
 
 ---
 
