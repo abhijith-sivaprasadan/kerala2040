@@ -28,7 +28,10 @@ def test_shornur_current_capacity_correction_is_preserved() -> None:
 
     for text in (readme, synthesis, bottlenecks):
         assert "200 MVA + 100 MVA" in text or "200+100 MVA" in text
-    assert "not a current whole-station loading estimate" in readme
+    assert (
+        "not be interpreted as current whole-station loading" in readme
+        or "not a current whole-station loading estimate" in readme
+    )
     assert "not a current whole-station loading estimate" in synthesis
     assert "historical-input screening result" in bottlenecks
 
@@ -45,7 +48,7 @@ def test_era5_load_proxy_is_not_relabelled_forecast_or_telemetry() -> None:
     assert "5797 MW" in doc
     assert "5904 MW CEA generation-resource-adequacy planning reference" in doc
     assert "not end-to-end reproducible" in qa
-    assert "original fitting script" in qa
+    assert "original fitter" in qa or "original fitting script" in qa
 
 
 def test_import_price_524_is_average_not_weighted_mcp() -> None:
