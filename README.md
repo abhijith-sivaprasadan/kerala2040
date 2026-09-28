@@ -87,9 +87,11 @@ Interconnection is therefore neither "bad" nor merely emergency backup. The rese
 
 The public KSEBL network screen tests **233 source-backed primary lines** under eight radically different ways of allocating Kerala's residual interstate import.
 
-**21 lines remain overloaded in all eight cases**, forming **12 robust corridor groups**. Of 34 independently testable PSS-backed transformers, one robust independent bottleneck remains: **Shornur 220/110 kV**.
+**21 lines remain overloaded in all eight tested boundary-injection cases**, forming **12 robust corridor groups**. A historical 31 March 2023 PSS snapshot also caused the screening model to flag a **100 MVA Shornur 220/110-kV transformer element** in every case.
 
-Under this public-data screening model, **Shornur emerges as the strongest multi-voltage internal transmission hotspot**, and that finding survives extreme uncertainty in where net interstate import is injected.
+**QA correction (28 September 2026):** the current CEA Kerala transmission plan reports **200 MVA + 100 MVA** of existing transformation at Shoranur and independently identifies the station and nearby corridors as constrained, with further reinforcement planned. The Kerala2040 **hotspot location is therefore independently corroborated**, but the model's 100 MVA transformer loading must not be interpreted as current whole-station loading.
+
+Under this public-data screening model, **Shornur emerges as the strongest multi-voltage internal transmission hotspot robust to the tested boundary-injection allocation envelope**. This is a congestion/deliverability screen, not an AC/N-1 operator-state result.
 
 This is not a calibrated AC or N-1 security assessment and is not converted directly into an upgrade MW or cost.
 
