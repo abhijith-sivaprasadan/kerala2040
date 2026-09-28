@@ -152,9 +152,9 @@ Never call them statutory buildable potential.
 
 ### Cost-finance layer
 
-**QA verdict:** **AMBER.**
+**QA verdict:** **GREEN for source/unit provenance; AMBER for Kerala applicability.**
 
-Common real price basis is methodologically good. Exact capex/finance source units still undergoing primary-source page pinning.
+CEA Version 2.0 directly supports the 2021–22 real cost basis, ₹41,000/kW solar, ₹60,000/kW onshore wind and ₹47,200–82,200/kW four-hour BESS bracket. CERC Order 12/SM/2026 directly supports the 70:30 financing structure, 10.71% loan benchmark, 14% post-tax non-SHP RoE and 9.08% WACC-equivalent discount factor. They remain national planning/regulatory assumptions, not Kerala project-specific realized costs.
 
 ### Import economics v1.0
 
