@@ -208,7 +208,7 @@ Useful because it shows where added timing freedom stops solving deeper deficits
 
 **QA verdict:** **AMBER.**
 
-Useful stateful model mechanics; historical closure is algebraic.
+Useful stateful model mechanics; historical closure is algebraic. QA independently traced **1,460 MCM** to the retained SLDC full-storage field and reproduced the configured **1,470 MWh/MCM** station equivalent from all 354 source rows. The numerical provenance is sound; the fixed conversion is still not a head/efficiency model.
 
 ### v1.4 direct reported-inflow gate
 
