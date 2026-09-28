@@ -61,11 +61,15 @@ For example, PyPSA ↔ OSeMOSYS agreement is S4 implementation equivalence. It i
 6. [RED_TEAM_FINDINGS.md](RED_TEAM_FINDINGS.md) — problems found and required corrections.
 7. [CONFERENCE_DEFENSE_PLAYBOOK.md](CONFERENCE_DEFENSE_PLAYBOOK.md) — concise answers to likely expert questions.
 8. [REPRODUCIBILITY_AUDIT.md](REPRODUCIBILITY_AUDIT.md) — what can be regenerated from the repository and what is only integrity-verifiable.
-9. `claims_matrix.csv` — machine-readable claim/status register.
+9. [QA_FINAL_VERDICT.md](QA_FINAL_VERDICT.md) — release verdict, conference-safe claim tiers and remaining limitations.
+10. `claims_matrix.csv` — machine-readable claim/status register.
+11. `tests/test_scientific_qa_guardrails.py` — automated regression guards for the major QA corrections.
 
-## Current high-level verdict
+## Final high-level verdict
 
-The project is scientifically defensible **as a public-data diagnostic and screening study** if its evidence classes are respected.
+**PASS WITH DISCLOSED LIMITATIONS.**
+
+The project is scientifically defensible **as a public-data diagnostic and screening study** if its evidence classes are respected. See [QA_FINAL_VERDICT.md](QA_FINAL_VERDICT.md) for the completed audit verdict.
 
 The strongest parts are:
 
