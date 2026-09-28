@@ -114,25 +114,22 @@ The 2026 episode can motivate the study, but the model cannot claim to have reco
 
 ---
 
-## P2 — Public reproducibility of the weather-sensitive v2 fit needs strengthening
+## OPEN DISCLOSED LIMITATION — ERA5-sensitive v2 fit is not end-to-end public-repo reproducible
 
-The repository contains:
+The audit checked PR #110 and PR #113 as well as the current tree. The repository contains the checksummed v2 compact chronology, loader, conservation/integrity tests, methodology note and source fingerprints, but **the original v2 fitting script was never committed in either integration PR**.
 
-- checksummed v2 compact hourly payload;
-- load/provenance loader;
-- conservation/integrity tests;
-- methodological documentation.
+Therefore:
 
-The currently identified public scripts include the older fixed-shape builder and resource-profile builders, but no clearly identified end-to-end public fitter that regenerates the released v2 weather-sensitive coefficients and held-out scores from the raw source archives.
+- released 8,760 values and downstream model use are **R1 integrity reproducible**;
+- the older fixed-shape proxy is regenerable;
+- the v2 clock/weather coefficient fit and Jan–Mar holdout metrics are **not source-to-fit reproducible from a fresh clone**;
+- the raw ERA5 archive is also intentionally absent, though its SHA-256 is recorded.
 
-This does not make the released payload false. It means the **derived chronology is integrity-verifiable but may not yet be end-to-end publicly reproducible from public repo contents**.
+This does not invalidate the released chronology, but it is a real reproducibility limitation. The public README has been narrowed accordingly.
 
-Action:
+Do not create a new fitter after the fact and call it the original unless it reproduces the pinned coefficients, metrics and payload from the recorded source archive.
 
-- locate and document the exact v2 fitting script if it exists;
-- otherwise add it in QA/future release, with source hashes and explicit private/raw-data dependencies.
-
-**Status: P2 until resolved.**
+**Status: OPEN but fully disclosed; non-blocking for conference screening claims, blocking for a “fully reproducible from clone” claim.**
 
 ---
 
