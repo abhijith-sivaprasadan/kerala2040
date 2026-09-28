@@ -5,6 +5,11 @@ import json
 from pathlib import Path
 from typing import Any
 
+DEFAULT_EVIDENCE_RELATIVE = (
+    "data/evidence/network/"
+    "kseb_network_robust_bottlenecks_v1_0_2026_09_28.json"
+)
+
 EVIDENCE_CLASS = (
     "KSEBL_NETWORK_ROBUST_BOTTLENECK_EVIDENCE_V1_0_"
     "SCREENING_NOT_OPERATIONAL_VALIDATION"
@@ -65,3 +70,10 @@ def planning_network_summary(data: dict[str, Any]) -> dict[str, Any]:
             "are admitted."
         ),
     }
+
+
+def planning_network_summary_from_root(root: Path) -> dict[str, Any]:
+    """Load the canonical robust-network planning gate from a repository root."""
+    return planning_network_summary(
+        load_network_planning_evidence(root / DEFAULT_EVIDENCE_RELATIVE)
+    )
