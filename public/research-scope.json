@@ -18,8 +18,8 @@
     "Kannur",
     "Kasaragod"
   ],
-  "initial_model": "A single aggregate electrical bus represents the whole Kerala system, not Kochi or any other city.",
-  "next_model": "A reduced zonal network across Kerala, once transmission and regional demand data are validated.",
-  "atlas_status": "Illustrative research locations only; not a complete transmission or district asset inventory.",
-  "coverage_rule": "Statewide scope does not imply that district demand, all grid assets, or GIS constraints are already measured or connected."
+  "initial_model": "Statewide adequacy and expansion sensitivities use an aggregate Kerala planning boundary; this is complemented by a separate public multi-bus chronological network screen.",
+  "next_model": "Planning-grade spatial transmission expansion remains gated on future corridor capacities, upgrade options and costs, calibrated demand/generation geography, and stronger electrical validation.",
+  "atlas_status": "Resource, ecology and network layers support screening and provenance; they are not a complete legal siting or planning-grade asset model.",
+  "coverage_rule": "Statewide scope does not imply measured continuous interval telemetry, calibrated AC/N-1 security, complete ecological permitting constraints, or a validated investment plan."
 }
