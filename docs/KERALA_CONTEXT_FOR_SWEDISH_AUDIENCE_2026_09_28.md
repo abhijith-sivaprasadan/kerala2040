@@ -29,11 +29,11 @@ These comparisons are included only to make unfamiliar numbers intuitive. Sweden
 
 | Indicator | Kerala | Sweden | Why it helps a Swedish reader |
 |---|---:|---:|---|
-| Population | about **36 million** in the mid-2020s population projection | **10,613,531** in July 2026 | Kerala serves more than three times as many people |
+| Population | **36.207 million**, 2026 projection in Economic Review 2024 | **10,613,531** in July 2026 | Kerala serves about 3.4 times as many people |
 | Geographical / land area | **38,863 km²** | a little over **400,000 km² of land** | Kerala concentrates its infrastructure into less than one-tenth the land area |
 | Population density | roughly **930 people/km²** using the 2026 projection | about **26 people/km²** | land, corridors and siting are fundamentally different problems |
 | Electricity consumption | **29.31 TWh**, FY2024–25 | **125.3 TWh**, 2024 excluding losses | Kerala uses far less electricity in total despite its larger population |
-| Per-capita electricity consumption | **816 kWh/person/year**, FY2024–25 | roughly an order of magnitude higher | Kerala's stress is not explained by unusually high electricity use per person |
+| Per-capita electricity consumption | **816 kWh/person/year**, official FY2024–25 statistic | roughly an order of magnitude higher | Kerala's stress is not explained by unusually high electricity use per person |
 
 Sources:
 
@@ -43,9 +43,9 @@ Sources:
 
 A useful scale calculation is:
 
-> If average electricity use increased by only **100 kWh per person per year** across roughly 36 million people, annual demand would rise by about **3.6 TWh** — around one-eighth of today's Kerala electricity consumption.
+> If average electricity use increased by only **100 kWh per person per year** across the projected 36.207 million people, annual demand would rise by about **3.62 TWh** — around one-eighth of today's Kerala electricity consumption.
 
-This is an educational arithmetic illustration, not a forecast.
+This is an educational arithmetic illustration, not a forecast. The 2026 population projection is **not** the denominator behind the separately published FY2024–25 per-capita figure of 816 kWh/person; those two source products are kept in their own time boundaries.
 
 Another useful Swedish comparison: Jämtland County has about **49,205 km² of land** and around **133,000 residents**. Kerala is smaller in area but has hundreds of times as many residents. Stockholm County is much denser than most of Sweden, yet Kerala's state-wide population density is still more than twice Stockholm County's roughly 380 people/km². The point is spatial pressure, not social comparison.
 
@@ -103,7 +103,7 @@ Sources: [CIAL 2025 AGM update](https://www.cial.aero/News-Updates/AGM2025), [CI
 
 ### Kochi Metro
 
-Kochi Metro reports **5.389 MWp** of station/depot solar capacity. Its official project page describes the rooftop and ground-mounted systems and the financing arrangement.
+Kochi Metro's official project page documents an early station/depot configuration of **5.389 MWp** (2.67 MWp rooftop + 2.719 MWp ground-mounted). Later KMRL reporting shows solar deployment continued to expand, so 5.389 MWp is used here as a **documented project-stage example**, not the total current 2026 KMRL solar capacity.
 
 Source: [Kochi Metro project page](https://corporate.kochimetro.org/the-project).
 
