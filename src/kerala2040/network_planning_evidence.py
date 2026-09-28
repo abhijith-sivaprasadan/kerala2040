@@ -37,6 +37,21 @@ def load_network_planning_evidence(path: Path) -> dict[str, Any]:
         raise ValueError("network robustness interface count changed")
     if summary.get("all_cases_topology_closed_without_gap_supply") is not True:
         raise ValueError("network robustness evidence contains topology-gap supply")
+    corridors = data.get("robust_corridors") or []
+    if len(corridors) != 12:
+        raise ValueError("robust corridor register must contain 12 connected groups")
+    corridor_line_ids = [
+        line_id
+        for corridor in corridors
+        for line_id in corridor.get("line_ids", [])
+    ]
+    robust_line_ids = [
+        row["line_id"] for row in data.get("robust_line_bottlenecks") or []
+    ]
+    if sorted(corridor_line_ids) != sorted(robust_line_ids):
+        raise ValueError("robust corridor groups must partition all 21 robust lines")
+    if data.get("system_pattern", {}).get("strongest_hub") != "Shornur":
+        raise ValueError("strongest multi-voltage screening hub changed without review")
     treatment = data["planning_model_treatment"]
     if "EVIDENCE_GATE_ONLY" not in treatment["full_pypsa_capacity_expansion"]:
         raise ValueError("Full-PyPSA must not silently internalize screening constraints")
@@ -58,6 +73,10 @@ def planning_network_summary(data: dict[str, Any]) -> dict[str, Any]:
             "robust_source_backed_line_bottlenecks"
         ],
         "robust_connected_subgraphs": summary["robust_connected_subgraphs"],
+        "robust_corridor_groups": len(data["robust_corridors"]),
+        "strongest_multi_voltage_screening_hub": data["system_pattern"][
+            "strongest_hub"
+        ],
         "robust_independent_pss_backed_transformer_bottlenecks": summary[
             "robust_independent_pss_backed_transformer_bottlenecks"
         ],
