@@ -7,9 +7,6 @@ from typing import Any
 import pandas as pd
 import yaml
 
-from kerala2040.network_planning_evidence import (
-    planning_network_summary_from_root,
-)
 from kerala2040.full_pypsa_cost_finance import load_cost_finance_suite
 from kerala2040.full_pypsa_future_adequacy import (
     _load_base,
@@ -32,6 +29,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
     load_proxy_expansion_suite,
 )
 from kerala2040.kseb_official_input_v1_5 import build_model_input
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 
 SUITE_CLASS = "full_pypsa_idukki_kseb_official_v1_5_monthly_reported_inflow_gate"
 
