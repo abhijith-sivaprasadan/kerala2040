@@ -54,11 +54,11 @@
       "nominal_inr_per_kwh": 5.24,
       "nominal_inr_per_mwh": 5240,
       "real_2021_22_inr_per_mwh": 4663.154082925947,
-      "source": "Indian Energy Exchange FY2023-24 annual reporting / investor financials",
-      "url": "https://www.iexindia.com/investors/financials",
-      "role": "wholesale_market_price_proxy",
-      "boundary_warning": "Exchange MCP excludes Kerala-specific transmission charges, losses, fees, DSM and contract obligations.",
-      "source_note": "IEX investor page lists Annual Report FY 2023-24; the report states FY24 DAM average price was Rs 5.24/unit."
+      "source": "Indian Energy Exchange FY2023-24 DAM market snapshot / annual reporting",
+      "url": "https://www.iexindia.com/market-data/day-ahead-market/market-snapshot?dp=FINANCIAL_YEAR&fromDate=1&interval=YEARLY&showGraph=false&toDate=2023-2024",
+      "role": "wholesale_average_mcp_proxy",
+      "boundary_warning": "Average IEX DAM MCP proxy, not volume-weighted MCP and not Kerala-specific landed price; excludes transmission charges, losses, fees, DSM and contract obligations.",
+      "source_note": "IEX FY2023-24 yearly DAM snapshot reports MCP 5237.59 INR/MWh (about 5.24 INR/kWh) and weighted MCP 5174.49 INR/MWh. This case deliberately retains the approximately 5.24 average-MCP benchmark used in v1.0; it must not be described as a volume-weighted purchase price."
     },
     "downstream_bulk_supply_stress_fy2023_24": {
       "nominal_inr_per_kwh": 7.13,
