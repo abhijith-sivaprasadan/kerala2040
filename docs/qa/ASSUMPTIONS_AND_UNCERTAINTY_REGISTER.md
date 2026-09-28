@@ -29,10 +29,10 @@ The purpose of this register is to prevent an assumption from being remembered l
 | U15 | wind | generic 3/12/25 m/s turbine curve | future turbine unknown | C | technology dependent | screening only |
 | U16 | renewable caps | study-based low/reference/high statewide envelopes | legal GIS ceilings unavailable | C | not buildable MW | scenario sensitivity |
 | U17 | costs | real FY2021–22 common price basis | compare source costs | B | depends on deflator | CPI transparent, not sector index |
-| U18 | costs | solar/wind generic CEA capex | no Kerala project-specific quotes | C for investment mix | can shift mix | research benchmark |
+| U18 | costs | CEA v2 solar/wind/4h-BESS planning capex at 2021–22 cost level | no Kerala project-specific quotes | C for investment mix | can shift mix | primary-source units re-verified; research benchmark only |
 | U19 | BESS | 4-hour duration | bounded technology case | C | favors 4h applications | explicit scenario |
 | U20 | BESS | 88% round-trip efficiency | generic planning assumption | B | project dependent | sensitivity |
-| U21 | finance | real discount rate / CERC WACC benchmark | annualization | C for economics | higher rate penalizes capex | not Kerala project WACC |
+| U21 | finance | 9.08% CERC post-tax WACC-equivalent discount benchmark for non-SHP RE | annualization | C for economics | higher rate penalizes capex | primary-source formula re-verified; not Kerala project WACC |
 | U22 | existing fleet | historical daily-average replay | plant dispatch data incomplete | C | suppresses real intra-day flexibility/constraints | not economic dispatch |
 | U23 | adequacy | no forced outages in deterministic core | outage data unavailable | C | optimistic relative to reliability model | not LOLP |
 | U24 | adequacy | current ATC 4455 used as future reference | no future ATC published | C | could over/understate future import capability | dated counterfactual |
