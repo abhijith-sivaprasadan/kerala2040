@@ -44,7 +44,7 @@ The audit inspected:
 - `tests/test_weather_load_proxy.py`;
 - current load-building scripts.
 
-PR #110 introduced the compact v2 artifact, loader, tests and methodology note. PR #113 integrated the same artifact into chronological screening. Neither PR contains the original model-fitting script.
+PR #110 introduced the compact v2 artifact, loader, tests and methodology note. PR #113 integrated the same artifact into chronological screening. Neither PR contains the original fitting script.
 
 The repository therefore can verify:
 
