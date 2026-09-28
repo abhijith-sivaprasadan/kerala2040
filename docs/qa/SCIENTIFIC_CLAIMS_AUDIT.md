@@ -28,6 +28,7 @@ This document is intentionally conservative. A result can be numerically correct
 | E01 | economics | import price cases represent distinct price/accounting boundaries | S1 | multiple sources | GREEN |
 | E02 | economics | v1.0 is a total-system least-cost plan | none | no | RED |
 | E03 | economics | lexicographic adequacy-first avoids inventing VOLL | methodological | n/a | GREEN |
+| E04 | economics | CEA v2 solar/wind/4h-BESS cost units and CERC 9.08% non-SHP WACC benchmark are sourced correctly | S1 | primary CEA/CERC | GREEN as benchmarks |
 | HYO1 | hydro | v1.1 same-day hydro reshaping substantially reduces shortage in some cases | S3 model sensitivity | model-internal | GREEN as sensitivity |
 | HYO2 | hydro | v1.2 longer timing windows show flexibility cannot solve deep transfer deficits | S3 | model-internal | GREEN as sensitivity |
 | HYO3 | hydro | v1.3 historical storage closure validates hydrology | circular S2 | no | RED |
