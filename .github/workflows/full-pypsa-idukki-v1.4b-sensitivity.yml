@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - "configs/full_pypsa_idukki_v1_4b_sensitivity_runner.yaml"
+      - "data/evidence/network/kseb_network_robust_bottlenecks_v1_0_2026_09_28.json"
+      - "configs/network_planning_evidence_v1_0.yaml"
+      - "src/kerala2040/network_planning_evidence.py"
+      - "tests/test_network_planning_evidence.py"
       - "src/kerala2040/full_pypsa_idukki_v1_4b_sensitivity.py"
       - "scripts/run_full_pypsa_idukki_v1_4b_sensitivity.py"
       - "tests/test_full_pypsa_idukki_v1_4b_sensitivity.py"
