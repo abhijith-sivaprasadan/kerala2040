@@ -20,7 +20,7 @@ January–March 2025 SLDC extrema were withheld from the fit. On **430 held-out 
 
 Relative to the released fixed shape, held-out RMSE falls by **67.5%**. Against the already much stronger sparse-extrema static model, ERA5 still reduces held-out RMSE by **4.2%**. This is evidence that weather adds useful *shape* information; it is not evidence of measured hourly accuracy.
 
-The reconstructed FY peak is **5923.3 MW**, versus the CEA reference **5904 MW** (+0.33%). CEA load-duration bins remain approximate secondary constraints; the model prioritizes the timestamped SLDC extrema and exact daily-energy conservation.
+The reconstructed FY peak is **5923.3 MW**, versus the **5904 MW CEA generation-resource-adequacy planning reference** used by this proxy (+0.33%). This must not be confused with the separate **5797 MW FY2024–25 recorded peak** reported in the newer CEA Kerala transmission-resource-adequacy plan. The two CEA products use different planning/reporting contexts, and Kerala2040 does not force them into one value. The 5904 MW figure is therefore a calibration/consistency anchor, not independent proof of the true continuous-hour annual maximum. CEA load-duration bins remain approximate secondary constraints; the model prioritizes the timestamped SLDC extrema and exact daily-energy conservation.
 
 Held-out error by published extrema category for the ERA5-sensitive shape:
 
