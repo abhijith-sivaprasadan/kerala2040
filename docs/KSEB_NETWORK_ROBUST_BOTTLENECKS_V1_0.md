@@ -41,6 +41,27 @@ This note freezes the robust subset from PR #121. The FY2024-25 8,760-hour publi
 
 The strongest geographic concentration is the **Malappuram–Palakkad/Shornur** area, including both 110-kV subgraphs and the 220-kV Shornur–Areacode–Elankur chain. Kottayam also has a persistent Pallom–Pampady–Kanjirapally signal. Other robust local signals occur in Kozhikode, Thiruvananthapuram, Thrissur/Ernakulam, Palakkad, Kollam and the Kalamassery–Edayar industrial area.
 
+## Robust corridor groups
+
+The 21 robust lines resolve into 12 connected screening corridors when grouped by shared bus endpoints:
+
+| ID | Corridor | kV | Robust lines | Strongest minimum peak | Strongest minimum overloaded hours |
+|---|---|---:|---:|---:|---:|
+| C01 | Malapparamba–Shornur–Koppam–Perinthalmanna–Melattur | 110 | 6 | 2.177 pu | 8,297 h |
+| C02 | Kalamassery–Edayar | 110 | 3 | 1.069 pu | 55 h |
+| C03 | Pallom–Pampady–Kanjirappally | 110 | 2 | 2.145 pu | 8,064 h |
+| C04 | Shornur–Areacode–Elankur | 220 | 2 | 1.803 pu | 4,528 h |
+| C05 | Kunnamangalam–Kuttikattoor | 110 | 1 | 1.695 pu | 4,270 h |
+| C06 | TERLS–Veli | 110 | 1 | 1.695 pu | 4,270 h |
+| C07 | CIAL–Carborandum | 110 | 1 | 1.419 pu | 2,164 h |
+| C08 | Madakkathara–Athani | 110 | 1 | 1.405 pu | 1,333 h |
+| C09 | Vennakkara–Malampuzha | 110 | 1 | 1.378 pu | 1,054 h |
+| C10 | Chalakudy–Kodakara | 110 | 1 | 1.268 pu | 826 h |
+| C11 | Edappal–Kuttippuram | 110 | 1 | 1.128 pu | 180 h |
+| C12 | Kundara–Perinadu | 110 | 1 | 1.060 pu | 40 h |
+
+The strongest multi-voltage screening hotspot is **Shornur**. C01 includes Shornur in the dominant 110-kV robust subgraph, C04 begins at Shornur on the 220-kV network, and the sole robust independent transformer is the Shornur 220/110-kV unit. That coincidence is stronger evidence than any one branch overload alone, but it remains public-data screening evidence rather than validated operator congestion.
+
 ## Robust transformer
 
 **Shornur 220/110 kV — historical PSS capacity 100 MVA**
