@@ -60,7 +60,8 @@ For example, PyPSA ↔ OSeMOSYS agreement is S4 implementation equivalence. It i
 5. [VALIDATION_INDEPENDENCE_AND_CIRCULARITY.md](VALIDATION_INDEPENDENCE_AND_CIRCULARITY.md) — calibration, holdout, leakage and circularity audit.
 6. [RED_TEAM_FINDINGS.md](RED_TEAM_FINDINGS.md) — problems found and required corrections.
 7. [CONFERENCE_DEFENSE_PLAYBOOK.md](CONFERENCE_DEFENSE_PLAYBOOK.md) — concise answers to likely expert questions.
-8. `claims_matrix.csv` — machine-readable claim/status register.
+8. [REPRODUCIBILITY_AUDIT.md](REPRODUCIBILITY_AUDIT.md) — what can be regenerated from the repository and what is only integrity-verifiable.
+9. `claims_matrix.csv` — machine-readable claim/status register.
 
 ## Current high-level verdict
 
