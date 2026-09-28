@@ -146,21 +146,17 @@ Independent validation would require measured wind-farm/turbine generation or ma
 
 ---
 
-## P2 — Cost assumptions require unit-level primary-source re-verification
+## CLOSED — CEA cost and CERC finance source units independently re-verified
 
-The model carefully labels CEA/CERC cost and finance values as research benchmarks, not Kerala project costs. Before conference use of exact values, the QA register should preserve primary-document page/table references for:
+The exact cost/finance values used in v0.5 have now been re-checked against the primary documents.
 
-- solar capex;
-- wind capex;
-- 4-hour BESS capex range and its exact ₹/kW or ₹/kWh boundary;
-- discount rate / WACC;
-- debt/equity;
-- loan interest;
-- RoE.
+CEA *Optimal Generation Capacity Mix for 2029–30, Version 2.0* states that the financial assumptions are at **2021–22 cost level**, with solar **₹4.5→4.1 Cr/MW**, onshore wind **₹6 Cr/MW**, and 4-hour BESS **₹8.22→4.72 Cr/MW**. These convert exactly to the repository's ₹41,000/kW solar, ₹60,000/kW wind and ₹47,200–82,200/kW BESS bracket. The technical table states **12% BESS round-trip losses**, matching 88% round-trip efficiency.
 
-Until exact units are primary-source checked, use the qualitative result rather than reciting a precise cost parameter from memory.
+CERC Order **12/SM/2026 dated 23 August 2026** states 70:30 debt/equity, 10.71% loan interest, 14% post-tax RoE for non-small-hydro RE and explicitly derives a **9.08% post-tax WACC-equivalent discount factor** for non-SHP technologies.
 
-**Status: P2 source-verification task.**
+These remain **national planning/regulatory benchmarks**, not realized Kerala project costs or a Kerala project-specific WACC.
+
+**Status: CLOSED / GREEN source verification.**
 
 ---
 
