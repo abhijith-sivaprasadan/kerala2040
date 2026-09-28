@@ -16,6 +16,10 @@ on:
       - 'src/kerala2040/research_ledger.py'
       - 'tests/site.browser.cjs'
       - '.github/workflows/site-browser.yml'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 jobs:
