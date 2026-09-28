@@ -18,8 +18,8 @@ A source can be primary and still be stale. Vintage is audited separately.
 | Kerala State Planning Board, Economic Review | P1 | annual consumption, generation, per-capita/statistical context | **GREEN**; keep accounting definitions/year |
 | Kerala Development Report 2026 | P1 | 29.31 TWh / 816 kWh-person context | **GREEN** |
 | KSEBL / Kerala SLDC daily reports | P1 | daily consumption, internal generation, imports, reservoir/station records | **GREEN with source gaps**; daily archive is not interval telemetry |
-| CEA/KSERC Kerala Generation Resource Adequacy plan | P1 | future annual energy and peak scenarios | **GREEN**; exact tables independently re-read |
-| CEA Kerala Transmission Resource Adequacy plan (2026) | P1 | current TTC/ATC, future high demand, official transmission constraints/plans | **GREEN and especially valuable as independent network cross-check** |
+| CEA/KSERC Kerala Generation Resource Adequacy plan | P1 | future annual energy/peak scenarios and the **5904 MW** FY2024–25 planning-reference peak used in the load-proxy calibration | **GREEN as its own planning/accounting context**; do not relabel 5904 as the KSEBL recorded annual maximum |
+| CEA Kerala Transmission Resource Adequacy plan (2026) | P1 | **5797 MW recorded FY2024–25 peak**, 5836 MW March-2026 peak, current TTC/ATC, future high demand, official transmission constraints/plans | **GREEN and especially valuable as independent network cross-check** |
 | Forum of Regulators / CEA crunch-period presentation | P1/P2 | FY2024–25 Kerala 5,904 MW peak cross-check | **GREEN aggregate reference**; not hourly telemetry |
 | CSTEP long-term Kerala scenario | external study | lower demand trajectory | **GREEN as a named scenario**, not truth |
 | SRPC meeting documents | P1/P2 | earlier dated TTC/ATC snapshots | **GREEN if date named**; do not mix with 2026 snapshot |
@@ -29,6 +29,12 @@ A source can be primary and still be stale. Vintage is audited separately.
 The current official Economic Review 2024 population table gives **36.207 million for Kerala in 2026** (36,207 thousand), sourced there to national population projections.
 
 This supports the public site's approximate “36 million” language.
+
+### Population / per-capita timing boundary
+
+The public context intentionally juxtaposes a **2026 projected population (36.207 million)** with separately sourced **FY2024–25 electricity statistics**. The official FY2024–25 per-capita electricity figure **816 kWh/person/year** already embeds the population denominator used by that official statistical product.
+
+Do **not** divide 29.31 TWh by the 2026 projected population and use the result to “correct” the official 816 kWh/person figure. They are different time/reference contexts. The +100 kWh/person × 36.207 million = 3.62 TWh calculation is explicitly an educational scale illustration using the 2026 projection, not a reconstruction of FY2024–25 per-capita consumption.
 
 A much older Kerala projection publication gives a different 2026 value (~37.254 million). The current context should use the newer projection series and **must not mix projection vintages**.
 
