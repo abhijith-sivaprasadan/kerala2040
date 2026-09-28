@@ -176,7 +176,7 @@ These are **candidate directions, not a validated least-cost portfolio**.
 Existing projects can make the abstract system easier to understand:
 
 - **CIAL** reports 50 MW of renewable capacity, daytime grid export and a BESS project intended for nighttime use of solar electricity.
-- **Kochi Metro** reports 5.389 MWp of station/depot solar.
+- **Kochi Metro's project page** documents a 5.389 MWp station/depot solar configuration; later KMRL reporting indicates further solar expansion, so this is not presented as the complete current 2026 total.
 - **Kochi Water Metro** operates battery-electric water transport and has described a future 17 MWp solar concept for its energy needs.
 - **KMML** provides a separate industrial/circular-material case connected to Kerala's heavy-mineral geology.
 
