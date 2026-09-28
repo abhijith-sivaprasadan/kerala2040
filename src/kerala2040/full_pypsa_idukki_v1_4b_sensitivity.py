@@ -13,6 +13,9 @@ import numpy as np
 import pandas as pd
 import yaml
 
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 from kerala2040.full_pypsa_cost_finance import load_cost_finance_suite
 from kerala2040.full_pypsa_future_adequacy import (
     _load_base,
@@ -333,6 +336,7 @@ def run_v14b_sensitivity_suite(
         "input_qa": input_qa,
         "profile_alignment": alignment,
         "sensitivity_summary": summarize_sensitivity(cases),
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": {
             "strict_v1_4_source_reported_series_complete": False,
             "source_informed_sensitivity_only": True,
