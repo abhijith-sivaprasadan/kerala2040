@@ -25,6 +25,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
     _solar_allocation_range,
     load_proxy_expansion_suite,
 )
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 
 SUITE_CLASS = (
     "full_pypsa_hydro_interday_v1_2_"
@@ -472,6 +475,7 @@ def run_hydro_interday_v12_suite(
         "focus_case": focus,
         "cases": cases,
         "release": suite["release"],
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": [
             (
                 "The 1-day case is the v1.1 timing boundary: each day preserves "

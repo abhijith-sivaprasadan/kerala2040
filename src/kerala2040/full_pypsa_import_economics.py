@@ -22,6 +22,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
     load_proxy_expansion_suite,
 )
 from kerala2040.full_pypsa_pypsa_equivalence import _build_pypsa_network
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 
 SUITE_CLASS = (
     "full_pypsa_import_economics_v1_0_"
@@ -309,6 +312,7 @@ def run_import_economics_suite(
         "renewable_profile_alignment": alignment,
         "cases": results,
         "release": suite["release"],
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": [
             (
                 "Stage 1 preserves the v0.8/v0.9 adequacy-first formulation. Stage 2 "

@@ -38,6 +38,10 @@ from kerala2040.full_pypsa_proxy_expansion import (
     _candidate_caps,
     load_proxy_expansion_suite,
 )
+from kerala2040.network_planning_evidence import (
+    load_network_planning_evidence,
+    planning_network_summary,
+)
 from kerala2040.osemosys_capacity_benchmark import (
     REGION,
     TZ_OSEMOSYS_GIT_COMMIT,
@@ -90,6 +94,7 @@ def load_common_frontier_suite(path: Path) -> dict[str, Any]:
         "total_system_cost_optimization",
         "validated_capacity_plan",
         "scenario_recommendation",
+        "network_spatial_constraints_internalized",
     ):
         if release[key] is not False:
             raise ValueError(f"common frontier incorrectly enables {key}")
@@ -799,6 +804,10 @@ def run_common_frontier(
 ) -> dict[str, Any]:
     suite = load_common_frontier_suite(suite_path)
     contract = suite["common_contract"]
+    network_evidence = load_network_planning_evidence(
+        root / "data/evidence/network/"
+        "kseb_network_robust_bottlenecks_v1_0_2026_09_28.json"
+    )
     v13 = load_idukki_reservoir_v13_suite(
         root / contract["stateful_idukki"]
     )
@@ -1005,11 +1014,13 @@ def run_common_frontier(
         },
         "common_contract": contract,
         "newer_evidence_not_admitted": suite["newer_evidence_not_admitted"],
+        "network_planning_evidence": planning_network_summary(network_evidence),
         "interpretation": [
             "Neither framework is treated as the reference optimizer.",
             "Both are solved from the same prepared source inputs at the v1.3 frontier.",
             "The v1.3 reconstructed water term is a net balance residual, not observed catchment inflow.",
             "A pass establishes cross-framework agreement for this model boundary, not physical validation of a Kerala capacity plan.",
+            "The 21 robust source-backed line bottlenecks and one robust independent transformer bottleneck are carried as a common planning evidence gate, not internalized as spatial constraints in either single-region optimizer.",
         ],
         "cases": cases,
     }

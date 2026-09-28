@@ -902,3 +902,34 @@ Artifact provenance:
 These values remain a **temporal-flexibility upper-bound experiment, not reservoir
 operation**. The next physical checkpoint is an Idukki-first stateful reservoir pilot
 with admitted storage/inflow/release evidence.
+
+
+## Implementation checkpoint · public-network robustness gate v1.0
+
+The planning programme now carries the executed KSEBL public-network screening as
+a formal promotion gate rather than treating statewide adequacy as evidence of
+internal Kerala deliverability.
+
+After topology repair and the 8,760-hour boundary-allocation robustness envelope,
+the public 110-kV+ screen contains **21 source-backed line bottlenecks that overload
+in all eight interface-allocation cases** and **one independent PSS-backed robust
+transformer bottleneck at Shornur 220/110 kV**. The durable register is
+`data/evidence/network/kseb_network_robust_bottlenecks_v1_0_2026_09_28.json`;
+the readable shortlist is
+`docs/KSEB_NETWORK_ROBUST_BOTTLENECKS_V1_0.md`.
+
+This evidence changes the interpretation of the capacity-expansion work:
+
+- the 559-bus PyPSA network screen is the current spatial transmission calculation;
+- Full-PyPSA v0.8+ statewide expansion results now carry the network evidence in
+  their output metadata but do **not** convert screening overloads into invented
+  transmission expansion constraints;
+- the TZ-OSeMOSYS benchmark and the v1.3c PyPSA-OSeMOSYS common frontier remain
+  single-region formulations and carry the same network evidence gate;
+- numerical agreement between PyPSA and OSeMOSYS therefore establishes formulation
+  equivalence only, not grid-feasible capacity planning.
+
+Promotion to a network-constrained investment model requires admitted future
+corridor capacities, candidate reinforcement options and costs, plus a validated
+spatial/zonal allocation for future generation and demand. Until those inputs exist,
+`validated_capacity_plan` and network-spatial-constraint release flags remain false.

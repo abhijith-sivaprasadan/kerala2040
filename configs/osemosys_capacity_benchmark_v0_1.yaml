@@ -24,6 +24,15 @@ implementation:
     linking constraints are added so the compared feasible sets use the same
     BESS definition.
 
+network_evidence:
+  configuration: configs/network_planning_evidence_v1_0.yaml
+  treatment: required_evidence_gate_not_spatial_constraint
+  reason: >-
+    The benchmark remains one Kerala region. The 21 robust source-backed line
+    signals and one robust independent transformer bottleneck are carried as
+    explicit planning evidence but are not converted into transfer technologies
+    without admitted zonal aggregation, upgrade options and costs.
+
 reference_model:
   configuration: configs/full_pypsa_proxy_expansion_v0_8.yaml
   implementation: src/kerala2040/full_pypsa_proxy_expansion.py
@@ -46,3 +55,4 @@ release:
   economic_dispatch_ready: false
   validated_capacity_plan: false
   scenario_recommendation: false
+  spatial_network_constraints_internalized: false

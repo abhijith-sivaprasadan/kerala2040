@@ -23,6 +23,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
     run_proxy_expansion_suite,
 )
 from kerala2040.full_pypsa_renewable_capacity import load_capacity_envelope
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 
 SUITE_CLASS = "full_pypsa_v0_9_direct_pypsa_equivalence_to_v0_8_proxy_expansion"
 
@@ -522,6 +525,7 @@ def run_pypsa_equivalence_suite(
         "tolerances": tolerances,
         "renewable_profile_alignment": alignment,
         "comparisons": comparisons,
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": [
             (
                 "v0.9 rebuilds v0.8 through direct PyPSA Network/Linopy optimization "

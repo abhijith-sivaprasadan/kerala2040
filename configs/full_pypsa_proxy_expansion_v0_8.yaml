@@ -24,6 +24,7 @@ inherits:
   renewable_profiles: configs/full_pypsa_era5_renewable_profiles_v0_6.yaml
   renewable_capacity: configs/full_pypsa_renewable_capacity_v0_7.yaml
   resource_adequacy: data/evidence/demand/kerala_resource_adequacy_2025_2035_36_2026_09_25.json
+  network_planning_evidence: configs/network_planning_evidence_v1_0.yaml
 
 profile_input:
   required_file: results/models/full_pypsa/era5_renewables_v0_6/statewide_equal_weight_profile.parquet
@@ -99,5 +100,6 @@ release:
   import_economics_validated: false
   statutory_siting_validated: false
   candidate_spatial_allocation_validated: false
+  network_spatial_constraints_internalized: false
   scenario_recommendation: false
   validated_capacity_plan: false

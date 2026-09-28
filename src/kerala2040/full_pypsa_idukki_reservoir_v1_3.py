@@ -31,6 +31,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
     _solar_allocation_range,
     load_proxy_expansion_suite,
 )
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 
 SUITE_CLASS = (
     "full_pypsa_idukki_reservoir_v1_3_"
@@ -815,6 +818,7 @@ def run_idukki_reservoir_v13_suite(
             ),
         },
         "profile_alignment": alignment,
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": {
             "stateful_idukki": True,
             "net_water_balance_is_catchment_inflow": False,

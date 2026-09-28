@@ -29,6 +29,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
     load_proxy_expansion_suite,
 )
 from kerala2040.kseb_official_input_v1_5 import build_model_input
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 
 SUITE_CLASS = "full_pypsa_idukki_kseb_official_v1_5_monthly_reported_inflow_gate"
 
@@ -322,6 +325,7 @@ def run_kseb_official_v15_suite(
             ],
         },
         "profile_alignment": alignment,
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": {
             "reservoir_storage_is_direct_kseb_monthly_field": True,
             "reported_inflow_is_direct_kseb_monthly_mcm_field": True,

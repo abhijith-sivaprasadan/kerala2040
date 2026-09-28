@@ -38,6 +38,9 @@ from kerala2040.idukki_cumulative_inflow_v1_4b import (
     build_source_informed_inflow_scenarios,
     load_v14b_suite,
 )
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 
 RUNNER_CLASS = (
     "full_pypsa_idukki_v1_4b_sensitivity_runner_"
@@ -333,6 +336,7 @@ def run_v14b_sensitivity_suite(
         "input_qa": input_qa,
         "profile_alignment": alignment,
         "sensitivity_summary": summarize_sensitivity(cases),
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": {
             "strict_v1_4_source_reported_series_complete": False,
             "source_informed_sensitivity_only": True,

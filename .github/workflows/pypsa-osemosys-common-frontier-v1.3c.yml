@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - "configs/pypsa_osemosys_common_frontier_v1_3c.yaml"
+      - "configs/network_planning_evidence_v1_0.yaml"
+      - "data/evidence/network/kseb_network_robust_bottlenecks_v1_0_2026_09_28.json"
+      - "src/kerala2040/network_planning_evidence.py"
+      - "tests/test_network_planning_evidence.py"
       - "configs/full_pypsa_idukki_reservoir_v1_3.yaml"
       - "configs/full_pypsa_import_economics_v1_0.yaml"
       - "configs/full_pypsa_future_adequacy_v0_4.yaml"
@@ -17,6 +21,10 @@ on:
       - "tests/test_pypsa_osemosys_common_frontier.py"
       - ".github/workflows/pypsa-osemosys-common-frontier-v1.3c.yml"
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -39,10 +47,12 @@ jobs:
         run: |
           ruff check \
             src/kerala2040/pypsa_osemosys_common_frontier.py \
+            src/kerala2040/network_planning_evidence.py \
             scripts/run_pypsa_osemosys_common_frontier_v1_3c.py \
             scripts/aggregate_pypsa_osemosys_common_frontier_v1_3c.py \
-            tests/test_pypsa_osemosys_common_frontier.py
-          pytest -q tests/test_pypsa_osemosys_common_frontier.py
+            tests/test_pypsa_osemosys_common_frontier.py \
+            tests/test_network_planning_evidence.py
+          pytest -q tests/test_pypsa_osemosys_common_frontier.py tests/test_network_planning_evidence.py
 
       - name: Download verified Apr-Dec 2024 ERA5 artifacts
         uses: actions/download-artifact@v4

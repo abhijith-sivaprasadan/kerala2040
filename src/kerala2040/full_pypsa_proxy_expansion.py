@@ -20,6 +20,10 @@ from kerala2040.full_pypsa_future_adequacy import (
     morph_load_to_energy_and_peak,
 )
 from kerala2040.full_pypsa_renewable_capacity import load_capacity_envelope
+from kerala2040.network_planning_evidence import (
+    load_network_planning_evidence,
+    planning_network_summary,
+)
 
 SUITE_CLASS = (
     "full_pypsa_2030_proxy_capacity_expansion_v0_8_"
@@ -40,6 +44,7 @@ def load_proxy_expansion_suite(path: Path) -> dict[str, Any]:
         "import_economics_validated",
         "statutory_siting_validated",
         "candidate_spatial_allocation_validated",
+        "network_spatial_constraints_internalized",
         "scenario_recommendation",
         "validated_capacity_plan",
     ):
@@ -509,6 +514,10 @@ def run_proxy_expansion_suite(
     suite = load_proxy_expansion_suite(
         root / "configs/full_pypsa_proxy_expansion_v0_8.yaml"
     )
+    network_evidence = load_network_planning_evidence(
+        root / "data/evidence/network/"
+        "kseb_network_robust_bottlenecks_v1_0_2026_09_28.json"
+    )
     future = load_future_adequacy_suite(
         root / "configs/full_pypsa_future_adequacy_v0_4.yaml"
     )
@@ -624,5 +633,6 @@ def run_proxy_expansion_suite(
             "renewable_profile_IST_alignment": alignment_diagnostics,
             "import_economics_validated": False,
             "statutory_siting_validated": False,
+            "network_planning_evidence": planning_network_summary(network_evidence),
         },
     }

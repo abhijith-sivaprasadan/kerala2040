@@ -23,6 +23,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
     _solar_allocation_range,
     load_proxy_expansion_suite,
 )
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 
 SUITE_CLASS = "full_pypsa_hydro_flex_v1_1_daily_energy_constrained_partial_economics"
 
@@ -397,6 +400,7 @@ def run_hydro_flex_v11_suite(root: Path, *, profile_path: Path, hours: int = 876
         "renewable_profile_alignment": alignment,
         "cases": cases,
         "release": suite["release"],
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": [
             "Hydro can move within each day but cannot move energy between days.",
             "Every modelled day preserves the same FY2024-25 observed/imputed hydro MWh as v0.3.",

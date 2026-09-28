@@ -35,6 +35,9 @@ from kerala2040.full_pypsa_proxy_expansion import (
     _solar_allocation_range,
     load_proxy_expansion_suite,
 )
+from kerala2040.network_planning_evidence import (
+    planning_network_summary_from_root,
+)
 
 SUITE_CLASS = "full_pypsa_idukki_inflow_release_v1_4_source_reported_inflow_gate"
 
@@ -583,6 +586,7 @@ def run_idukki_inflow_v14_suite(
             ],
         },
         "profile_alignment": alignment,
+        "network_planning_evidence": planning_network_summary_from_root(root),
         "interpretation": {
             "reported_inflow_is_source_field": True,
             "missing_reported_inflow_interpolated": False,
