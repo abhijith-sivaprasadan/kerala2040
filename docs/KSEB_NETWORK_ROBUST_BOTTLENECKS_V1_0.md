@@ -1,5 +1,8 @@
 # KSEBL robust bottleneck shortlist v1.0
 
+> **Post-release QA note — 28 September 2026:** this v1.0 screen used a KSEBL Power System Statistics snapshot dated **31 March 2023**, which contains a single Shornur 220/110-kV 100 MVA entry. The current **CEA Resource Adequacy Plan for Transmission System of Kerala up to 2034–35** reports existing Shoranur transformation as **200 MVA + 100 MVA**, independently identifies the station as constrained, and records further reinforcement. Therefore the 100 MVA transformer loading below is retained as a reproducible **historical-input screening result**, not a current whole-station loading estimate. The Shornur corridor-location signal is independently corroborated; its exact model loading magnitude is not.
+
+
 **Status:** public-data **screening evidence**, not calibrated operator congestion and not an approved transmission plan.
 
 This note freezes the robust subset from PR #121. The FY2024-25 8,760-hour public-network model was rerun under eight different allocations of the same statewide boundary accounting residual across six admitted interstate interfaces. A line is called **robust** only when it exceeds its source-backed screening MVA in every allocation case.
@@ -10,7 +13,7 @@ This note freezes the robust subset from PR #121. The FY2024-25 8,760-hour publi
 - 21 lines were overloaded in all eight boundary-allocation cases.
 - Those 21 line segments form 12 connected robust subgraphs.
 - 34 independent PSS-backed transformers were testable.
-- One transformer, **Shornur 220/110 kV, 100 MVA**, was overloaded in all eight cases.
+- Under the **historical 2023 PSS transformer input**, the model's **Shornur 220/110-kV 100 MVA element** was overloaded in all eight cases. This quantitative transformer result is not current-station validation; see the QA note above.
 - Every sensitivity case remained topologically closed with no diagnostic gap supply.
 
 ## Robust source-backed lines
@@ -60,7 +63,7 @@ The 21 robust lines resolve into 12 connected screening corridors when grouped b
 | C11 | Edappal–Kuttippuram | 110 | 1 | 1.128 pu | 180 h |
 | C12 | Kundara–Perinadu | 110 | 1 | 1.060 pu | 40 h |
 
-The strongest multi-voltage screening hotspot is **Shornur**. C01 includes Shornur in the dominant 110-kV robust subgraph, C04 begins at Shornur on the 220-kV network, and the sole robust independent transformer is the Shornur 220/110-kV unit. That coincidence is stronger evidence than any one branch overload alone, but it remains public-data screening evidence rather than validated operator congestion.
+The strongest multi-voltage screening hotspot is **Shornur**. C01 includes Shornur in the dominant 110-kV robust subgraph, C04 begins at Shornur on the 220-kV network, and the historical transformer screen also flagged its 2023 Shornur element. Current CEA planning independently corroborates Shoranur as constrained, but the transformer-capacity vintage mismatch means the **location** is stronger evidence than the Kerala2040 transformer loading magnitude.
 
 ## Robust transformer
 
