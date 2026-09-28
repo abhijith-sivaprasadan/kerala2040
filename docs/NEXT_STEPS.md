@@ -1,211 +1,137 @@
-# Kerala 2040: next research steps
+# Kerala2040 — next steps after the diagnostic modelling phase
 
-## Current modelling position · 28 September 2026
+**Updated:** 28 September 2026
 
-The earlier Step-9/Step-10 roadmap below is historical context. The independent
-TZ-OSeMOSYS benchmark and the PyPSA-OSeMOSYS common frontier are now implemented,
-ERA5 demand/renewable integration is complete for screening, and the public KSEBL
-110-kV+ network now runs a full 8,760-hour spatial screening.
+## Current status
 
-The latest network robustness envelope leaves **21 source-backed line bottlenecks**
-and **one independent PSS-backed transformer bottleneck** overloaded in every one
-of eight boundary-allocation cases. These are now a formal evidence gate for the
-Full-PyPSA and OSeMOSYS planning work. They are not yet transmission-investment
-constraints because future corridor capacities, reinforcement options/costs and a
-validated future spatial allocation have not been admitted.
+The project has enough modelling to support a defensible **public-data diagnostic and screening study** of Kerala's electricity system.
 
-**Immediate modelling order:** (1) use the robust corridor register to define
-sourceable candidate transmission reinforcement options rather than inventing MW;
-(2) keep PyPSA/OSeMOSYS capacity results explicitly network-unvalidated until that
-promotion gate closes; (3) continue Idukki Phase 5 catchment-rainfall/inflow
-validation; (4) then combine spatial network, hydro and expansion scenarios.
+The scientific centre is now:
 
-See [the robust network shortlist](KSEB_NETWORK_ROBUST_BOTTLENECKS_V1_0.md).
+> **Why is Kerala susceptible to power-system stress, what structural weaknesses make that stress more likely, and which responses deserve deeper testing?**
 
+The answer is not a single technology. Current evidence points to the interaction of:
 
-## Step 9 PyPSA equivalence gate closed · 25 September 2026
+- demand growth and weather-sensitive peaks;
+- dependence on external electricity and transfer capability;
+- hydropower timing and reservoir constraints;
+- internal transmission deliverability;
+- land/ecological constraints on new infrastructure.
 
-The full [Step 9 independent PyPSA reproduction](../research/step9_pypsa/README.md) has now passed all **3,186** daily LP comparisons: 354 admitted SLDC days × three synthetic quarter-hour demand shapes × three balancing cases. Every solve was optimal and the maximum absolute daily unserved/surplus difference against the Step 8 SciPy reference was **1.2732925824820995e-10 MWh**, far below the predeclared 0.001 MWh tolerance. The compact result is frozen in [verification_summary.json](../research/step9_pypsa/verification_summary.json).
+See [POWER_SYSTEM_STRESS_SYNTHESIS_2026_09_28.md](POWER_SYSTEM_STRESS_SYNTHESIS_2026_09_28.md).
 
-**Historical next-task note:** the independent OSeMOSYS benchmark and later PyPSA-OSeMOSYS common frontier have now been implemented. Step 9 remains formulation evidence rather than empirical validation; the current network, hydro, measured-interval and spatial release gates are tracked in the current-position section above.
+## Modelling freeze
 
-## WP6 BESS/pumped-storage: bounded electrical service screen · 24 September 2026
+**Do not add another model family before the CET/public release unless it uses genuinely new evidence or could change a material conclusion.**
 
-The [BESS/PSP executable study](WP6_BESS_PUMPED_STORAGE_SCREEN_2026_09_24.md) runs two zero-initial/zero-terminal synthetic stores against a fictional site and fixed five-hour evening duty. Grid charging, stored-state losses, auxiliary power, round-trip ratio, separate whole-day/evening peaks and a hypothetical 300 m hydraulic m³ conversion are source-labelled. Nine capacity×efficiency combinations per store preserve infeasible cases as null. Neither actual Kerala pumping MW nor net import reduction is inferred. CEA's 2026 report index and dated 2025 Kerala project text are **discovery only** (original page-image check failed), not current approval.
+The work now has more value from synthesis and communication than from another sensitivity layer.
 
-**Next physical gates:** updated named project stage, distinct upper/lower reservoir and head/storage curves, flood and environmental rules, water rights, project-grid connection and independently dated BESS site/equipment/cost/market evidence. A 24-hour fictitious service cannot yield a Kerala 2040 storage capacity or compare environmental/financial merit.
+### One technical closeout still in progress
 
-## WP6 two new reproducible experiments: managed EV + noncritical industrial duty · 24 September 2026
+PR #122 propagates the robust KSEBL network evidence into the current PyPSA and OSeMOSYS planning gates. Its final scientific content is already defined; remaining work is CI/integration closeout rather than new modelling.
 
-[Technical model and public method chapter](WP6_EV_INDUSTRIAL_FLEXIBILITY_PILOTS_2026_09_24.md) and [shared constrained Python scheduler](../src/kerala2040/flexibility_dispatch.py) implement **two independent 24h** source-labelled illustrative examples. EV charger arrivals/departures, battery headroom, per-vehicle charging kW, conversion losses and shared circuit cap are enforced for BOTH earliest and managed policies; industrial optional jobs preserve exact due production/service duty and leave fictional critical/safety load untouched. Nine connection capacity × charging efficiency or duty-size sensitivities per pilot (18) regenerate both policies, with deadline checks and unchanged total electricity under fixed efficiency. The website exposes 48 hourly rows per pilot, two case comparisons, individual jobs and each sensitivity. Source-bounded industrial model is **not** a KMML metered/process-permission finding.
+Once that integration is green and merged, treat the current model stack as frozen for this release.
 
-**Next true WP6 research phases:** obtain permitted vehicle arrival/departure/SoC or aggregated depot profiles, charging equipment/feeder limits and active tariff rules; industrial site-approved flexible process schedules, no-harm compliance, and independent electricity meters; then bring in validated hourly Kerala coincident grid observations. Separate BESS and pumped-storage screening can start without claiming any of these synthetic runs establish statewide MW or annual kWh.
+## Mandatory work before release
 
-## WP6 thermal storage and cooling: reproducible pilot complete · 24 September 2026
+### 1. Align the public story
 
-The [first executable WP6 engineering chapter](WP6_COOLING_THERMAL_STORAGE_PILOT_2026_09_24.md) compares conventional AC, 13–16 pre-cooling and night-charged chilled-water storage for **one explicitly synthetic 24-hour profile**, from a versioned [1R1C specification](../configs/wp6_cooling_tes_illustrative.yaml). Conservation and same end-state checks, common 24–26°C comfort, early setpoint shortfall vs discomfort, charging parasitics/COP derate and independent whole-day/evening peak definitions are enforced; all three hourly series, nine sensitivity reruns and dynamic Pathways figures build from source. No Kerala hourly/ERA5 climate, statewide MW, annual financial or carbon claim is admitted. This opens a new WP6 topic rather than revisiting data requests.
+Update the README, website and poster around one sequence:
 
-**WP6 next distinct tasks:** measured-building data and cooling/latent validation, demand-side EV charger availability and required terminal SoC, process-specific industrial flexible hours, BESS/pumped-storage technical options. Actual Kerala coincidence, tariffs and project economics remain gated until physically grounded source periods align.
+**Meet Kerala → understand the electricity system → diagnose stress → understand constraints → examine candidate responses → inspect the evidence.**
 
-## Total Energy Atlas: 2023 official sector emissions, heating-value method and source request pack · 24 September 2026
+Avoid making KMML, storage pilots, solar/wind resources or individual model versions compete with the main research question on the homepage.
 
-The [sector GHG and energy-methods chapter](KERALA_TOTAL_ENERGY_ATLAS_SECTOR_GHG_METHODS_2026_09_24.md) and [auditable source register](../data/evidence/total_energy/kerala_ghg_sector_bridge_2026_09_24.json) add the DoECC official **calendar-2023** 20.64 MtCO₂e energy-sector estimate and separate transport/residential/industrial emission categories, explicitly **not equivalent to fuel×sector energy consumed**. The earlier 2005–2021 published inventory's **2020 16.96** vs current portal **17.09 MtCO₂e** disagreement is kept as an inventory revision gate. The BEE/CII/EMC annex lists fuel-specific **GCV**, which cannot silently substitute NCV or prove modern fuel grade. A concrete, public/authorised PPAC, EMC and DoECC original-data/definition request pack is ready; no request has been sent.
+### 2. Publish the findings hierarchy
 
-**Only externally controlled gates now remain for the intended current all-fuel balance:** original PPAC native full-year state×product data and original FY2024–25 primary PDF page; EMC fuel×sector author table and FY2015 discrepancy resolution; dated NCV standards and attribution of industrial feedstock, captive power and interstate/aviation/marine use; DoECC inventory methodology/revision bridge and 2024–25 equivalent estimates. Do not claim current Mtoe, oil-import share or emissions calculated from unmatched tables.
+The public summary should make these distinctions obvious:
 
-## Kerala full-year petroleum sales · additional total-energy atlas analysis · 24 September 2026
+- **Observed:** official / SLDC records.
+- **Derived:** calculations or reconstructed chronology tied to observed totals.
+- **Screening result:** model mechanisms and sensitivities.
+- **Candidate response:** educational interpretation that still needs validation.
 
-The [PPAC annual publication audit](PPAC_KERALA_FULL_YEAR_SALES_SOURCE_AUDIT_2026_09_24.md) and [source-tier data register](../data/evidence/total_energy/ppac_full_fy_kerala_source_audit_2026_09_24.json) distinguish six full FY2019–20–2024–25 Kerala all-POL sales rows and petrol/diesel included subseries. FY2024–25 is transcribed from a precisely identified PPAC edition's **third-party text mirror**; original PPAC PDF image access remains blocked, so FY2024–25 annual sales is explicitly lower-assurance and not a measured in-state final-energy balance. No annualisation of the earlier H1 provisional products, and no inferred missing FY2019–20 diesel. Earlier PPAC FY2022–23 source reports disagree (6,882.6 vs later 6,879.1 thousand tonnes); vintages are preserved. The source register lists specific data fields/request needed from EMC because its fuel-by-consuming-sector input workbook was not found in public EMC downloads.
+### 3. Add accessible context
 
-**Next actual evidence gates:** official FY2024–25 PDF bytes and Kerala row cross-check, original all-FY PPAC state×product workbook/data dictionary; EMC author workbook and conversion methods, ideally publication-cleared CSV. Never assume fuel sales, generation input, import share and Kerala final energy are equivalent.
+Use [KERALA_CONTEXT_FOR_SWEDISH_AUDIENCE_2026_09_28.md](KERALA_CONTEXT_FOR_SWEDISH_AUDIENCE_2026_09_28.md) to give unfamiliar readers scale without boasting or caricaturing India.
 
-## Kerala Total Energy Atlas: new original-plan dimension started · 24 September 2026
+Useful context includes:
 
-The [first source-qualified statewide TFEC research chapter](KERALA_TOTAL_ENERGY_ATLAS_BASELINE_2026_09_24.md) retrieves **six historical EMC final-energy totals (FY2014–15–FY2019–20)** and FY2019–20 publisher-rounded oil/electricity/coal/gas shares, with visually checked source Figure 3 and 4. Distinct PPAC **April–September 2024 provisional selected-product petroleum sales** have indexed publisher-text provenance but **original page-image QA still pending**. The [register](../data/evidence/total_energy/kerala_total_energy_source_register_2026_09_24.json), fail-closed validator and three interactive homepage charts prevent combining unlike years or mass/energy/nominal plant capacities. The PPAC 30 September 2024 infrastructure snapshot remains supply context, not consumed energy.
+- population and land area;
+- per-capita and total electricity use;
+- Western Ghats, monsoon, coast/backwaters and dense settlement;
+- monazite-bearing heavy-mineral sands as industrial-geology context;
+- CIAL, Kochi Metro and Kochi Water Metro as transition examples;
+- INR project budgets with dated SEK equivalents.
 
-**True next source gate:** original PPAC full FY2019–20 and FY2024–25 (or latest) complete state × product reports and legends; original H1 PDF image; EMC original fuel×sector calculation spreadsheet/calorific standards; valid same-FY gas/transport/industry/household end-use allocation. Only then calculate a new statewide total final-energy, petroleum dependence and energy-service baseline. Existing electricity chapters are not a substitute for final energy.
+### 4. Explain "symptom management vs structural vulnerability"
 
-## CET 2026 KMML circular-process case: bounded chapter complete · 24 September 2026
+Use neutral engineering language.
 
-The [completed KMML source-audited chapter](KMML_CIRCULAR_INDUSTRY_CASE_2026_09_24.md) now reconciles official KMML process branches (9 named units), the FY2022–23 company report and the user-shared historical references into 10 distinctly classified residual/recovery streams with source-dated status. Existing ARP acid regeneration is separated from historical oxide bricks, documented 2022–23 **trials** for oxide-to-sponge-iron, U400 fines and filter-backwash reuse, and hypothetical heat integration. A separate Ti-sponge product branch and the report's non-verified regulatory classification are explicit. The [public-safe case register](../data/evidence/industry/kmml_source_bounded_case_2026_09_24.json) contains **null** annual recovery, heat and emissions outcomes. The website Industry page displays the process nodes and filters interactively.
+The research question is not whether emergency procurement or temporary operating measures are "bad." They can be rational. The question is:
 
-**Still open:** aligned contemporary site meters, compositions, actual trial commissioning, water and heat balances, accepted offtake/disposal, as-issued regulator records and capex/opex before *numerical* circularity/2040 industrial claims. Finish CET poster using bounded evidence rather than waiting for facility data. ERA5 acquisition is independent.
+> **When is a short-term response economical, and when does repeated dependence reveal a structural constraint that is better addressed through a durable investment or operating change?**
 
-## CET 2026 historical electricity story: bounded chapter complete · 24 September 2026
+### 5. Present preliminary solutions carefully
 
-[Executed source-audited historical chapter](CET_HISTORICAL_ELECTRICITY_STORY_2026_09_24.md) combines separately attributed **official annual Kerala consumption (FY2020–21–FY2024–25)** and **qualified SLDC operational daily reports (2019–2026)**. It adds four poster-oriented SVGs—official consumption, matched-day daily changes, observed-day import/hydel shares and separately labelled Statistics evening peaks—plus [validated input/denominator registry](../data/evidence/sldc/cet_historical_electricity_story_2026_09_24.json). The multi-year **descriptive** question is answered without ERA5 and without inventing annual sums, correcting missing days, or treating hydro/import accounting co-movement as causal.
+The conclusion may say that early-stage work makes several directions worth deeper study:
 
-**Still open, deliberately not rebranded complete:** (1) retrieve 11 missing FY2024–25 SLDC qualified dates or leave absent; (2) obtain data dictionaries to reconcile operational daily and annual consumer-side boundaries, which differ even for 365/365 FY2020–21; (3) acquire and validate measured interval demand/interchange; (4) bound plant-level hydro operating and import-capacity/price parameters before claiming 2040 scenario outcomes. The research chapter on `main` is distinct from the immutable public website evidence snapshot.
+- better hydro scheduling and forecasting;
+- demand response and time-of-use signals;
+- managed EV charging;
+- cooling / thermal storage;
+- BESS;
+- pumped storage where project-specific civil/ecological conditions support it;
+- targeted network reinforcement;
+- selectively sited renewable generation;
+- dependable interstate procurement and transfer capability.
 
-## August 2019 real-original ERA5-Land pilot: processed, spatial admission still open
+Do not call these an optimal plan. Do not say storage creates or saves energy. Do not call pumped storage inherently low-cost.
 
-[Executed original-GRIB August audit](ERA5_LAND_AUG2019_ORIGINALS_EXPLORATORY_AUDIT_2026_09_24.md): 24 ERA5-Land parameters parsed from user-provided acquisition-envelope GRIB; July 31 core boundary hours retained; **31 complete August IST rainfall dates**, 1,034 source-valid land pixels, original forecast-step/duplicate checks. July 31 extended fields are missing, so 1 Aug IST is incomplete for that second variable batch. **The 380.65 mm bbox-land-pixel mean and 537.73 mm example-rectangle mean must not be labelled Kerala or Idukki catchment rain**. Official state and source-verified reservoir-intercepted watershed polygons, and source-matched private SLDC inflow observations, remain separate gates; 2018 SLDC electricity is still missing.
+### 6. Final QA and release
 
-## Electricity demand and annual accounting: parallel non-renewable workstream
+Before the final CET/public snapshot:
 
-[The FY2024–25 official demand-sector and accounting-boundary review](DEMAND_SECTOR_ACCOUNTING_BASELINE_2026_09_23.md) now records KSEBL's nine customer/sales categories and disambiguates consumer electricity use, KSEBL all-category sales (including trading), in-state sales, net utility input, periphery supply input, and Kerala2040's 354-day incomplete operational SLDC sum. These are **not the same annual demand definition**, and no difference may be assigned to losses or imports without matching the scope and year. This annual review is **not** a measured hourly load or cost model.
+- run repository CI;
+- run browser/site smoke tests;
+- ensure all model and source guardrails still pass;
+- check links and downloads;
+- freeze a specific research commit;
+- synchronize the public site deliberately;
+- pin poster/website sources to the same evidence boundary where practical.
 
-Next: harmonize **multiple years** of official sector baselines; obtain FY2024–25 measured hourly/15-minute statewide demand and interchange; source actual procurement/true-up/contract cost if studying affordability; join ERA5-Land temperature/dewpoint after arrival to a *measured*, calendar-matched load before attempting weather-driven demand inference. Keep projected EV, air-conditioning, industry and flexible demand explicitly labelled scenarios.
+## What is explicitly not required before release
 
-## Hydro Phase 5 (23 September 2026): pipeline ready, original basin data still gated
+The following are valuable research extensions, but **not blockers** for the current diagnostic publication:
 
-The executed [Phase 4 Idukki reservoir and station pilot](PHASE4_IDUKKI_HYDRO_ENERGY_RESEARCH_2026_09_23.md) remains the latest observational result. The [Phase 5 ERA5-Land research pipeline](PHASE5_IDUKKI_ERA5_BASIN_WEATHER_2026_09_23.md) now includes original-GRIB parsing, independently source-reviewed catchment overlap weights, original hourly cumulative tp deaccumulation with an explicit 50:50 allocation across IST midnight, complete-pixel/day QA, and common-date chronological comparisons with Idukki SLDC-gauge rain and persistence. **This branch has no real selected catchment weather rows and no Phase 5 skill number.**
+### Idukki Phase 5 physical hydrology
 
-**Action order:** (1) source/verify the reservoir-intercepted Idukki catchment polygon and upstream diversion treatment; (2) dry-run and authenticate the monthly 2017-12-31–2026-09-23 ERA5-Land acquisition over its reviewed bbox; (3) privately extract original GRIB and construct reviewed weights; (4) run the Phase 5 weather and paired-model QA against privately held SLDC CSVs; (5) independently review holdout coverage/extremes before any public numerical result. The full Periyar basin and five representative ERA5 points are not substitutes.
+Continue only when the catchment is independently reconciled and the inflow boundary is defensible. Then connect catchment rainfall, observed inflow and reservoir operation.
 
-Phase 5 does **not** close the separate P0 measured hourly/15-minute electricity acquisition gate, recover 2018 SLDC daily rows, identify physical spill or qualify project-specific pumped-storage MW.
+### Official KSEB reservoir workbooks
 
-## What now works
+Run the existing v1.5 pipeline if the exact FY2024–25 monthly source workbooks become accessible. Do not substitute synthetic inputs merely to make the workflow run.
 
-The research repository is the source of truth: `docs/` contains the interface and
-`public/` contains the dated evidence snapshot. `scripts/build_site.py` validates
-the manifest and packages both together. The website repository deploys that
-package on push, manual dispatch and a six-hour schedule. Browsers need no API
-keys and do not depend on raw.githubusercontent.com for research data.
-
-Independent ingestion jobs preserve previously published layers, identify retained
-evidence dates, validate the combined snapshot, and share one publishing lock.
-The historical artifact recovery workflow requires explicit run IDs rather than
-silently restoring a fixed old run. Full-year acquisition is manual because it is
-slow and should not run whenever the interface changes.
-
-The modelling foundation now includes an observed-day PyPSA replay, hydro/storage
-diagnostics, official energy-accounting reconciliation, weather-derived renewable
-availability proxies, and a **reconciled FY2024-25 installed-capacity accounting
-census**. The census contains 112 station/farm/aggregate rows, all 44 KSEBL hydro
-stations, and explicit distributed-solar buckets; it preserves the official
-4,412.14 MW headline versus 4,412.15 MW category-arithmetic discrepancy rather
-than inserting a balancing asset. Plant/unit hourly availability, outages,
-deratings and station generation remain open, so installed MW is not yet
-dispatchable MW. Structural 2040 scenario dimensions, a sourced techno-economic
-benchmark registry and a GIS acquisition manifest also exist. These are
-foundations, not validated 2040 results. See
-[the capacity-accounting closeout](GENERATOR_CENSUS_FY2024_25_CLOSEOUT.md).
-
-The 8,760-hour load reconstruction remains **proxy data, not measured telemetry**.
-See [the mandatory provenance policy](PROVENANCE_CORE_RULES.md).
-
-The P0 interval-data acquisition is supported by a
-[private, fail-closed 8,760-hour / 35,040-block intake validator](MEASURED_INTERVAL_INTAKE.md).
-It checks a future genuinely sourced export; no full FY2024-25 measured
-interval source has arrived, and running the validator does not unlock the
-historical-calibration or 2040 release gates.
-
-## Renewable KPI handoff · 23 September 2026
-
-**Wind phase 1 is frozen for the CET poster.** Its [research question, quantitative conclusion and takeaway](WIND_PHASE1_DISTRICT_NORMALIZED_CLOSEOUT_2026_09_23.md) are source-qualified; do not reopen the wind resource screen to invent capacity or legal eligibility. The next bounded renewable KPI is [solar phase 1](SOLAR_PHASE1_KPI_SCOPE_2026_09_23.md): verify the original long-term Global Solar Atlas PVOUT pixels and NWIC district boundaries; derive a complete 14-district source-pixel partition and **paired per-pixel** seasonal sensitivity with missing-cell accounting. The existing 46,241 native PVOUT centres and long-term unweighted annual median 1,493.507 kWh/kWp are source-clip evidence, not a completed district/monthly solar analysis or installed capacity.
-
-This work runs **alongside**, rather than displaces, the P0 measured interval-demand and interchange acquisition needed for a validated 2040 model.
-
-## Observed SLDC archive: full-history acquisition & first analytical pass · 23 September 2026
-
-The bounded five-section [2019–2026 source audit](SLDC_FIVE_SECTION_2019_2026_SOURCE_AUDIT_2026_09_23.md) has been completed on the user's uploaded source ZIP. 2,606 calendar days were audited across Statistics, Imports, Storage, Availability and Other Extrema; 2,576 Statistics/Imports and 2,577 other-section reports passed independent saved-HTML hash and returned-date checks. One 2019-12-05 internal balance contradiction is preserved and excluded from qualified reported consumption. Older 44-row and newer 73-row source schemas remain distinct. FY2024–25 has 354/365 qualified observed days; incomplete sums must not be relabelled annual production or load.
-
-**Next:** (1) resolve source-field missingness and flag anomalies in multi-year analysis, (2) compare matched daily 2024–25 records against the earlier standalone FY historical dataset, (3) quantify seasonality of daily consumption, import dependence, hydropower storage and observed peak timing, and (4) separately obtain genuinely metered interval chronology, generator dispatch and operational MW availability. The SLDC Availability section reports scheduled *energy in MU*, not spare MW.
-
-## Solar phase 1 source-verified result · 23 September 2026
-
-The previously planned [solar phase 1](SOLAR_PHASE1_KPI_SCOPE_2026_09_23.md) has now been executed using all 14 native yearly/daily/monthly GSA PVOUT windows and the original NWIC district source: [audited 14-district matched-pixel report](SOLAR_PHASE1_NWIC_DISTRICT_SEASONALITY_RESULT_2026_09_23.md). The 46,241 Kerala native PVOUT pixels uniquely reconcile, all 12 months are available, and paired February→July percent change is derived for each pixel before district medians are taken. The statewide median paired decline is 43.60%; this is a source-climatology finding, not actual electricity generation, legal suitability or MW.
-
-Wind and solar bounded *descriptive* resource phase 1 questions are both frozen for CET. The next genuinely open project KPI is the measured FY2024–25 **interval electricity chronology and import/solar generation validation**, followed by independent statutory land/roof/waterbody eligibility and grid constraints. Do not add nominal 2040 PV MW or convert original resource-grid pixel counts into area.
-
-## Your next actions, in order
-
-1. **Confirm the CET submission date and freeze the scope.** Make the first release
-   a defensible historical electricity balance, a constrained scenario design and
-   one sourced circular-industry case. Do not promise optimised 2040 results yet.
-2. **Obtain hourly or 15-minute demand and interchange for FY2024–25, and recover
-   the CSTEP FY2016 15-minute source series.** Request timestamped Kerala demand,
-   imports/exports, units, timezone, missing-data flags and revision history from
-   SLDC/KSEBL. Separately, CSTEP's 2024 roadmap confirms that observed FY2016
-   15-minute Kerala data existed and was used to derive its FY2022 load curve; request
-   that raw series from CSTEP/EMC/KSEBL/SLDC as an independent historical validation
-   dataset. See [the data specification](hourly_demand_gap.md). Do not digitise the
-   CSTEP figure and call it measured data, and do not send secrets or confidential
-   utility data to the public repository.
-3. **Close the historical reconciliation.** The reconciliation workflow is now
-   implemented and preserves SLDC, Economic Review/KSEBL and CEA accounting
-   boundaries separately. The current snapshot still has 354/365 SLDC days, with
-   11 dates explicitly missing; recover those dates or document their absence.
-4. **Calibrate the chronological model.** The observed-day PyPSA replay is now
-   implemented without using the synthetic hourly proxy. Next validate real hourly
-   load, generation, imports,
-   peak behaviour, hydro energy and storage against history. Passing a daily
-   accounting identity does not satisfy this gate. The existing PyPSA model is
-   only a smoke test, not a completed Kerala capacity-expansion model.
-5. **Complete numerical constraints before solving scenarios.** Secure resource
-   profiles, technology costs, grid limits, hydro/water constraints and licensed
-   spatial exclusions. Hazard catalogues are not GIS overlays. Then implement
-   S0/S2/S3 and compare reliability, imports, cost and sensitivity under common
-   assumptions. Downloaded website specifications do not run the solver.
-6. **Develop the selected KMML case and finance evidence.** KMML is confirmed;
-   obtain quantities, chemistry, disposal costs, recovery costs and credible
-   offtake. Separate commissioned recovery from planned projects. Specify Kerala,
-   KSEBL, Union and private financing rather than assigning all costs to the state.
-
-See the [SLDC request draft](SLDC_DATA_REQUEST_DRAFT.md),
-[CSTEP FY2016 data request draft](CSTEP_FY2016_DATA_REQUEST_DRAFT.md),
-[KMML case plan](KMML_CASE_PLAN.md) and [Energy Project review](ENERGYPROJECT_REVIEW.md).
-The study covers all of Kerala; atlas markers are illustrative, not a complete grid.
-
-## Working locally
-
-Use Python 3.11 or 3.12. From the research repository:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
-python scripts/build_site.py --check
-python scripts/build_site.py --output _site
-python -m http.server 5173 --directory _site --bind 127.0.0.1
-```
-
-Open http://127.0.0.1:5173. Do not open index.html directly as a file: browsers
-restrict fetching JSON with file URLs. Edit the interface in the research repo,
-not independently in the generated website copy.
-
-Run `pytest`, `ruff check src tests scripts` and `node --test tests/web.test.cjs`
-before publishing. Run the manual historical/extended ingestion workflows when
-new acquisition is needed. External endpoint outages remain visible in source
-audits; reachability never proves that a dataset has been validated.
+### Calibrated AC / N-1 planning model
+
+Requires stronger electrical parameters, operating states, outage assumptions and future corridor options/costs. The present public network screen is useful without pretending to be this model.
+
+### Legally complete renewable siting
+
+Requires notification-linked forest/wetland/ESZ/coastal/paddy constraints, validated hazard geometry, setbacks, connection rules and land/community feasibility.
+
+### Full least-cost 2040 investment plan
+
+This should come **after** the physical and spatial gates above, not before them.
+
+### Future-climate ensemble
+
+Use a multi-year / multi-model 2031–2050 climate framework rather than choosing one synthetic "2040 weather year."
+
+## Closure rule
+
+Before starting any new workstream, ask:
+
+> **Will this new work change a material conclusion, resolve a known evidence gate, or make the existing result substantially more understandable?**
+
+If the answer is no, it belongs after the current release.

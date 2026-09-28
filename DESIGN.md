@@ -1,6 +1,17 @@
-# Kerala2040: website edition 2
+# Kerala2040: diagnosis-first public research narrative
 
-The visitor journey follows one question: how can Kerala meet future demand reliably while respecting its land and water? The five chapters are observed electricity, land and seasons, future choices, industrial energy, and evidence. Research detail belongs behind deliberate disclosure, not ahead of the story.
+The visitor journey now follows the project's main scientific question: **why does Kerala's power system become stressed, where are the structural weaknesses, and which responses deserve deeper testing?**
+
+The public sequence is:
+
+1. **Meet Kerala** — place, people, landscape and scale without superlative Kerala-versus-India framing;
+2. **The power system** — observed demand, supply, hydropower and electricity arriving from outside the state;
+3. **Constraints** — chronology, weather, land/ecology and internal deliverability;
+4. **Responses to test** — hydro timing, demand flexibility, storage, reinforcement and additional supply, clearly labelled as screening rather than recommendations;
+5. **Wider context** — transport electrification, industry and materials;
+6. **Evidence** — source classes, limitations and unresolved gates.
+
+The existing Kerala-coded visual identity and interactive research figures remain. The redesign is primarily information architecture: research detail belongs behind deliberate disclosure, not ahead of the story.
 
 ## Visual and interaction contract
 

@@ -193,8 +193,8 @@ def test_packaged_workbench_rejects_cross_snapshot_findings(tmp_path):
 def test_kerala_coded_site_packages_fresh_app_and_distinct_audit_clocks(tmp_path):
     site.build_site(ROOT, tmp_path)
     html = (tmp_path / "index.html").read_text(encoding="utf-8")
-    assert 'id="overview"' in html and "Our land." in html
-    assert 'id="atlas"' in html and 'id="pathways"' in html
+    assert 'id="overview"' in html and "Kerala's power system." in html
+    assert 'id="kerala"' in html and 'id="atlas"' in html and 'id="pathways"' in html
     assert 'id="workbench"' in html and 'id="audit"' in html
     assert 'href="assets/kerala.css"' not in html
     assert 'src="assets/app.js"' not in html
