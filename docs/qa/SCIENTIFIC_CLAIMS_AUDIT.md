@@ -121,9 +121,9 @@ Key point: daily energy is known on the held-out days.
 
 ### D03 — annual peak agreement
 
-If the CEA peak is part of the calibration objective/constraints, agreement to that same number cannot be treated as independent validation.
+The v2 proxy used **5904 MW** from the CEA generation-resource-adequacy study as a calibration/consistency reference. A newer CEA Kerala transmission-resource-adequacy plan separately reports **5797 MW** as the recorded FY2024–25 peak and **5836 MW** on 25 March 2026.
 
-Use it as a consistency/calibration check.
+These values must not be silently reconciled or substituted: they come from different CEA planning/reporting contexts. Agreement of the proxy peak (5923.3 MW) with 5904 is therefore only a consistency/calibration check, not independent validation of the true continuous-hour FY2024–25 maximum.
 
 **Status:** **AMBER.**
 
