@@ -66,7 +66,7 @@ Small/distributed generation category differences must stay explicit. Do not cla
 | Source | Use | QA |
 |---|---|---|
 | KSERC FY2023–24 true-up / KSEBL procurement record | ₹5.05/kWh weighted purchase case | **GREEN for that accounting boundary** |
-| IEX FY2023–24 DAM reporting | ₹5.24/kWh DAM benchmark | **AMBER until first-party IEX table/page is pinned in the QA register** |
+| IEX FY2023–24 DAM market snapshot | ₹5.24/kWh average-MCP benchmark | **GREEN with boundary correction**: first-party IEX yearly snapshot gives MCP ₹5.23759/kWh and weighted MCP ₹5.17449/kWh. The model's ₹5.24 case is therefore an average-MCP proxy, not a volume-weighted purchase price. CERC's market-monitoring report independently gives the full-market weighted DAM price at about ₹5.16/kWh. |
 | Kerala regulatory downstream-licensee order | ₹7.13/kWh high delivered-cost example | **GREEN as downstream stress proxy**, **RED as Kerala-border import tariff** |
 | RBI CPI | nominal→real conversion | **GREEN** if exact index rows retained |
 | CERC Order 12/SM/2026 (23 Aug 2026) + RE Tariff Regulations 2024 | debt/equity, RoE, loan interest and WACC-equivalent discount benchmark | **GREEN regulatory benchmark**: order states 70:30 debt/equity, 10.71% loan interest, 14% post-tax RoE for non-SHP RE and derives 9.08% post-tax WACC-equivalent discount factor for all non-SHP technologies. This remains a national regulatory benchmark, not a Kerala project WACC. |
