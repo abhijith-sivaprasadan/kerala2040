@@ -60,10 +60,12 @@ No reconstructed hourly demand value is used as a feature or target.
 ## Models
 
 1. **Calendar baseline:** standardized Ridge regression.
-2. **LightGBM:** tuned with Optuna.
-3. **XGBoost:** tuned with Optuna.
+2. **LightGBM calendar-only ablation:** calendar features only, independently tuned with Optuna.
+3. **LightGBM full model:** calendar + ERA5 weather features, independently tuned with Optuna.
+4. **XGBoost calendar-only ablation:** calendar features only, independently tuned with Optuna.
+5. **XGBoost full model:** calendar + ERA5 weather features, independently tuned with Optuna.
 
-Optuna minimizes mean RMSE over expanding `TimeSeriesSplit` folds inside the training period.
+Optuna minimizes mean RMSE over expanding `TimeSeriesSplit` folds inside the training period. The calendar-only boosted variants are necessary to distinguish a **weather contribution** from a gain that could come only from using a nonlinear model family.
 
 ## Holdout rule
 
@@ -74,9 +76,9 @@ The split is chronological. Random train/test splitting is not used.
 
 ## SHAP rule
 
-SHAP is generated **only** for a boosted model whose Jan-Mar holdout RMSE beats the calendar-only Ridge baseline.
+SHAP is generated **only** for a full weather model whose Jan-Mar holdout RMSE beats **both** the linear Ridge calendar baseline and the independently tuned calendar-only version of the same boosted model family.
 
-SHAP values are treated as model attribution under correlated features, not as causal demand elasticities.
+This creates a stricter gate: the full model must show incremental out-of-sample value from the weather feature set before SHAP is used to interpret it. SHAP values are still model attribution under correlated features, not causal demand elasticities.
 
 ## Promotion gate
 
