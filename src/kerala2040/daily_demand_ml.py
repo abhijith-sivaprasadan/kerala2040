@@ -8,8 +8,9 @@ from __future__ import annotations
 
 import json
 import math
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -413,7 +414,7 @@ def run_daily_demand_ml(
         "target": {
             "field": "consumption_mu",
             "unit": "MU/day",
-            "observed_rows": int(len(table)),
+            "observed_rows": len(table),
             "source": "public/daily-balance.json; Kerala SLDC daily system statistics",
             "hourly_telemetry_target": False,
             "reconstructed_hourly_proxy_used_as_target": False,
@@ -428,10 +429,10 @@ def run_daily_demand_ml(
             "method": "chronological holdout + expanding TimeSeriesSplit inside training period",
             "train_start": train["date"].min().date().isoformat(),
             "train_end": train["date"].max().date().isoformat(),
-            "train_rows": int(len(train)),
+            "train_rows": len(train),
             "holdout_start": holdout["date"].min().date().isoformat(),
             "holdout_end": holdout["date"].max().date().isoformat(),
-            "holdout_rows": int(len(holdout)),
+            "holdout_rows": len(holdout),
         },
         "calendar_baseline": {
             "model": "StandardScaler + Ridge(alpha=1.0)",
