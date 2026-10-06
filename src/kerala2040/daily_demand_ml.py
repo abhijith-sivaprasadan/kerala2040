@@ -434,7 +434,7 @@ def run_daily_demand_ml(
             features=FEATURES,
             seed=seed,
         )
-        calendar_model, calendar_pred = _fit_boosted(
+        _, calendar_pred = _fit_boosted(
             name,
             calendar_params,
             train,
