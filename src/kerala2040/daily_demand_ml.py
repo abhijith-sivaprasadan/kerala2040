@@ -121,13 +121,10 @@ def aggregate_daily_weather(weather: pd.DataFrame) -> pd.DataFrame:
     daily["ghi_kwh_m2_day"] = daily.pop("ghi_wh_m2_day") / 1000.0
     daily["temp_range_c"] = daily["temp_max_c"] - daily["temp_min_c"]
 
-    if (daily["hourly_rows"] != 24).any():
-        bad = daily.loc[daily["hourly_rows"] != 24, ["date", "hourly_rows"]]
-        raise ValueError(
-            "ERA5 daily aggregation requires exactly 24 IST hours: "
-            f"{bad.to_dict('records')}"
-        )
-    return daily.drop(columns="hourly_rows")
+    complete = daily.loc[daily["hourly_rows"] == 24].copy()
+    if complete.empty:
+        raise ValueError("ERA5 daily aggregation produced no complete IST days")
+    return complete.drop(columns="hourly_rows")
 
 
 def add_calendar_features(frame: pd.DataFrame) -> pd.DataFrame:
@@ -151,9 +148,13 @@ def build_daily_feature_table(observed: pd.DataFrame, weather: pd.DataFrame) -> 
     daily_weather = aggregate_daily_weather(weather)
     joined = observed.merge(daily_weather, on="date", how="inner", validate="one_to_one")
     joined = add_calendar_features(joined).sort_values("date").reset_index(drop=True)
-    if len(joined) != len(observed):
-        missing = sorted(set(observed["date"]) - set(joined["date"]))
-        raise ValueError(f"weather missing for observed target dates: {missing[:10]}")
+    missing = sorted(set(observed["date"]) - set(joined["date"]))
+    if missing:
+        first_weather = daily_weather["date"].min()
+        last_weather = daily_weather["date"].max()
+        internal = [date for date in missing if first_weather <= date <= last_weather]
+        if internal:
+            raise ValueError(f"weather missing for internal observed target dates: {internal[:10]}")
     if joined[FEATURES + ["consumption_mu"]].isna().any().any():
         raise ValueError("ML feature table contains missing values")
     return joined
@@ -414,7 +415,12 @@ def run_daily_demand_ml(
         "target": {
             "field": "consumption_mu",
             "unit": "MU/day",
-            "observed_rows": len(table),
+            "source_observed_rows": len(observed),
+            "matched_observed_rows": len(table),
+            "weather_boundary_excluded_dates": [
+                date.date().isoformat()
+                for date in sorted(set(observed["date"]) - set(table["date"]))
+            ],
             "source": "public/daily-balance.json; Kerala SLDC daily system statistics",
             "hourly_telemetry_target": False,
             "reconstructed_hourly_proxy_used_as_target": False,
