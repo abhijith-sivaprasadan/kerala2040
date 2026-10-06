@@ -1,0 +1,358 @@
+{
+  "classification": "experimental_daily_observed_demand_ml_robustness_v0_2",
+  "captured_utc": "2026-10-06",
+  "reference_workflow_run_id": 37407105070,
+  "reference_head_sha": "5e7b9dbbec3b6be43e882e218864fe4d78e1ce15",
+  "artifact": {
+    "id": 11387812860,
+    "name": "daily-demand-ml-robustness-v0.2",
+    "zip_sha256": "e79e600de5165e00c0b6a13672e719ef5da6e10e17a63ee84279ec052ea9d059"
+  },
+  "target": {
+    "source_observed_rows": 354,
+    "matched_observed_rows": 353,
+    "unit": "MU/day",
+    "reconstructed_hourly_proxy_used_as_target": false
+  },
+  "rolling_design": {
+    "folds": [
+      "2024-09",
+      "2024-10",
+      "2024-11",
+      "2024-12",
+      "2025-01",
+      "2025-02",
+      "2025-03"
+    ],
+    "training_rule": "strictly earlier dates only; expanding window",
+    "optuna_trials_per_model_variant_per_fold": 10
+  },
+  "rolling_summary": {
+    "lightgbm": {
+      "fold_count": 7,
+      "weather_rmse_wins": 5,
+      "weather_rmse_win_rate": 0.7142857142857143,
+      "median_weather_rmse_reduction_pct": 20.70871277962765,
+      "mean_weather_rmse_reduction_pct": 24.357000350575245,
+      "worst_weather_rmse_reduction_pct": -3.365616961618346,
+      "best_weather_rmse_reduction_pct": 57.4891071052194,
+      "pooled_calendar_only": {
+        "mae_mu": 3.2987371053440975,
+        "rmse_mu": 4.657485225232754,
+        "correlation": 0.8248619525736564
+      },
+      "pooled_weather": {
+        "mae_mu": 2.2594349103328133,
+        "rmse_mu": 2.903243352352031,
+        "correlation": 0.8924497901527235
+      }
+    },
+    "xgboost": {
+      "fold_count": 7,
+      "weather_rmse_wins": 6,
+      "weather_rmse_win_rate": 0.8571428571428571,
+      "median_weather_rmse_reduction_pct": 13.51809625673428,
+      "mean_weather_rmse_reduction_pct": 24.78645294662366,
+      "worst_weather_rmse_reduction_pct": -3.655926563637229,
+      "best_weather_rmse_reduction_pct": 60.28430724278989,
+      "pooled_calendar_only": {
+        "mae_mu": 3.2641677116167425,
+        "rmse_mu": 4.557847463813009,
+        "correlation": 0.8308838375294457
+      },
+      "pooled_weather": {
+        "mae_mu": 2.2712834389261674,
+        "rmse_mu": 2.865329032715009,
+        "correlation": 0.8980388542187691
+      }
+    }
+  },
+  "fold_weather_rmse_reduction_pct": [
+    {
+      "fold": "2024-09",
+      "lightgbm": 16.329664305090414,
+      "xgboost": 10.769460068696972
+    },
+    {
+      "fold": "2024-10",
+      "lightgbm": -3.365616961618346,
+      "xgboost": 7.792261888407023
+    },
+    {
+      "fold": "2024-11",
+      "lightgbm": -2.4409732118021776,
+      "xgboost": -3.655926563637229
+    },
+    {
+      "fold": "2024-12",
+      "lightgbm": 20.70871277962765,
+      "xgboost": 40.81814553995613
+    },
+    {
+      "fold": "2025-01",
+      "lightgbm": 57.4891071052194,
+      "xgboost": 43.97882619341856
+    },
+    {
+      "fold": "2025-02",
+      "lightgbm": 57.313507503532584,
+      "xgboost": 60.28430724278989
+    },
+    {
+      "fold": "2025-03",
+      "lightgbm": 24.46460093397718,
+      "xgboost": 13.51809625673428
+    }
+  ],
+  "xgboost_feature_group_ablation": {
+    "holdout": "2025-01-01/2025-03-31",
+    "variants": [
+      {
+        "variant": "calendar_only",
+        "feature_count": 7,
+        "holdout_mae_mu": 5.2412785824797865,
+        "holdout_rmse_mu": 6.556687745656139,
+        "holdout_correlation": 0.8718967551209514,
+        "rmse_reduction_vs_calendar_pct": 0
+      },
+      {
+        "variant": "temperature",
+        "feature_count": 13,
+        "holdout_mae_mu": 2.822640191934274,
+        "holdout_rmse_mu": 3.4020026442112914,
+        "holdout_correlation": 0.9243639914343686,
+        "rmse_reduction_vs_calendar_pct": 48.11400548294912
+      },
+      {
+        "variant": "precipitation",
+        "feature_count": 9,
+        "holdout_mae_mu": 5.623648974041607,
+        "holdout_rmse_mu": 6.813363860498144,
+        "holdout_correlation": 0.8931159228560812,
+        "rmse_reduction_vs_calendar_pct": -3.914722262197937
+      },
+      {
+        "variant": "radiation",
+        "feature_count": 8,
+        "holdout_mae_mu": 8.350685261713073,
+        "holdout_rmse_mu": 9.145633172573199,
+        "holdout_correlation": 0.8766079000313243,
+        "rmse_reduction_vs_calendar_pct": -39.48556843556044
+      },
+      {
+        "variant": "wind",
+        "feature_count": 9,
+        "holdout_mae_mu": 5.590498510742187,
+        "holdout_rmse_mu": 6.7199603314612855,
+        "holdout_correlation": 0.8998286578096598,
+        "rmse_reduction_vs_calendar_pct": -2.4901686970424386
+      },
+      {
+        "variant": "all_except_temperature",
+        "feature_count": 12,
+        "holdout_mae_mu": 5.603346812545421,
+        "holdout_rmse_mu": 6.683401644410431,
+        "holdout_correlation": 0.9091799346364662,
+        "rmse_reduction_vs_calendar_pct": -1.9325901075316723
+      },
+      {
+        "variant": "all_weather",
+        "feature_count": 18,
+        "holdout_mae_mu": 3.540156118703443,
+        "holdout_rmse_mu": 4.22737199702419,
+        "holdout_correlation": 0.9184482238657705,
+        "rmse_reduction_vs_calendar_pct": 35.525799595613506
+      }
+    ]
+  },
+  "shap_stability": {
+    "lightgbm": [
+      {
+        "feature": "doy_sin",
+        "median_normalized_abs_shap": 0.24907547998898438,
+        "mean_normalized_abs_shap": 0.2314224518118288,
+        "median_rank": 1,
+        "top5_frequency": 1
+      },
+      {
+        "feature": "temp_mean_c",
+        "median_normalized_abs_shap": 0.13456696252765737,
+        "mean_normalized_abs_shap": 0.136780549548469,
+        "median_rank": 2,
+        "top5_frequency": 0.8
+      },
+      {
+        "feature": "dow_sin",
+        "median_normalized_abs_shap": 0.11870585032516665,
+        "mean_normalized_abs_shap": 0.10939534625446781,
+        "median_rank": 4,
+        "top5_frequency": 1
+      },
+      {
+        "feature": "temp_max_c",
+        "median_normalized_abs_shap": 0.0947251694765754,
+        "mean_normalized_abs_shap": 0.07484120346124515,
+        "median_rank": 4,
+        "top5_frequency": 0.6
+      },
+      {
+        "feature": "doy_cos",
+        "median_normalized_abs_shap": 0.06191685608288855,
+        "mean_normalized_abs_shap": 0.080646991614788,
+        "median_rank": 5,
+        "top5_frequency": 0.6
+      },
+      {
+        "feature": "dow_cos",
+        "median_normalized_abs_shap": 0.06055715078723723,
+        "mean_normalized_abs_shap": 0.056683658476457545,
+        "median_rank": 6,
+        "top5_frequency": 0.4
+      },
+      {
+        "feature": "temp_min_c",
+        "median_normalized_abs_shap": 0.04658240401247688,
+        "mean_normalized_abs_shap": 0.06289009069623332,
+        "median_rank": 6,
+        "top5_frequency": 0.4
+      },
+      {
+        "feature": "cooling_degree_hours_24c",
+        "median_normalized_abs_shap": 0.03970607443660734,
+        "mean_normalized_abs_shap": 0.04618590870969656,
+        "median_rank": 9,
+        "top5_frequency": 0.2
+      },
+      {
+        "feature": "is_weekend",
+        "median_normalized_abs_shap": 0.03185359684379194,
+        "mean_normalized_abs_shap": 0.03383757016502673,
+        "median_rank": 10,
+        "top5_frequency": 0
+      },
+      {
+        "feature": "wind_max_m_s",
+        "median_normalized_abs_shap": 0.029265428734139804,
+        "mean_normalized_abs_shap": 0.028225903330266554,
+        "median_rank": 11,
+        "top5_frequency": 0
+      },
+      {
+        "feature": "hot_hours_gt30c",
+        "median_normalized_abs_shap": 0.02378761775911332,
+        "mean_normalized_abs_shap": 0.02718141713967695,
+        "median_rank": 12,
+        "top5_frequency": 0
+      },
+      {
+        "feature": "wind_mean_m_s",
+        "median_normalized_abs_shap": 0.02000920250889442,
+        "mean_normalized_abs_shap": 0.025796370752812638,
+        "median_rank": 13,
+        "top5_frequency": 0
+      }
+    ],
+    "xgboost": [
+      {
+        "feature": "doy_sin",
+        "median_normalized_abs_shap": 0.3247161206661616,
+        "mean_normalized_abs_shap": 0.3237488447550134,
+        "median_rank": 1,
+        "top5_frequency": 1
+      },
+      {
+        "feature": "dow_sin",
+        "median_normalized_abs_shap": 0.10822162387473536,
+        "mean_normalized_abs_shap": 0.10471137563266686,
+        "median_rank": 2.5,
+        "top5_frequency": 1
+      },
+      {
+        "feature": "doy_cos",
+        "median_normalized_abs_shap": 0.09126788338394638,
+        "mean_normalized_abs_shap": 0.09603247200441117,
+        "median_rank": 3.5,
+        "top5_frequency": 0.6666666666666666
+      },
+      {
+        "feature": "temp_max_c",
+        "median_normalized_abs_shap": 0.07768824435770379,
+        "mean_normalized_abs_shap": 0.07146226693052724,
+        "median_rank": 4,
+        "top5_frequency": 0.6666666666666666
+      },
+      {
+        "feature": "temp_mean_c",
+        "median_normalized_abs_shap": 0.050731734245902216,
+        "mean_normalized_abs_shap": 0.054579479337432624,
+        "median_rank": 6.5,
+        "top5_frequency": 0.3333333333333333
+      },
+      {
+        "feature": "dow_cos",
+        "median_normalized_abs_shap": 0.04718030765499025,
+        "mean_normalized_abs_shap": 0.0511904027316055,
+        "median_rank": 6,
+        "top5_frequency": 0.5
+      },
+      {
+        "feature": "temp_min_c",
+        "median_normalized_abs_shap": 0.042375694407430414,
+        "mean_normalized_abs_shap": 0.051689052102018684,
+        "median_rank": 7.5,
+        "top5_frequency": 0.16666666666666666
+      },
+      {
+        "feature": "wet_hours_gt0_1mm",
+        "median_normalized_abs_shap": 0.032016179651522196,
+        "mean_normalized_abs_shap": 0.030169179731139296,
+        "median_rank": 9.5,
+        "top5_frequency": 0
+      },
+      {
+        "feature": "cooling_degree_hours_24c",
+        "median_normalized_abs_shap": 0.024949621016948826,
+        "mean_normalized_abs_shap": 0.03663922019862873,
+        "median_rank": 12,
+        "top5_frequency": 0.16666666666666666
+      },
+      {
+        "feature": "wind_max_m_s",
+        "median_normalized_abs_shap": 0.023931830152713426,
+        "mean_normalized_abs_shap": 0.023824541968997914,
+        "median_rank": 11,
+        "top5_frequency": 0
+      },
+      {
+        "feature": "precip_mm_day",
+        "median_normalized_abs_shap": 0.02018544086474893,
+        "mean_normalized_abs_shap": 0.02451579304552907,
+        "median_rank": 12,
+        "top5_frequency": 0.16666666666666666
+      },
+      {
+        "feature": "hot_hours_gt30c",
+        "median_normalized_abs_shap": 0.020174496504408057,
+        "mean_normalized_abs_shap": 0.042525872090166415,
+        "median_rank": 12.5,
+        "top5_frequency": 0.3333333333333333
+      }
+    ]
+  },
+  "interpretation": [
+    "Weather improves rolling monthly holdout RMSE in 5 of 7 LightGBM folds and 6 of 7 XGBoost folds.",
+    "November 2024 is a shared failure month; LightGBM also slightly loses in October 2024.",
+    "Pooled out-of-sample RMSE is substantially lower with weather for both model families.",
+    "On the Jan-Mar XGBoost feature-group ablation, temperature features alone outperform calendar-only by 48.1% RMSE.",
+    "Removing temperature eliminates the weather gain in that holdout, while all-weather improves RMSE by 35.5%.",
+    "The one-year result supports a robust retrospective weather-demand association, not causal inference or multi-year forecasting generalization."
+  ],
+  "limitations": [
+    "All rolling folds come from one financial year.",
+    "Same-day realized ERA5 reanalysis means retrospective prediction, not day-ahead forecasting.",
+    "Five representative ERA5 points are equally weighted rather than load weighted.",
+    "The feature-group ablation uses XGBoost only.",
+    "The feature-group ablation uses 10 Optuna trials per variant and should not be read as a definitive ranking of all possible model configurations.",
+    "Holiday and event indicators are absent."
+  ]
+}
