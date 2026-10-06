@@ -80,6 +80,45 @@ SHAP is generated **only** for a full weather model whose Jan-Mar holdout RMSE b
 
 This creates a stricter gate: the full model must show incremental out-of-sample value from the weather feature set before SHAP is used to interpret it. SHAP values are still model attribution under correlated features, not causal demand elasticities.
 
+## Real FY2024-25 result
+
+Reference workflow run: `37394745601` on commit `ec359eb95aba5a6c1e7288253153f8ea57486929`.
+
+The experiment matched **353 of 354** published daily SLDC observations to complete local-day ERA5 weather. **2024-04-01** was excluded because the recovered ERA5 artifact begins at 00:00 UTC, leaving only 19 hours for that first IST calendar day. No missing hours were fabricated.
+
+Training used **267 observations from 2 April through 31 December 2024**. The untouched holdout contains **86 observations from 1 January through 31 March 2025**.
+
+| Model | Weather? | Holdout MAE (MU/day) | Holdout RMSE (MU/day) | Correlation |
+|---|---:|---:|---:|---:|
+| Ridge calendar baseline | No | 7.893 | 9.188 | 0.703 |
+| LightGBM, tuned calendar-only | No | 6.123 | 7.150 | 0.888 |
+| **LightGBM, tuned calendar + ERA5** | **Yes** | **3.139** | **3.778** | **0.932** |
+| XGBoost, tuned calendar-only | No | 6.649 | 7.659 | 0.864 |
+| **XGBoost, tuned calendar + ERA5** | **Yes** | **2.623** | **3.179** | **0.922** |
+
+Against the independently Optuna-tuned calendar-only version of the same model family, adding ERA5 weather reduces holdout RMSE by:
+
+- **47.16% for LightGBM**
+- **58.50% for XGBoost**
+
+This ablation is the important result. It shows that the improvement is not explained only by replacing a linear calendar model with gradient-boosted trees. In this one-year experiment, the same boosted model families perform substantially better when same-day ERA5 weather information is added.
+
+Both models therefore passed the SHAP gate. The largest SHAP attribution remains the annual-cycle term `doy_sin`, but **mean temperature is the second-ranked feature in both models**. Temperature minima/maxima, cooling degree-hours and precipitation also appear among leading attributions. These are model attributions, not causal elasticities.
+
+XGBoost has the lowest holdout MAE and RMSE; LightGBM has the slightly higher holdout correlation. That does not justify choosing a permanent "winner" from one financial year.
+
+The machine-readable evidence snapshot is committed at `data/evidence/daily_demand_ml_v0_1_2026_10_06.json`.
+
+### What this result supports
+
+It supports the bounded statement:
+
+> In a one-financial-year retrospective experiment, adding same-day ERA5 weather features materially improved out-of-sample prediction of observed Kerala daily electricity consumption relative to independently tuned calendar-only LightGBM and XGBoost models.
+
+It does **not** support the claims that weather causes the inferred demand changes, that the model is an operational day-ahead forecaster, or that it has been validated across multiple years.
+
+Same-day **realized reanalysis weather** is used, so this is retrospective weather-demand modelling. The next high-value validation is a multi-year SLDC × ERA5 replication.
+
 ## Promotion gate
 
 The v0.1 result remains experimental even if a boosted model wins.
