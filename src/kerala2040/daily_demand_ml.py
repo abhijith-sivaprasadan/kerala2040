@@ -218,6 +218,7 @@ def _time_series_cv_rmse(
 def _tune_lightgbm(
     train: pd.DataFrame,
     *,
+    features: list[str],
     trials: int,
     seed: int,
 ) -> tuple[dict[str, Any], float]:
@@ -225,7 +226,7 @@ def _tune_lightgbm(
     import optuna
 
     optuna.logging.set_verbosity(optuna.logging.WARNING)
-    x = train[FEATURES]
+    x = train[features]
     y = train["consumption_mu"]
 
     def factory(params: dict[str, Any]) -> Any:
@@ -262,6 +263,7 @@ def _tune_lightgbm(
 def _tune_xgboost(
     train: pd.DataFrame,
     *,
+    features: list[str],
     trials: int,
     seed: int,
 ) -> tuple[dict[str, Any], float]:
@@ -269,7 +271,7 @@ def _tune_xgboost(
     import xgboost as xgb
 
     optuna.logging.set_verbosity(optuna.logging.WARNING)
-    x = train[FEATURES]
+    x = train[features]
     y = train["consumption_mu"]
 
     def factory(params: dict[str, Any]) -> Any:
@@ -308,6 +310,7 @@ def _fit_boosted(
     train: pd.DataFrame,
     holdout: pd.DataFrame,
     *,
+    features: list[str],
     seed: int,
 ) -> tuple[Any, np.ndarray]:
     if name == "lightgbm":
@@ -333,22 +336,27 @@ def _fit_boosted(
     else:
         raise ValueError(f"unknown boosted model {name!r}")
 
-    model.fit(train[FEATURES], train["consumption_mu"])
-    return model, np.asarray(model.predict(holdout[FEATURES]), dtype=float)
+    model.fit(train[features], train["consumption_mu"])
+    return model, np.asarray(model.predict(holdout[features]), dtype=float)
 
 
-def _shap_importance(model: Any, holdout: pd.DataFrame) -> pd.DataFrame:
+def _shap_importance(
+    model: Any,
+    holdout: pd.DataFrame,
+    *,
+    features: list[str],
+) -> pd.DataFrame:
     import shap
 
     explainer = shap.TreeExplainer(model)
-    values = explainer.shap_values(holdout[FEATURES])
+    values = explainer.shap_values(holdout[features])
     array = np.asarray(values, dtype=float)
-    if array.ndim != 2 or array.shape[1] != len(FEATURES):
+    if array.ndim != 2 or array.shape[1] != len(features):
         raise ValueError("unexpected SHAP output shape")
     return (
         pd.DataFrame(
             {
-                "feature": FEATURES,
+                "feature": features,
                 "mean_abs_shap": np.mean(np.abs(array), axis=0),
             }
         )
@@ -374,8 +382,34 @@ def run_daily_demand_ml(
     baseline_metrics = regression_metrics(holdout["consumption_mu"], baseline_pred)
 
     tune_results = {
-        "lightgbm": _tune_lightgbm(train, trials=trials, seed=seed),
-        "xgboost": _tune_xgboost(train, trials=trials, seed=seed),
+        "lightgbm": {
+            "full": _tune_lightgbm(
+                train,
+                features=FEATURES,
+                trials=trials,
+                seed=seed,
+            ),
+            "calendar_only": _tune_lightgbm(
+                train,
+                features=CALENDAR_FEATURES,
+                trials=trials,
+                seed=seed + 101,
+            ),
+        },
+        "xgboost": {
+            "full": _tune_xgboost(
+                train,
+                features=FEATURES,
+                trials=trials,
+                seed=seed,
+            ),
+            "calendar_only": _tune_xgboost(
+                train,
+                features=CALENDAR_FEATURES,
+                trials=trials,
+                seed=seed + 101,
+            ),
+        },
     }
 
     predictions = pd.DataFrame(
@@ -388,21 +422,72 @@ def run_daily_demand_ml(
     fitted: dict[str, Any] = {}
     model_results: dict[str, Any] = {}
 
-    for name, (params, cv_rmse) in tune_results.items():
-        model, pred = _fit_boosted(name, params, train, holdout, seed=seed)
+    for name, variants in tune_results.items():
+        params, cv_rmse = variants["full"]
+        calendar_params, calendar_cv_rmse = variants["calendar_only"]
+
+        model, pred = _fit_boosted(
+            name,
+            params,
+            train,
+            holdout,
+            features=FEATURES,
+            seed=seed,
+        )
+        calendar_model, calendar_pred = _fit_boosted(
+            name,
+            calendar_params,
+            train,
+            holdout,
+            features=CALENDAR_FEATURES,
+            seed=seed + 101,
+        )
+
         metrics = regression_metrics(holdout["consumption_mu"], pred)
-        beats = bool(metrics["rmse_mu"] < baseline_metrics["rmse_mu"])
+        calendar_metrics = regression_metrics(
+            holdout["consumption_mu"],
+            calendar_pred,
+        )
+        beats_linear_calendar = bool(
+            metrics["rmse_mu"] < baseline_metrics["rmse_mu"]
+        )
+        beats_boosted_calendar = bool(
+            metrics["rmse_mu"] < calendar_metrics["rmse_mu"]
+        )
+        weather_rmse_reduction_pct = (
+            100.0
+            * (calendar_metrics["rmse_mu"] - metrics["rmse_mu"])
+            / calendar_metrics["rmse_mu"]
+        )
+
         predictions[f"{name}_mu"] = pred
+        predictions[f"{name}_calendar_only_mu"] = calendar_pred
         fitted[name] = model
         model_results[name] = {
-            "optuna_trials": int(trials),
-            "best_params": params,
-            "mean_time_series_cv_rmse_mu": float(cv_rmse),
-            "holdout": metrics,
-            "beats_calendar_baseline_on_holdout_rmse": beats,
+            "optuna_trials_per_variant": trials,
+            "full_model": {
+                "features": FEATURES,
+                "best_params": params,
+                "mean_time_series_cv_rmse_mu": float(cv_rmse),
+                "holdout": metrics,
+            },
+            "calendar_only_ablation": {
+                "features": CALENDAR_FEATURES,
+                "best_params": calendar_params,
+                "mean_time_series_cv_rmse_mu": float(calendar_cv_rmse),
+                "holdout": calendar_metrics,
+            },
+            "beats_linear_calendar_baseline_on_holdout_rmse": beats_linear_calendar,
+            "beats_tuned_calendar_only_variant_on_holdout_rmse": beats_boosted_calendar,
+            "weather_incremental_holdout_rmse_reduction_pct": float(
+                weather_rmse_reduction_pct
+            ),
             "shap": {
                 "generated": False,
-                "rule": "generated only when holdout RMSE beats calendar-only Ridge baseline",
+                "rule": (
+                    "generated only when the full weather model beats both the "
+                    "linear calendar baseline and its tuned calendar-only boosted ablation"
+                ),
             },
         }
 
@@ -445,6 +530,11 @@ def run_daily_demand_ml(
             "features": CALENDAR_FEATURES,
             "holdout": baseline_metrics,
         },
+        "ablation_question": (
+            "Does adding same-day ERA5 weather improve each boosted model "
+            "relative to an independently Optuna-tuned calendar-only version "
+            "of the same model family?"
+        ),
         "models": model_results,
         "limitations": [
             "Only one financial year is used; this is a small-sample experiment.",
@@ -462,13 +552,23 @@ def run_daily_demand_ml(
         predictions.to_csv(out_dir / "holdout_predictions.csv", index=False)
 
         for name, result in model_results.items():
-            if not result["beats_calendar_baseline_on_holdout_rmse"]:
+            if not (
+                result["beats_linear_calendar_baseline_on_holdout_rmse"]
+                and result["beats_tuned_calendar_only_variant_on_holdout_rmse"]
+            ):
                 continue
-            importance = _shap_importance(fitted[name], holdout)
+            importance = _shap_importance(
+                fitted[name],
+                holdout,
+                features=FEATURES,
+            )
             importance.to_csv(out_dir / f"{name}_shap_importance.csv", index=False)
             result["shap"] = {
                 "generated": True,
-                "rule": "generated only when holdout RMSE beats calendar-only Ridge baseline",
+                "rule": (
+                    "generated only when the full weather model beats both the "
+                    "linear calendar baseline and tuned calendar-only boosted ablation"
+                ),
                 "top_features": importance.head(10).to_dict(orient="records"),
             }
 
