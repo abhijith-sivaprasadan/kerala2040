@@ -81,13 +81,15 @@ Import-price sensitivity and import-availability sensitivity therefore answer di
 
 **Finding:** yes, within the public-network screening model.
 
-The completed KSEBL robustness screen tests **233 source-backed primary lines** under eight extreme allocations of Kerala's residual interstate import. **21 lines remain overloaded in all eight cases**, forming **12 connected robust corridor groups**. Of 34 independently testable PSS-backed transformers, one robust independent bottleneck remains: **Shornur 220/110 kV**, with a historical PSS rating of 100 MVA.
+The completed KSEBL robustness screen tests **233 source-backed primary lines** under eight extreme allocations of Kerala's residual interstate import. **21 lines remain overloaded in all eight tested boundary-allocation cases**, forming **12 connected robust corridor groups**.
 
-Shornur is the strongest multi-voltage hotspot in this screening: robust 110 kV and 220 kV corridor groups meet there.
+The historical transformer screen used a 31 March 2023 PSS snapshot in which Shornur had a **100 MVA 220/110-kV entry**, so the model also flagged that element in all eight cases. A post-release QA check against the current 2026 CEA transmission plan found that Shoranur is now reported with **200 MVA + 100 MVA** existing transformation and is independently identified by CEA as a constrained station with further reinforcement planned. The 100 MVA model overload ratio is therefore **not a current whole-station loading estimate**.
+
+Shornur remains the strongest multi-voltage **geographic hotspot** in the public screening: robust 110-kV and 220-kV corridor groups meet there, and the location is independently corroborated by CEA planning evidence.
 
 The correct claim is therefore:
 
-> **Under the public-data FY2024–25 chronological screening model, Shornur emerges as the strongest multi-voltage internal transmission hotspot, and this conclusion survives extreme uncertainty in where Kerala's net interstate import is spatially injected.**
+> **Under the public-data FY2024–25 chronological screening model, Shornur emerges as the strongest multi-voltage internal transmission hotspot across the tested boundary-injection allocation envelope. Current CEA planning evidence independently corroborates Shoranur as a constrained location, while the Kerala2040 transformer overload magnitude remains a historical-screening result rather than a current operator loading estimate.**
 
 This is not a calibrated AC load-flow, voltage-stability or N-1 security conclusion and is not converted directly into an upgrade MW or cost.
 

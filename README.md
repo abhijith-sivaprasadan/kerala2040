@@ -87,9 +87,11 @@ Interconnection is therefore neither "bad" nor merely emergency backup. The rese
 
 The public KSEBL network screen tests **233 source-backed primary lines** under eight radically different ways of allocating Kerala's residual interstate import.
 
-**21 lines remain overloaded in all eight cases**, forming **12 robust corridor groups**. Of 34 independently testable PSS-backed transformers, one robust independent bottleneck remains: **Shornur 220/110 kV**.
+**21 lines remain overloaded in all eight tested boundary-injection cases**, forming **12 robust corridor groups**. A historical 31 March 2023 PSS snapshot also caused the screening model to flag a **100 MVA Shornur 220/110-kV transformer element** in every case.
 
-Under this public-data screening model, **Shornur emerges as the strongest multi-voltage internal transmission hotspot**, and that finding survives extreme uncertainty in where net interstate import is injected.
+**QA correction (28 September 2026):** the current CEA Kerala transmission plan reports **200 MVA + 100 MVA** of existing transformation at Shoranur and independently identifies the station and nearby corridors as constrained, with further reinforcement planned. The Kerala2040 **hotspot location is therefore independently corroborated**, but the model's 100 MVA transformer loading must not be interpreted as current whole-station loading.
+
+Under this public-data screening model, **Shornur emerges as the strongest multi-voltage internal transmission hotspot robust to the tested boundary-injection allocation envelope**. This is a congestion/deliverability screen, not an AC/N-1 operator-state result.
 
 This is not a calibrated AC or N-1 security assessment and is not converted directly into an upgrade MW or cost.
 
@@ -174,7 +176,7 @@ These are **candidate directions, not a validated least-cost portfolio**.
 Existing projects can make the abstract system easier to understand:
 
 - **CIAL** reports 50 MW of renewable capacity, daytime grid export and a BESS project intended for nighttime use of solar electricity.
-- **Kochi Metro** reports 5.389 MWp of station/depot solar.
+- **Kochi Metro's project page** documents a 5.389 MWp station/depot solar configuration; later KMRL reporting indicates further solar expansion, so this is not presented as the complete current 2026 total.
 - **Kochi Water Metro** operates battery-electric water transport and has described a future 17 MWp solar concept for its energy needs.
 - **KMML** provides a separate industrial/circular-material case connected to Kerala's heavy-mineral geology.
 
@@ -328,4 +330,4 @@ Some source-acquisition and hydrology workflows intentionally fail closed when t
 
 Kerala2040 is an independent research project by **Abhijith Sivaprasadan**. CET 2026 / KTH affiliation describes the presentation context; it does not imply institutional endorsement of the project's findings.
 
-The repository is open for inspection, criticism and reproduction. Claims should be cited from their underlying source or evidence file rather than from a screenshot or presentation summary.
+The repository is open for inspection and criticism, and most retained transformations/model runs are reproducible from the admitted inputs. Some upstream or derived datasets remain source-, license- or access-gated. In particular, the released ERA5-sensitive v2 hourly chronology is cryptographically integrity-verifiable, but its original coefficient-fitting pipeline is not currently end-to-end reproducible from a fresh clone because the raw ERA5 archive and original fitting script are not committed. See [docs/qa/REPRODUCIBILITY_AUDIT.md](docs/qa/REPRODUCIBILITY_AUDIT.md). Claims should be cited from their underlying source or evidence file rather than from a screenshot or presentation summary.
