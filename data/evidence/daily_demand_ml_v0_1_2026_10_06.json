@@ -1,0 +1,120 @@
+{
+  "classification": "experimental_daily_observed_demand_ml_v0_1_not_hourly_forecast",
+  "captured_utc": "2026-10-06",
+  "reference_workflow_run_id": 37394745601,
+  "reference_head_sha": "ec359eb95aba5a6c1e7288253153f8ea57486929",
+  "artifact": {
+    "id": 11383211012,
+    "name": "daily-observed-demand-ml-v0.1",
+    "zip_sha256": "2c1064e380095bad6bdef8458700d99d7b31696b2dbe0dfb3381c81e7ea6ea86"
+  },
+  "target": {
+    "source": "Kerala SLDC daily consumption via public/daily-balance.json",
+    "source_observed_rows": 354,
+    "matched_observed_rows": 353,
+    "weather_boundary_excluded_dates": [
+      "2024-04-01"
+    ],
+    "unit": "MU/day",
+    "reconstructed_hourly_proxy_used_as_target": false
+  },
+  "validation": {
+    "train": "2024-04-02/2024-12-31",
+    "train_rows": 267,
+    "holdout": "2025-01-01/2025-03-31",
+    "holdout_rows": 86,
+    "split": "chronological; expanding TimeSeriesSplit for Optuna within training"
+  },
+  "linear_calendar_ridge": {
+    "mae_mu": 7.893304626694848,
+    "rmse_mu": 9.188136477934457,
+    "correlation": 0.7025463091330865
+  },
+  "lightgbm": {
+    "optuna_trials_per_variant": 20,
+    "full_weather_holdout": {
+      "mae_mu": 3.1392309821287303,
+      "rmse_mu": 3.778065141537572,
+      "correlation": 0.9324619775175725
+    },
+    "tuned_calendar_only_holdout": {
+      "mae_mu": 6.123355078394091,
+      "rmse_mu": 7.14999519427809,
+      "correlation": 0.8878995502613665
+    },
+    "weather_incremental_holdout_rmse_reduction_pct": 47.1598925750183,
+    "shap_generated": true,
+    "leading_shap_features": [
+      [
+        "doy_sin",
+        4.575834127817006
+      ],
+      [
+        "temp_mean_c",
+        1.2362807585846856
+      ],
+      [
+        "dow_sin",
+        1.117804536981507
+      ],
+      [
+        "temp_min_c",
+        0.7187368819876189
+      ],
+      [
+        "cooling_degree_hours_24c",
+        0.6513694270735972
+      ]
+    ]
+  },
+  "xgboost": {
+    "optuna_trials_per_variant": 20,
+    "full_weather_holdout": {
+      "mae_mu": 2.6226761136786876,
+      "rmse_mu": 3.1785325360327845,
+      "correlation": 0.9224300733802173
+    },
+    "tuned_calendar_only_holdout": {
+      "mae_mu": 6.649043051644258,
+      "rmse_mu": 7.65902715277944,
+      "correlation": 0.8644019422047596
+    },
+    "weather_incremental_holdout_rmse_reduction_pct": 58.49952647211463,
+    "shap_generated": true,
+    "leading_shap_features": [
+      [
+        "doy_sin",
+        4.544415780451408
+      ],
+      [
+        "temp_mean_c",
+        1.20002280903417
+      ],
+      [
+        "dow_sin",
+        1.1633639818403956
+      ],
+      [
+        "doy_cos",
+        0.5367609697372414
+      ],
+      [
+        "temp_max_c",
+        0.5312608998528746
+      ]
+    ]
+  },
+  "interpretation": [
+    "Both full weather models beat the linear calendar baseline on the untouched Jan-Mar 2025 holdout.",
+    "Both full weather models beat independently Optuna-tuned calendar-only variants of the same model family.",
+    "The result supports incremental predictive information from the ERA5 weather feature set in this one-year retrospective experiment.",
+    "SHAP is model attribution under correlated features and is not a causal weather-demand elasticity."
+  ],
+  "limitations": [
+    "One financial year only; small-sample experiment.",
+    "Five equal-weight representative ERA5 points, not a population/load-weighted statewide weather field.",
+    "Same-day realized ERA5 reanalysis means retrospective prediction, not an operational day-ahead forecast.",
+    "Daily energy target, not measured hourly or 15-minute telemetry.",
+    "Multi-year SLDC x ERA5 replication is required before treating this as a robust forecasting result."
+  ]
+}
