@@ -540,6 +540,7 @@ def run_daily_demand_ml(
             "Only one financial year is used; this is a small-sample experiment.",
             "Weather uses five representative ERA5 points, not a population/load-weighted statewide field.",
             "Same-day weather association is not a causal elasticity estimate.",
+            "Same-day realized ERA5 reanalysis makes this retrospective prediction, not a day-ahead operational forecast.",
             "The target is daily energy, not measured hourly or 15-minute load.",
             "SHAP explains model attribution under correlated features; it does not establish causality.",
             "A multi-year SLDC x ERA5 study is required before promoting this as a robust forecasting result.",
