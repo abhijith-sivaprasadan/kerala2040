@@ -1,0 +1,100 @@
+name: Daily demand ML robustness v0.2
+
+on:
+  pull_request:
+    paths:
+      - "src/kerala2040/daily_demand_ml.py"
+      - "src/kerala2040/daily_demand_robustness.py"
+      - "scripts/run_daily_demand_robustness_v0_2.py"
+      - "tests/test_daily_demand_robustness.py"
+      - "docs/DAILY_DEMAND_ML_ROBUSTNESS_V0_2.md"
+      - ".github/workflows/daily-demand-ml-robustness-v0.2.yml"
+      - "pyproject.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  robustness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ML, ERA5 and test dependencies
+        run: python -m pip install -e ".[dev,ml,era5]"
+
+      - name: Lint and unit-test robustness contract
+        run: |
+          ruff check src/kerala2040/daily_demand_robustness.py scripts/run_daily_demand_robustness_v0_2.py tests/test_daily_demand_robustness.py
+          pytest -q tests/test_daily_demand_robustness.py tests/test_daily_demand_ml.py
+
+      - name: Download verified Apr-Dec 2024 ERA5 source artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35622527064"
+          pattern: era5-*-2024-*_to_2024-*-SOURCE-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2024
+          merge-multiple: false
+
+      - name: Download verified Jan-Mar 2025 ERA5 source artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: "35623051780"
+          pattern: era5-*-2025-01_to_2025-03-REACQUIRED-UNVALIDATED
+          path: results/acquisition/era5/full-year-input/2025
+          merge-multiple: false
+
+      - name: Require the 20 recovered location-quarter artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(find results/acquisition/era5/full-year-input -type f -name retrieval_attempt.json | wc -l)"
+          echo "retrieval manifests: $count"
+          test "$count" -eq 20
+
+      - name: Re-verify source bytes and chronology
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t artifacts < <(
+            find results/acquisition/era5/full-year-input -type f -name retrieval_attempt.json -printf '%h\n' | sort -u
+          )
+          python scripts/verify_era5_source_artifacts.py "${artifacts[@]}" --require-full-year --output results/acquisition/era5/robustness_source_qa.json
+
+      - name: Build reusable verified ERA5 weather table
+        run: python scripts/build_full_pypsa_era5_profiles_v0_6.py results/acquisition/era5/full-year-input
+
+      - name: Run rolling robustness and feature-group ablation
+        run: |
+          python scripts/run_daily_demand_robustness_v0_2.py \
+            --weather results/models/full_pypsa/era5_renewables_v0_6/weather_points.parquet \
+            --trials 10
+
+      - name: Show robustness summary
+        run: cat results/ml/daily_demand_robustness_v0_2/summary.json
+
+      - name: Publish summary to job page
+        shell: bash
+        run: cat results/ml/daily_demand_robustness_v0_2/summary.json >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: daily-demand-ml-robustness-v0.2
+          retention-days: 90
+          if-no-files-found: error
+          path: |
+            results/acquisition/era5/robustness_source_qa.json
+            results/ml/daily_demand_robustness_v0_2/summary.json
+            results/ml/daily_demand_robustness_v0_2/*.csv
+            results/ml/daily_demand_robustness_v0_2/*.png
