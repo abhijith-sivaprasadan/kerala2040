@@ -334,6 +334,6 @@ The repository is open for inspection, criticism and reproduction. Claims should
 <!-- ci-workflow-coverage -->
 ## Continuous integration
 
-[![CI](https://github.com/abhijith-sivaprasadan/kerala2040/actions/workflows/ci.yml/badge.svg?branch=codex%2Fci-publication)](https://github.com/abhijith-sivaprasadan/kerala2040/actions/workflows/ci.yml)
+[![CI](https://github.com/abhijith-sivaprasadan/kerala2040/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/abhijith-sivaprasadan/kerala2040/actions/workflows/ci.yml)
 
-See [CI coverage and limitations](CI.md) for the automated checks. The status badge tracks the published CI review branch.
+See [CI coverage and limitations](CI.md) for the automated checks. The status badge tracks the default branch.
