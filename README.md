@@ -329,3 +329,11 @@ Some source-acquisition and hydrology workflows intentionally fail closed when t
 Kerala2040 is an independent research project by **Abhijith Sivaprasadan**. CET 2026 / KTH affiliation describes the presentation context; it does not imply institutional endorsement of the project's findings.
 
 The repository is open for inspection, criticism and reproduction. Claims should be cited from their underlying source or evidence file rather than from a screenshot or presentation summary.
+
+
+<!-- ci-workflow-coverage -->
+## Continuous integration
+
+[![CI](https://github.com/abhijith-sivaprasadan/kerala2040/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/abhijith-sivaprasadan/kerala2040/actions/workflows/ci.yml)
+
+See [CI coverage and limitations](CI.md) for the automated checks. The status badge tracks the default branch.
