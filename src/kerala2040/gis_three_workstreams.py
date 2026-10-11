@@ -7,7 +7,7 @@ import hashlib
 import json
 import math
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 import yaml
@@ -83,7 +83,7 @@ def check_shapefile_zip(path: Path) -> dict[str, Any]:
             raise ValueError("Malformed or unsafe geometry ZIP")
         groups: dict[str, set[str]] = {}
         for item in names:
-            p = Path(item)
+            p = PurePosixPath(item)
             groups.setdefault(str(p.with_suffix("")).casefold(), set()).add(p.suffix.lower())
         complete = [
             key for key, suffixes in groups.items()
