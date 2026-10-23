@@ -44,6 +44,12 @@ jobs:
           assert all(x["max_model_equation_residual_mw"] < 1e-4 for x in s["results"])
           assert all(x["avoided_unserved_mwh"] >= -1e-3 for x in s["results"])
           assert any(x["avoided_unserved_mwh"] > 1 for x in s["results"])
+          # Permuting hours cannot matter when all other hourly constraints are time-invariant.
+          for cap in s["import_limits_mw"]:
+              cases = {x["shape"]: x for x in s["results"] if x["import_ceiling_mw"] == cap}
+              for shifted in ("shift_earlier_2h", "shift_later_2h"):
+                  for key in ("fixed_hydro_unserved_mwh", "flexible_hydro_unserved_mwh"):
+                      assert abs(cases[shifted][key] - cases["baseline"][key]) < 1e-3
           print("Verified source-backed accounting; bounded historical sensitivity remains distinct from the 2030-31 result.")
           for case in s["results"]:
               print(

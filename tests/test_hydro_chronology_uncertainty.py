@@ -53,3 +53,23 @@ def test_high_consumption_week_selected_from_real_daily_source():
     days = choose_observed_peak_energy_week(pd.read_csv(p))
     assert days == ["2024-04-28", "2024-04-29", "2024-04-30",
                     "2024-05-01", "2024-05-02", "2024-05-03", "2024-05-04"]
+
+
+@pytest.mark.parametrize("flexible", [False, True])
+@pytest.mark.parametrize("cap", [45., 60., 90.])
+def test_lp_matches_independently_derived_daily_shortage_bound(flexible, cap):
+    """Two different implementations: constrained LP vs arithmetic lower bound."""
+    load = np.full(24, 65.)
+    load[18:22] = 160.
+    nonhydro, hydro_mwh, hydro_cap = 10., 480., 60.
+    deficit = np.maximum(0., load - nonhydro - cap)
+    if flexible:
+        expected = max(float(deficit.sum()) - hydro_mwh,
+                       float(np.maximum(0., deficit - hydro_cap).sum()), 0.)
+    else:
+        expected = float(np.maximum(0., deficit - hydro_mwh / 24.).sum())
+    solved = solve_one_day(load, nonhydro_mw=nonhydro,
+                           daily_hydro_mwh=hydro_mwh,
+                           hydro_power_mw=hydro_cap,
+                           import_ceiling_mw=cap, flexible=flexible)
+    assert solved["modelled_unserved_mwh"] == pytest.approx(expected, abs=1e-5)
