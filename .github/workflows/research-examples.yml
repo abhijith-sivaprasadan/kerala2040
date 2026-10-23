@@ -63,6 +63,26 @@ jobs:
           for record in v2["cases"]:
               if record["hydro_ramp_cap_mw_per_h"] is not None:
                   assert record["solver_checks"]["actual_hydro_ramp_mw_per_h"] <= record["hydro_ramp_cap_mw_per_h"] + 1e-4
+          def select(cap, supply, shape, ramp):
+              return next(x for x in v2["cases"] if x["import_ceiling_mw"] == cap
+                          and x["hypothetical_import_hourly_schedule"] == supply
+                          and x["demand_shape"] == shape
+                          and x["hydro_ramp_cap_mw_per_h"] == ramp)
+          # Control must remain clock-shift invariant when supply is uniform and hydro is free.
+          for cap in (4455.0, 3564.0):
+              original = select(cap, "uniform_import_capacity", "baseline", None)
+              for shape in ("shift_earlier_2h", "shift_later_2h"):
+                  shifted = select(cap, "uniform_import_capacity", shape, None)
+                  assert abs(original["fixed_hydro_unserved_mwh"] - shifted["fixed_hydro_unserved_mwh"]) < 1e-3
+                  assert abs(original["optimised_hydro_unserved_mwh"] - shifted["optimised_hydro_unserved_mwh"]) < 1e-3
+          # Falsification control: time-varying availability breaks fixed-hydro clock invariance.
+          exposed = select(4455.0, "illustrative_18_22_import_20pct_derate", "baseline", None)
+          misaligned = select(4455.0, "illustrative_18_22_import_20pct_derate", "shift_earlier_2h", None)
+          assert abs(exposed["fixed_hydro_unserved_mwh"] - misaligned["fixed_hydro_unserved_mwh"]) > 1000
+          # Constraining hydro must not beat free hydro; in one experiment it actually binds.
+          free = select(3564.0, "illustrative_18_22_import_20pct_derate", "shift_earlier_2h", None)
+          ramped = select(3564.0, "illustrative_18_22_import_20pct_derate", "shift_earlier_2h", 400.0)
+          assert ramped["optimised_hydro_unserved_mwh"] > free["optimised_hydro_unserved_mwh"] + 10
           print("Verified constrained ramp and time-varying import illustrative sensitivity:")
           for record in v2["cases"]:
               if record["demand_shape"] in ("baseline", "shift_earlier_2h", "shift_later_2h"):

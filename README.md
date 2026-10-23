@@ -55,6 +55,8 @@ We particularly welcome reproducibility checks, dated official data and correcte
 
 **Highest-priority evidence gap:** continuous measured Kerala 15-minute/hourly demand and associated dispatch and exchange data. More sophisticated models cannot substitute for missing validation observations.
 
+**Supply-chronology stress test (v0.2):** [40 source-anchored historical model sensitivities](docs/HYDRO_SUPPLY_TIMING_V0_2.md) add hourly availability and a hypothetical hydro ramp. They demonstrate when clock-time alignment changes a model result, **not** that a particular import derate or reservoir operation occurred.
+
 **New bounded experiment:** [Historical load-shape and hydro sensitivity, including the informative ±2-hour invariance](docs/HYDRO_CHRONOLOGY_SENSITIVITY_V0_1.md). It tests simplified screening assumptions rather than validating the 2030–31 headline.
 
 **Research materials:** [current research plan](docs/research_plan.md) · [full evidence register](docs/evidence_register.md) · [research synthesis](docs/POWER_SYSTEM_STRESS_SYNTHESIS_2026_09_28.md) · [historical modelling programme and limits](docs/FULL_PYPSA_SCENARIO_PROGRAMME.md).

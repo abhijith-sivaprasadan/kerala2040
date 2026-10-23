@@ -1,8 +1,8 @@
 # Historical demand-shape / intraday-hydro screening: a bounded negative and positive result
 
-**Experiment:** \`historic_proxy_seven_day_demand_chronology_sensitivity_v0_1\`  
+**Experiment:** `historic_proxy_seven_day_demand_chronology_sensitivity_v0_1`  
 **Computed:** 23 October 2026, [GitHub Actions verification](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/39949432682).  
-**Reproduce:** \`python examples/hydro_chronology_sensitivity.py --output results/examples/hydro_chronology_sensitivity.json\`  
+**Reproduce:** `python examples/hydro_chronology_sensitivity.py --output results/examples/hydro_chronology_sensitivity.json`  
 **Status:** Historical **reconstructed-hour** sensitivity only; **not** measured-hour validation, a calibrated uncertainty distribution, or a rerun of the published FY2030–31 375.03→11.75 GWh result.
 
 ## Research question
@@ -11,7 +11,7 @@ How sensitive is the apparent adequacy benefit of **redispatching the same daily
 
 ### Inputs, selection and controls
 
-- Input is the openly released FY2024–25 hourly **proxy** (\`public/hourly-load-proxy.json\`), not actual hourly telemetry, together with SLDC daily source balance (\`data/external/sldc_fy2024_25/daily_balance.csv\`) and its source QA report.
+- Input is the openly released FY2024–25 hourly **proxy** (`public/hourly-load-proxy.json`), not actual hourly telemetry, together with SLDC daily source balance (`data/external/sldc_fy2024_25/daily_balance.csv`) and its source QA report.
 - Seven-day observation-only window selected **before modelling**: take the consecutive seven dates with maximum summed *source-observed* daily consumption, excluding any missing SLDC day; break ties by earliest date. The selected window is **28 April–4 May 2024**, with **780.9262 MU** of observed daily demand in total.
 - Candidate daily shapes: original proxy; rotate each 24-hour shape two hours earlier or later; multiply deviations from each day's mean by 0.9 or 1.1. Every perturbation retains exactly that source-day MWh; the variants are controlled arithmetic sensitivities, **not percentiles of an empirically estimated uncertainty distribution**.
 - Fixed per-day nonhydro generation is the source day's internal minus hydro energy divided by 24, rather than observed hourly plant operation.
@@ -48,10 +48,10 @@ python -m pytest -q tests/test_hydro_chronology_uncertainty.py
 python examples/hydro_chronology_sensitivity.py --output results/examples/hydro_chronology_sensitivity.json
 ```
 
-An independent analytic linear-programme reference applies in this simple single-node formulation. At each hour let \`d_t=max(0, load_t - nonhydro_t - import_cap)\`, \`H\` be fixed daily hydro energy (MWh) and \`C\` hydro peak MW, with 1h steps:
+An independent analytic linear-programme reference applies in this simple single-node formulation. At each hour let `d_t=max(0, load_t - nonhydro_t - import_cap)`, `H` be fixed daily hydro energy (MWh) and `C` hydro peak MW, with 1h steps:
 
-- Fixed hydro minimum shortage: \`sum(max(0, d_t - H/24))\`.
-- Fully flexible daily hydro minimum shortage (with spill permitted): \`max(sum(d_t)-H, sum(max(0, d_t-C)), 0)\`.
+- Fixed hydro minimum shortage: `sum(max(0, d_t - H/24))`.
+- Fully flexible daily hydro minimum shortage (with spill permitted): `max(sum(d_t)-H, sum(max(0, d_t-C)), 0)`.
 
 The tests include an independent check of the optimisation result against these formulas for small synthetic days. This **verifies this optimisation formulation**, not the physical validity of reconstructed hourly input.
 
@@ -60,3 +60,6 @@ The tests include an independent check of the optimisation result against these 
 Measured Kerala 15-minute/hourly load, time-resolved hydro/nonhydro dispatch, exchange by interval and station constraints would be more valuable than further perturbing reconstructed curves. If no such records become available, use physically constrained hydro profiles and externally supported renewable/weather availability profiles rather than declaring these five arithmetic shapes representative of forecast uncertainty.
 
 **Original scientific context:** [Hydro flexibility and annual scenarios](FULL_PYPSA_SCENARIO_PROGRAMME.md), [source evidence](evidence_register.md), [reproducibility guide](REPRODUCE_AND_EXTEND.md).
+
+
+**Subsequent method stress test:** [v0.2 — hypothetical time-varying import capacity and 168-hour hydro ramp](HYDRO_SUPPLY_TIMING_V0_2.md). This follow-up probes the mathematical invariance documented above; it does not retroactively validate operational shortage estimates.
