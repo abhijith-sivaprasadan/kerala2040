@@ -43,8 +43,6 @@ def test_source_days_cannot_be_relabelled_as_measured_hours():
 
 
 def test_derive_one_day_unconstrained_matches_independent_daily_lp():
-    from kerala2040.hydro_chronology_uncertainty import solve_one_day
-
     load = np.full(24, 70.)
     load[18:22] = 135.
     nonhydro = np.full(24, 10.)
