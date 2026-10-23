@@ -45,6 +45,14 @@ jobs:
           assert all(x["avoided_unserved_mwh"] >= -1e-3 for x in s["results"])
           assert any(x["avoided_unserved_mwh"] > 1 for x in s["results"])
           print("Verified source-backed accounting; bounded historical sensitivity remains distinct from the 2030-31 result.")
+          for case in s["results"]:
+              print(
+                  f"CASE transfer={case['import_ceiling_mw']:.0f}MW "
+                  f"shape={case['shape']} "
+                  f"fixed={case['fixed_hydro_unserved_mwh']:.4f}MWh "
+                  f"flexible={case['flexible_hydro_unserved_mwh']:.4f}MWh "
+                  f"avoided={case['avoided_unserved_mwh']:.4f}MWh"
+              )
           PY
       - uses: actions/upload-artifact@v4
         with:
