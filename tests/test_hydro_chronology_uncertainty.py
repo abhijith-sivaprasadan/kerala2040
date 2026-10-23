@@ -6,7 +6,10 @@ import pandas as pd
 import pytest
 
 from kerala2040.hydro_chronology_uncertainty import (
-    SHAPES, choose_observed_peak_energy_week, perturb_day, solve_one_day,
+    SHAPES,
+    choose_observed_peak_energy_week,
+    perturb_day,
+    solve_one_day,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,7 +29,7 @@ def test_unknown_shape_is_rejected():
 
 
 def test_flexible_hydro_helps_at_fixed_daily_energy_under_hourly_peak():
-    load = np.full(24, 90.)
+    load = np.full(24, 65.)
     load[18:22] = 160.
     common = {"nonhydro_mw": 10., "daily_hydro_mwh": 480.,
               "hydro_power_mw": 60., "import_ceiling_mw": 60.}

@@ -119,7 +119,7 @@ def choose_observed_peak_energy_week(daily: pd.DataFrame) -> list[str]:
     if not choices:
         raise ValueError("No seven-day fully observed window")
     # Earliest date wins an exact equal-energy tie. No selection using shortage outcomes.
-    return sorted(choices, key=lambda x: (-x[0], x[1]))[0][2]
+    return min(choices, key=lambda x: (-x[0], x[1]))[2]
 
 
 def run(root: Path) -> dict:
