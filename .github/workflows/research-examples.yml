@@ -22,11 +22,13 @@ jobs:
           python -m pip install -e .
           python -m pip install "pytest>=8,<9"
       - name: Test source-accounting and chronology guards
-        run: python -m pytest -q tests/test_example_accounting.py tests/test_hydro_chronology_uncertainty.py
+        run: python -m pytest -q tests/test_example_accounting.py tests/test_hydro_chronology_uncertainty.py tests/test_hydro_chronology_v0_2.py
       - name: Reproduce actual 354-day SLDC source-accounting check
         run: python examples/reproduce_daily_accounting.py --output results/examples/accounting_audit.json
       - name: Run source-rooted historical hydropower timing sensitivity
         run: python examples/hydro_chronology_sensitivity.py --output results/examples/hydro_chronology_sensitivity.json
+      - name: Run restrained supply-timing and hydro ramp sensitivities
+        run: python examples/hydro_supply_timing_v0_2.py --output results/examples/hydro_supply_timing_v0_2.json
       - name: Assert evidence levels, model invariants and informative experimental differences
         run: |
           python - <<'PY'
@@ -50,6 +52,27 @@ jobs:
               for shifted in ("shift_earlier_2h", "shift_later_2h"):
                   for key in ("fixed_hydro_unserved_mwh", "flexible_hydro_unserved_mwh"):
                       assert abs(cases[shifted][key] - cases["baseline"][key]) < 1e-3
+          v2 = json.loads(Path("results/examples/hydro_supply_timing_v0_2.json").read_text())
+          assert v2["hourly_demand_evidence"] == "RECONSTRUCTED_NOT_MEASURED"
+          assert v2["supply_availability"] == "ILLUSTRATIVE_HOURLY_DERATES_NOT_OBSERVED_IMPORT_CONSTRAINTS"
+          assert v2["window_hours"] == 168
+          assert len(v2["cases"]) == 40
+          assert all(x["solver_checks"]["max_daily_hydro_energy_residual_mwh"] < 1e-3 for x in v2["cases"])
+          assert all(x["solver_checks"]["max_hourly_balance_residual_mw"] < 1e-3 for x in v2["cases"])
+          assert all(x["optimised_hydro_unserved_mwh"] <= x["fixed_hydro_unserved_mwh"] + 1e-3 for x in v2["cases"])
+          for record in v2["cases"]:
+              if record["hydro_ramp_cap_mw_per_h"] is not None:
+                  assert record["solver_checks"]["actual_hydro_ramp_mw_per_h"] <= record["hydro_ramp_cap_mw_per_h"] + 1e-4
+          print("Verified constrained ramp and time-varying import illustrative sensitivity:")
+          for record in v2["cases"]:
+              if record["demand_shape"] in ("baseline", "shift_earlier_2h", "shift_later_2h"):
+                  print("V2 "
+                        f"cap={record['import_ceiling_mw']:.0f} "
+                        f"schedule={record['hypothetical_import_hourly_schedule']} "
+                        f"shape={record['demand_shape']} "
+                        f"ramp={record['hydro_ramp_cap_mw_per_h']} "
+                        f"fixed={record['fixed_hydro_unserved_mwh']:.4f} "
+                        f"flex={record['optimised_hydro_unserved_mwh']:.4f}")
           print("Verified source-backed accounting; bounded historical sensitivity remains distinct from the 2030-31 result.")
           for case in s["results"]:
               print(
