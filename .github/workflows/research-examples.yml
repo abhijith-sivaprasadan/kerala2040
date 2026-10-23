@@ -1,0 +1,53 @@
+name: Public reproducibility examples
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install research package and test runner
+        run: |
+          python -m pip install -e .
+          python -m pip install "pytest>=8,<9"
+      - name: Test source-accounting and chronology guards
+        run: python -m pytest -q tests/test_example_accounting.py tests/test_hydro_chronology_uncertainty.py
+      - name: Reproduce actual 354-day SLDC source-accounting check
+        run: python examples/reproduce_daily_accounting.py --output results/examples/accounting_audit.json
+      - name: Run source-rooted historical hydropower timing sensitivity
+        run: python examples/hydro_chronology_sensitivity.py --output results/examples/hydro_chronology_sensitivity.json
+      - name: Assert evidence levels, model invariants and informative experimental differences
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          a = json.loads(Path("results/examples/accounting_audit.json").read_text())
+          s = json.loads(Path("results/examples/hydro_chronology_sensitivity.json").read_text())
+          assert a["observed_days"] == 354 and a["missing_source_days"] == 11
+          assert a["reconstructed_hours"] == 8760
+          assert a["max_abs_observed_day_energy_residual_mu"] < 0.0001
+          assert s["research_status"] == "CONTROLLED_SENSITIVITY_NOT_CALIBRATED_UNCERTAINTY"
+          assert s["hourly_demand_evidence"] == "RECONSTRUCTED_NOT_MEASURED"
+          assert len(s["results"]) == 10
+          assert all(x["max_model_equation_residual_mw"] < 1e-4 for x in s["results"])
+          assert all(x["avoided_unserved_mwh"] >= -1e-3 for x in s["results"])
+          assert any(x["avoided_unserved_mwh"] > 1 for x in s["results"])
+          print("Verified source-backed accounting; bounded historical sensitivity remains distinct from the 2030-31 result.")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kerala2040-independent-research-examples
+          path: results/examples/
+          retention-days: 30
