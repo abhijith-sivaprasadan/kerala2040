@@ -1,7 +1,7 @@
 # Kerala2040: evidence-to-freeze research programme, 2026–2027
 
-**Status: PROPOSED RESEARCH CHARTER — NOT APPROVED, NOT A MODEL OR EVIDENCE PROMOTION**  
-**Prepared:** 26 October 2026 · **Work window:** 1 November 2026–26 October 2027  
+**Status: REVISED 10-HOUR/WEEK RESEARCH CHARTER — EFFORT CONFIRMED; REMAINING GOVERNANCE/OUTREACH DECISIONS OPEN; NOT A MODEL OR EVIDENCE PROMOTION**  
+**Prepared:** 26 October 2026 · **Time budget confirmed:** 10 hours per week · **Work window:** 1 November 2026–26 October 2027  
 **Public evidence baseline:** `docs/RESEARCH_FREEZE_2026-10-23.md` (immutable scientific claims until individually reviewed)  
 **Proposed research freeze:** 26 October 2027; new data/model-result admissions cease 31 August 2027, except independently reviewed corrections.  
 **Owner:** Abhijith Sivaprasadan · independent research, no implied KTH/KSEBL/agency endorsement.
@@ -21,7 +21,7 @@ Scientific bottlenecks:
 4. **Network and imports:** source-backed robust line screening is not calibrated AC/N-1 or reliable delivered ATC over hours. Daily import totals do not give independently authenticated state hourly interchange and load.
 5. **Future uncertainty:** a 2040 system-wide cost optimum cannot be defended without verified time series, vintaged project costs, constraints and institutional/rights definitions.
 
-Build one auditable common evidence layer and pursue a *minimum publishable historical result* before a conditional model scenario paper.
+Build one auditable common evidence layer and pursue a *minimum publishable historical result* before a conditional model scenario paper. At the confirmed 10-hour weekly ceiling, protect Paper A even if the second research stream must stop.
 
 ## 2. Scope and contributions — choose what to claim, not only what to code
 
@@ -76,113 +76,154 @@ Primary Kerala comparators — **not held-out truth or interchangeable projectio
 
 Before comparing forecasts, register each study's scope (gross/final/net electricity, calendar/FY endpoints, demand electrification assumptions, installed versus delivered capacity, imported renewables, loss treatment, emissions and study publication vintage). Do **not** blend CSTEP/WRI/CEA estimates into a single unsupported consensus trajectory.
 
-## 5. Work packages and decision gates
+## 5. Optimized 10-hour-per-week scope: work packages and gates
 
-### WP0 — research design, literature and governance (42 focused hours)
+**Confirmed resource constraint:** 10 hours/week for **50 active weeks** within 1 November 2026–26 October 2027 = **500 hours gross ceiling**. Pre-allocate **400 research hours** (roughly 8/week) and keep **100 genuinely uncommitted contingency hours** (roughly 2/week) for paid-work/job-search disruption, licensing problems, technical faults, illness or unexpected agency requests. Do not promise 500 hours of deliverables; do not turn the buffer into automatic scope expansion. The plan assumes two approximately non-active weeks across the 360-day window. Log actual work and adjust at monthly gates.
 
-- Freeze the 23 October 2026 version as the published baseline; branch future results rather than overwriting the historical claim trail.
-- Systematic *targeted* search: indexed peer-reviewed papers, bibliographic snowballing, report methods; citation table with research gap, definitions, data and applicability, strengths and weaknesses. This is not a PRISMA systematic review unless a search-and-screen protocol is explicitly registered.
-- Register RQs, metrics, null/no-improvement outcomes, selection criteria and end points **before** new modelling runs. Maintain a decision log of justified amendments.
-- Data schema: one canonical IST-day register, financial-year periods, unit dictionaries, provenance licence, original SHA-256 and per-variable source boundary. Separate daily SLDC, annual consumer-side, SRPC actual drawal, scheduled drawal, CEA study inputs.
-- G0: every public promoted metric has a source chain; claims are labelled observed / derived / proxy / scenario.
+### Investment order: Paper A is the critical path
 
-### WP1 — primary data recovery and accounting (82 focused hours)
-
-Parallel early outreach (not a guaranteed delivery):
-- Kerala SLDC/KSEBL for hourly/15-minute state demand and actual interstate interchange, metadata, and the 11 missing FY2024–25 daily reports. Existing draft: `docs/SLDC_DATA_REQUEST_DRAFT.md`; user approval required before sending.
-- CSTEP/EMC for the original FY2016 15-minute dataset referenced in the roadmap; CEA for whether FY2024–25 hourly underlying inputs can be released. Request official aggregate data only; avoid system-security details.
-- KSEB reservoir station-level and storage/inflow/monthly returns; SRPC revisions of actual versus scheduled drawal.
-
-Compute and store **private** SHA-256 originals, retrieval dates, source URLs, schema, licence and access scope. Verify daily count, duplicated dates, financial-year boundary and missingness; do not fill absent SLDC days with simulated values. Audited source days remain separate from the 365-day operational calendar. For different meter/measurement definitions, report separate series and unresolved difference — no rescaling to close an impossible reconciliation.
-
-Historical ERA5: additional multi-year exact-hour source windows for five fixed points. Request in bounded batches, respect Copernicus quotas, archive original ZIP/NetCDF and validate variable units, coordinates, timestamp semantics, UTC-to-IST conversion (boundary hours matter), missing/duplicate records and source hashes. Re-use the FY2024–25 original/source-QA workflow patterns. Don't treat a passing normalized Parquet panel as authentication of upstream GRIB/NetCDF.
-
-G1: separate per-product PASS/FAIL/NOT_OBTAINED records, including rights. Missing primary hourly load does **not** block the daily descriptive or retrospective daily-weather paper, but does block operational-load validation.
-
-### WP2 — robust multi-year observed daily demand × ERA5 (80 focused hours)
-
-Study unit: qualified original SLDC daily consumption **MU/day**, *not* reconstructed hourly demand, and not a year-end consumer-sales series.
-
-- Fixed fiscal-year, strictly chronological expanding-window holdouts. Existing intended windows: FY2022–23, FY2023–24 and FY2024–25 with training only before each held-out period; document all exposure and data-revision risk.
-- Baselines before complex ML: seasonal naive (same weekday/season where feasible, otherwise declared lag), calendar-only Ridge, annual/seasonal mean; optional day-of-week and public holiday metadata only if source-defined. Missing target dates remain missing.
-- Primary analysis: a predeclared fixed Ridge alpha=1 calendar versus calendar+weather comparison, matching current private runner. Only after this succeeds consider LightGBM/XGBoost with training-only nested temporal hyperparameter tuning, no test leakage, and fair tuning budget. Different accuracy and model complexity do not imply causal effect.
-- Performance: per-FY and pooled RMSE/MAE in MU/day; seasonal-naive-scaled error with denominator defined on each training fold; worst-year signed weather uplift; median/uncertainty of FY uplift; tail/high-demand-day error. Do not make a pooled skill number the only headline.
-- Uncertainty: report financial-year-level variability (only three out-of-year test windows), and moving/block bootstrap sensitivity only where block lengths are justified. Show negative months and years; inspect residual autocorrelation and regime change. Avoid pseudo-precise confidence intervals from treating correlated daily dates as independent.
-- Ablations: same-day temperature, humidity **only if acquired and predeclared**, precipitation, radiation, wind, seasonal controls, regional point weighting; explicit forecast-vs-retrospective distinction and temporal aggregation. SHAP as descriptive model attribution only, not causation.
-- Strict output: executable fold manifests, original archive hash lineage, model input hashing, and aggregate outcomes. No raw restricted rows publicly uploaded.
-
-G2: the per-FY experiment reproduces independently and no evidence leakage occurs; *no minimum positive performance threshold*. Null/worse weather results are legitimate scientific output. Never label same-day reanalysis as an operational day-ahead forecast.
-
-### WP3 — source-constrained hydro, imports and network evidence (70 focused hours)
-
-Start with descriptive measured daily hydro energy, reservoir storage and reported exchange (source boundaries separate), then choose **one** technically testable flexibility mechanism. Default: a station-cluster/Idukki hydro timing envelope, not a Kerala-wide optimal cascade.
-
-- Plant register: station/unit name, effective MW, unit count, dates, storage MWh/water units, head, upstream/downstream routing, reservoir conservation, daily release/inflow, minimum environmental/irrigation releases, exclusions and provenance. No assumed 400 MW/h aggregate ramp promoted to observed.
-- Build three identical-input comparisons: frozen original hydro schedule; optimized unconstrained energy-conserving theoretical upper bound; source-supported constrained schedule. Preserve exact daily hydro MWh when comparing timing and reject infeasible water balances. Cross-check externally observable peaks and daily/monthly hydro energy as far as admissible.
-- Transfers: schedule and actual import must never be conflated. Test 4,455 MW source-dated ATC as an explicit benchmark/sensitivity parameter, not an observed full-hour available transfer limit. Never infer outage or observed unmet demand from optimization penalties.
-- Network: preserve historic public-source robust screening; do not call Shornur a verified AC/N-1 vulnerability absent topology, impedances, injections, contingency and limit verification. New network investment results require separate gate.
-
-G3: report a source-supported feasible bracket **only** if physical constraints are traceable and independent invariants pass. Otherwise report optimistic upper bound with missing evidence and terminate calibrated hydro-extension claims.
-
-### WP4 — restrained scenarios and global uncertainty (55 focused hours)
-
-Only start if G1–G3 yield enough evidence to support the chosen quantities. Use model discrepancy ledgers for unvalidated variables. Predeclare a *small factor table*: historical demand growth range, external transfer availability, hydro operating envelope, weather year, solar/wind availability (if validated against output), demand-shifting fraction and storage duration/efficiency.
-
-- Separate physically supported ranges, official planning-study comparators and invented *stress assumptions*. Never silently mix into a probability distribution.
-- Screening stage: single-factor or Morris elementary effects to find material drivers at reasonable cost; only use Sobol/Monte Carlo when joint distributions have evidential meaning and computational expense is justified.
-- Paired identical-case comparisons with/without an intervention, common weather/demand/sample constraints, conserved hydro/water/storage energy and solver residual checks; log infeasible runs and non-dominance.
-- If original hourly load is still absent, demonstrate conditional effects under *explicitly proxy-labelled* profiles, not probabilistic LOLP/LOLE or predicted shortages. Report intervals of sensitivity, not project investment sizes.
-
-G4: intervention ranking survives declared stressors and independent basic consistency. If ranks reverse, this is a research result: publish **uncertain ranking**, not an invented winner.
-
-### WP5 — manuscripts, review, published release and freeze (71 focused hours)
-
-Prepare:
-1. **Paper A:** open-data/source-assessment plus multi-year retrospective daily weather-demand study; primary submission candidate when WP1–WP2 evidence supports it.
-2. **Technical report B:** conditional Kerala hydro/import flexibility mechanics with explicit missing-input and optimistic-versus-constrained bounds; a second article only if genuine new independent validation is achieved.
-3. **Kerala2040 Evidence Atlas:** one public site which walks source → definition → method → result → uncertainty → data-rights, and cleanly segregates exploratory models.
-4. Reproducible release: author citation metadata, bibliography/DOIs, environment lock, original source manifests with rights restrictions, frozen git SHAs, unit/physical/property tests, exact command-line reproducer, figures with traceability, null results and limitations.
-
-Commission at least two structured methodological critiques where possible (energy-system modeller and Kerala operational/SLDC domain expert). External feedback must not be asserted if not obtained. Preprint or journal **submission** is an aspiration; acceptance cannot be promised.
-
-G5: cut off adding claims by 31 August 2027; September is rebuttal, audit and reproducibility time; freeze versioned materials 26 October 2027. If data gates are unmet, release the strongest verified **descriptive and methods** article rather than force a 2040 optimum.
-
-## 6. One-year calendar: hard decision points
-
-| Window | Primary milestone | Exit criterion and fallback |
-|---|---|---|
-| Nov 2026 (M1) | Approve charter and effort ceiling; bibliography; scope/metrics registration; custodian outreach; dependency board | Named baseline and rights ledger; if emails unanswered, escalate to written data-access/official publications (do not claim received) |
-| Dec 2026 (M2) | Consolidate private SLDC archive and annual boundary table; small extra-year ERA5 acquisition pilot | One additional audited year of source-point coverage, or documented cost/access failure; no fit |
-| Jan 2027 (M3) | Scale ERA5 acquisition and full IST day gate; source audit and missingness tables | Exact original hash chain and normalized 5×24 panels for first eligible multiyear set; partial-year gaps documented |
-| Feb 2027 (M4) | Execute predeclared fixed Ridge fiscal-year comparisons, independent script reconstruction | Per-holdout errors and null outcomes, not a cherry-picked winning model |
-| Mar 2027 (M5) | Temporal robustness/ablation/uncertainty, core evidence atlas v2 and paper A outline | Negative-fold and assumption tables; paper A viable even if weather gain weak |
-| Apr 2027 (M6) | Historical system/station hydro and SRPC exchange inventory; physical bounds | Explicit station provenance; if unavailable, narrow to audit + conditional upper bounds |
-| May 2027 (M7) | Matched hydro/import model brackets and physical residual tests; independent network source audit | No 'validated' label without primary source-backed operation |
-| Jun 2027 (M8) | Review physical-data sufficiency and freeze small factor set | Go/no-go for scenario experiments; if no, shift time to Paper A and evidence atlas |
-| Jul 2027 (M9) | Limited paired stress experiments with source/cost boundaries and Morris screening if valid | Stable/unstable ranking with infeasibility logs; no invented reliability probabilities |
-| Aug 2027 (M10) | Compare CSTEP, CEA and WRI 2026 assumptions and outputs; complete manuscripts and figures | All *new* empirical results submitted for internal review; **31 Aug data/model claim cutoff** |
-| Sep 2027 (M11) | Independent methodological review, replication on clean environment, scientific QA/site audit | Critical issues documented/repaired; draft frozen |
-| Oct 1–26 2027 (M12) | Reconcile citations, versions, licences; paper submission/preprint where ready, archive and final freeze | Release manifest, tag, source commit and archived artefacts; one-page limitations and follow-up register |
-
-The October freeze is a publication milestone, **not** an obligation to claim that every proposed model passed.
-
-## 7. Resource budget and risk-adjusted ROI (planning judgments, not calibrated measurements)
-
-**Base capacity:** 10 hours/week × 50 active weeks ≈ 500 gross hours. Reserve **100 hours (20%)** for job-search conflicts, data-access delays, debugging and expert responses; budget **400 focused research hours**. All ranges are provisional until the researcher states real available hours.
-
-| WP | Focused hours | Priority | Expected research/portfolio payoff | Main dependency |
+| WP | Focused-hour budget | Decision level | Explicit finished output | Stop/acceptance rule |
 |---|---:|---|---|---|
-| WP0. Research protocol, literature, release discipline | 42 | **P0** | Prevents invalid work; strong research credibility; reusable manuscripts | None |
-| WP1. Source recovery, daily boundary reconciliation and ERA5 audit | 82 | **P0** | Largest evidence bottleneck, enables all substantive claims | SLDC rights; CDS API quotas |
-| WP2. Multi-year demand-weather study | 80 | **P0** | Highest near-term independently testable paper candidate | Multi-year original ERA5 inputs |
-| WP3. Hydro/import/network source-constrained boundaries | 70 | **P1** | Direct engineering value, rich negative/conditional results | Physical asset + water/dispatch data |
-| WP4. Bounded screening and sensitivity | 55 | **P2 / gated** | High scientific value *if* sources arrive, otherwise high overclaim risk | G1–G3 |
-| WP5. Manuscript, reproducible release and freeze | 71 | **P0** | Converts a year of work into citable paper/portfolio | Basic programme completed |
+| **WP0 — protocol and bounded literature** | **35** | P0 mandatory | Registered RQ-A/B, bibliographic evidence matrix, data definitions, FY split manifest, hypothesis and null-result rules | Protocol frozen by 31 January; prospective amendments logged before tests |
+| **WP1 — source verification and intake** | **90** | P0 mandatory | Reconciled qualified private SLDC archive; authentic ERA5 5-point chronology where obtainable; source/rights/hash ledger | No unverified original files, interpolated demand or invented missing SLDC days admitted |
+| **WP2 — multi-year retrospective demand/weather benchmark** | **110** | P0 mandatory if source gate passes | Baselines, fixed-Ridge and *optional* weather-ML analysis, per-FY results, uncertainty, null outcomes and reproducer | March data go/no-go; no multi-year claim if planned out-of-FY evaluation is incomplete |
+| **WP3 — hydro/import/network evidence triage** | **35** | P1, contingent | Source-gated single-mechanism constraint inventory and a rigorous feasibility/unknowns note; numerical comparison only if support exists | June 30 physical-data go/no-go; don't promise a new dispatch model |
+| **WP4 — limited paired sensitivity** | **20** | P2, gated and dispensable | At most one pre-registered small paired experiment, plus energy/balance and parameter provenance tests | Not started if missing hourly observations/physical bounds would make result misleading |
+| **WP5 — writing, external review, provenance release and freeze** | **110** | P0 mandatory | Paper A (weather analysis **or** primary-data methods fallback), atlas update, replication report, submission-ready package, tagged freeze | Full manuscript by August, critique/reproduction in September, release 26 October |
 | **Total** | **400** | | | |
 
-Relative decision priority (qualitative, not fabricated empirical ROI): **(1)** get custodian data + rights, **(2)** verify the multi-year ERA5 chain, **(3)** complete Paper A, **(4)** peer critique/reproduce, **(5)** constrain one hydro mechanism, **(6)** optional robustness experiments, **(7)** only then improve visuals or broaden modelling. New code/UI receives no priority unless it eliminates a source/error/reproduction blocker or makes a defensible result clearer.
+**Allocation change from the first draft:** WP0 42→35; WP1 82→90; WP2 80→110; WP3 70→35; WP4 55→20; WP5 71→110 hours. **345/400 planned hours (86.25%)** now support protocol + historical evidence + statistics + publication. WP3/WP4 cannot displace any P0 acceptance criterion.
 
-At **6 hours/week**, cut WP4, reduce WP3 to documentary validation, and pursue Paper A + atlas only. At **15+ hours/week**, use the extra capacity for original-source recovery, independent expert checks and stronger statistical sensitivity — **not** indiscriminate new model families.
+**Do not parallelize three manuscript tracks.** The primary output is one rigorous article. An independent hydro-flexibility note is a technical appendix/working paper if time/data allow, **not** a second submission requirement. Website changes convey published, accepted source boundaries; they are not a separate front-end development workstream.
+
+### WP0 — 35 hours, primarily November–January
+
+- Pre-register Paper A's main question: does *same-day observed/reanalysis weather* add retrospective explanatory information beyond calendar controls for Kerala SLDC qualified daily consumption in **later fiscal-year tests**?
+- Read and annotate a **bounded 25–35** relevant peer-reviewed papers (methods, Indian weather–load evidence, system balancing, ERA5 methods), recording DOI, question, study geography, observational unit, split/bias risk, useful design choice and counterevidence. This is a targeted scoping review, **not** a PRISMA systematic review.
+- Lock target field, units, source boundary, FY year definitions, fixed 5-point geography, missingness policy, comparison metrics, and fiscal-year test windows. Explicitly disclose prior inspection of FY2024–25.
+- Choose the primary, *no-tuning* Ridge experiment and simple baselines now; any boosted-tree tuning happens strictly inside later training folds if original-source availability justifies it.
+- **Deliverable 31 Jan 2027:** dated protocol, evidence matrix, preregistered decision log and no-claims audit.
+
+### WP1 — 90 hours, November–April; do not wait for agencies
+
+- Use the already curated **private** original/derived SLDC 2019–2026 source archive and its locked original+uncompressed hashes; validate annual/day-of-FY definitions and qualified daily target semantics. Restrict publication of row-level source data until source rights reviewed. Cross-compare with Economic Review's **distinct** consumer-side series without forcing a reconciliation.
+- **Outreach, user-approved only:** send the existing SLDC/KSEBL interval load + actual interchange request, including the 11 missing FY2024–25 report days. Request the CSTEP/CEA FY2016/FY2024–25 existing underlying demand datasets if practicable; no outcome assumed.
+- Preserve the **already verified 20 FY2024–25 location-quarter ERA5 source slots** separately. Five FY2020–21 through FY2024–25 periods at five points × four quarters imply **100 location-quarter source slots total** for full planned analyses, of which 20 are already reported verified in the earlier FY2024–25 QA: **80 additional slots as a nominal plan**, subject to verified overlap, quotas and source retention. This is a **request-plan count**, not a claim of acquisition or 80 files; ZIPs may contain multiple components and cost caps may require monthly splits.
+- Pilot **one** pre-2024 financial year before scaling. Hash original response bytes; verify the exact location selection, units, provider data identity, full UTC hours and IST-day semantics; recorded accumulated radiation/precipitation conversion must have an independent conservation check. UTC HH:00 instants correspond to IST HH:30: local calendar assignment alone does not prove correctly integrated IST-day accumulated flux. Boundary-hour/previous-day requirements must be resolved **before** comparing with daily targets. A complete local date must have 24 point-hours at all five points, with explicit temporal support.
+- Failed download, one-point missingness, inaccessible originals, unverified transformed Parquet, or incompatible units **fail closed**. Do not treat CI's synthetically tested normalized-panel gate as original-source authentication.
+- **Milestones:** December bounded-year pilot; January scalable reproducible acquisition; February first independently reverified additional period; **31 March** frozen coverage roster; April source accounting closeout.
+- **G1:** a manifest of PASS / FAILED / NOT_OBTAINED by source, study date and five-point coverage, with immutable digests and explicit licensing. Missing hourly *load* does not block the *daily* paper, but it blocks observed hourly peaks and operating adequacy claims.
+
+### WP2 — 110 hours, January–July; one carefully compared experiment
+
+- Study the observed, qualified SLDC daily **MU/day** target. There is **no** substitution of annual sales, reconstructed hourly model output, daily Grid-India values or SRPC actual interchange into that field.
+- **Primary designed folds:** expanding-origin train dates strictly before **FY2022–23**, **FY2023–24** and **FY2024–25** tests. All full-year claims require exact five-point hourly provenance for training and evaluation days, source revisions logged, and qualified observed daily targets. Unobserved SLDC days remain missing. Explicitly declare the FY2024–25 evaluation exposed to prior inspections. Do not choose years by favourable results.
+- **Falsifiable primary contrast:** StandardScaler + Ridge(alpha=1) calendar-only versus the same fixed learner with weather features. Baselines include a predeclared seasonal/lag-naive variant computed using **only accessible earlier observed days**, not nonexistent values on missing days. Use identical qualified test dates and target scope for paired comparison. Complex models (XGBoost/LightGBM and Optuna) are subordinate post-hoc robustness only after the registered fixed comparison succeeds.
+- Primary outcomes: **per-fiscal-year RMSE and MAE (MU/day)** plus predeclared signed weather-added RMSE skill. Secondary: training-only defined MASE scale, high-demand-date error, year-to-year spread, month/monsoon stratification, residual dependence and point-weighting sensitivity. A block bootstrap is only a sensitivity device when dependence/block selection is defensible; three FY test groups do not justify precise independent-year confidence bounds.
+- No target leakage; no same-day weather sold as day-ahead information. SHAP is description, not causal identification. Record worst-year and **all negative** month/year results. If after time-split evaluation no weather signal remains, that is still a publishable *negative* analytical finding.
+- **March 31 G2a:** if a complete original multi-year weather chain for predeclared cross-year folds is unavailable, **stop spending WP2 hours on ML tuning**; pivot Paper A to the descriptive/source-quality manuscript, preserving a source-gated runnable appendix. A partial opportunistic fold cannot be presented as a successful multi-year replication.
+- **June 30 G2b:** if eligible data exist, the registered table, reproducible Ridge baseline, per-year errors, leakage tests and uncertainty ledger must be complete. July is independent re-run, error analysis and figure lock, not open-ended model search.
+
+### WP3 — 35 hours, May–August; documentary test before computation
+
+- One priority mechanism: **Idukki/plant-cluster hydro timing versus dependency on dependable imports**. Build a dated station/source constraint ledger: capacity/nameplate, unit count, cascade boundaries, measured daily hydro MWh, usable reservoir storage, inflow/release, routing, irrigation/environmental commitments, availability and ramping *only where independently established*. Unknown means unknown.
+- Separate three levels: (1) original/fixed energy schedule, (2) *optimistic* energy-conserving timing upper bound, and **only if verified station/storage bounds exist** (3) physically constrained opportunity estimate. The third cannot be simulated and called admissible just because a config entry exists.
+- Existing 4,455 MW ATC remains a dated planning benchmark for scenario sensitivity, *not* proof that this MW was continuously deliverable. Preserve distinction between scheduled drawal, actual exchange and load. No new AC/N-1 project-cost conclusions.
+- **June 30 G3:** decision memo whether primary evidence supports a constrained numerical extension. If NO: archive a hydro data-gap/optimistic-bound technical note and redeploy remaining model hours to Paper A/source evidence. If YES: permit one limited source-backed mechanism; preserve identical inputs and independent water/energy balance invariants.
+- A second journal manuscript does **not** enter the year-one acceptance criteria.
+
+### WP4 — maximum 20 hours, July–September; hard gate
+
+- Only when G1, G2 and G3 provide reliable enough inputs: register one small, matched paired comparison of hydro availability or import derating (e.g. fixed vs capacity-constrained hydro timing at the same daily MWh and demand chronology). At most **three credible factor families**, with provenance, source-supported ranges and a single robustness table. Begin with simple deterministic bounds; no obligation to run expensive Morris, Sobol or Monte Carlo.
+- Reject outputs that do not conserve energy/water, have source-unsupported transfer ceilings, reclassify proxy load as measured, fail solver checks, or imply observed outage probabilities. If no credible setup, **zero** WP4 modelling hours should be spent.
+- **G4 31 August:** conditional opportunity report or signed no-go decision, never a fabricated 2040 optimum. Unused hours move to WP1/WP2/WP5 with dated rationale.
+
+### WP5 — 110 hours distributed through the year, concentrated August–October
+
+**Primary Paper A (single protected deliverable), provisional title:** *Weather-sensitive electricity consumption in Kerala: a source-audited multi-year retrospective evaluation*.
+
+**Fallback Paper A0 if weather cannot be admitted:** *Public-data quality, operational boundary definitions and historical electricity-balance accounting for Kerala: a reproducible audit*. This alternative must not imply an unperformed multi-year weather test; article suitability depends on actual novelty/complete evidence.
+
+- **30 Nov:** one-page problem and planned evidence claim; responsible authorship and affiliations only.
+- **31 Jan:** paper outline, 25–35 paper matrix, preregistered tests and statistical analysis plan.
+- **30 Apr:** Methods and data-dictionary sections drafted, with sources/reproducibility and missing-data flow.
+- **30 Jun:** registered results and tables *or explicit source-blocker result*; choose the A or A0 title and scope without post-hoc cherry-picking.
+- **31 Jul:** reproducibility-ready figures, provisional results/discussion and chosen journal/outlet shortlist. Do not commit to a venue without checking the real fit, fees and rights.
+- **31 Aug:** complete manuscript **v1**, references, supplementary methods, provenance table and uncertainty/limitations; **new-model/new-source claim admission cutoff**.
+- **30 Sep:** independent clean-environment replication; request structured critique from at least one methods expert and one Kerala operational/source expert if reachable. Log what feedback was and was not actually received.
+- **26 Oct:** research bundle frozen: DOI/preprint if permissible and appropriate, source-restriction-aware reproducibility kit, release manifests, immutable Git tags, website evidence refresh, paper submission when scientifically ready, and a next-study limitations backlog.
+
+Maintain a narrow public-facing site: **observe → validate → conditional mechanism → uncertainty → source limits**, with no promotion of old proxy-stress numbers. Do not build a new dashboard unless it is required to inspect reproducibility.
+
+## 6. Month-by-month execution contract and earned milestones
+
+This is **400 planned focused hours** over twelve months. Each line's effort is the sum of WP0–WP5, and the WP columns sum exactly to the package ceilings. Work not justified by a passing upstream gate is reassigned after documented review; do not retrospectively relabel the hours already worked.
+
+| Month (2026–27) | WP0 | WP1 | WP2 | WP3 | WP4 | WP5 | Hours | Monthly deliverable / gate |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| **Nov 2026** | 22 | 8 | 0 | 0 | 0 | 2 | **32** | Review charter, RQs, paper evidence matrix, QA protocol; prepare agency outreach; one-page Paper A sketch |
+| **Dec 2026** | 9 | 18 | 0 | 0 | 0 | 3 | **30** | Hash/rights/source boundary audit; one extra-year ERA5 pilot or documented blocked attempt |
+| **Jan 2027** | 4 | 24 | 6 | 0 | 0 | 2 | **36** | Register splits/hypotheses; source windows reproducible; normalization and integrity pipeline locked |
+| **Feb 2027** | 0 | 22 | 10 | 0 | 0 | 2 | **34** | Independently audit one new source period; build matched qualified-date map and baseline test harness |
+| **Mar 2027** | 0 | 12 | 20 | 0 | 0 | 4 | **36** | **31 Mar: GO/NO-GO A vs A0**; full weather provenance if possible, otherwise non-weather source audit |
+| **Apr 2027** | 0 | 6 | 20 | 0 | 0 | 8 | **34** | Full registered Ridge holdout work (if eligible); Methods + data definition draft |
+| **May 2027** | 0 | 0 | 22 | 4 | 0 | 6 | **32** | Baselines and error tables; station-source ledger first pass; Figures 1–2 |
+| **Jun 2027** | 0 | 0 | 20 | 6 | 0 | 6 | **32** | **30 Jun:** freeze Paper A/A0 results; hydro physical-constraint gate; draft Results |
+| **Jul 2027** | 0 | 0 | 12 | 12 | 4 | 6 | **34** | Independent model rerun, registered uncertainty, hydro feasibility check; first full figures |
+| **Aug 2027** | 0 | 0 | 0 | 13 | 10 | 11 | **34** | **31 Aug:** complete paper v1; final admissible model/source results; external comparator audit |
+| **Sep 2027** | 0 | 0 | 0 | 0 | 6 | 26 | **32** | Critique, clean-room replication, negative results, copy review and figure/source audit |
+| **Oct 1–26 2027** | 0 | 0 | 0 | 0 | 0 | 34 | **34** | Complete publication/release package, tag provenance, site lock, **26 Oct freeze** |
+| **Total** | **35** | **90** | **110** | **35** | **20** | **110** | **400** | |
+
+This is a **capacity ceiling**, not a factual estimate that every source request takes a fixed number of hours. Large API waits, meetings and background execution are counted by actual researcher attention, not wall-clock task duration. If publication reviewers or CDS quotas consume the contingency, update the monthly ledger and reduce scope.
+
+### Every active week's operating rhythm (8 planned + 2 uncommitted hours)
+
+- **2 hours**: primary research literature/protocol/source reading and provenance.
+- **2 hours**: original data intake, numerical verification or tests.
+- **2 hours**: single current technical critical-path task (model comparison only after source admission).
+- **2 hours**: written research artefact, figures, reproduction and weekly evidence log.
+- **2 hours held free**: job interviews, job search, unexpected source/coding failures or rest. Do not count those as promised technical output.
+
+Weekly exit: one verifiable commit, signed research log, documented externally blocked action, or manuscript improvement — **not** a quota for more code or PRs. Review at most once per month against hours actually spent, evidence delivered, uncertainty reduced and paper-readiness; stop technical branches which do not meet the next gate.
+
+### Two planned decision forks — no scope inflation
+
+**31 March 2027: source G2a.**
+- GO: source-hash-verified complete planned multi-FY ERA5 × qualified SLDC dates → fixed Ridge across registered FY folds, then later robust ML if justified.
+- NO-GO: change Paper A into **Paper A0**, a source/missingness/consumption-boundary descriptive methods article. Preserve old one-year weather findings as historical evidence only; do not claim multi-year replication, and reassign future WP2 hours to primary-source accounting, year-stratified descriptive analysis and manuscript methods.
+
+**30 June 2027: hydro G3 and bounded-scenario G4.**
+- GO: independently sourced physical operating limits and valid hourly inputs permit one controlled model mechanism (no guaranteed positive effect).
+- NO-GO: cease additional physical hydro/2040 optimisation development. Of the **55 WP3+WP4 hours**, **10 WP3 hours are scheduled by June**; redeploy the remaining **25 WP3 + 20 WP4 = 45 hours** (if still unspent) as **+10 WP1**, **+15 WP2**, **+20 WP5**. A purely illustrative physical-feasibility note may be retained but not presented as a validated second article.
+
+**Alternate allocation after this June NO-GO** (if the scheduled first 10 hours of WP3 have actually been spent): WP0 35 + WP1 100 + WP2 125 + WP3 10 + WP4 0 + WP5 130 = **400 hours**, with an updated month-hour ledger preserving the total. This is a scenario budget, not a retroactive revision to recorded time.
+
+## 7. Risk-adjusted scientific return, publication ladder and progress board
+
+**Planning judgment, not a measured economic ROI:** compare tasks using (1) evidence gap eliminated, (2) falsifiable research question served, (3) eligibility for Paper A, (4) access uncertainty, (5) hours to verified result and (6) engineering/job-portfolio demonstrability. The strongest return per hour is original-data and original-weather QA feeding a paper; a novel solver without measured hourly load contributes almost nothing to a defensible 2040 conclusion.
+
+| Rank | Default next-best investment | Why | Kill/pivot condition |
+|---|---|---|---|
+| **1** | Authenticated daily SLDC/source boundary ledger and original ERA5 pilot | Unblocks primary study and prevents false operational claims | Access/rights refused → publish missingness and source QA |
+| **2** | Register and reproduce fixed multi-year Ridge contrasts | Directly tests the existing one-year weather story with simple, falsifiable statistics | Missing complete historic weather → switch to A0 source-audit paper |
+| **3** | Manuscript-first drafting and clean re-run | Converts code into coherent evidence, criticism and a citable outcome | No defensible results → keep methods/null claims, not a fabricated signal |
+| **4** | Single hydro/transfer physical-evidence audit | Closest physical mechanism to existing research question | No source-backed operating constraints by June → stop |
+| **5** | One small paired scenario/uncertainty test | Useful only after observed/data-model gates | Source/physical gate fails → no runs |
+| **6** | New UI, model families, all-Kerala optimisation, fine-grained district network | Likely low return in this budget | Defer entirely until after 2027 freeze |
+
+**Paper A acceptance ladder:**
+1. **Mandatory by Jan:** preregistered question + reference inventory + frozen source boundaries.
+2. **Mandatory by Mar:** binary weather-source evidence gate recorded publicly; choose A or A0.
+3. **Mandatory by Jun:** repeatable result tables with all null/negative outcomes; no asserted multi-year skill without original input verification.
+4. **Mandatory by Aug:** complete manuscript v1 and supplementary reproducibility files; identify at least two candidate publication outlets and their data/fee constraints.
+5. **Mandatory by Sep:** external-review attempt and independent computer-level replication. Unavailable reviewers must be disclosed, not falsely claimed.
+6. **Mandatory by Oct:** release and research-freeze tag; journal/preprint submission only when defensible and permitted. **Peer-reviewed acceptance and external agency responses cannot be guaranteed**.
+
+**Tracking board states:** \`backlog\`, \`source-blocked\`, \`ready\`, \`in-review\`, \`verified\`, \`rejected\`, \`frozen\`. Every ticket should have an evidence source, estimated focused hours, verification result, manuscript figure/table or claim it unlocks, and a stop condition. Limit **active work in progress to two tasks**: one evidence/analysis task and one writing/reproducibility task.
+
+**Freeze checklist:** 2026 public-claim snapshot retained; all new sources have rights/boundary/hash; paper artifact has traceable per-year test results and failures; original and processed provenance separated; no leakage of restricted data; documented model conservation tests; every chart caption labels observed/proxy/simulation; no 2040 least-cost, real-world LOLE, outage attribution or legally buildable MW asserted without independent validation; clean installation and rerun; website and repository pinned to the same reviewed evidence commit; final tag dated 26 October 2027.
+
 
 ## 8. Verification, claims, ethics and shutdown rules
 
@@ -198,12 +239,16 @@ At **6 hours/week**, cut WP4, reduce WP3 to documentary validation, and pursue P
 
 **Public release minimum, irrespective of access:** provenance/evidence-atlas update, methodology note, at least one reproducible descriptive result built on admissible observation, quantitative missingness and uncertainty, and published negative results where encountered. Full planning adequacy and exact investment recommendations are optional and likely out of scope.
 
-## 9. Open decisions requiring the researcher's input
+## 9. Confirmed inputs and open authorizations
 
-1. **Effort ceiling:** actual sustainable time: 6, 10 or 15 hours/week? This controls whether WP3–WP4 survive.
-2. **Publication target:** academic Paper A + transparent website (recommended), policy briefing, or both? Journal fit should follow the first multiyear results and consultation with an academic coauthor, not be assumed now.
-3. **Data outreach authorization:** SLDC/KSEBL draft exists, but *sending it is a separate explicit action*. Availability of an academic referee/introduction may affect response odds.
-4. **Access:** whether the private `kerala2040-source-archive` and original ERA5 files remain under user access, and whether a trusted collaborator can handle restricted source evidence.
-5. **Geographic boundary:** treat Kerala state as one balancing aggregate (recommended baseline) or split into districts only after independently admissible district load/network data arrive.
+**Confirmed 26 October 2026:** the research owner can sustainably allocate **10 hours/week**. The optimized **400 planned + 100 contingency** annual resource ceiling is adopted as the working planning assumption in this **draft**.
 
-**Charter is DRAFT pending these choices.** Do not silently alter the public research freeze or companion website as part of approving a planning document.
+**Default working choices, pending later review:** prioritize a single peer-reviewable Paper A and an accurate reproducibility-oriented website; use **Kerala statewide daily SLDC operating data** as the central study boundary. District-level electricity demand and new network expansion are not admitted without independently verified records. Paper A's venue will be chosen against actual fit after early results; journal acceptance is not an output guarantee.
+
+**Still requiring explicit user choice or separate permission:**
+1. Authorize the existing SLDC/KSEBL data-access email to be **sent** (draft alone grants no permission); decide whether to approach an academic referee or institutional collaborator.
+2. Confirm whether the private \`kerala2040-source-archive\` and original Copernicus files can be securely accessed for local source-byte verification and whether an independent reviewer can audit restricted evidence without redistribution.
+3. Decide whether to invite an academic coauthor for manuscript review or keep independent authorship. Never imply an affiliation or endorsement that is not real.
+4. Choose a journal/preprint versus solely archived report after Paper A evidence and data-rights review. No pay-to-publish commitment is presumed.
+
+**Governance:** approving this 10-hour budget does not authorize sending emails, publication of private data, unlocking blocked claims, changing the October 2026 website freeze, or merging this planning PR. Keep this charter in draft until the outstanding authorizations are resolved.
