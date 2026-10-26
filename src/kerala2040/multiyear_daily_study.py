@@ -20,14 +20,13 @@ from sklearn.linear_model import Ridge
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-from kerala2040.sources.era5 import POINTS as ERA5_POINTS
-
 from kerala2040.daily_demand_ml import (
     CALENDAR_FEATURES,
     FEATURES,
     build_daily_feature_table,
     regression_metrics,
 )
+from kerala2040.sources.era5 import POINTS as ERA5_POINTS
 
 
 def read_private_daily_source(archive: Path, manifest_path: Path) -> tuple[pd.DataFrame, dict]:
@@ -113,7 +112,7 @@ def audit_multiyear_weather_panel(observed: pd.DataFrame, weather: pd.DataFrame)
 
     observed_dates = pd.to_datetime(observed["date"], errors="raise")
     if isinstance(observed_dates.dtype, pd.DatetimeTZDtype):
-        raise ValueError("SLDC daily dates must be timezone-naive IST calendar dates")
+        raise TypeError("SLDC daily dates must be timezone-naive IST calendar dates")
     if observed_dates.isna().any() or observed_dates.dt.normalize().duplicated().any():
         raise ValueError("Duplicate or null observed IST day")
     if (observed_dates != observed_dates.dt.normalize()).any():
