@@ -39,3 +39,41 @@ source hashes and no full-period gaps. Previously inspected later years
 mean these are **retrospective rolling evaluations, not blind forecasts**.
 The public research freeze is unchanged until independently reviewed inputs
 and results are admitted in a separate PR.
+
+## Normalized five-point ERA5 panel gate — 26 October 2026
+
+Before the existing fixed-Ridge retrospective comparison fits a model, it now
+calls `audit_multiyear_weather_panel` in
+`src/kerala2040/multiyear_daily_study.py`. For **every SLDC observed IST
+target date**, it requires exactly **24 UTC whole-hour timestamps at each of
+the same five declared representative ERA5 locations**. This explicitly
+rejects missing one-location hours, duplicate point-hour pairs, timezone-naive
+timestamps, off-grid sampling and unrecognised/missing locations. One present
+hour at four locations is **not** a legitimate five-point hourly mean.
+
+The day boundary is **India Standard Time (UTC+05:30)**, so exact UTC
+HH:00 source instants fall at local HH:30. Missing non-target SLDC days
+are not invented. The existing source-target reader still admits only
+`energy_balance_qualified=True` SLDC daily observations from the
+private hash-verified source archive.
+
+The private runner now records the normalized Parquet's SHA-256, separately
+from original Copernicus artifact provenance. **A Parquet hash verifies the
+file inspected, not the underlying ERA5 acquisition, sampling geometry,
+forecast/accumulation conversion, or scientific fitness.** The new panel
+verdict is therefore labelled
+`normalized_reanalysis_weather_panel_qa_not_source_authentication`,
+and explicitly says upstream original source hashes were *not* verified by
+that operation. Earlier FY2024–25 robustness figures and public evidence
+freeze are unchanged.
+
+### Acceptance remains blocked
+
+The independently pinned, original-source-hash verified, multi-year
+2019–2025 ERA5 hourly table across five geographic points has **not been
+supplied/admitted**. Passing the synthetic QA tests is software verification,
+not a positive historical weather result. Once genuine multi-year source
+artifacts are acquired, independently verify source bytes and point/grid
+selection before using this panel preflight and fitting. Keep source rows
+private until redistribution rights are reviewed. Do not rebrand same-day
+reanalysis as day-ahead forecasting.

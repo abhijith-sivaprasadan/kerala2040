@@ -26,6 +26,7 @@ from kerala2040.daily_demand_ml import (
     build_daily_feature_table,
     regression_metrics,
 )
+from kerala2040.sources.era5 import POINTS as ERA5_POINTS
 
 
 def read_private_daily_source(archive: Path, manifest_path: Path) -> tuple[pd.DataFrame, dict]:
@@ -95,7 +96,77 @@ def fixed_fiscal_year_design(table: pd.DataFrame) -> list[dict]:
     return result
 
 
+def audit_multiyear_weather_panel(observed: pd.DataFrame, weather: pd.DataFrame) -> dict:
+    """Require each *observed* IST target day to have 24 UTC hours at all five points.
+
+    No imputation, point fallback, or partial-five-point averaging is admissible.
+    This checks a normalized hourly table, NOT the provenance of ERA5 originals.
+    """
+    required = {
+        "point", "timestamp_utc", "temp_c", "wind10_m_s", "ghi_wh_m2", "precip_mm_h"
+    }
+    if not required.issubset(weather.columns):
+        raise ValueError(f"Weather panel missing fields: {sorted(required - set(weather.columns))}")
+    if "date" not in observed or observed.empty or weather.empty:
+        raise ValueError("Observed dates and weather panel must be nonempty")
+
+    observed_dates = pd.to_datetime(observed["date"], errors="raise")
+    if isinstance(observed_dates.dtype, pd.DatetimeTZDtype):
+        raise TypeError("SLDC daily dates must be timezone-naive IST calendar dates")
+    if observed_dates.isna().any() or observed_dates.dt.normalize().duplicated().any():
+        raise ValueError("Duplicate or null observed IST day")
+    if (observed_dates != observed_dates.dt.normalize()).any():
+        raise ValueError("SLDC daily date field must not contain time of day")
+    days = pd.DatetimeIndex(observed_dates.unique()).sort_values()
+
+    if weather["point"].isna().any() or set(weather["point"]) != set(ERA5_POINTS):
+        raise ValueError("ERA5 weather panel must name the exact five declared Kerala points")
+    raw_stamps = weather["timestamp_utc"]
+    if raw_stamps.isna().any():
+        raise ValueError("Null ERA5 UTC instant")
+    if isinstance(raw_stamps.dtype, pd.DatetimeTZDtype):
+        stamps = raw_stamps.dt.tz_convert("UTC")
+    else:
+        parsed = raw_stamps.map(pd.Timestamp)
+        if any(value.tzinfo is None or value.utcoffset() is None for value in parsed):
+            raise ValueError("ERA5 UTC timestamps must carry an explicit timezone")
+        stamps = pd.to_datetime(raw_stamps, utc=True, errors="raise")
+    if (
+        stamps.dt.minute.ne(0) | stamps.dt.second.ne(0)
+        | stamps.dt.microsecond.ne(0) | stamps.dt.nanosecond.ne(0)
+    ).any():
+        raise ValueError("ERA5 input must be on the exact UTC hourly grid")
+
+    panel = weather[["point"]].copy()
+    panel["timestamp_utc"] = stamps
+    if panel.duplicated(["point", "timestamp_utc"]).any():
+        raise ValueError("Duplicate ERA5 location-hour keys")
+    panel["date"] = stamps.dt.tz_convert("Asia/Kolkata").dt.tz_localize(None).dt.normalize()
+    selected = panel.loc[panel["date"].isin(days)]
+    counts = selected.groupby(["point", "date"]).size()
+    keys = pd.MultiIndex.from_product([sorted(ERA5_POINTS), days], names=["point", "date"])
+    sizes = counts.reindex(keys, fill_value=0)
+    bad = sizes.loc[sizes.ne(24)]
+    if not bad.empty:
+        first = bad.index[0]
+        raise ValueError(
+            f"ERA5 panel incomplete for {first[0]} {first[1].date()}: "
+            f"{int(bad.iloc[0])}/24 distinct UTC hours; no point averaging allowed"
+        )
+
+    return {
+        "classification": "normalized_reanalysis_weather_panel_qa_not_source_authentication",
+        "observed_target_ist_days": len(days),
+        "era5_points": sorted(ERA5_POINTS),
+        "required_location_hours_verified": len(days) * 24 * len(ERA5_POINTS),
+        "missing_or_duplicate_location_hours": 0,
+        "original_era5_source_hashes_verified_here": False,
+        "daily_target_is_observed_sldc_not_hourly_telemetry": True,
+    }
+
+
 def evaluate_multiyear_daily_weather(observed: pd.DataFrame, weather: pd.DataFrame) -> dict:
+    panel_qa = audit_multiyear_weather_panel(observed, weather)
     features = build_daily_feature_table(observed, weather)
     # Reject partial weather source coverage, including early and late years.
     if set(features["date"]) != set(observed["date"]):
@@ -119,6 +190,7 @@ def evaluate_multiyear_daily_weather(observed: pd.DataFrame, weather: pd.DataFra
         records.append(row)
     return {
         "status": "RETROSPECTIVE_MULTIFISCAL_YEAR_RIDGE_COMPARISON",
+        "weather_panel_qa": panel_qa,
         "folds": records,
         "weather_data_source_required": "independently pinned exact original ERA5 hours",
         "method": "Fixed Ridge alpha=1, scaled features, past-only training, 3 FY heldouts",
