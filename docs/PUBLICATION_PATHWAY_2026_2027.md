@@ -112,7 +112,7 @@ Never insert a placeholder DOI as an actual DOI, or promise open replication fro
 - AI provenance: follow journal's **current** generative-AI publication policies. Keep a private tool/version/usage/review record; cite verified papers, do not list AI as an author; separate **AI-assisted software development, literature/code analysis or scientific methods** from mere copy-editing. Springer 2026 policy requires transparent declarations for substantively used AI: https://group.springernature.com/gp/group/ai/ai-guidance-for-researchers-editors-reviewers. JOSS likewise asks for distinct AI usage disclosure and human design/contributions. An undeclared unreviewed LLM-generated statistic or unverified citation cannot be published as independent scientific computation.
 - Prior Kerala2040 website and published experiments: cite and differentiate old exploratory/source-frozen analyses. No salami slicing or concurrent publication of substantially identical scientific results. Elsevier: https://www.elsevier.com/en-in/editor/perk/multiple-duplicate-concurrent-publication-simultaneous-submission.
 
-## 4. Open research, ISBN/DOI/indexing and actual submission details
+## 4. Open research, DOI/indexing and actual submission details
 
 ### The free citable route
 
@@ -178,6 +178,16 @@ Do not allocate a *new* 100-hour publication project on top of the 400-hour char
 **If Paper A has insufficient eligible multiyear weather:** do **not** spend extra research hours trying to repair the headline. A robust dataset/official-boundary technical report with openly reviewable aggregate proofs and honest admissions is a strong contribution, albeit not an accepted journal article; later scientific progress can be published when new data arrive.
 
 **If you want a software publication after the main research:** assess genuine general applicability of Kerala2040's source-audit algorithms and public package against JOSS 2026 updated criteria. It is entirely legitimate for a no-fee software paper to follow a scientific article with clear distinct contributions, but it is not a guaranteed low-effort shortcut.
+
+## 6A. Conference proceedings vs journal articles: optional networking path
+
+**IEEE PowerTech 2027** in Bruges, Belgium (5–9 September 2027), is a legitimate reviewed **electric-power-systems conference**, not a general Kerala policy exhibition: https://powertech2027.com/call-for-papers/. Official information available on 26 October 2026 says the **full six-page paper deadline is 28 February 2027**, author decision 23 April, and final paper due 23 May. Reviewed and accepted **presented** papers are submitted to proceedings subject to IEEE requirements and author registration. **Our Paper A data go/no-go is 31 March, one month AFTER this full-paper deadline**, so trying to send a new 'completed multi-year weather' result to PowerTech 2027 would violate the current evidence sequence. **Do not divert the 10-hour/week budget to that February deadline.** A separate genuinely completed, already-source-supported methods contribution could be evaluated independently but is not the default plan.
+
+**Energy Informatics Academy Conference (EI.A)** is an established research venue focused on energy informatics, with reviewed papers and an LNCS proceedings track in its 2026 programme: https://www.energyinformatics.academy/2026-eia-conference. The 2026 edition has already happened by this charter date (14–17 October 2026); **a 2027 programme/deadline has not been verified here**. Revisit an actual new call in early 2027; only consider if Paper A already has admissible evidence and the proceedings rights/registration costs fit the budget.
+
+**Conferences can create academic contacts faster than journal review**, but may demand travel/registration, presentation and separate submission effort. A peer-reviewed conference proceeding is a valid indexed research product when formally accepted/published, but not automatically equivalent to a journal article. A short non-archival abstract/poster can obtain feedback without consuming the same original research as a separate full proceedings paper. **Do not assume that an archival conference paper can be submitted unchanged to a journal.** Consult both venues and ensure a journal extension has substantial genuinely new research, acknowledges the conference version and complies with duplicate-publication policy.
+
+**Default:** journal Paper A with invited pre-submission critique; conference presentation only if it does not pre-empt the protected manuscript milestones or add new speculative results.
 
 ## 7. Decisions still owned by the researcher
 
