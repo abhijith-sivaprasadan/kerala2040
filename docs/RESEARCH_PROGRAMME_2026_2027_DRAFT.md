@@ -5,6 +5,7 @@
 **Public evidence baseline:** `docs/RESEARCH_FREEZE_2026-10-23.md` (immutable scientific claims until individually reviewed)  
 **Proposed research freeze:** 26 October 2027; new data/model-result admissions cease 31 August 2027, except independently reviewed corrections.  
 **Owner:** Abhijith Sivaprasadan · independent research, no implied KTH/KSEBL/agency endorsement.
+**Publication operations:** [verified journal shortlist, affiliations/APCs, ethics, manuscript and 110-hour submission plan](PUBLICATION_PATHWAY_2026_2027.md). Publication fees and source-sharing authorizations remain open decisions.
 
 > **Problem-led question:** How do Kerala's demand variability, dependence on electricity imports, hydropower operating constraints and network limitations interact to affect electricity-system resilience, and which response mechanisms remain promising after uncertainty and physical feasibility checks?
 
