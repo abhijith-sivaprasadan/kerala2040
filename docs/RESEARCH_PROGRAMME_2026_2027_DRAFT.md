@@ -157,7 +157,7 @@ Maintain a narrow public-facing site: **observe → validate → conditional mec
 
 ## 6. Month-by-month execution contract and earned milestones
 
-This is **400 planned focused hours** over twelve months. Each line's effort is the sum of WP0–WP5, and the WP columns sum exactly to the package ceilings. Work not justified by a passing upstream gate is reassigned after documented review; do not retrospectively relabel the hours already worked.
+This is **400 planned focused hours** over twelve months. Each line's effort is the sum of WP0–WP5, and the WP columns sum exactly to the package ceilings. The machine-readable [monthly budget and gate ledger](RESEARCH_PROGRAMME_2026_2027_BUDGET.json) is checked to sum to **400 hours**, including the work-package ceilings; keep document and JSON in sync when changing hours. Work not justified by a passing upstream gate is reassigned after documented review; do not retrospectively relabel the hours already worked.
 
 | Month (2026–27) | WP0 | WP1 | WP2 | WP3 | WP4 | WP5 | Hours | Monthly deliverable / gate |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
