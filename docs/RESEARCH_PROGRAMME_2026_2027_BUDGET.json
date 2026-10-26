@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "classification": "provisional_research_capacity_plan_not_observed_research_results",
+  "as_of": "2026-10-26",
+  "period_start": "2026-11-01",
+  "research_freeze": "2027-10-26",
+  "confirmed_hours_per_week": 10,
+  "assumed_active_weeks": 50,
+  "annual_gross_hour_ceiling": 500,
+  "planned_focused_hours": 400,
+  "uncommitted_contingency_hours": 100,
+  "primary_paper": "Paper A multi-year retrospective SLDC daily demand × ERA5; fall back to Paper A0 source-quality audit when original weather cannot be admitted",
+  "scientific_claim_admission_cutoff": "2027-08-31",
+  "weather_go_no_go": "2027-03-31",
+  "hydro_go_no_go": "2027-06-30",
+  "budget_totals_by_wp": {
+    "WP0": 35,
+    "WP1": 90,
+    "WP2": 110,
+    "WP3": 35,
+    "WP4": 20,
+    "WP5": 110
+  },
+  "monthly_plan": [
+    {
+      "month": "2026-11",
+      "planned_focused_hours": 32,
+      "work_packages_hours": {
+        "WP0": 22,
+        "WP1": 8,
+        "WP2": 0,
+        "WP3": 0,
+        "WP4": 0,
+        "WP5": 2
+      },
+      "exit_deliverable": "G0 protocol outline / source outreach prepared (not sent)"
+    },
+    {
+      "month": "2026-12",
+      "planned_focused_hours": 30,
+      "work_packages_hours": {
+        "WP0": 9,
+        "WP1": 18,
+        "WP2": 0,
+        "WP3": 0,
+        "WP4": 0,
+        "WP5": 3
+      },
+      "exit_deliverable": "One pre-2024 ERA5 fiscal-year pilot or declared failed acquisition"
+    },
+    {
+      "month": "2027-01",
+      "planned_focused_hours": 36,
+      "work_packages_hours": {
+        "WP0": 4,
+        "WP1": 24,
+        "WP2": 6,
+        "WP3": 0,
+        "WP4": 0,
+        "WP5": 2
+      },
+      "exit_deliverable": "Frozen preregistered RQs, train/test splits and source audit pipeline"
+    },
+    {
+      "month": "2027-02",
+      "planned_focused_hours": 34,
+      "work_packages_hours": {
+        "WP0": 0,
+        "WP1": 22,
+        "WP2": 10,
+        "WP3": 0,
+        "WP4": 0,
+        "WP5": 2
+      },
+      "exit_deliverable": "One historical weather source period reverified; baseline harness"
+    },
+    {
+      "month": "2027-03",
+      "planned_focused_hours": 36,
+      "work_packages_hours": {
+        "WP0": 0,
+        "WP1": 12,
+        "WP2": 20,
+        "WP3": 0,
+        "WP4": 0,
+        "WP5": 4
+      },
+      "exit_deliverable": "G2a: choose weather manuscript A or observational source-audit A0"
+    },
+    {
+      "month": "2027-04",
+      "planned_focused_hours": 34,
+      "work_packages_hours": {
+        "WP0": 0,
+        "WP1": 6,
+        "WP2": 20,
+        "WP3": 0,
+        "WP4": 0,
+        "WP5": 8
+      },
+      "exit_deliverable": "Source accounting and manuscript Methods/data dictionary"
+    },
+    {
+      "month": "2027-05",
+      "planned_focused_hours": 32,
+      "work_packages_hours": {
+        "WP0": 0,
+        "WP1": 0,
+        "WP2": 22,
+        "WP3": 4,
+        "WP4": 0,
+        "WP5": 6
+      },
+      "exit_deliverable": "Daily-demand model comparisons and historical hydro evidence ledger"
+    },
+    {
+      "month": "2027-06",
+      "planned_focused_hours": 32,
+      "work_packages_hours": {
+        "WP0": 0,
+        "WP1": 0,
+        "WP2": 20,
+        "WP3": 6,
+        "WP4": 0,
+        "WP5": 6
+      },
+      "exit_deliverable": "G2b results locked; G3 hydro physical-evidence go/no-go"
+    },
+    {
+      "month": "2027-07",
+      "planned_focused_hours": 34,
+      "work_packages_hours": {
+        "WP0": 0,
+        "WP1": 0,
+        "WP2": 12,
+        "WP3": 12,
+        "WP4": 4,
+        "WP5": 6
+      },
+      "exit_deliverable": "Independent re-run, uncertainty table, conditional physical bounds"
+    },
+    {
+      "month": "2027-08",
+      "planned_focused_hours": 34,
+      "work_packages_hours": {
+        "WP0": 0,
+        "WP1": 0,
+        "WP2": 0,
+        "WP3": 13,
+        "WP4": 10,
+        "WP5": 11
+      },
+      "exit_deliverable": "Manuscript v1; final admitted results by August 31"
+    },
+    {
+      "month": "2027-09",
+      "planned_focused_hours": 32,
+      "work_packages_hours": {
+        "WP0": 0,
+        "WP1": 0,
+        "WP2": 0,
+        "WP3": 0,
+        "WP4": 6,
+        "WP5": 26
+      },
+      "exit_deliverable": "Clean-environment replication and critique attempts"
+    },
+    {
+      "month": "2027-10",
+      "planned_focused_hours": 34,
+      "work_packages_hours": {
+        "WP0": 0,
+        "WP1": 0,
+        "WP2": 0,
+        "WP3": 0,
+        "WP4": 0,
+        "WP5": 34
+      },
+      "exit_deliverable": "Versioned evidence release and October 26 research freeze"
+    }
+  ],
+  "usage_note": "Planning targets, not actual timesheets; document hours actually spent and prospective reallocations. Do not use this file to promote blocked scientific sources, alter public claims, or imply data access authorization."
+}
