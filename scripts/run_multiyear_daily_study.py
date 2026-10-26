@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -28,6 +29,13 @@ def main() -> None:
     weather = pd.read_parquet(args.weather_parquet)
     report = evaluate_multiyear_daily_weather(observed, weather)
     report["daily_source_provenance"] = provenance
+    # This pins the normalized table bytes, not the upstream CDS source archive.
+    digest = hashlib.sha256()
+    with args.weather_parquet.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    report["normalized_weather_parquet_sha256"] = digest.hexdigest()
+    report["original_era5_source_archive_verified_by_this_runner"] = False
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
 
