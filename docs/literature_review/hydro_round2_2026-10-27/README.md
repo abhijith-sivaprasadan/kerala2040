@@ -80,3 +80,14 @@ Related: [existing 19-paper synthesis](../CROSS_PAPER_SYNTHESIS_2026-10-27.md) a
 
 - **HR04 — Ryan et al. (2020)**: [11-page full visual and scientific audit](HR04_RYAN_2020_VISUAL_AUDIT.md), 28 findings, 25 evidence checks and 12 actions. Original source and complete audit PDF/image archives remain downloadable in the conversation, **not embedded in Git history**.
 - **HR07 — Suresh et al. (2024)**: [56-page full visual and scientific audit](HR07_SURESH_2024_VISUAL_AUDIT.md), 30 findings, 30 numerical/evidence checks and 12 Kerala2040 actions. Full audit PDF and image archives were generated in the conversation, but are **not** stored in GitHub. Thirty-eight other sources remain at bibliographic/abstract screening only.
+
+### HR07 — Published-version verification (28 October 2026)
+
+The prior HR07 **56-page accepted manuscript** has also been checked against the **24-page final published journal PDF** (same paper, DOI 10.1016/j.rse.2024.114149). All 24 published pages were visually inspected; 30 existing findings were remapped and 38 source-internal checks completed. The published text retains several cross-reference, date and methodological issues. This does **not** increase the completed-article count beyond **2/40**.
+
+- [HR07 final published-version scientific review](HR07_SURESH_2024_PUBLISHED_VERSION_AUDIT_2026-10-28.md)
+- [Published 24-page inspection ledger (CSV)](HR07_published_24_page_visual_ledger.csv)
+- [30-finding published-page crosswalk (CSV)](HR07_published_30_finding_page_crosswalk.csv)
+- [19-reservoir evaporation check (CSV)](HR07_published_evaporation_19_reservoir_check.csv)
+
+Full audit PDF and copyrighted published page renders are retained separately in the conversation's audit package, not redistributed as public repository source images.
