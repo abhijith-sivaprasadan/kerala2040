@@ -35,3 +35,12 @@ Critical comparator PDFs `D02` (Harish et al. 2020) and `D03` (Porwal et al. 202
 - No research conclusions, source validity claims, or copyrighted PDF files were added to the public evidence freeze.
 
 This run provides the **link-discovery layer**. Full-text retrieval, source/licence checks, exact document versions and a human scientific appraisal remain subsequent tasks.
+
+## Key-backed verification — second execution, 27 October 2026
+
+- **Run:** [40441263587](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/40441263587).
+- **Trigger:** a documented workflow-summary improvement pushed to `publication/oa-fulltext-discovery-2026`, because the connected GitHub integration cannot manually dispatch jobs.
+- **Secure secret check:** GitHub Actions job environment masks `OPENALEX_API_KEY` as `***`; job emits **"Using OPENALEX_API_KEY GitHub Actions secret."** Thus the secret **was supplied to the runner** without its value exposed. This does not reveal the secret value or entitle the workflow to anything beyond that key's API account permissions.
+- **Outcome:** **SUCCESS**, all 36 DOI lookups completed. **14 OA PDF candidate URLs**, **22 without direct OA PDF URL**, **0 lookup failures**. No PDFs downloaded, no paper metadata falsely upgraded to full text.
+- **Evidence:** [Key-backed metadata manifest artifact `kerala2040-openalex-oa-links-3`](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/40441263587/artifacts/12706560365), 30-day artifact retention.
+- **Unchanged limitation:** no evidence that all 14 advertised links are reachable PDF bytes, nor that the 22 missing direct links are paywalled. Legally acquired papers must still be read/critically evaluated; original provider source rights apply.
