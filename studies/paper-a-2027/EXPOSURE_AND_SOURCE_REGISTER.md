@@ -1,6 +1,6 @@
 # Paper A — initial source, prior-exposure and eligibility register
 
-**As of:** 26 October 2026. This is a **document inventory**, not direct independent reinspection of the restricted daily source archives or newly downloaded Copernicus data. Original-byte eligibility must be tested against the actual files before study admission. Public original scientific findings remain frozen at 23 October 2026.
+**As of:** baseline inventory 26 October 2026; documentary literature leads S8–S9 added 27 October 2026. This is a **document inventory**, not direct independent reinspection of the restricted daily source archives or newly downloaded Copernicus data. Original-byte eligibility must be tested against the actual files before study admission. Public original scientific findings remain frozen at 23 October 2026.
 
 ## 1. Known data families and critical distinctions
 
@@ -13,6 +13,10 @@
 | S5 | ERA5 for FY2020–21 to FY2023–24 inclusive, five points | **NOT_ADMITTED / not verified as a complete original-source multiyear weather input** | Nominal **80 location-quarter windows** beyond existing 20, not 80 guaranteed NetCDF files; respect CDS limits, provenance and archive retention |
 | S6 | Existing ML v0.1/v0.2 FY2024–25 experimental targets and held-out monthly performance | **Previously seen** by project analyst; model choices may have been influenced by this period | Treat F3 as analysis-exposed and benchmark only; never assert newly untouched out-of-sample replication |
 | S7 | Kerala measured state 15-minute or hourly load+actual interchange, complete FY2024–25 | **NOT_ADMITTED** (issue #130) | SLDC custodian data request exists **as a draft**, unsent; do not invent interval telemetry, hour-by-hour demand or true shortage outcomes |
+
+
+| S8 | **Harish et al. (2020) full PDF:** NLDC 2009–13 state **5-minute actual load MW**, used by authors to compute daily mean MW and Kerala regression (Appendix A3, n=1,737) | **Documentary source lead only; NOT_ADMITTED original measurements.** 14-page publisher PDF verified and reviewed 2026-10-27, SHA `384d54f7ce35912890f30ab41514f27fe7f68ffe1f42897c7ce48a82e0b7496d` | Ask current NLDC/Grid-India custodian for original archival access, precise state metered-power definition, retention, timezone and terms. Author access in 2020 **does not** show archive still available |
+| S9 | **Babu et al. (2026) full PDF:** authors report obtaining **2021–23 state-level measured hourly demand from GRID-INDIA**; selected observed **2023 hourly shape** to downscale future daily LSTM demand (p. 4) | **Documentary source lead only; NOT_ADMITTED original hourly measurements.** 18-page publisher PDF verified and reviewed 2026-10-27, SHA `046deeab21e3c7bd77338e058748808b94d586ec0991da4bab9367d79892738b`. Paper's 2040/2070 hourly curves are **simulated**, not actual | Add Grid-India data owner to approved outreach options and ask for historical original 2021–23 hourly state series, original time/field definitions and reuse conditions; no interval series has been obtained. South regional seen/unseen MAPE cannot be relabelled Kerala-specific |
 
 ## 2. Fiscal-year chronological split vs analyst exposure
 
