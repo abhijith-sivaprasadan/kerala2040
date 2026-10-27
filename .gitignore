@@ -68,3 +68,9 @@ output/
 /publication/literature/downloaded/
 /publication/literature/oa_discovery_results.csv
 /publication/literature/oa_discovery_results*.csv
+
+# Additional ephemeral academic paper intake (raw article bytes never public)
+/publication/literature/manual_downloaded/
+/publication/literature/pdf_validation_results.csv
+/publication/literature/manual_pdf_validation_results.csv
+/publication/literature/manual_candidate_download_results.csv
