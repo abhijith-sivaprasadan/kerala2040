@@ -1,6 +1,6 @@
 # Closest studies — structured critical appraisal and applicability crosswalk
 
-**Status 27 October 2026:** Twenty targeted evidence entries in publication-impact order. **Access levels are part of the result.** These are not twenty verified full-text reviews; some assessments rely on publisher abstracts, section snippets or the author's released code. No study's statistically reported number is transferred directly into Kerala2040.
+**Status 27 October 2026 (revised after receipt of two complete PDFs):** Twenty targeted evidence entries in publication-impact order. **Access levels are part of the result.** These are not twenty verified full-text reviews; some assessments rely on publisher abstracts, section snippets or the author's released code. No study's statistically reported number is transferred directly into Kerala2040.
 
 **Legend:** **FULL/SECTIONS** = accessible full text or substantive body/method/figure sections checked. **ABSTRACT** = publisher abstract, highlights, snippets, indexing only (insufficient to adjudicate full method). **CODE** = source-available program inspected, not rerun. **OFFICIAL** = government/provider/institutional source; not peer-reviewed article. **OLDER MATRIX** = bibliographic review only. **Action** identifies a reproducible check needed before publication.
 
@@ -20,12 +20,12 @@
 ### 2. Harish, Singh & Tongia (2020) — India/Delhi temperature response [D02]
 
 - **Citation:** [Energy Policy, DOI 10.1016/j.enpol.2020.111445](https://doi.org/10.1016/j.enpol.2020.111445).
-- **Access:** FULL/SECTIONS on ScienceDirect official paper body, abstract and methods/data section excerpts.
-- **Data unit/scope:** Delhi household billing, **160,841 consumers** over nearly 4 years; distinct national **2009–13 state 5-minute-load-derived daily mean load**. Load is load **met** under curtailment, not unrestrained demand.
-- **Method:** semiparametric nonlinear temperature response with observed socioeconomic heterogeneity.
-- **Finding:** states vary materially; demand response is not a single portable heat-load coefficient.
-- **Unresolved:** household covariates do not exist in current Kerala SLDC daily record; no Kerala-specific causal identification from same-day ML.
-- **Response:** restrict Paper A to aggregate association and measurement boundary; cite as the earliest important state-scale antecedent and add temperature confounding caveat.
+- **Access:** **FULL PUBLISHER PDF, 14 pages, supplied by study owner 27 Oct 2026; actual methods, figures and appendices assessed**. [Detailed full-text critical appraisal](FULLTEXT_D02_D04_APPRAISAL_2026-10-27.md).
+- **Observed sources:** NLDC state **5-minute metered load (MW), 2009–13**, aggregated to daily mean MW, unlike Kerala2040's MU/day original SLDC operational reports; IMD daily 1° temperature/rainfall; Delhi residential TPDDL billing sample **160,841 customers**.
+- **Model:** Semi-parametric **3°C temperature-bin fixed-effects** log-demand regression (Model 3) with precipitation, monthly reported unmet/supply deficit, state/year/month and state×year/state×month effects; reference **21–24°C**.
+- **Actual Kerala precedent:** Appendix **Table A3 (PDF p. 12)** column 17 reports **n=1,737 dates**, model **R²=0.892**, coefficients **0.0211*** (SE 0.00340) for **24–27°C**, **0.0694*** (SE 0.00510) for **27–30°C**. Those are log-demand coefficients; corresponding multiplicative fitted effects ≈**2.13%** and ≈**7.19%** relative to reference. **30–33°C and higher bins have no published Kerala coefficient**; missing coefficient ≠ zero.
+- **Interpretation/limits:** authors are explicit that state data measure **restricted load met** under supply curtailment rather than latent unconstrained demand. Monthly CEA deficits imperfectly control actual restrictions; weather exogeneity and fixed-effects adjustment are model assumptions. Delhi household cooling/income inequality cannot be quantified from Kerala state daily totals.
+- **Kerala2040 action:** reject any novel first-Kerala-temperature-response claim; use a metering-field crosswalk and historical temporal constraints. The study documents original NLDC **5-minute** data accessible to investigators for **2009–13**, not a presently public complete dataset.
 
 ### 3. Porwal et al. (2026) — state-level daily weather correlation [D03]
 
@@ -39,9 +39,12 @@
 ### 4. Babu, Ramadesigan & Banerjee (2026) — India's EV/cooling demand growth [D04]
 
 - **Citation:** [Applied Energy, DOI 10.1016/j.apenergy.2026.128069](https://doi.org/10.1016/j.apenergy.2026.128069).
-- **Access:** **ABSTRACT / publisher highlights**, not complete paid article.
-- **Focus:** medium/long-term electricity demand planning, EV growth, space cooling and changing peak hour; does not establish actual Kerala daily operational SLDC weather-Ridge contrast.
-- **Response:** acknowledge India planning forecasting precedent; don't transfer national 2070 cooling effects to observed Kerala days or claim a first long-run electricity plan.
+- **Access:** **FULL PUBLISHER PDF, 18 pages, supplied by study owner 27 Oct 2026**; figures, model equations, Table 4, validation discussion and limitations read. **Supplementary SM2/SM3 (state-specific scores) not supplied.** [Detailed full-text critical appraisal](FULLTEXT_D02_D04_APPRAISAL_2026-10-27.md).
+- **Original historical data:** Grid-India daily PSP, MERRA-2 and GDP for state daily LSTMs. Critically, **p. 4 explicitly states that GRID-INDIA supplied state-level actual hourly demand for 2021–2023**. Their **2023 hourly observations** were rescaled to construct future hourly demand patterns (with a boundary smoothing rule); these future profiles are **not measured observations**. Original source bytes have not been shared with Kerala2040.
+- **Validation:** Table 4 p. 7 shows **South-region** (not Kerala-only) MAPE **0.6±0.1% in the seen-period scenario** vs **6.7±0.2% in the unseen-period scenario**. An informative actual trained-year/held-out-year contrast; not proof of complete prospective research-design blinding.
+- **Projection method:** daily LSTM, 2015–24 Grid-India, climate changes estimated through 21 CMIP6 models, changes in CDD and EV uptake scenarios. Uses fixed 2023 weather in long-run normalized GDP model and separately adds cooling impacts and EV charging; single 2023 reference hourly profile imposes stationarity of within-day demand shape.
+- **Limits:** authors acknowledge assumed GDP–AC scaling, archetype residential room-to-all-buildings extrapolation and static hourly reference. Countrywide 2070 TWh results are scenarios, not Kerala historical outcomes. Preprocessing description places interpolation before splitting but does **not** prove actual leakage without code/parameter inspection.
+- **Kerala2040 action:** prioritise **Grid-India 2021–23 actual hourly dataset custodian** alongside KSEBL SLDC, request field definitions, IST block conventions, licensing and actual drawal, and retain FY-forward comparison. **Never turn the paper's simulated future hourly shapes into measured load**; seek supplementary SM2/SM3 for any Kerala-specific score. Authors credit past Grid-India leadership by name; verify *current* contacts separately.
 
 ### 5. Indian dwelling air-conditioning patterns (2022) [D05]
 
