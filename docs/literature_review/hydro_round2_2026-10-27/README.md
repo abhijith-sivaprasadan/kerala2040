@@ -75,3 +75,7 @@ How much reliable hydropower flexibility can Kerala provide across monsoon and d
 **Evidence gate:** A paper becomes 'full visual audit complete' only after the original publication PDF and all figures, tables, equations and appendices are inspected at readable resolution with a page ledger and verified arithmetic. Do not silently convert screened to audited.
 
 Related: [existing 19-paper synthesis](../CROSS_PAPER_SYNTHESIS_2026-10-27.md) and [CEA transmission Paper 20 audit](../CEA_TRANSMISSION_2034-35_PAPER20_AUDIT_2026-10-27.md).
+
+## Completed full-text visual audits
+
+- **HR07 — Suresh et al. (2024)**: [56-page full visual and scientific audit](HR07_SURESH_2024_VISUAL_AUDIT.md), 30 findings, 30 numerical/evidence checks and 12 Kerala2040 actions. Full audit PDF and image archives were generated in the conversation, but are **not** stored in GitHub. Thirty-nine other sources remain at bibliographic/abstract screening only.
