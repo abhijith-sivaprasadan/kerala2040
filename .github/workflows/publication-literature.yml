@@ -1,0 +1,30 @@
+name: Publication literature audit
+
+on:
+  push:
+    paths:
+      - "publication/**"
+      - ".github/workflows/publication-literature.yml"
+  pull_request:
+    paths:
+      - "publication/**"
+      - ".github/workflows/publication-literature.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate citation and source evidence matrix
+        run: python publication/literature/validate.py
+      - name: Test negative schema cases
+        working-directory: publication/literature
+        run: python -m unittest -v test_validate
