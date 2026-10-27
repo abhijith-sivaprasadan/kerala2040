@@ -8,11 +8,14 @@ This is a **dedicated working area inside the scientific project**, not a separa
 
 ## Primary working documents
 
-- [Critical literature synthesis, v0.1](literature/CRITICAL_LITERATURE_REVIEW_V0_1.md): approximately 6,600 words, theme-by-theme scientific argument and specific falsification criteria. **Structured critical narrative/scoping-oriented review, not PRISMA or an accepted paper.**
+- **[Completed critical literature synthesis, v1.0 (27 Oct 2026)](literature/CRITICAL_LITERATURE_REVIEW_2026-10-27.md):** integrated six-question narrative, direct empirical competitors, original field definitions, methodological validity, ERA5 physical semantics and publication novelty decision. **Structured critical narrative; not systematic, PRISMA, an original empirical study or journal-reviewed.**
+- [Earlier synthesis v0.1](literature/CRITICAL_LITERATURE_REVIEW_V0_1.md): historical ~6,600-word working review retained transparently for its detailed intermediate analysis; do not confuse this draft with the consolidated v1.0.
+- [Twenty closest-source appraisals](literature/CLOSEST_STUDIES_CRITICAL_APPRAISALS.md): paper-by-paper source-level details with actual full-text/abstract/code access classification, evidence limits, and falsifiable study consequences.
+- [Manuscript introduction and background draft](literature/MANUSCRIPT_INTRODUCTION_BACKGROUND_DRAFT.md): journal-style source-graded text with explicit gaps and placeholder results; not an accepted paper.
 - [Curated evidence matrix](literature/EVIDENCE_MATRIX.csv): 44 records classified by exact DOI, peer-review status, source access, overlap and consequence. **44 records does not equal 44 full-text reviewed articles.**
 - [Review protocol and search log](literature/REVIEW_PROTOCOL_AND_SEARCH_LOG.md): search terms, access/bias vocabulary, current methodological limitations and November/January audit commitments.
 - [Novelty and reviewer-challenge decision brief](NOVELTY_AND_REVIEWER_CHALLENGES.md): separates legitimate new hypotheses from prior claims and desk-rejection risks.
-- [BibTeX references](literature/verified_core_references.bib): initial known bibliographic entries. Entries with unknown author metadata remain in the source matrix until human verified, rather than being filled with fabricated names.
+- [BibTeX references](literature/verified_core_references.bib): initial bibliographic entries. All seven formerly provisional author-name records in the 44-record matrix were crosschecked against publisher or university information on 27 October; final formatted full names and metadata still require author-level proofreading.
 - [Matrix validator](literature/validate.py): standard-library consistency checks; **not a substitute for source reading or DOI resolution**.
 
 Related research-study files already on the upstream branch:
@@ -48,6 +51,6 @@ Review matrix references in a spreadsheet if useful; keep CSV under Git version 
 
 ## Clear current limitations
 
-The first synthesis includes official summaries and abstract-screened records. It has not run the authors' open models, retrieved all original public benchmark CSV bytes, inspected all CSTEP/CEA technical appendices, or independently verified all SLDC original private rows. It must not be presented as a systematic review with complete search hit counts.
+The v1.0 synthesis and its preserved v0.1 predecessor include official summaries and abstract-screened records; a source's place in the matrix is not evidence that its original complete full text has been reviewed. It has not run the authors' open models, retrieved all original public benchmark CSV bytes, inspected all CSTEP/CEA technical appendices, or independently verified all SLDC original private rows. It must not be presented as a systematic review with complete search hit counts.
 
 **Publication identity:** Independent Researcher. Completed KTH MSc is education history, not a claim of current university appointment. AI-assisted research drafting must be substantively verified by the human author and disclosed according to the venue.
