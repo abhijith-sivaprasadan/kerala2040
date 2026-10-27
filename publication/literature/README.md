@@ -91,3 +91,14 @@ The dedicated workflow is [\`.github/workflows/publication-openalex-harvest.yml\
 GitHub documentation on [creating Actions secrets](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets) and [manually running workflows](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) supplies the authoritative UI/security behavior. OpenAlex [API authentication](https://help.openalex.org/api/authentication/) explicitly supports \`Authorization: Bearer\`, which this script sends without embedding the key in URLs, command-line arguments or logs.
 
 **Credentials are user-managed:** the connected GitHub tool does not have repository secret-administration or workflow-dispatch permissions. It can author source and inspect the automatically triggered push-run; it cannot confirm or add your secret through those tools. GitHub users with repository Settings permissions must complete step 1. The anonymous smoke run is still informative for validating the script and discovering OA links.
+
+
+### Verified actual PDF acquisition outcomes — 27 October 2026
+
+See **[PDF_ACQUISITION_AUDIT_2026-10-27.md](PDF_ACQUISITION_AUDIT_2026-10-27.md)** for the two full GitHub Actions download attempts, per-paper original sources, extracted PDF page counts/DOI/title checks, legitimate institutional alternatives, and the remaining Indian-state study PDF requests.
+
+**Actual completed source chain:** 36/36 OpenAlex DOI metadata resolutions, 14 advertised OA PDF URLs, 14 automatic download attempts + seven separately researched university/author PDF attempts. **Six distinct downloaded PDF files passed structural validation**: D01 (29 pages), W02 (24), M04 (9), M06 (10), M01 (29), H01 (15). **Fifteen** candidates returned HTTP 403/404 or non-PDF responses. No third-party PDF files were committed or redistributed. The D01 published article already supplied by the user has 27 pages; the repository copy verified by GitHub has 29 and should be version-compared.
+
+Full manifests (metadata only): [run 40442388470](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/40442388470), [CSV artifact](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/40442388470/artifacts/12706786377). Even a structurally parsed PDF **does not equal** a source-level critical scientific appraisal. Paper identities/edition and full methods should be inspected separately.
+
+**Current most valuable manual PDFs:** D03 Porwal IEEE (2026), D02 Harish et al. Energy Policy (2020); both are substantive direct competitors and neither produced a direct OA PDF in the automated index. Authorized access or a courteous author manuscript request may be needed.
