@@ -9,6 +9,7 @@
 3. **[Manuscript background draft](MANUSCRIPT_INTRODUCTION_BACKGROUND_DRAFT.md)** — reusable but **not submission-ready** introduction text and citeable literature positioning with placeholders for as-yet-unperformed source comparisons and results.
 4. **[Evidence matrix](EVIDENCE_MATRIX.csv)** — 44 curated source records with DOI, record type, explicit access level, relevance and concrete design implication. All seven previously provisional author fields have been resolved against publisher/university sources.
 5. **[Protocol/search/QA log](REVIEW_PROTOCOL_AND_SEARCH_LOG.md)** — search queries and date, selection/access limits, statistical biases, future full-text needs and version-1.0 completion audit.
+7. **[Full-publisher-PDF critical appraisals of D02 Harish (2020) and D04 Babu (2026)](FULLTEXT_D02_D04_APPRAISAL_2026-10-27.md)** — owner-provided complete 14- and 18-page article PDFs, verified SHA-256, Kerala-specific historical coefficients and an important original 2021–23 GRID-INDIA hourly-load archival lead. Supplementary Babu materials remain missing; no original hourly files admitted.
 6. **[Previously established Hunt/Bloomfield novelty memo](../../studies/paper-a-2027/HUNT_BLOOMFIELD_PRIOR_ART_REVIEW_2026-10-27.md)** — published article's methods and Kerala-specific score, code inspection, untouched-data access gap and proposed original-unit benchmark.
 
 ## Key interpretation
