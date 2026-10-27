@@ -75,7 +75,7 @@ python -m unittest discover -s publication/literature -p "test_find_open_fulltex
 python publication/literature/validate.py
 \`\`\`
 
-**Known limitation of this session:** the authoring environment could not reach the OpenAlex/Unpaywall JSON APIs, so **none of the 36 DOIs has a newly live-verified OA link or downloaded PDF as a result of this commit**. Running the script on a network-enabled computer is required for live results. CI tests only deterministic local parsing, response-selection, HTTPS validation and fake PDF download checks.
+**Live GitHub Actions result (27 October 2026):** the initial **anonymous OpenAlex** push-run successfully resolved metadata for all 36 DOI records and advertised **14 direct OA-PDF candidate URLs**, with **22 records having no direct OA-PDF candidate** (some may still have landing-page access). **Zero lookup failures.** This is *not* 14 PDFs downloaded, verified, critically read, or licensed for redistribution. [Verified run and artifact](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/40440934911). Running locally or in Actions with the new secret is appropriate for future reproducible refreshes.
 
 
 ### GitHub Actions: run the DOI harvest with a repository secret
