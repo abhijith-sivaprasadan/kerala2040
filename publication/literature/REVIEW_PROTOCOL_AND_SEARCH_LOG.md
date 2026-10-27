@@ -71,6 +71,12 @@ Each B flag must be evidenced, plausible, unknown or not applicable, with exact 
 **Review status:** research-planning material written with AI assistance and requiring human verification of paper metadata, science and citations before journal submission.
 
 
+## New owner-provided complete PDFs — 27 October 2026
+
+After v1.0 release, the study owner supplied publisher-layout PDFs of **D02 Harish et al. (2020), Energy Policy, 14 pages** and **D04 Babu et al. (2026), Applied Energy, 18 pages**. Both are now critically appraised in [the exact-source appraisal](FULLTEXT_D02_D04_APPRAISAL_2026-10-27.md) with original file hashes, observed-source definitions, figures/tables, model limitations and admission status. Source-matrix `access_level` was upgraded **only for these two records** from abstract to `owner_supplied_full_publisher_pdf_*_critically_reviewed`. Other abstract-only entries, particularly **D03 Porwal (2026)**, remain unchanged. No independent original numerical replication or Babu supplementary table acquisition is implied.
+
+Primary novelty clarification: Harish Appendix Table A3 already publishes a **Kerala** 2009–13 temperature response (n=1,737); Babu p. 4 explicitly documents **actual GRID-INDIA state hourly 2021–23 source data** used as 2023 base templates for **simulated** future hourly load. These are documentary leads—not newly acquired Kerala2040 measured interval data. Add Grid-India/NLDC official custodian enquiries only with user authorisation; distinguish 5-minute historical measurements from hourly forecast/downscaled curves. 
+
 ## Version 1.0 review completion and integrity audit — 27 October 2026
 
 This record preserves the honest distinction between **completion of the commissioned critical narrative-review deliverable** and **completion of full-text review for every possible relevant paper**. The source evidence is usable as a careful publication background, **not** a systematic evidence synthesis, or proof of Paper A's novelty.
