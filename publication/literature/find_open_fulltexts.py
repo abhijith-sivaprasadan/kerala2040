@@ -98,7 +98,7 @@ def openalex_lookup(doi: str, key: str) -> dict:
         "candidate_pdf_url": valid_url(best.get("pdf_url")),
         "landing_page_url": valid_url(best.get("landing_page_url")) or
             valid_url(preferred.get("landing_page_url")),
-        "source_host_type": str(best.get("source", {}).get("type") or ""),
+        "source_host_type": str((best.get("source") or {}).get("type") or ""),
     }
 
 
