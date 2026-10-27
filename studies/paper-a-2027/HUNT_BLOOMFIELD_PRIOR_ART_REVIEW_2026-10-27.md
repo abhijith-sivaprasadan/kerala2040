@@ -86,6 +86,19 @@ Important: Some descriptions of the dataset and the paper describe a *2014–202
 | Comparable estimand | **Not yet established** | **Not yet established** | No numeric difference inference until verified |
 | Exact overlap | To be computed from bytes | To be computed from original hash-verified dates | No invented counts |
 
+## 4A. Public code inspection (27 October 2026): more precise methodological comparator
+
+The original author's public repository [`kieranmrhunt/india-renewable`](https://github.com/kieranmrhunt/india-renewable) includes [`notebooks/demand/functions.py`](https://github.com/kieranmrhunt/india-renewable/blob/master/notebooks/demand/functions.py), [`train-state-xgboost-models.ipynb`](https://github.com/kieranmrhunt/india-renewable/blob/master/notebooks/demand/train-state-xgboost-models.ipynb), [`data_splits.csv`](https://github.com/kieranmrhunt/india-renewable/blob/master/notebooks/demand/data_splits.csv) and [`outputs/Kerala.csv`](https://github.com/kieranmrhunt/india-renewable/blob/master/notebooks/demand/outputs/Kerala.csv).
+
+**Code observations only, not an independent reproduction:**
+
+- `train_model(...)` in the published functions module calls `train_test_split(... test_size=0.2, random_state=123)`, then splits the remainder into test and validation with `test_size=0.25`; this produces **80% training / 15% test / 5% validation** for that implementation branch. The paper's high-level `80%/20%` phrase combines held-out test and validation. A `year=` parameter provides an alternative one-year withheld split, but the checked training notebook uses the **random-split default**, not the commented alternative.
+- `process_data(...)` creates a detrended and variance-adjusted daily target using STL and rolling operations **before** the split in the checked training notebook. This is a legitimate *different estimand* if the objective is describing historical weather-associated variation; it is **not equivalent** to future-year predictions in the original MU/day scale. Whether the STL transformation uses information from the withheld test period and how this affects model scores is a candidate empirical sensitivity question requiring exact reproduction, not an accusation of misconduct or established effect.
+- The exported `outputs/Kerala.csv` columns are `date,observed,predicted` and contain **transformed** target values (e.g., near 10), so those numbers must **not** be interpreted as original daily MU or aligned/subtracted from the Kerala SLDC original source. Use the separate published **corrected_daily_energy_met_MU.csv** when benchmarking original national-grid reported daily energy.
+- Published `data_splits.csv` has **3,588 rows**, **3,537 distinct date labels**, **51 dates duplicated**, and **19 dates whose rows have different train/test/validation flags** in the file. These are precisely reproducible counts of that public CSV, **but the generic notebook writes/overwrites `data_splits.csv` inside a loop over multiple states**, so we **cannot identify this file as Kerala's exact training split**. Do not attribute the 19 repeated cross-partition dates or any leakage effect to the published Kerala R² without reconstructing the original per-state pipeline and data revisions.
+
+**Research implication:** A carefully executed *original-unit, genuinely year-forward, source-boundary-aware* comparison could provide methodological evidence that a random-split detrended retrospective model does not. But its publication novelty must be demonstrated against the original authors' actual code/results under a clearly matched test setup, not assumed from a different choice of splits.
+
 ## 5. Read and reproducibility status
 
 | Task | State |
@@ -94,6 +107,7 @@ Important: Some descriptions of the dataset and the paper describe a *2014–202
 | Accessible full-text methods/results sections and Kerala-specific appendix table read | **DONE** (article HTML rendering; original paper PDF not locally retained) |
 | Public Zenodo dataset and checksums inventoried | **DONE** (publisher listing only) |
 | Prior 2026 IEEE abstract and DOI screened | **DONE** |
+| Hunt/Bloomfield publicly released source and notebook inspected | **DONE** (code review only; see section 4A) |
 | Hunt/Bloomfield GitHub code independently rerun | **NOT DONE** |
 | Original Zenodo Kerala CSV downloaded & MD5 confirmed | **NOT DONE** (download attempts failed) |
 | Independently authenticated private Kerala SLDC multi-FY rows | **NOT DONE** |
