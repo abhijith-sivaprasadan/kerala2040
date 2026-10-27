@@ -78,4 +78,5 @@ Related: [existing 19-paper synthesis](../CROSS_PAPER_SYNTHESIS_2026-10-27.md) a
 
 ## Completed full-text visual audits
 
-- **HR07 — Suresh et al. (2024)**: [56-page full visual and scientific audit](HR07_SURESH_2024_VISUAL_AUDIT.md), 30 findings, 30 numerical/evidence checks and 12 Kerala2040 actions. Full audit PDF and image archives were generated in the conversation, but are **not** stored in GitHub. Thirty-nine other sources remain at bibliographic/abstract screening only.
+- **HR04 — Ryan et al. (2020)**: [11-page full visual and scientific audit](HR04_RYAN_2020_VISUAL_AUDIT.md), 28 findings, 25 evidence checks and 12 actions. Original source and complete audit PDF/image archives remain downloadable in the conversation, **not embedded in Git history**.
+- **HR07 — Suresh et al. (2024)**: [56-page full visual and scientific audit](HR07_SURESH_2024_VISUAL_AUDIT.md), 30 findings, 30 numerical/evidence checks and 12 Kerala2040 actions. Full audit PDF and image archives were generated in the conversation, but are **not** stored in GitHub. Thirty-eight other sources remain at bibliographic/abstract screening only.
