@@ -1,0 +1,122 @@
+name: Publication OpenAlex OA full-text lookup
+
+on:
+  push:
+    branches:
+      - publication/oa-fulltext-discovery-2026
+    paths:
+      - ".github/workflows/publication-openalex-harvest.yml"
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "Open-access lookup provider"
+        type: choice
+        options:
+          - openalex
+          - both
+        default: openalex
+        required: true
+      limit:
+        description: "Number of DOI entries (0 = all DOI entries)"
+        type: number
+        default: 0
+        required: true
+      download_pdfs:
+        description: "Temporarily fetch and verify OA PDFs on runner; do not redistribute as artifacts"
+        type: boolean
+        default: false
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publication-openalex-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  doi-oa-lookup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
+      UNPAYWALL_EMAIL: ${{ secrets.UNPAYWALL_EMAIL }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate reference evidence matrix
+        run: python publication/literature/validate.py
+      - name: Test OA discovery without network
+        run: python -m unittest discover -v -s publication/literature -p "test_find_open_fulltexts.py"
+      - name: OpenAlex lookup and optional ephemeral PDF verification
+        shell: bash
+        env:
+          REQUESTED_SOURCE: ${{ inputs.source }}
+          REQUESTED_LIMIT: ${{ inputs.limit }}
+          REQUESTED_PDFS: ${{ inputs.download_pdfs }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          args=(--provider openalex --out publication/literature/oa_discovery_results.csv --interval 1)
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            if [[ "$REQUESTED_SOURCE" == "both" ]]; then
+              if [[ -z "${UNPAYWALL_EMAIL:-}" ]]; then
+                echo "::error::To choose both providers, set a GitHub Actions secret UNPAYWALL_EMAIL. Otherwise choose openalex."
+                exit 1
+              fi
+              args=(--provider both --out publication/literature/oa_discovery_results.csv --interval 1)
+            fi
+            if [[ "$REQUESTED_LIMIT" =~ ^[0-9]+$ ]] && (( REQUESTED_LIMIT > 0 )); then
+              args+=(--limit "$REQUESTED_LIMIT")
+            fi
+            if [[ "$REQUESTED_PDFS" == "true" ]]; then
+              args+=(--download --pdf-dir publication/literature/downloaded)
+              echo "Third-party PDFs are only checked on this ephemeral runner; none will be uploaded as artifacts."
+            fi
+          fi
+          if [[ -z "${{ALEX" ]]; then
+            echo "::notice::No OPENALEX_API_KEY secret configured. Attempting OpenAlex public anonymous access."
+          else
+            echo "Using OPENALEX_API_KEY GitHub Actions secret."
+          fi
+          python publication/literature/find_open_fulltexts.py "${args[@]}"
+      - name: Summarize DOI open-access locations
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv
+          import os
+          from collections import Counter
+          from pathlib import Path
+          p = Path("publication/literature/oa_discovery_results.csv")
+          if not p.exists():
+              print("No DOI lookup manifest was produced.")
+              raise SystemExit(0)
+          with p.open(encoding="utf-8", newline="") as file:
+              records = list(csv.DictReader(file))
+          status = Counter(r["query_status"] for r in records)
+          pdf = Counter(r["pdf_status"] for r in records)
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8") as f:
+              f.write("## Kerala2040: OpenAlex literature lookup\n\n")
+              f.write(f"- DOI records attempted: **{len(records)}**\n")
+              f.write(f"- Candidate OA PDF links: **{status.get('oa_pdf_candidate',0)}**\n")
+              f.write(f"- No direct PDF but metadata found: **{status.get('no_direct_oa_pdf',0)}**\n")
+              f.write(f"- Lookup failed: **{status.get('lookup_failed',0)}**\n")
+              f.write(f"- PDFs temporarily verified (not distributed): **{pdf.get('saved_pdf_signature_verified',0)}**\n\n")
+              f.write("Only the OA provenance CSV is uploaded as a GitHub Actions artifact.\n")
+          print(dict(status))
+          print(dict(pdf))
+          PY
+      - name: Upload DOI-to-OA provenance manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kerala2040-openalex-oa-links-${{ github.run_number }}
+          path: publication/literature/oa_discovery_results.csv
+          if-no-files-found: warn
+          retention-days: 30
