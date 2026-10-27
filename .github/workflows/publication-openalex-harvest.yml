@@ -103,6 +103,8 @@ jobs:
           pdf = Counter(r["pdf_status"] for r in records)
           with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a", encoding="utf-8") as f:
               f.write("## Kerala2040: OpenAlex literature lookup\n\n")
+              credential_mode = "repository Actions secret configured" if os.environ.get("OPENALEX_API_KEY") else "anonymous OpenAlex access (no secret available)"
+              f.write(f"- OpenAlex authentication mode: **{credential_mode}**\n")
               f.write(f"- DOI records attempted: **{len(records)}**\n")
               f.write(f"- Candidate OA PDF links: **{status.get('oa_pdf_candidate',0)}**\n")
               f.write(f"- No direct PDF but metadata found: **{status.get('no_direct_oa_pdf',0)}**\n")
