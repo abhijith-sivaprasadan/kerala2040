@@ -41,3 +41,7 @@ This audits source-day completeness and preserves observed daily MWh in the **re
 Details: [Reproduction guidance](docs/REPRODUCE_AND_EXTEND.md) · [Source evidence](docs/evidence_register.md) · [Scientific provenance rules](docs/PROVENANCE_CORE_RULES.md) · [Contributions](CONTRIBUTING.md).
 
 **Research and authorship:** Abhijith Sivaprasadan, independent project. KTH and the named public agencies are not publishers or endorsers of the project. Source data retain the rights of their respective publishers.
+
+## Literature review and methodological evidence
+
+The [19-document literature review](docs/literature_review/README.md) (27 October 2026) records an indexed comparison of 520 uploaded PDF page positions, [cross-paper synthesis](docs/literature_review/CROSS_PAPER_SYNTHESIS_2026-10-27.md), and [research-design acceptance gates](docs/literature_review/RESEARCH_ACTIONS_2026-10-27.md). These are literature-based methodological assessments, **not** independent replications of third-party models or new Kerala operational findings. The public evidence freeze above remains in force. The underlying third-party PDF articles and full visual-review packages are not committed as part of this documentation update.
