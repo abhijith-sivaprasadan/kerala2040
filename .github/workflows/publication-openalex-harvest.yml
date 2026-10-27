@@ -38,9 +38,6 @@ jobs:
   doi-oa-lookup:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
-      UNPAYWALL_EMAIL: ${{ secrets.UNPAYWALL_EMAIL }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -52,9 +49,11 @@ jobs:
         run: python publication/literature/validate.py
       - name: Test OA discovery without network
         run: python -m unittest discover -v -s publication/literature -p "test_find_open_fulltexts.py"
-      - name: OpenAlex lookup and optional ephemeral PDF verification
+      - name: OpenAlex metadata lookup (API key scoped to this step only)
         shell: bash
         env:
+          OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
+          UNPAYWALL_EMAIL: ${{ secrets.UNPAYWALL_EMAIL }}
           REQUESTED_SOURCE: ${{ inputs.source }}
           REQUESTED_LIMIT: ${{ inputs.limit }}
           REQUESTED_PDFS: ${{ inputs.download_pdfs }}
@@ -73,10 +72,6 @@ jobs:
             if [[ "$REQUESTED_LIMIT" =~ ^[0-9]+$ ]] && (( REQUESTED_LIMIT > 0 )); then
               args+=(--limit "$REQUESTED_LIMIT")
             fi
-            if [[ "$REQUESTED_PDFS" == "true" ]]; then
-              args+=(--download --pdf-dir publication/literature/downloaded)
-              echo "Third-party PDFs are only checked on this ephemeral runner; none will be uploaded as artifacts."
-            fi
           fi
           if [[ -z "${OPENALEX_API_KEY:-}" ]]; then
             echo "::notice::No OPENALEX_API_KEY secret configured. Attempting OpenAlex public anonymous access."
@@ -84,6 +79,19 @@ jobs:
             echo "Using OPENALEX_API_KEY GitHub Actions secret."
           fi
           python publication/literature/find_open_fulltexts.py "${args[@]}"
+      - name: Install structural PDF verification dependency
+        if: github.event_name == 'push' || inputs.download_pdfs == true
+        run: python -m pip install 'pypdf==5.9.0'
+      - name: Download publicly listed PDF candidates (private ephemeral runner)
+        if: github.event_name == 'push' || inputs.download_pdfs == true
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The API key is intentionally NOT available to this step.
+          python publication/literature/fetch_candidate_pdfs.py
+      - name: Verify PDF structure and first-page identity evidence
+        if: github.event_name == 'push' || inputs.download_pdfs == true
+        run: python publication/literature/verify_open_pdfs.py
       - name: Summarize DOI open-access locations
         if: always()
         shell: bash
@@ -110,7 +118,7 @@ jobs:
               f.write(f"- No direct PDF but metadata found: **{status.get('no_direct_oa_pdf',0)}**\n")
               f.write(f"- Lookup failed: **{status.get('lookup_failed',0)}**\n")
               f.write(f"- PDFs temporarily verified (not distributed): **{pdf.get('saved_pdf_signature_verified',0)}**\n\n")
-              f.write("Only the OA provenance CSV is uploaded as a GitHub Actions artifact.\n")
+              f.write("Only OA/PDF-verification metadata CSVs are uploaded. No third-party article PDF bytes.\n")
           print(dict(status))
           print(dict(pdf))
           PY
@@ -119,6 +127,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kerala2040-openalex-oa-links-${{ github.run_number }}
-          path: publication/literature/oa_discovery_results.csv
+          path: |
+            publication/literature/oa_discovery_results.csv
+            publication/literature/pdf_validation_results.csv
           if-no-files-found: warn
           retention-days: 30
