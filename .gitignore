@@ -63,3 +63,8 @@ _site/
 
 # Local poster render and QA intermediates
 output/
+
+# Literature: downloaded third-party articles, private DOI lookups and caches
+/publication/literature/downloaded/
+/publication/literature/oa_discovery_results.csv
+/publication/literature/oa_discovery_results*.csv
