@@ -59,6 +59,8 @@ A **medium-term (1–2-year) state-wise daily demand LSTM** and a **long-run mod
 
 **Original daily and weather sources (p. 4):** GRID-INDIA's published daily reports FY2015–FY2024; MERRA-2 reanalysis, MoSPI GDP; three most populated cities per state with 2011 census weights. They exclude **April 2020–December 2021** from the study's daily model training due to pandemic disruption; original 2021–23 hourly archived intake is a separately described source.
 
+**Year-label warning:** p. 4 explicitly says named years in the study represent **financial years** (e.g., “2015” runs April 2015–March 2016). Thus the author-labelled **2021–2023 hourly source period** must **not** be converted into a calendar-year start/end without checking the actual timestamped export. Ask Grid-India or the authors to specify the first/last interval, UTC/IST labelling, aggregation semantics and state boundary.
+
 ### Medium-term methodology & model evaluation
 
 - LSTM on daily data with GDP, temperature, wind, solar irradiance, rainfall, RH and cyclic month/day/weekend features, train/validation/test separation and Smooth L1 loss, early stopping. The paper reports state MAPE typically <5% in **Supplementary Table SM2, not supplied here**, so **we cannot authenticate Kerala's specific MAPE** from the main file.
