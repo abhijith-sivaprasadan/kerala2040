@@ -14,9 +14,17 @@
 
 29–30 Nov buffer is not extra planned research output. Tracking is based on **actual attention time**, not elapsed agency wait. Do not label these prospective hours as work already completed.
 
+## 27 October prior-art gate amendment (no additional November hours)
+
+[Hunt & Bloomfield (2025)](https://doi.org/10.1088/2753-3751/adc7bc) is a much stronger competitor than initially recognized: their Kerala-specific ERA5/XGBoost/SHAP test result is in the published paper; their openly listed [2014–2024 Grid-India/weather dataset](https://doi.org/10.5281/zenodo.14983362) may be an immediate independent comparator. The accepted fixed Ridge protocol is **not yet locked or run**. Before spending a material number of WP1 hours on additional original ERA5 downloads, try to obtain and hash the actual Zenodo Kerala and corrected-state daily CSV files, confirm licence/date range, and establish whether their `daily_energy_met_MU` and our private original SLDC qualified consumption have comparable observation scopes.
+
+**Do not delay until March to ask whether Paper A is sufficiently novel.** By **30 November**, make a short accept/reframe/no-go decision on whether 'chronologically tested weather gain on original SLDC' offers more than already published work. If the benchmark cannot be downloaded, record that as a source-access blocker, do not substitute values from the literature, and prioritize A0 source-definition audit.
+
+See [detailed critical prior-art assessment](HUNT_BLOOMFIELD_PRIOR_ART_REVIEW_2026-10-27.md).
+
 ## Immediate next four actions, in this order
 
-1. **Prior-art overlap (highest ROI).** Acquire authorised full text of IEEE Xplore [document 11468867](https://ieeexplore.ieee.org/abstract/document/11468867/) and complete the comparison matrix in `LITERATURE_MATRIX_v0_1.md`. The abstract alone already establishes an Indian-states daily weather-demand predecessor, so any claim that Kerala2040 is the first must be withdrawn unless carefully narrowed and independently established.
+1. **Prior-art overlap (highest ROI).** Review the now-accessible published methods/results of Hunt & Bloomfield (2025), obtain the actual Zenodo Kerala and corrected-energy CSV bytes and compare source definitions. Then acquire authorised full text of IEEE Xplore [document 11468867](https://ieeexplore.ieee.org/abstract/document/11468867/) and complete the comparison matrix in `LITERATURE_MATRIX_v0_1.md`. The 2025 full paper establishes a published Kerala-specific ERA5/XGBoost/SHAP predecessor, so any claim that Kerala2040 is the first must be withdrawn unless carefully narrowed and independently established.
 2. **Training-vs-analyst exposure.** Audit past Kerala2040 GitHub history and dated research artifacts to establish if FY2022–23/FY2023–24 were inspected during feature/model development; record `YES / NO / UNKNOWN` with specific commits and dates. Do not upgrade `UNKNOWN` to `NO` by inference.
 3. **Source availability snapshot, no downloads by assertion.** Privately verify `kerala2040-source-archive` original gzip and CSV manifest SHA-256, and list actual already-stored ERA5 pre-FY2024–25 sources; only then choose the **smallest missing bounded location-quarter** for a pilot. Keep records outside public CI and site.
 4. **Sharpen Paper A0 immediately.** Develop source-field ontology and a two-page A0 prospectus with falsifiable results and a journal novelty threshold by January, so March go/no-go is a decision rather than crisis management.
