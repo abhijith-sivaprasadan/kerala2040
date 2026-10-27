@@ -2,6 +2,7 @@
 
 **Assembled 27 October 2026.** This is a secondary synthesis of individual PDF visual audits and source-internal checks. It does **not** certify reproduction of third-party datasets, code, or numerical models.
 
+- [Multi-round literature review programme and gap atlas](NEXT_REVIEW_ROUNDS_2026-10-27.md)
 - [Nineteen-document catalogue and evidence boundaries](PAPER_CATALOGUE_2026-10-27.md)
 - [Cross-paper synthesis](CROSS_PAPER_SYNTHESIS_2026-10-27.md)
 - [Research-design and evidence-gate actions](RESEARCH_ACTIONS_2026-10-27.md)
