@@ -30,3 +30,49 @@ Hunt & Bloomfield (2025) published Kerala-specific ERA5/XGBoost/SHAP demand rese
 **Not completed by a literature review:** authentication of original private SLDC bytes, independent run of Hunt's public model/dataset, comparison of actually equivalent Grid-India/SLDC fields, historical ERA5 source acquisition, future-year empirical regression results, verified causal/dispatch inferences, journal submission or outside human review. These remain tracked in the year-one execution plan.
 
 **Highest next return:** source-audited accession of the freely published Hunt & Bloomfield `Kerala.csv` and `corrected_daily_energy_met_MU.csv`, precise original-field comparison with private SLDC data under authorised access, and a go/no-go manuscript novelty conclusion **before** spending substantial time on downloading/processing more ERA5.
+
+
+## Open-access article discovery — Unpaywall / OpenAlex (27 October 2026)
+
+**Goal:** help obtain legally accessible *full-text papers* for independent manual critical reading. OA metadata is not itself the full article, a verified read, redistribution permission or proof of original-source licensing.
+
+**Sources:** [Unpaywall REST API](https://unpaywall.org/products/api), [OpenAlex API](https://help.openalex.org/api/), and the [shared Unpaywall/OpenAlex OA index](https://help.openalex.org/access/unpaywall/). Unpaywall \`/v2/search\` was retired in September 2026; Unpaywall's **single DOI** \`/v2/{doi}?email=...\` endpoint still works. OpenAlex supports single-work DOI resolution with \`open_access\` and \`best_oa_location\`. OpenAlex basic unauthenticated tests remain possible, but for 36 citations and repeatable usage, use a **free API key** obtained directly at [OpenAlex Settings](https://openalex.org/settings/api); October 2026 official docs describe limited anonymous usage and a free keyed daily allowance. Do not commit API keys or any personal contact email to source files.
+
+### Easiest option without writing or running code
+
+Open [Unpaywall Simple Query Tool](https://unpaywall.org/products/simple-query-tool) and paste the **36 DOI lines** from [DOIS_FOR_UNPAYWALL.txt](DOIS_FOR_UNPAYWALL.txt). The service can query up to 1,000 DOIs in a batch and return an open-access status/link report. This does not download journal PDFs; it helps locate legitimate free copies. Eight of the 44 curated records are **not DOI-identified** and belong in separate official/public-provider source acquisition.
+
+### Reproducible script (standard-library Python, no pip installation)
+
+In a local Kerala2040 checkout, from the repository root:
+
+\`\`\`powershell
+# Demo: look up the first three reference DOIs using limited anonymous access
+python publication/literature/find_open_fulltexts.py --limit 3
+
+# Recommended for all DOI records: obtain a free OpenAlex key yourself
+$env:OPENALEX_API_KEY = Read-Host "Your OpenAlex API key"
+python publication/literature/find_open_fulltexts.py --provider openalex
+
+# Unpaywall fallback requires your own valid contact email
+$env:UNPAYWALL_EMAIL = Read-Host "Your email for Unpaywall"
+python publication/literature/find_open_fulltexts.py --provider both
+
+# ONLY once you reviewed the candidate source and local copyright requirements:
+python publication/literature/find_open_fulltexts.py --provider both --download
+\`\`\`
+
+**Expected output:** \`publication/literature/oa_discovery_results.csv\`, with record ID, original DOI, OA status, chosen repository/publisher PDF *candidate URL*, landing page, lookup outcome, optional PDF download status and verified SHA-256. Candidate status \`oa_pdf_candidate\` means the API *advertised a URL*, not that a file was downloaded or even reachable. Download status \`saved_pdf_signature_verified\` means an HTTPS response began with a PDF signature, passed the configured file-size bound and was SHA-256 hashed, **not** that scientific content was read/reviewed. If a source requires login or cannot serve an accessible PDF, it remains manual retrieval.
+
+**Safety:** download is OFF by default, requires explicit \`--download\`; no paywalls are bypassed; only HTTPS URLs accepted. A publisher full-text URL can still lead to a login or HTML page and is rejected as PDF. Original third-party PDFs and automatically generated results are **excluded from Git commits** by \`.gitignore\`. Check publication/licence terms before distributing any PDF. Do not upload a restricted article or private Kerala SLDC original into a public repository or Zenodo without permission.
+
+**Manual fallback:** use the DOI to request through an eligible library, permitted institutional repository, public preprint server or the paper's corresponding author. The Hunt/Bloomfield full 27-page paper has already been supplied in the conversation; its separate public Zenodo *data files* are a different scientific acquisition task and this DOI-to-PDF script does not perform that dataset fetch.
+
+### Offline validation
+
+\`\`\`powershell
+python -m unittest discover -s publication/literature -p "test_find_open_fulltexts.py" -v
+python publication/literature/validate.py
+\`\`\`
+
+**Known limitation of this session:** the authoring environment could not reach the OpenAlex/Unpaywall JSON APIs, so **none of the 36 DOIs has a newly live-verified OA link or downloaded PDF as a result of this commit**. Running the script on a network-enabled computer is required for live results. CI tests only deterministic local parsing, response-selection, HTTPS validation and fake PDF download checks.
