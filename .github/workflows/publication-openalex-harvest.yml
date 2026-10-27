@@ -37,7 +37,7 @@ concurrency:
 jobs:
   doi-oa-lookup:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -92,6 +92,23 @@ jobs:
       - name: Verify PDF structure and first-page identity evidence
         if: github.event_name == 'push' || inputs.download_pdfs == true
         run: python publication/literature/verify_open_pdfs.py
+      - name: Fetch seven author/institutional candidates missed by OpenAlex
+        if: github.event_name == 'push' || inputs.download_pdfs == true
+        shell: bash
+        run: |
+          set -euo pipefail
+          # These sources were manually checked for source/title metadata and may still block file retrieval.
+          python publication/literature/fetch_candidate_pdfs.py \
+            --manifest publication/literature/MANUAL_PUBLIC_PDF_CANDIDATES.csv \
+            --out publication/literature/manual_candidate_download_results.csv \
+            --pdf-dir publication/literature/manual_downloaded
+      - name: Parse institutional PDF candidates without redistributing content
+        if: github.event_name == 'push' || inputs.download_pdfs == true
+        run: |
+          python publication/literature/verify_open_pdfs.py \
+            --manifest publication/literature/manual_candidate_download_results.csv \
+            --pdf-dir publication/literature/manual_downloaded \
+            --out publication/literature/manual_pdf_validation_results.csv
       - name: Summarize DOI open-access locations
         if: always()
         shell: bash
@@ -130,5 +147,7 @@ jobs:
           path: |
             publication/literature/oa_discovery_results.csv
             publication/literature/pdf_validation_results.csv
+            publication/literature/manual_candidate_download_results.csv
+            publication/literature/manual_pdf_validation_results.csv
           if-no-files-found: warn
           retention-days: 30
