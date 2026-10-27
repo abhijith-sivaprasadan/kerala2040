@@ -78,7 +78,7 @@ jobs:
               echo "Third-party PDFs are only checked on this ephemeral runner; none will be uploaded as artifacts."
             fi
           fi
-          if [[ -z "${{ALEX" ]]; then
+          if [[ -z "${OPENALEX_API_KEY:-}" ]]; then
             echo "::notice::No OPENALEX_API_KEY secret configured. Attempting OpenAlex public anonymous access."
           else
             echo "Using OPENALEX_API_KEY GitHub Actions secret."
