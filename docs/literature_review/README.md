@@ -13,3 +13,5 @@ The reviewed corpus contains **19 documents and 520 PDF page positions**. Inspec
 This repository records the **derived critique, catalogue, cross-paper conclusions, and next research gates**. The 19 source PDFs and full visual-audit PDF/ZIP packages created in the conversation are **not uploaded by this commit**. Do not redistribute third-party article PDFs or source figures without an appropriate right or licence. Their content hashes and original audit packages should be preserved separately as citable, rights-reviewed research records, not silently committed as open licensed material.
 
 The project public evidence freeze in [RESEARCH_FREEZE_2026-10-23.md](../RESEARCH_FREEZE_2026-10-23.md) still applies. These reviews do not turn modelled hourly demand, shortage quantities, or expansion scenarios into validated evidence.
+
+- [Round 2 (40 new sources): hydropower, reservoir operations and flexibility — targeted scoping register](hydro_round2_2026-10-27/README.md) ([CSV](hydro_round2_2026-10-27/papers.csv)) — source/abstract screened only; full visual audits pending.
