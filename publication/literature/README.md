@@ -30,3 +30,75 @@ Hunt & Bloomfield (2025) published Kerala-specific ERA5/XGBoost/SHAP demand rese
 **Not completed by a literature review:** authentication of original private SLDC bytes, independent run of Hunt's public model/dataset, comparison of actually equivalent Grid-India/SLDC fields, historical ERA5 source acquisition, future-year empirical regression results, verified causal/dispatch inferences, journal submission or outside human review. These remain tracked in the year-one execution plan.
 
 **Highest next return:** source-audited accession of the freely published Hunt & Bloomfield `Kerala.csv` and `corrected_daily_energy_met_MU.csv`, precise original-field comparison with private SLDC data under authorised access, and a go/no-go manuscript novelty conclusion **before** spending substantial time on downloading/processing more ERA5.
+
+
+## Open-access article discovery — Unpaywall / OpenAlex (27 October 2026)
+
+**Goal:** help obtain legally accessible *full-text papers* for independent manual critical reading. OA metadata is not itself the full article, a verified read, redistribution permission or proof of original-source licensing.
+
+**Sources:** [Unpaywall REST API](https://unpaywall.org/products/api), [OpenAlex API](https://help.openalex.org/api/), and the [shared Unpaywall/OpenAlex OA index](https://help.openalex.org/access/unpaywall/). Unpaywall \`/v2/search\` was retired in September 2026; Unpaywall's **single DOI** \`/v2/{doi}?email=...\` endpoint still works. OpenAlex supports single-work DOI resolution with \`open_access\` and \`best_oa_location\`. OpenAlex basic unauthenticated tests remain possible, but for 36 citations and repeatable usage, use a **free API key** obtained directly at [OpenAlex Settings](https://openalex.org/settings/api); October 2026 official docs describe limited anonymous usage and a free keyed daily allowance. Do not commit API keys or any personal contact email to source files.
+
+### Easiest option without writing or running code
+
+Open [Unpaywall Simple Query Tool](https://unpaywall.org/products/simple-query-tool) and paste the **36 DOI lines** from [DOIS_FOR_UNPAYWALL.txt](DOIS_FOR_UNPAYWALL.txt). The service can query up to 1,000 DOIs in a batch and return an open-access status/link report. This does not download journal PDFs; it helps locate legitimate free copies. Eight of the 44 curated records are **not DOI-identified** and belong in separate official/public-provider source acquisition.
+
+### Reproducible script (standard-library Python, no pip installation)
+
+In a local Kerala2040 checkout, from the repository root:
+
+\`\`\`powershell
+# Demo: look up the first three reference DOIs using limited anonymous access
+python publication/literature/find_open_fulltexts.py --limit 3
+
+# Recommended for all DOI records: obtain a free OpenAlex key yourself
+$env:OPENALEX_API_KEY = Read-Host "Your OpenAlex API key"
+python publication/literature/find_open_fulltexts.py --provider openalex
+
+# Unpaywall fallback requires your own valid contact email
+$env:UNPAYWALL_EMAIL = Read-Host "Your email for Unpaywall"
+python publication/literature/find_open_fulltexts.py --provider both
+
+# ONLY once you reviewed the candidate source and local copyright requirements:
+python publication/literature/find_open_fulltexts.py --provider both --download
+\`\`\`
+
+**Expected output:** \`publication/literature/oa_discovery_results.csv\`, with record ID, original DOI, OA status, chosen repository/publisher PDF *candidate URL*, landing page, lookup outcome, optional PDF download status and verified SHA-256. Candidate status \`oa_pdf_candidate\` means the API *advertised a URL*, not that a file was downloaded or even reachable. Download status \`saved_pdf_signature_verified\` means an HTTPS response began with a PDF signature, passed the configured file-size bound and was SHA-256 hashed, **not** that scientific content was read/reviewed. If a source requires login or cannot serve an accessible PDF, it remains manual retrieval.
+
+**Safety:** download is OFF by default, requires explicit \`--download\`; no paywalls are bypassed; only HTTPS URLs accepted. A publisher full-text URL can still lead to a login or HTML page and is rejected as PDF. Original third-party PDFs and automatically generated results are **excluded from Git commits** by \`.gitignore\`. Check publication/licence terms before distributing any PDF. Do not upload a restricted article or private Kerala SLDC original into a public repository or Zenodo without permission.
+
+**Manual fallback:** use the DOI to request through an eligible library, permitted institutional repository, public preprint server or the paper's corresponding author. The Hunt/Bloomfield full 27-page paper has already been supplied in the conversation; its separate public Zenodo *data files* are a different scientific acquisition task and this DOI-to-PDF script does not perform that dataset fetch.
+
+### Offline validation
+
+\`\`\`powershell
+python -m unittest discover -s publication/literature -p "test_find_open_fulltexts.py" -v
+python publication/literature/validate.py
+\`\`\`
+
+**Live GitHub Actions result (27 October 2026):** the initial **anonymous OpenAlex** push-run successfully resolved metadata for all 36 DOI records and advertised **14 direct OA-PDF candidate URLs**, with **22 records having no direct OA-PDF candidate** (some may still have landing-page access). **Zero lookup failures.** This is *not* 14 PDFs downloaded, verified, critically read, or licensed for redistribution. [Verified run and artifact](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/40440934911). Running locally or in Actions with the new secret is appropriate for future reproducible refreshes.
+
+
+### GitHub Actions: run the DOI harvest with a repository secret
+
+The dedicated workflow is [\`.github/workflows/publication-openalex-harvest.yml\`](../../.github/workflows/publication-openalex-harvest.yml). It runs the same 36-DOI resolver, generates a CSV of candidate full-text/landing URLs and uploads the **metadata-only manifest** as a GitHub Actions artifact (30-day retention). Papers themselves are **not** redistributed as workflow artifacts. An optional download mode verifies their PDF signatures/checksums temporarily on the runner; because GitHub artifacts on this public repository can be shared, the raw PDFs are deliberately *not* uploaded.
+
+1. **Set the secret yourself:** GitHub repository → **Settings → Secrets and variables → Actions → Repository secrets → New repository secret**. Name it **\`OPENALEX_API_KEY\`** (case-sensitive) and paste the key obtained from https://openalex.org/settings/api. Do not paste the key in chat, a GitHub issue, a workflow input or a commit. Optional: add **\`UNPAYWALL_EMAIL\`** only to enable the \`both\` provider mode.
+2. **First smoke run:** Pushing the workflow to the \`publication/oa-fulltext-discovery-2026\` branch automatically attempts the 36 lookups using the anonymous OpenAlex budget if no secret has been configured. This is not proof that the repository secret exists.
+3. **Manual rerun:** After the workflow file is merged onto the **default branch**, open **Actions → Publication OpenAlex OA full-text lookup → Run workflow**; select the branch containing the paper-review code, provider \`openalex\`, \`limit=0\` (all DOIs) and \`download_pdfs=false\`. GitHub requires \`workflow_dispatch\` workflows to exist in the default branch before the UI will show Run workflow.
+4. **Results:** Open the completed run → **Summary** and download \`kerala2040-openalex-oa-links-...\` under Artifacts. The CSV has DOI, source, \`oa_status\`, \`candidate_pdf_url\`, \`landing_page_url\`, \`query_status\`, \`pdf_status\`, timestamp and optional SHA-256. Candidate links are **not** proof of accessible or read full text. \`lookup_failed\` is an API failure, **not** evidence that a paper is paywalled. A \`no_direct_oa_pdf\` row can still have an accessible HTML or repository landing page.
+5. **Read papers privately:** Retrieve articles via authorized publisher/university pages or the local script's explicit \`--download\` flag. For full-text critical appraisal, maintain exact PDF/version/source checksums and access grade. Never add third-party PDF bytes or private SLDC data to a public GitHub repository by default.
+
+GitHub documentation on [creating Actions secrets](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets) and [manually running workflows](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow) supplies the authoritative UI/security behavior. OpenAlex [API authentication](https://help.openalex.org/api/authentication/) explicitly supports \`Authorization: Bearer\`, which this script sends without embedding the key in URLs, command-line arguments or logs.
+
+**Credentials are user-managed:** the connected GitHub tool does not have repository secret-administration or workflow-dispatch permissions. It can author source and inspect the automatically triggered push-run; it cannot confirm or add your secret through those tools. GitHub users with repository Settings permissions must complete step 1. The anonymous smoke run is still informative for validating the script and discovering OA links.
+
+
+### Verified actual PDF acquisition outcomes — 27 October 2026
+
+See **[PDF_ACQUISITION_AUDIT_2026-10-27.md](PDF_ACQUISITION_AUDIT_2026-10-27.md)** for the two full GitHub Actions download attempts, per-paper original sources, extracted PDF page counts/DOI/title checks, legitimate institutional alternatives, and the remaining Indian-state study PDF requests.
+
+**Actual completed source chain:** 36/36 OpenAlex DOI metadata resolutions, 14 advertised OA PDF URLs, 14 automatic download attempts + seven separately researched university/author PDF attempts. **Six distinct downloaded PDF files passed structural validation**: D01 (29 pages), W02 (24), M04 (9), M06 (10), M01 (29), H01 (15). **Fifteen** candidates returned HTTP 403/404 or non-PDF responses. No third-party PDF files were committed or redistributed. The D01 published article already supplied by the user has 27 pages; the repository copy verified by GitHub has 29 and should be version-compared.
+
+Full manifests (metadata only): [run 40442388470](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/40442388470), [CSV artifact](https://github.com/abhijith-sivaprasadan/kerala2040/actions/runs/40442388470/artifacts/12706786377). Even a structurally parsed PDF **does not equal** a source-level critical scientific appraisal. Paper identities/edition and full methods should be inspected separately.
+
+**Current most valuable manual PDFs:** D03 Porwal IEEE (2026), D02 Harish et al. Energy Policy (2020); both are substantive direct competitors and neither produced a direct OA PDF in the automated index. Authorized access or a courteous author manuscript request may be needed.

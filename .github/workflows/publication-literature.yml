@@ -27,4 +27,4 @@ jobs:
         run: python publication/literature/validate.py
       - name: Test negative schema cases
         working-directory: publication/literature
-        run: python -m unittest -v test_validate
+        run: python -m unittest -v test_validate test_find_open_fulltexts
