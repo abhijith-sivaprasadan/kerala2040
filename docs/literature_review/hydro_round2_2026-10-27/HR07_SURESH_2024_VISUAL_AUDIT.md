@@ -1,3 +1,5 @@
+
+> **Source-version update, 28 October 2026:** The final published journal edition has 24 pages, and every page has been checked separately. See the [published-version verification](HR07_SURESH_2024_PUBLISHED_VERSION_AUDIT_2026-10-28.md) with a 30-finding page crosswalk and public CSV evidence records. This is the same study, not another completed article.
 # HR07 — Suresh et al. (2024): complete 56-page visual/scientific audit
 
 **Source:** Sarath Suresh et al., *Satellite-based Tracking of Reservoir Operations for Flood Management during the 2018 Extreme Weather Event in Kerala, India*, Remote Sensing of Environment (2024). DOI: [10.1016/j.rse.2024.114149](https://doi.org/10.1016/j.rse.2024.114149).
