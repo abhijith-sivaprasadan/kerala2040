@@ -1,6 +1,3 @@
-# Round 4: 33 DOI-bearing candidate sources (32 journal publications, one marked preprint)
-# 28 October 2026; metadata-screened only, no original full-text appraisal completed.
-# One DOI per line for standard lookup tools. Verify publisher metadata and access rights.
 10.1016/j.isci.2026.115697
 10.3390/cli8060073
 10.1016/j.scs.2025.106290
