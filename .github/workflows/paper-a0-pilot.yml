@@ -1,0 +1,32 @@
+name: Paper A0 preliminary source-accounting pilot
+
+on:
+  pull_request:
+    paths:
+      - "scripts/run_paper_a0_pilot.py"
+      - "tests/test_paper_a0_pilot.py"
+      - "data/external/sldc_fy2024_25/daily_balance.csv"
+      - "studies/paper-a-2027/a0-pilot/**"
+      - ".github/workflows/paper-a0-pilot.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Unit and source-file regression checks
+        run: python -m unittest discover -s tests -p 'test_paper_a0_pilot.py' -v
+      - name: Reproduce deterministic public pilot tables
+        run: python scripts/run_paper_a0_pilot.py
+      - name: Confirm monthly table matches committed pilot table
+        run: diff -u studies/paper-a-2027/a0-pilot/TABLE_A0_02_monthly_source_coverage.csv studies/paper-a-2027/a0-pilot/reproduced/TABLE_A0_02_monthly_source_coverage.csv
+      - name: Confirm cross-boundary veto table matches committed version
+        run: diff -u studies/paper-a-2027/a0-pilot/TABLE_A0_03_comparison_admissibility.csv studies/paper-a-2027/a0-pilot/reproduced/TABLE_A0_03_comparison_admissibility.csv
