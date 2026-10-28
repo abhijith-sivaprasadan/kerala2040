@@ -1,47 +1,31 @@
-# Kerala2040
+# Kerala2040 | Round 2 — 13 complete paper-analysis sets
+Export date: 28 October 2026. Original repository: https://github.com/abhijith-sivaprasadan/kerala2040
+Full review corpus: 40 screened hydropower, reservoir, monsoon and power-flexibility publications.
 
-**Public research record · evidence freeze: 23 October 2026**
+This snapshot contains the **13 papers with complete derived review records committed to GitHub**: HR01, HR02, HR03, HR04, HR05, HR06, HR07, HR08, HR22, HR25, HR28, HR37, HR38. Files have been copied by their original Git blob SHA, preserving the text and structured review evidence without rewriting.
 
-An independent analysis of publicly available statistics on Kerala's electricity consumption, generation capacity, system-operation records and weather-related daily-demand variation. Source definitions, coverage and computational methods are documented so that results can be checked.
+## Contents
+- reviews/HRxx/: original full scientific visual-review Markdown and its available CSVs (inspection ledgers, scientific findings, calculations, source checks, research actions, and HR07 publisher-version comparison where present).
+- CATALOGUE_40.csv: entire original 40-paper screening register, preserving the status of the other papers.
 
-**Website:** https://kerala2040.github.io/  
-**Scope and freeze:** [RESEARCH_FREEZE_2026-10-23.md](docs/RESEARCH_FREEZE_2026-10-23.md)  
-**Source register:** [evidence_register.md](docs/evidence_register.md)  
-**Reproduce source accounting:** [reproduce_daily_accounting.py](examples/reproduce_daily_accounting.py)
+**Partial fourteenth audit:** HR09 has been visually reviewed and a 20-page inspection ledger is in the source repository, but its remaining derived review files were not committed. It is deliberately excluded from this '13 complete' package. Do not interpret the 13 as all papers audited as of the export date.
+**Source PDFs and page-render images:** deliberately not included. Their original binary conversation artifacts were not committed to Git and copyrighted source images require a permissions review. Markdown/CSV reviews are not proof that the authors' original code, instruments or physical models were independently reproduced.
+**Review status:** These are paper-by-paper source-critical reviews, not a new peer-reviewed meta-analysis or validation of Kerala2040 hydropower dispatch.
 
-## Core research record
+## Included sets
+- **HR01:** 5 committed analysis file(s)
+- **HR02:** 5 committed analysis file(s)
+- **HR03:** 5 committed analysis file(s)
+- **HR04:** 1 committed analysis file(s)
+- **HR05:** 6 committed analysis file(s)
+- **HR06:** 6 committed analysis file(s)
+- **HR07:** 5 committed analysis file(s)
+- **HR08:** 5 committed analysis file(s)
+- **HR22:** 5 committed analysis file(s)
+- **HR25:** 5 committed analysis file(s)
+- **HR28:** 5 committed analysis file(s)
+- **HR37:** 5 committed analysis file(s)
+- **HR38:** 5 committed analysis file(s)
 
-| Result | Source / method | Interpretation |
-| --- | --- | --- |
-| Annual reported electricity consumption increased from **22,540.32 MU** (FY2020–21) to **29,311.76 MU** (FY2024–25), approximately **30.0%** | Kerala State Planning Board, *Economic Review 2025* (KSEBL-attributed consumer-side series) | Official historical trend within one defined annual statistical series |
-| Reported geographically installed generation capacity at 31 March 2025 was **4,412.14 MW** | Kerala State Planning Board, *Economic Review 2025*; [source reconciliation](data/evidence/generation/fy2024_25_generator_capacity_census.json) | Nameplate capacity, not hourly available generation; the published category sum differs by 0.01 MW through rounding |
-| **354/365** FY2024–25 daily SLDC source reports available; **11** unavailable | [Daily SLDC QA](data/external/sldc_fy2024_25/qa_report.json) | Historical data completeness and source-accounting consistency, not hourly telemetry |
-| **353** observed SLDC daily consumption targets matched with complete IST-day ERA5 reanalysis | [Rolling monthly study](docs/DAILY_DEMAND_ML_ROBUSTNESS_V0_2.md) | Retrospective same-day weather/demand association: 6/7 XGBoost and 5/7 LightGBM monthly comparisons favour added weather data; single-year evidence only |
-
-**Boundary:** Official annual consumer-side electricity consumption and the SLDC daily operational consumption field have different definitions. The 354 source-observed SLDC days sum to 30,666.2569 MU under the latter boundary; this is not an alternative value for the annual 29,311.76 MU consumer-side series. See the [freeze record](docs/RESEARCH_FREEZE_2026-10-23.md).
-
-## Evidence and open questions
-
-The current package does not include continuous independently measured Kerala hourly/15-minute load, generation dispatch or exchange telemetry. Hourly electricity demand reconstructions, hydro redispatch, network loading, 2030/2040 scenarios and proposed interventions therefore remain **exploratory modelling**, not operational findings or investment conclusions.
-
-They are retained in the repository, with their assumptions and source trails, under [Exploratory workstreams](docs/EXPLORATORY_WORKSTREAMS.md). No simulated shortage quantities appear in the public research findings.
-
-### Reproduce the daily record audit
-
-Python 3.11 standard library:
-
-```bash
-git clone https://github.com/abhijith-sivaprasadan/kerala2040.git
-cd kerala2040
-python examples/reproduce_daily_accounting.py --output results/examples/accounting_audit.json
-```
-
-This audits source-day completeness and preserves observed daily MWh in the **reconstructed**, not measured, hourly series. It is an arithmetic consistency test. For the broader codebase: `python -m pip install -e ".[dev]"` and `python -m pytest -q`.
-
-Details: [Reproduction guidance](docs/REPRODUCE_AND_EXTEND.md) · [Source evidence](docs/evidence_register.md) · [Scientific provenance rules](docs/PROVENANCE_CORE_RULES.md) · [Contributions](CONTRIBUTING.md).
-
-**Research and authorship:** Abhijith Sivaprasadan, independent project. KTH and the named public agencies are not publishers or endorsers of the project. Source data retain the rights of their respective publishers.
-
-## Literature review and methodological evidence
-
-The [19-document literature review](docs/literature_review/README.md) (27 October 2026) records an indexed comparison of 520 uploaded PDF page positions, [cross-paper synthesis](docs/literature_review/CROSS_PAPER_SYNTHESIS_2026-10-27.md), and [research-design acceptance gates](docs/literature_review/RESEARCH_ACTIONS_2026-10-27.md). These are literature-based methodological assessments, **not** independent replications of third-party models or new Kerala operational findings. The public evidence freeze above remains in force. The underlying third-party PDF articles and full visual-review packages are not committed as part of this documentation update.
+## Remaining work
+Continue detailed review of the remaining screened sources using CATALOGUE_40.csv, and recover HR09 missing derived outputs before designating its archive complete. Preserve observed vs modelled hydrology, non-causal interpretations and constrained source rights throughout.
