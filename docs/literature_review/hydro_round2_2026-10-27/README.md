@@ -2,7 +2,7 @@
 
 **Date:** 27 October 2026. **Status:** 40 unique publications screened from identifiable publisher/institutional bibliographic metadata and abstracts. **Not 40 full-text visually inspected papers.** The original 20 individually reviewed documents remain a separate corpus.
 
-**Current full-page audit status: 13/40 complete; 27 screened-only (28 October 2026).** HR09 has a committed inspection ledger and an incomplete derived-register upload; see its catalogue status. HR28's derived registers are committed.
+**Current full-page audit status: 14/40 complete; 26 screened-only (28 October 2026).** HR09 has a committed inspection ledger and an incomplete derived-register upload; see its catalogue status. HR28's derived registers are committed.
 
 ## Research question
 
@@ -115,3 +115,5 @@ Full audit PDF and copyrighted published page renders are retained separately in
 - **HR28 — Vagnoni et al. (2024), European hydropower flexibility and digitalization:** [complete 11-page source-critical visual audit](HR28_VAGNONI_2024_VISUAL_AUDIT.md), [32 scientific findings](HR28_2024_scientific_findings.csv), [42 arithmetic/source checks](HR28_2024_numerical_evidence_checks.csv), [11-page inspection ledger](HR28_11_page_visual_inspection_ledger.csv), [12 prioritized research actions](HR28_2024_Kerala2040_actions.csv). European 2030 flexibility projections and survey samples are distinct evidence classes. Source CC BY-NC-ND; original page images and complete report remain private conversation outputs, not in Git history.
 
 - **HR09 — Singh et al. (2025), Kerala flood-risk review:** [20-page visual inspection ledger](HR09_20_page_visual_inspection_ledger.csv) committed; entire source read and audited but the full Markdown and remaining CSVs are not in Git history. Catalogue marks derived upload partial.
+
+- **HR22 — Sushanth et al. (2023), Indian explainable ML + reservoir-zoning forecast:** [complete 14-page visual/scientific audit](HR22_SUSHANTH_2023_VISUAL_AUDIT.md), [32 findings](HR22_2023_scientific_findings.csv), [42 source/numerical checks](HR22_2023_numerical_evidence_checks.csv), [14-page inspection ledger](HR22_14_page_visual_inspection_ledger.csv) and [12 Kerala2040 actions](HR22_2023_Kerala2040_actions.csv). Panchet 1–5-day forecast NSE falls 0.961 to 0.882 while RMSE rises 76.77 to 133.87 m3/s. Printed SHAP/CSZ definitions and evaluation independence require verification. Original publisher PDF and page-image archive remain separate private attachments, not GitHub history. **Current Round 2: 14/40 visually audited; 26 screened-only.**
