@@ -2,6 +2,12 @@
 
 **Established 28 October 2026. Planning and discovery record; NOT 23 completed literature reviews, 808 publisher-verified articles, an exhaustive systematic search or 23 promised manuscripts.**
 
+## External comparator and prior-art gate
+
+The literature map must **not** claim Kerala's first comprehensive 2040 energy pathway. **CSTEP (8 Feb 2024)** already published a [Kerala Energy Transition Roadmap 2040](https://cstep.in/publication/kerala-energy-transition-roadmap-2040/) covering in-state renewable development, generation/import dependence and policy options. **WRI India (29 Sep 2026)** published [Pathways for Kerala's Clean Energy Transition](https://wri-india.org/research/pathways-keralas-clean-energy-transition) with contrasted 2040 scenarios, thermal import dependence and procurement/storage/network implications. These are **prior-art scenario comparators**, not original data for observed SLDC consumption or certified physical network claims.
+
+The **IEA's Electricity 2026 India analysis**, especially its [national demand discussion](https://www.iea.org/reports/electricity-2026/demand), motivates Round 7 cooling, Round 9 industry and Round 21 agriculture. These are **India-level empirical/forecast comparisons**, not direct Kerala metered causal estimates. For every research round, include an original-source-versus-external-scenario ledger before any novelty claim.
+
 ## Executive decision
 
 Kerala2040 now has a **23-round evidence map**: 5 already established thematic workstreams (R1–R5) and 18 additional themed discovery collections (R6–R23). Each round has **20–40 current publication candidates**, one principal falsifiable gap question, explicit minimum original evidence and exclusion boundaries. All 23 appear in the machine-readable [ROUND_ROADMAP_R01_R23.csv](ROUND_ROADMAP_R01_R23.csv).
