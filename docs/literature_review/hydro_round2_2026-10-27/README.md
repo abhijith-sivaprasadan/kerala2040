@@ -91,3 +91,5 @@ The prior HR07 **56-page accepted manuscript** has also been checked against the
 - [19-reservoir evaporation check (CSV)](HR07_published_evaporation_19_reservoir_check.csv)
 
 Full audit PDF and copyrighted published page renders are retained separately in the conversation's audit package, not redistributed as public repository source images.
+
+- **HR05 — Singh, Lohani & Jain (2022):** [31-page full visual/scientific audit](HR05_SINGH_2022_VISUAL_AUDIT.md) | [30 finding rows](HR05_2022_scientific_findings.csv) | [31-page ledger](HR05_2022_31_page_visual_ledger.csv) | [23 Table 5 numeric rows](HR05_2022_Table5_23_grid_recalculation.csv) + [16 other checks](HR05_2022_16_targeted_source_checks.csv) | [12 research actions](HR05_2022_Kerala2040_actions.csv). Source-audited study, not original HEC model re-execution. PDF report and source-page images remain separate from Git history. **Three of 40 sources have full visual audits** (HR04, HR05, HR07).
