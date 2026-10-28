@@ -43,9 +43,6 @@ def read_rows(file: Path) -> list[dict[str, str]]:
             raise ValueError("Missing CSV header")
         if len(set(table.fieldnames)) != len(table.fieldnames):
             raise ValueError("Duplicate input headers")
-        if not set(COLUMNS) <= set(table.fieldnames):
-            raise ValueError("Required columns absent: " +
-                             ", ".join(sorted(set(COLUMNS) - set(table.fieldnames))))
         rows = list(table)
     if not rows:
         raise ValueError("Empty input CSV")
@@ -67,6 +64,9 @@ def decimal_field(row: dict[str, str], field: str) -> Decimal:
 
 def audit_daily(rows: list[dict[str, str]]) -> dict:
     """Validate calendar and accounting, return reproducible observed-only summaries."""
+    if not set(COLUMNS) <= set(rows[0]):
+        raise ValueError("Missing daily source columns: " +
+                         ", ".join(sorted(set(COLUMNS) - set(rows[0]))))
     seen: set[date] = set()
     totals: dict[str, Decimal] = {n: Decimal(0) for n in NUMERIC}
     months = defaultdict(lambda: {
@@ -192,6 +192,9 @@ def validate_ledger(rows: list[dict[str, str]]) -> list[dict[str, str]]:
               "unit", "evidence_class", "original_source_url")
     if len(rows) != 6:
         raise ValueError("Source-boundary ledger should hold exactly 6 cases")
+    if rows and not set(fields) <= set(rows[0]):
+        raise ValueError("Missing source ledger columns: " +
+                         ", ".join(sorted(set(fields) - set(rows[0]))))
     seen = set()
     for row in rows:
         if not all(row.get(f, "").strip() for f in fields):
