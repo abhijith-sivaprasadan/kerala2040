@@ -75,10 +75,10 @@ This creates a **possible research gap, not yet an established novel contributio
 
 | Rank | Record | Why the original paper matters | Specific falsification / verification task |
 | --- | --- | --- | --- |
-| 1 | R3-002, Karnataka curtailment | Closest Indian observed policy/curtailment example | Locate measured curtailment, validation years, baseline and MILP counterfactual identification |
-| 2 | R3-001, India interregional coordination | Regional transfer + storage framework | Inspect 15-min source chronology, transmission abstraction, capacity/energy and spatial pooling |
-| 3 | R3-005, HC benchmark | Clear uncertainty/limit definitions | Extract feeder inputs, operational thresholds and deterministic-vs-stochastic comparison |
-| 4 | R3-006, PV hosting-capacity planning | Closest operational design method | Document observed network, uncertainty definition, tested voltage/thermal criteria |
+| 1 | [R3-002, Karnataka curtailment](https://doi.org/10.1016/j.enpol.2022.113334) | Closest Indian observed policy/curtailment example | Locate measured curtailment, validation years, baseline and MILP counterfactual identification |
+| 2 | [R3-001, India interregional coordination](https://doi.org/10.1016/j.apenergy.2025.126134) | Regional transfer + storage framework | Inspect 15-min source chronology, transmission abstraction, capacity/energy and spatial pooling |
+| 3 | [R3-005, HC benchmark](https://doi.org/10.1016/j.rser.2021.111899) | Clear uncertainty/limit definitions | Extract feeder inputs, operational thresholds and deterministic-vs-stochastic comparison |
+| 4 | [R3-006, PV hosting-capacity planning](https://doi.org/10.1016/j.epsr.2024.111138) | Closest operational design method | Document observed network, uncertainty definition, tested voltage/thermal criteria |
 | 5 | R3-003, India renewable potential | Open benchmark / renewable proxy | Inspect production validation, grid-cell/plant locations, and observed-versus-derived fields |
 | 6 | R3-004, India transmission overbuilding | Critical counterexample | Identify evidence of overinvestment and the policy mechanism; do not generalize numeric cost |
 | 7 | R3-013, Indian EV/PV stochastic planning | Demand-side distributed flexibility | Audit network realism, state variables, constraints and independent data |
