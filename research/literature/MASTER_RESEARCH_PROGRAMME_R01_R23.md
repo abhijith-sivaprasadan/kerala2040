@@ -111,3 +111,7 @@ If the relevant source data do not exist, the scientific output is an **observab
 - [SOURCE_QUALITY_AND_NEXT_GATES.md](SOURCE_QUALITY_AND_NEXT_GATES.md) — integrity, screening failures, and next actions.
 
 **Scientific status at creation:** an extensive *candidate literature map*, not 23 systematic reviews or 808 fully validated research claims. The 23 October 2026 public evidence freeze and all existing stacked publication PRs remain untouched.
+
+## Clickable publisher and full-text links
+
+[Open the 23-round paper-by-paper clickable link index](CLICKABLE_PAPER_INDEX_R01_R23.md), containing 808 individually linked publication candidates and existing recorded full-text leads. Links are bibliographic navigation aids, not audited PDF access verification.
