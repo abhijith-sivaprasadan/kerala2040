@@ -1,6 +1,6 @@
 # R09 — Industrial process heat and electrification: clickable paper links
 
-[← All 23 rounds](../../CLICKABLE_PAPER_INDEX_R01_R23.md) · [Original machine-readable catalogue](../../MASTER_PAPERS_R01_R23.csv)
+[← All 23 rounds](../CLICKABLE_PAPER_INDEX_R01_R23.md) · [Original machine-readable catalogue](../MASTER_PAPERS_R01_R23.csv)
 
 **36 publication candidates** · **36 DOI title links** · **0 title-search links** · **12 recorded candidate full-text links.**
 
