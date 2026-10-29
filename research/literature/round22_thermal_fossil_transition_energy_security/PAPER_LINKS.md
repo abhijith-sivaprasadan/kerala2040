@@ -1,6 +1,6 @@
 # R22 — Coal/gas retirement, thermal flexibility and energy security: clickable paper links
 
-[← All 23 rounds](../../CLICKABLE_PAPER_INDEX_R01_R23.md) · [Original machine-readable catalogue](../../MASTER_PAPERS_R01_R23.csv)
+[← All 23 rounds](../CLICKABLE_PAPER_INDEX_R01_R23.md) · [Original machine-readable catalogue](../MASTER_PAPERS_R01_R23.csv)
 
 **35 publication candidates** · **35 DOI title links** · **0 title-search links** · **18 recorded candidate full-text links.**
 
